@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VirGo</string>
+
+    <!-- Común -->
+    <string name="action_back">Regresar</string>
+    <string name="action_close">Cerrar</string>
+    <string name="common_soon_title">Próximamente</string>
+    <string name="common_soon_google">El acceso con Google llegará en una próxima versión</string>
+    <string name="common_soon_apple">El acceso con Apple llegará en una próxima versión</string>
+    <string name="common_snackbar_ok">Entendido</string>
+
+    <!-- Inicio de sesión (A5) -->
+    <string name="login_kicker">VIRGO</string>
+    <string name="login_hero_title">Salones cerca de ti</string>
+    <string name="login_title">Qué gusto verte</string>
+    <string name="login_submit">Entrar</string>
+    <string name="login_forgot">¿Olvidaste tu contraseña?</string>
+    <string name="login_error_generic">Correo o contraseña incorrectos</string>
+
+    <!-- Campos -->
+    <string name="field_name">Nombre completo</string>
+    <string name="field_email">Correo</string>
+    <string name="field_phone">Teléfono</string>
+    <string name="field_password">Contraseña</string>
+    <string name="field_code">Código de 6 dígitos</string>
+    <string name="field_new_password">Nueva contraseña</string>
+    <string name="field_confirm_password">Confirmar contraseña</string>
+    <string name="field_phone_prefix">+52</string>
+    <string name="field_show_password">Mostrar contraseña</string>
+    <string name="field_hide_password">Ocultar contraseña</string>
+    <string name="field_email_placeholder">ana@correo.com</string>
+
+    <!-- Acceso social -->
+    <string name="social_google">Google</string>
+    <string name="social_apple">Apple</string>
+    <string name="auth_divider">o con tu correo</string>
+
+    <!-- Invitado (A1) -->
+    <string name="guest_brand">VirGo</string>
+    <string name="guest_login">Iniciar sesión</string>
+    <string name="guest_section_label">SALONES CERCA DE TI</string>
+    <string name="guest_location">Juriquilla, Querétaro</string>
+    <string name="guest_range_group">Rango de búsqueda</string>
+    <string name="guest_range_option">%1$d km</string>
+    <plurals name="guest_venues_near">
+        <item quantity="one">%1$d salón a %2$d km</item>
+        <item quantity="other">%1$d salones a %2$d km</item>
+    </plurals>
+    <string name="guest_hint_touch">Toca un salón del mapa para ver una muestra</string>
+    <string name="guest_hint_empty">No hay salones en este rango, amplíalo</string>
+    <string name="guest_you_here">Tu ubicación</string>
+    <string name="guest_pin_cd">%1$s, a %2$s km</string>
+    <string name="guest_distance_format">%1$s km</string>
+    <string name="guest_preview_close">Cerrar vista previa</string>
+    <string name="guest_preview_see_more">Ver más…</string>
+    <string name="guest_preview_locked">Precios, fotos, fechas y filtros al crear tu cuenta</string>
+    <string name="guest_preview_meta">%1$s · ★ %2$s · hasta %3$d</string>
+
+    <!-- Registro (A2/A4) -->
+    <string name="register_kicker">VIRGO</string>
+    <string name="register_title">Tu evento empieza aquí</string>
+    <string name="register_hero_title">Salones cerca de ti</string>
+    <string name="register_step_label">ESTÁS A UN PASO DE VERLO</string>
+    <string name="register_role_client">Organizo un evento</string>
+    <string name="register_role_owner">Tengo un salón</string>
+    <string name="register_role_provider">Soy proveedor</string>
+    <string name="register_role_group">Tipo de cuenta</string>
+    <string name="register_role_note_owner">Las herramientas para propietarios llegan en el Sprint 3. Mientras tanto verás VirGo como cliente.</string>
+    <string name="register_role_note_provider">Las herramientas para proveedores llegan en el Sprint 3. Mientras tanto verás VirGo como cliente.</string>
+    <string name="register_benefit_prices">Precios</string>
+    <string name="register_benefit_ai">Simulación IA</string>
+    <string name="register_benefit_event">Tu evento</string>
+    <string name="register_submit">Crear cuenta</string>
+    <string name="register_terms">Al continuar aceptas los Términos y el Aviso de privacidad.</string>
+    <string name="register_have_account">¿Ya tienes cuenta?</string>
+    <string name="register_no_account">¿Aún no tienes cuenta?</string>
+    <string name="register_switch_login">Inicia sesión</string>
+    <string name="register_switch_register">Regístrate</string>
+    <string name="register_duplicate_email">Ya existe una cuenta con este correo. Inicia sesión.</string>
+    <string name="register_hero_meta">★ %1$s · %2$s km</string>
+    <string name="register_success_greeting">Hola, %1$s</string>
+    <string name="register_success_body">Ya puedes usar todas las funciones</string>
+
+    <!-- Errores de formulario -->
+    <string name="error_name">Escribe tu nombre completo</string>
+    <string name="error_email">Correo no válido</string>
+    <string name="error_phone">Debe tener 10 dígitos</string>
+    <string name="error_password_min">Mínimo 8 caracteres</string>
+
+    <!-- Recuperar contraseña (A6/A7) -->
+    <string name="recover_kicker">CONTRASEÑA</string>
+    <string name="recover_title">Recupera tu cuenta</string>
+    <string name="recover_lead">Escribe el correo de tu cuenta y te enviaremos un código de 6 dígitos.</string>
+    <string name="recover_send">Enviar código</string>
+    <string name="recover_code_hint">El código vence en %1$d minutos.</string>
+    <string name="recover_title_step2">Nueva contraseña</string>
+    <string name="recover_save">Guardar contraseña</string>
+    <string name="recover_resend">Reenviar código</string>
+    <string name="recover_error_expired">El código venció. Pide uno nuevo.</string>
+    <string name="recover_error_wrong_code">El código no es correcto.</string>
+    <string name="recover_error_password">La contraseña debe tener al menos 8 caracteres.</string>
+    <string name="recover_error_mismatch">Las contraseñas no coinciden.</string>
+    <string name="recover_sent_toast">Código enviado a tu correo</string>
+    <string name="recover_sent_demo">Demostración: tu código es %1$s</string>
+    <string name="recover_success_title">Contraseña actualizada</string>
+    <string name="recover_success_body">Ya puedes iniciar sesión</string>
+
+    <!-- Inicio provisional -->
+    <string name="home_placeholder_title">Inicio</string>
+    <string name="home_placeholder_body">La pantalla principal de tu rol llegará junto con la funcionalidad de su módulo.</string>
+    <string name="home_tab">Inicio</string>
+</resources>

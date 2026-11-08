@@ -53,9 +53,9 @@
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T015 | *Splash* con `core-splashscreen` y la marca VirGo; `strings.xml` base en español | T012 | `dev-android` | Al abrir la app se ve el *splash* (CA-02) | ⏳ |
-| T016 | `VirGoNavHost` con rutas tipadas `@Serializable`, extensiones `NavGraphBuilder` por destino, `TopLevelDestination` y `HomePlaceholder` | T009, T013 | `dev-android` | La navegación abre el inicio provisional | ⏳ |
-| T017 | `VirGoApp()` raíz: tema, `Scaffold`, barra inferior configurable (oculta en la base) y `SnackbarHost` | T016 | `dev-android` | La app muestra el inicio provisional con el tema de la maqueta (CA-02) | ⏳ |
+| T015 | *Splash* con `core-splashscreen` y la marca VirGo; `strings.xml` base en español | T012 | `dev-android` | Al abrir la app se ve el *splash* (CA-02) | ✅ |
+| T016 | `VirGoNavHost` con rutas tipadas `@Serializable`, extensiones `NavGraphBuilder` por destino, `TopLevelDestination` y `HomePlaceholder` | T009, T013 | `dev-android` | La navegación abre el inicio provisional | ✅ |
+| T017 | `VirGoApp()` raíz: tema, `Scaffold`, barra inferior configurable (oculta en la base) y `SnackbarHost` | T016 | `dev-android` | La app muestra el inicio provisional con el tema de la maqueta (CA-02) | ✅ |
 
 ## F4 · Red, datos y almacenamiento seguro
 

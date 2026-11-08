@@ -14,8 +14,8 @@
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T201 | Pantalla A2 Registro y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T202 | Pantalla A4 Registro con errores y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
+| T201 | Pantalla A2 Registro y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | 🔄 |
+| T202 | Pantalla A4 Registro con errores y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | 🔄 |
 | T203 | Repositorio y casos de uso | T201 | `dev-android` | Pruebas con MockWebServer en verde | ⏳ |
 | T204 | Pruebas unitarias, de UI y de seguridad | T202 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ⏳ |
 | T205 | Integrar con la URL real y hacer la prueba de humo | Specs de API | `qa-movil` | `check.md` completo | ⏳ |

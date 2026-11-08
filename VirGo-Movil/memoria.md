@@ -201,4 +201,28 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Aprendizaje:** ktlint requiere `ktlint_function_naming_ignore_when_annotated_with = Composable` en `.editorconfig` para no reportar nombres de funciones composables como violaciones de estilo.
 - **Pendiente:** Fase 3 (Arranque y navegación: T015-T017) e integración de la pantalla de Login basada en el diseño recibido.
 
+### 2026-11-07 — T015 a T017 y flujo visitante (specs 001–004): splash, navegación y pantallas A1–A7
+
+- **Autor:** equipo + opencode (`dev-android`)
+- **Módulo / tareas:** `000-arquitectura-base` → T015, T016 y T017 hechas; `001-inicio-visitante`, `002-registro`, `003-iniciar-sesion` y `004-recuperar-contrasena` → T101, T102, T201, T202, T301, T401 y T402 en curso (UI entregada, sin `ViewModel`).
+- **Qué se hizo:**
+  - T015: *splash* con `core-splashscreen` (`Theme.VirGo.Splash`, `ic_virgo_splash`) y `strings.xml` base en español.
+  - T016: `navigation/Routes.kt` con rutas `@Serializable`, `VirGoNavHost` (inicio en `GuestHomeRoute`) y `HomePlaceholder`.
+  - T017: `VirGoApp()` con tema, `Scaffold`, `SnackbarHost` vía `LocalSnackbarHost` y barra inferior condicional a `HomeRoute`; `MainActivity` con `installSplashScreen()` y `enableEdgeToEdge()`.
+  - Specs 001–004 (UI con estado local, textos en `strings.xml`): A1/A3 `ui/guest` (`GuestHomeScreen`, `GuestMap` con mapa estático en `Canvas`, `VenueSample`); A2/A4 `ui/register` (`RegisterScreen`, `RegisterHero`, `RegisterRole` con roles y nota ámbar); A5 `ui/auth/AuthComponents` + `ui/login/LoginScreen`; A6/A7 `ui/recover` (`RecoverScreen`, `RecoverErrors`, código de un solo uso en memoria).
+  - Dependencias añadidas: `navigation-compose 2.10.2`, `core-splashscreen 1.2.0`, `kotlinx-serialization-json 1.12.0`.
+- **Evidencia:** `./gradlew ktlintCheck detekt assembleDebug` finaliza con `BUILD SUCCESSFUL` (APK debug generado); `local.properties` con `sdk.dir` (ignorado por git).
+- **Decisiones:**
+  - Estado local con `rememberSaveable` y sin `ViewModel` (los planes 001–004 aún prevén un `ViewModel` por pantalla: pendiente de alineación plan↔código antes de T103/T203/T302/T403).
+  - AGP `9.0.0` → `9.5.1` y `compileSdk` `36` → `37`: `navigation-compose 2.10.2` y `lifecycle 2.11.0` exigen por AAR metadata `compileSdk ≥ 37` y AGP ≥ 9.1, y AGP 9.1 solo acepta hasta `compileSdk 36.1` (SDK XML v4). `targetSdk` sigue en 36; el Platform 37.0 se auto-descargó con las licencias ya aceptadas.
+  - `Icons.Filled.AutoAwesome` en lugar de `Sparkles` (no existe en `material-icons-extended`).
+  - Verificación local con JDK 17 (`~/.jdks/jdk-17.0.21+9`).
+- **Costo:** $0.
+- **Aprendizaje:**
+  - El `checkDebugAarMetadata` es la primera señal de incompatibilidad AGP/`compileSdk`; conviene revisarlo al fijar dependencias del BOM.
+  - `ktlintFormat` corrige por sí solo orden de imports (el grupo `kotlin.*` va al final) y firmas multiline; `TopLevelPropertyNaming` exige `SCREAMING_SNAKE_CASE` para `const val`.
+  - No usar `Get-Content | Set-Content` de PowerShell sobre archivos UTF-8 (los convierte a ANSI/CRLF); editar con herramientas que preservan UTF-8/LF.
+  - La entrada T005 anotaba AGP 9.5.1 y BOM 2026.09.00, pero el `libs.versions.toml` real traía AGP 9.0.0 y BOM 2026.06.01; se llevó AGP a 9.5.1 y se deja constancia de la discrepancia del BOM.
+- **Pendiente:** `ViewModel` + repositorios/casos de uso de 001–004 (T103, T203, T302, T403), pruebas (T104, T204, T303, T404), integración con la URL real, CA-02 (prueba de arranque en emulador) y resolver la discrepancia del BOM anotada en T005.
+
 

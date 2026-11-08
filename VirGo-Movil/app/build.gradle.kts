@@ -2,6 +2,7 @@ plugins {
     id("virgo.android.application")
     id("virgo.android.compose")
     id("virgo.hilt")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -16,6 +17,9 @@ android {
 
 dependencies {
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(project(":core:designsystem"))
     implementation(project(":core:common"))

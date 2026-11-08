@@ -19,9 +19,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,24 +34,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import mx.virgo.app.R
+import mx.virgo.app.ui.auth.AuthDivider
+import mx.virgo.app.ui.auth.AuthTextField
+import mx.virgo.app.ui.auth.PasswordField
+import mx.virgo.app.ui.auth.SocialAuthRow
 import mx.virgo.core.designsystem.components.VirGoButton
-import mx.virgo.core.designsystem.components.VirGoOutlinedButton
-import mx.virgo.core.designsystem.components.VirGoTextField
-import mx.virgo.core.designsystem.theme.Slate400
 import mx.virgo.core.designsystem.theme.Slate500
-import mx.virgo.core.designsystem.theme.Slate800
 import mx.virgo.core.designsystem.theme.Slate900
 import mx.virgo.core.designsystem.theme.VirGoPurple
 import mx.virgo.core.designsystem.theme.VirGoPurpleDark
 import mx.virgo.core.designsystem.theme.VirGoTheme
+
+private val HeaderHeight = 280.dp
+private val CardCornerRadius = 26.dp
+private val SectionGap = 20.dp
+private val FieldGap = 14.dp
+private val BackButtonSize = 40.dp
+private const val BACK_BUTTON_ALPHA = 0.85f
+private const val KICKER_ALPHA = 0.9f
 
 @Composable
 fun LoginScreen(
@@ -62,86 +67,20 @@ fun LoginScreen(
     onForgotPasswordClick: () -> Unit = {},
     onRegisterClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         color = Slate900,
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            // Header con fondo degradado y textos
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(280.dp)
-                        .background(
-                            brush =
-                                Brush.verticalGradient(
-                                    colors =
-                                        listOf(
-                                            VirGoPurpleDark,
-                                            Slate900,
-                                        ),
-                                ),
-                        ).padding(24.dp),
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    // Botón circular de regresar
-                    IconButton(
-                        onClick = onBackClick,
-                        modifier =
-                            Modifier
-                                .size(40.dp)
-                                .background(
-                                    color = Color.White.copy(alpha = 0.85f),
-                                    shape = CircleShape,
-                                ),
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Regresar",
-                            tint = Slate900,
-                        )
-                    }
-
-                    // Títulos del Header
-                    Column {
-                        Text(
-                            text = "VIRGO",
-                            style =
-                                MaterialTheme.typography.labelMedium.copy(
-                                    letterSpacing = 3.sp,
-                                    fontWeight = FontWeight.Bold,
-                                ),
-                            color = Color.White.copy(alpha = 0.9f),
-                        )
-
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Text(
-                            text = "Salones cerca de ti",
-                            style = MaterialTheme.typography.headlineLarge,
-                            color = Color.White,
-                        )
-                    }
-                }
-            }
-
-            // Hoja/Tarjeta principal
+        Column(modifier = Modifier.fillMaxSize()) {
+            LoginHeader(onBackClick = onBackClick)
             Surface(
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-                shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
+                modifier = Modifier.fillMaxSize(),
+                shape = RoundedCornerShape(topStart = CardCornerRadius, topEnd = CardCornerRadius),
                 color = Color.White,
             ) {
                 Column(
@@ -152,172 +91,163 @@ fun LoginScreen(
                             .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Column {
-                        Text(
-                            text = "Qué gusto verte",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = Slate900,
-                        )
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        // Botones Sociales (Google y Apple)
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        ) {
-                            VirGoOutlinedButton(
-                                onClick = { },
-                                modifier = Modifier.weight(1f),
-                            ) {
-                                Text(
-                                    text = "Google",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = Slate800,
-                                )
-                            }
-
-                            VirGoOutlinedButton(
-                                onClick = { },
-                                modifier = Modifier.weight(1f),
-                            ) {
-                                Text(
-                                    text = "Apple",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = Slate800,
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        // Divisor "o con tu correo"
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            HorizontalDivider(
-                                modifier = Modifier.weight(1f),
-                                color = MaterialTheme.colorScheme.outline,
-                            )
-                            Text(
-                                text = "o con tu correo",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Slate400,
-                                modifier = Modifier.padding(horizontal = 12.dp),
-                            )
-                            HorizontalDivider(
-                                modifier = Modifier.weight(1f),
-                                color = MaterialTheme.colorScheme.outline,
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        // Inputs del Formulario
-                        VirGoTextField(
-                            value = email,
-                            onValueChange = { email = it },
-                            placeholder = "Correo",
-                            keyboardOptions =
-                                KeyboardOptions(
-                                    keyboardType = KeyboardType.Email,
-                                    imeAction = ImeAction.Next,
-                                ),
-                        )
-
-                        Spacer(modifier = Modifier.height(14.dp))
-
-                        VirGoTextField(
-                            value = password,
-                            onValueChange = { password = it },
-                            placeholder = "Contraseña",
-                            visualTransformation =
-                                if (isPasswordVisible) {
-                                    VisualTransformation.None
-                                } else {
-                                    PasswordVisualTransformation()
-                                },
-                            keyboardOptions =
-                                KeyboardOptions(
-                                    keyboardType = KeyboardType.Password,
-                                    imeAction = ImeAction.Done,
-                                ),
-                            trailingIcon = {
-                                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                                    Icon(
-                                        imageVector =
-                                            if (isPasswordVisible) {
-                                                Icons.Default.Visibility
-                                            } else {
-                                                Icons.Default.VisibilityOff
-                                            },
-                                        contentDescription =
-                                            if (isPasswordVisible) {
-                                                "Ocultar contraseña"
-                                            } else {
-                                                "Mostrar contraseña"
-                                            },
-                                        tint = Slate400,
-                                    )
-                                }
-                            },
-                        )
-
-                        // Enlace ¿Olvidaste tu contraseña?
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.CenterEnd,
-                        ) {
-                            TextButton(onClick = onForgotPasswordClick) {
-                                Text(
-                                    text = "¿Olvidaste tu contraseña?",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = VirGoPurple,
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        // Botón Principal
-                        VirGoButton(
-                            onClick = { onLoginClick(email, password) },
-                            text = "Entrar",
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    // Footer Regístrate
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = "¿Aún no tienes cuenta?",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Slate500,
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        TextButton(onClick = onRegisterClick) {
-                            Text(
-                                text = "Regístrate",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = VirGoPurple,
-                            )
-                        }
-                    }
+                    LoginContent(
+                        email = email,
+                        onEmailChange = { email = it },
+                        password = password,
+                        onPasswordChange = { password = it },
+                        onSubmit = { onLoginClick(email, password) },
+                        onForgotPasswordClick = onForgotPasswordClick,
+                    )
+                    LoginFooter(onRegisterClick = onRegisterClick)
                 }
             }
         }
     }
 }
 
+@Composable
+private fun LoginHeader(
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(HeaderHeight)
+                .background(
+                    brush =
+                        Brush.verticalGradient(
+                            colors = listOf(VirGoPurpleDark, Slate900),
+                        ),
+                ).padding(24.dp),
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            IconButton(
+                onClick = onBackClick,
+                modifier =
+                    Modifier
+                        .size(BackButtonSize)
+                        .background(
+                            color = Color.White.copy(alpha = BACK_BUTTON_ALPHA),
+                            shape = CircleShape,
+                        ),
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.action_back),
+                    tint = Slate900,
+                )
+            }
+            Column {
+                Text(
+                    text = stringResource(R.string.login_kicker),
+                    style =
+                        MaterialTheme.typography.labelMedium.copy(
+                            letterSpacing = 3.sp,
+                            fontWeight = FontWeight.Bold,
+                        ),
+                    color = Color.White.copy(alpha = KICKER_ALPHA),
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = stringResource(R.string.login_hero_title),
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = Color.White,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoginContent(
+    email: String,
+    onEmailChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    onSubmit: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = stringResource(R.string.login_title),
+            style = MaterialTheme.typography.headlineMedium,
+            color = Slate900,
+        )
+        Spacer(modifier = Modifier.height(SectionGap))
+        SocialAuthRow()
+        Spacer(modifier = Modifier.height(SectionGap))
+        AuthDivider()
+        Spacer(modifier = Modifier.height(SectionGap))
+        AuthTextField(
+            value = email,
+            onValueChange = onEmailChange,
+            label = stringResource(R.string.field_email),
+            keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next,
+                ),
+        )
+        Spacer(modifier = Modifier.height(FieldGap))
+        PasswordField(
+            value = password,
+            onValueChange = onPasswordChange,
+            label = stringResource(R.string.field_password),
+            imeAction = ImeAction.Done,
+        )
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.CenterEnd,
+        ) {
+            TextButton(onClick = onForgotPasswordClick) {
+                Text(
+                    text = stringResource(R.string.login_forgot),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = VirGoPurple,
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        VirGoButton(onClick = onSubmit, text = stringResource(R.string.login_submit))
+    }
+}
+
+@Composable
+private fun LoginFooter(
+    onRegisterClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(R.string.register_no_account),
+            style = MaterialTheme.typography.bodyMedium,
+            color = Slate500,
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        TextButton(onClick = onRegisterClick) {
+            Text(
+                text = stringResource(R.string.register_switch_register),
+                style = MaterialTheme.typography.labelLarge,
+                color = VirGoPurple,
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
-private fun LoginScreenPreview() {
+fun LoginScreenPreview() {
     VirGoTheme {
         LoginScreen()
     }
