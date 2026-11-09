@@ -1,5 +1,6 @@
 package mx.virgo.app.ui.register
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,11 +28,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,12 +45,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import mx.virgo.app.LocalSnackbarHost
 import mx.virgo.app.R
 import mx.virgo.app.ui.auth.AuthDivider
 import mx.virgo.app.ui.auth.AuthTextField
-import mx.virgo.app.ui.auth.EmailPattern
 import mx.virgo.app.ui.auth.PasswordField
 import mx.virgo.app.ui.auth.SocialAuthRow
 import mx.virgo.app.ui.guest.VenueSample
@@ -63,10 +63,8 @@ import mx.virgo.core.designsystem.theme.Slate500
 import mx.virgo.core.designsystem.theme.Slate900
 import mx.virgo.core.designsystem.theme.VirGoPurple
 import mx.virgo.core.designsystem.theme.VirGoTheme
-
-private const val MIN_NAME_LENGTH = 3
-private const val MIN_PASSWORD_LENGTH = 8
-private const val PHONE_LENGTH = 10
+import mx.virgo.core.domain.ValidateEmailUseCase
+import mx.virgo.core.domain.ValidateRegisterFormUseCase
 
 private val CardOverlap = 26.dp
 private val CardCornerRadius = 26.dp
@@ -76,43 +74,56 @@ private val BenefitsPill = RoundedCornerShape(20.dp)
 private val ErrorPillShape = RoundedCornerShape(10.dp)
 private val ErrorPillBg = Color(0xFFFDECEC)
 
-/** HU-26: registros recientes de esta sesión para detectar correo duplicado (demo). */
-private val registeredEmails = mutableSetOf<String>()
-
 @Composable
 fun RegisterScreen(
     venueId: Int?,
+    modifier: Modifier = Modifier,
     onRegisterSuccess: () -> Unit = {},
     onLoginClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
-    modifier: Modifier = Modifier,
+    viewModel: RegisterViewModel = hiltViewModel(),
 ) {
+    val state by viewModel.state.collectAsState()
     val venue = VenueSamples.firstOrNull { it.id == venueId }
-    var name by rememberSaveable { mutableStateOf("") }
-    var email by rememberSaveable { mutableStateOf("") }
-    var phone by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var role by rememberSaveable { mutableStateOf(RegisterRole.CLIENT.name) }
-    var submitted by rememberSaveable { mutableStateOf(false) }
-    var formError by rememberSaveable { mutableStateOf("") }
+    val snackbarHost = LocalSnackbarHost.current
+    val scope = rememberCoroutineScope()
+    val greeting =
+        stringResource(R.string.register_success_greeting, state.name.trim().substringBefore(' '))
+    val successBody = stringResource(R.string.register_success_body)
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                RegisterEvent.Registered -> {
+                    scope.launch { snackbarHost.showSnackbar("$greeting — $successBody") }
+                    onRegisterSuccess()
+                }
+            }
+        }
+    }
 
     RegisterFlow(
         venue = venue,
-        name = name,
-        onNameChange = { name = it },
-        email = email,
-        onEmailChange = { email = it },
-        phone = phone,
-        onPhoneChange = { phone = it.filter(Char::isDigit).take(PHONE_LENGTH) },
-        password = password,
-        onPasswordChange = { password = it },
-        role = role,
-        onRoleChange = { role = it },
-        submitted = submitted,
-        onSubmitting = { submitted = true },
-        formError = formError,
-        onFormError = { formError = it },
-        onRegisterSuccess = onRegisterSuccess,
+        name = state.name,
+        onNameChange = viewModel::onNameChange,
+        email = state.email,
+        onEmailChange = viewModel::onEmailChange,
+        phone = state.phone,
+        onPhoneChange = viewModel::onPhoneChange,
+        password = state.password,
+        onPasswordChange = viewModel::onPasswordChange,
+        role = state.role,
+        onRoleChange = viewModel::onRoleChange,
+        showNameError = state.submitted && !state.nameValid,
+        showEmailError = state.submitted && !state.emailValid,
+        showPhoneError = state.submitted && !state.phoneValid,
+        showPasswordError = state.submitted && !state.passwordValid,
+        formError =
+            when (state.formError) {
+                RegisterFormError.DUPLICATE -> stringResource(R.string.register_duplicate_email)
+                null -> ""
+            },
+        onSubmit = viewModel::submit,
         onLoginClick = onLoginClick,
         onBackClick = onBackClick,
         modifier = modifier,
@@ -130,43 +141,18 @@ private fun RegisterFlow(
     onPhoneChange: (String) -> Unit,
     password: String,
     onPasswordChange: (String) -> Unit,
-    role: String,
-    onRoleChange: (String) -> Unit,
-    submitted: Boolean,
-    onSubmitting: () -> Unit,
+    role: RegisterRole,
+    onRoleChange: (RegisterRole) -> Unit,
+    showNameError: Boolean,
+    showEmailError: Boolean,
+    showPhoneError: Boolean,
+    showPasswordError: Boolean,
     formError: String,
-    onFormError: (String) -> Unit,
-    onRegisterSuccess: () -> Unit,
+    onSubmit: () -> Unit,
     onLoginClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val selectedRole = RegisterRole.valueOf(role)
-    val snackbarHost = LocalSnackbarHost.current
-    val scope = rememberCoroutineScope()
-    val duplicateError = stringResource(R.string.register_duplicate_email)
-    val greeting = stringResource(R.string.register_success_greeting, name.trim().substringBefore(' '))
-    val successBody = stringResource(R.string.register_success_body)
-
-    val formValid =
-        name.trim().length >= MIN_NAME_LENGTH &&
-            EmailPattern.matches(email.trim()) &&
-            phone.length == PHONE_LENGTH &&
-            password.length >= MIN_PASSWORD_LENGTH
-
-    val onSubmit = {
-        onSubmitting()
-        onFormError("")
-        when {
-            !formValid -> Unit
-            !registeredEmails.add(email.trim()) -> onFormError(duplicateError)
-            else -> {
-                scope.launch { snackbarHost.showSnackbar("$greeting — $successBody") }
-                onRegisterSuccess()
-            }
-        }
-    }
-
     Column(
         modifier =
             modifier
@@ -184,9 +170,12 @@ private fun RegisterFlow(
             onPhoneChange = onPhoneChange,
             password = password,
             onPasswordChange = onPasswordChange,
-            role = selectedRole,
-            onRoleChange = { onRoleChange(it.name) },
-            submitted = submitted,
+            role = role,
+            onRoleChange = onRoleChange,
+            showNameError = showNameError,
+            showEmailError = showEmailError,
+            showPhoneError = showPhoneError,
+            showPasswordError = showPasswordError,
             formError = formError,
             onSubmit = onSubmit,
             onLoginClick = onLoginClick,
@@ -206,7 +195,10 @@ private fun RegisterCard(
     onPasswordChange: (String) -> Unit,
     role: RegisterRole,
     onRoleChange: (RegisterRole) -> Unit,
-    submitted: Boolean,
+    showNameError: Boolean,
+    showEmailError: Boolean,
+    showPhoneError: Boolean,
+    showPasswordError: Boolean,
     formError: String,
     onSubmit: () -> Unit,
     onLoginClick: () -> Unit,
@@ -250,7 +242,10 @@ private fun RegisterCard(
                 onPhoneChange = onPhoneChange,
                 password = password,
                 onPasswordChange = onPasswordChange,
-                submitted = submitted,
+                showNameError = showNameError,
+                showEmailError = showEmailError,
+                showPhoneError = showPhoneError,
+                showPasswordError = showPasswordError,
                 formError = formError,
                 onSubmit = onSubmit,
             )
@@ -322,7 +317,10 @@ private fun RegisterForm(
     onPhoneChange: (String) -> Unit,
     password: String,
     onPasswordChange: (String) -> Unit,
-    submitted: Boolean,
+    showNameError: Boolean,
+    showEmailError: Boolean,
+    showPhoneError: Boolean,
+    showPasswordError: Boolean,
     formError: String,
     onSubmit: () -> Unit,
     modifier: Modifier = Modifier,
@@ -335,7 +333,9 @@ private fun RegisterForm(
             onEmailChange = onEmailChange,
             phone = phone,
             onPhoneChange = onPhoneChange,
-            submitted = submitted,
+            showNameError = showNameError,
+            showEmailError = showEmailError,
+            showPhoneError = showPhoneError,
         )
         Spacer(modifier = Modifier.height(FieldGap))
         PasswordField(
@@ -343,7 +343,7 @@ private fun RegisterForm(
             onValueChange = onPasswordChange,
             label = stringResource(R.string.field_password),
             error = stringResource(R.string.error_password_min),
-            showError = submitted && password.length < MIN_PASSWORD_LENGTH,
+            showError = showPasswordError,
             imeAction = ImeAction.Done,
         )
         if (formError.isNotEmpty()) {
@@ -372,7 +372,9 @@ private fun RegisterContactFields(
     onEmailChange: (String) -> Unit,
     phone: String,
     onPhoneChange: (String) -> Unit,
-    submitted: Boolean,
+    showNameError: Boolean,
+    showEmailError: Boolean,
+    showPhoneError: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val nameError = stringResource(R.string.error_name)
@@ -385,7 +387,7 @@ private fun RegisterContactFields(
             onValueChange = onNameChange,
             label = stringResource(R.string.field_name),
             error = nameError,
-            showError = submitted && name.trim().length < MIN_NAME_LENGTH,
+            showError = showNameError,
             keyboardOptions =
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
@@ -398,7 +400,7 @@ private fun RegisterContactFields(
             onValueChange = onEmailChange,
             label = stringResource(R.string.field_email),
             error = emailError,
-            showError = submitted && !EmailPattern.matches(email.trim()),
+            showError = showEmailError,
             keyboardOptions =
                 KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -411,7 +413,7 @@ private fun RegisterContactFields(
             onValueChange = onPhoneChange,
             label = stringResource(R.string.field_phone),
             error = phoneError,
-            showError = submitted && phone.length != PHONE_LENGTH,
+            showError = showPhoneError,
             keyboardOptions =
                 KeyboardOptions(
                     keyboardType = KeyboardType.Number,
@@ -462,10 +464,15 @@ private fun RegisterFooter(
     )
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
 fun RegisterScreenPreview() {
     VirGoTheme {
-        RegisterScreen(venueId = null)
+        RegisterScreen(
+            venueId = null,
+            viewModel =
+                RegisterViewModel(ValidateRegisterFormUseCase(ValidateEmailUseCase())),
+        )
     }
 }

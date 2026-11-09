@@ -40,7 +40,7 @@ private val NoteAmber = Color(0xFFFFF8E9)
 private val NoteAmberText = Color(0xFF9C6B1C)
 private val NoteAmberBorder = Color(0xFFF3DEAE)
 
-internal enum class RegisterRole(
+enum class RegisterRole(
     val labelRes: Int,
     val noteRes: Int?,
 ) {

@@ -36,8 +36,6 @@ import mx.virgo.core.designsystem.components.VirGoTextField
 import mx.virgo.core.designsystem.theme.ErrorRed
 import mx.virgo.core.designsystem.theme.Slate400
 
-val EmailPattern = Regex("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")
-
 private val FieldErrorTopPadding = 6.dp
 
 @Composable

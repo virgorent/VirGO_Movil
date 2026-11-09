@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,10 +25,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import mx.virgo.app.R
 import mx.virgo.core.designsystem.components.VirGoCard
 import mx.virgo.core.designsystem.components.VirGoOutlinedButton
@@ -55,8 +53,6 @@ import mx.virgo.core.designsystem.theme.VirGoPurple
 import mx.virgo.core.designsystem.theme.VirGoPurpleDark
 import mx.virgo.core.designsystem.theme.VirGoTheme
 
-private const val NO_VENUE = -1
-private const val DEFAULT_RANGE_KM = 5
 private const val PHOTO_ICON_ALPHA = 0.65f
 private const val PHOTO_BADGE_ALPHA = 0.92f
 private val RangeOptions = listOf(2, 5, 10)
@@ -71,41 +67,36 @@ fun GuestHomeScreen(
     onLoginClick: () -> Unit,
     onRegisterClick: (Int?) -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: GuestHomeViewModel = hiltViewModel(),
 ) {
-    var radiusKm by rememberSaveable { mutableStateOf(DEFAULT_RANGE_KM) }
-    var selectedId by rememberSaveable { mutableStateOf(NO_VENUE) }
+    val state by viewModel.state.collectAsState()
 
-    val nearby = VenueSamples.filter { it.distanceKm <= radiusKm }.sortedBy { it.distanceKm }
-    val selected = nearby.firstOrNull { it.id == selectedId }
-
-    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         GuestMap(
-            nearby = nearby,
-            radiusKm = radiusKm,
-            selectedId = selectedId,
-            onVenueClick = { selectedId = it },
-            onClearSelection = { selectedId = NO_VENUE },
+            nearby = state.nearby,
+            radiusKm = state.radiusKm,
+            selectedId = state.selectedVenueId,
+            onVenueClick = viewModel::selectVenue,
+            onClearSelection = viewModel::clearVenue,
         )
         GuestHeader(
-            count = nearby.size,
-            radiusKm = radiusKm,
-            onRadiusChange = { km ->
-                radiusKm = km
-                if (selected != null && selected.distanceKm > km) selectedId = NO_VENUE
-            },
+            count = state.nearby.size,
+            radiusKm = state.radiusKm,
+            onRadiusChange = viewModel::selectRadius,
             onLoginClick = onLoginClick,
             modifier = Modifier.align(Alignment.TopStart),
         )
+        val selected = state.selectedVenue
         if (selected != null) {
             GuestPreviewCard(
                 venue = selected,
-                onClose = { selectedId = NO_VENUE },
+                onClose = viewModel::clearVenue,
                 onSeeMore = { onRegisterClick(selected.id) },
                 modifier = Modifier.align(Alignment.BottomCenter),
             )
         } else {
             GuestHint(
-                hasVenues = nearby.isNotEmpty(),
+                hasVenues = state.nearby.isNotEmpty(),
                 modifier = Modifier.align(Alignment.BottomCenter),
             )
         }
@@ -458,6 +449,7 @@ fun GuestHomeScreenPreview() {
         GuestHomeScreen(
             onLoginClick = {},
             onRegisterClick = {},
+            viewModel = GuestHomeViewModel(),
         )
     }
 }

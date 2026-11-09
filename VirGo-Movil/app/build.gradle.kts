@@ -19,6 +19,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 
     implementation(project(":core:designsystem"))

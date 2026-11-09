@@ -1,5 +1,6 @@
 package mx.virgo.app.ui.login
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,10 +27,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -41,6 +41,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import mx.virgo.app.R
 import mx.virgo.app.ui.auth.AuthDivider
 import mx.virgo.app.ui.auth.AuthTextField
@@ -52,6 +53,8 @@ import mx.virgo.core.designsystem.theme.Slate900
 import mx.virgo.core.designsystem.theme.VirGoPurple
 import mx.virgo.core.designsystem.theme.VirGoPurpleDark
 import mx.virgo.core.designsystem.theme.VirGoTheme
+import mx.virgo.core.domain.ValidateEmailUseCase
+import mx.virgo.core.domain.ValidateLoginFormUseCase
 
 private val HeaderHeight = 280.dp
 private val CardCornerRadius = 26.dp
@@ -63,14 +66,18 @@ private const val KICKER_ALPHA = 0.9f
 
 @Composable
 fun LoginScreen(
+    modifier: Modifier = Modifier,
     onLoginClick: (String, String) -> Unit = { _, _ -> },
     onForgotPasswordClick: () -> Unit = {},
     onRegisterClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
-    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(state.loggedIn) {
+        if (state.loggedIn) onLoginClick(state.email, state.password)
+    }
 
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -92,11 +99,13 @@ fun LoginScreen(
                     verticalArrangement = Arrangement.SpaceBetween,
                 ) {
                     LoginContent(
-                        email = email,
-                        onEmailChange = { email = it },
-                        password = password,
-                        onPasswordChange = { password = it },
-                        onSubmit = { onLoginClick(email, password) },
+                        email = state.email,
+                        onEmailChange = viewModel::onEmailChange,
+                        password = state.password,
+                        onPasswordChange = viewModel::onPasswordChange,
+                        emailError = state.submitted && !state.emailValid,
+                        passwordError = state.submitted && !state.passwordValid,
+                        onSubmit = viewModel::submit,
                         onForgotPasswordClick = onForgotPasswordClick,
                     )
                     LoginFooter(onRegisterClick = onRegisterClick)
@@ -170,6 +179,8 @@ private fun LoginContent(
     onEmailChange: (String) -> Unit,
     password: String,
     onPasswordChange: (String) -> Unit,
+    emailError: Boolean,
+    passwordError: Boolean,
     onSubmit: () -> Unit,
     onForgotPasswordClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -189,6 +200,8 @@ private fun LoginContent(
             value = email,
             onValueChange = onEmailChange,
             label = stringResource(R.string.field_email),
+            error = stringResource(R.string.error_email),
+            showError = emailError,
             keyboardOptions =
                 KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -200,6 +213,8 @@ private fun LoginContent(
             value = password,
             onValueChange = onPasswordChange,
             label = stringResource(R.string.field_password),
+            error = stringResource(R.string.error_password_min),
+            showError = passwordError,
             imeAction = ImeAction.Done,
         )
         Box(
@@ -245,10 +260,13 @@ private fun LoginFooter(
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
     VirGoTheme {
-        LoginScreen()
+        LoginScreen(
+            viewModel = LoginViewModel(ValidateLoginFormUseCase(ValidateEmailUseCase())),
+        )
     }
 }

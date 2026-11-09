@@ -17,6 +17,8 @@
     <string name="login_submit">Entrar</string>
     <string name="login_forgot">¿Olvidaste tu contraseña?</string>
     <string name="login_error_generic">Correo o contraseña incorrectos</string>
+    <string name="login_error_email">Introduce un correo válido.</string>
+    <string name="login_error_password">Introduce tu contraseña.</string>
 
     <!-- Campos -->
     <string name="field_name">Nombre completo</string>
