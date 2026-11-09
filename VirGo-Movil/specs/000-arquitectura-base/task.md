@@ -68,7 +68,7 @@
 | T022 | `:core:datastore`: `TokenStore` con DataStore y Tink AEAD con una llave en el Android Keystore; revisión de `seguridad-ci` | T007 | `dev-android` + `seguridad-ci` | Guardar, leer y borrar funcionan; el archivo no tiene el token en claro (CA-07) | ⏳ |
 | T023 | `CheckApiHealthUseCase` en `:core:domain` y `HealthRepository` en `:core:data` (mide la latencia y devuelve `AppResult`) | T021 | `dev-android` | Pruebas unitarias en verde (T028) | ⏳ |
 
-> **T018** hecha con T302 de `003`: `AppError` (Network, Timeout, Unauthorized, NotFound, Validation, Server, Unknown) y `AppResult` en `:core:common`; las 7 variantes quedan cubiertas por `AuthRepositoryImplTest` (`:core:data`). **T019** en curso: `createAuthApi` con OkHttp (10/20 s) + Retrofit + kotlinx.serialization ya existe; faltan `API_BASE_URL` por variante y la guarda `https://` de *release*. **T021** en curso: `ProblemDetailsDto` y la conversión HTTP/excepción → `AppError` ya existen; falta `HealthApi`.
+> **T018** hecha con T302 de `003` (commit `c76d17a`): `AppError` (Network, Timeout, Unauthorized, NotFound, Validation, Server, Unknown) y `AppResult` en `:core:common`; las 7 variantes quedan cubiertas por `AuthRepositoryImplTest` (`:core:data`). **T019** en curso: `createAuthApi` con OkHttp (10/20 s) + Retrofit + kotlinx.serialization ya existe; faltan `API_BASE_URL` por variante y la guarda `https://` de *release*. **T021** en curso: `ProblemDetailsDto` y la conversión HTTP/excepción → `AppError` ya existen; falta `HealthApi`.
 
 ## F5 · Diagnóstico de integración
 

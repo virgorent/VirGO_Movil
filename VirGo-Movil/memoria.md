@@ -256,7 +256,7 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - `:core:domain`: `AuthRepository`, `AuthSession`/`LoggedInUser` y `LoginUseCase` (delega al repositorio, sin normalizar el correo).
   - `:core:data`: `AuthRepositoryImpl` con `@Inject` y mapeo de errores: 400 → `Validation(errors)`, 401 → `Unauthorized`, 404 → `NotFound`, 5xx → `Server(traceId)`, `IOException` → `Network`, `SocketTimeoutException` → `Timeout`, resto → `Unknown`; `CancellationException` se propaga.
   - `AuthRepositoryImplTest`: 8 pruebas MockWebServer (200 con aserción de path y body, 401, 400 con `errors`, 500 con `traceId`, 404, sin conexión, timeout con `NO_RESPONSE`, 200 malformado) que cubren las 7 variantes de `AppError`.
-- **Evidencia:** `./gradlew ktlintCheck detekt testDebugUnitTest assembleDebug` → `BUILD SUCCESSFUL` (2026-11-09 UTC); `:core:data:testDebugUnitTest` 8 pruebas, 0 fallos; total del pipeline 67 pruebas (30 dominio + 29 app + 8 data).
+- **Evidencia:** commit `c76d17a`; `./gradlew ktlintCheck detekt testDebugUnitTest assembleDebug` → `BUILD SUCCESSFUL` (2026-11-09 UTC); `:core:data:testDebugUnitTest` 8 pruebas, 0 fallos; total del pipeline 67 pruebas (30 dominio + 29 app + 8 data).
 - **Decisiones:**
   - Retrofit 3.0.0: `HttpException.response()` es nullable → `response()?.toAppError() ?: AppError.Unknown`.
   - `catch (Exception)` en `login` con `@Suppress("TooGenericExceptionCaught")` (detekt corre con `buildUponDefaultConfig`) y rethrow de `CancellationException`; códigos HTTP como constantes `HTTP_*` por `MagicNumber`.
