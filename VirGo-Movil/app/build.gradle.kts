@@ -13,6 +13,19 @@ android {
         versionCode = 1
         versionName = "0.1.0"
     }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+}
+
+tasks.withType<Test>().configureEach {
+    jvmArgs(
+        "--add-exports=java.base/jdk.internal.access=ALL-UNNAMED",
+        "--add-opens=java.base/java.io=ALL-UNNAMED",
+    )
 }
 
 dependencies {
@@ -30,4 +43,12 @@ dependencies {
     implementation(project(":core:datastore"))
 
     testImplementation(project(":core:testing"))
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.ext.junit)
+    testImplementation(libs.androidx.test.core.ktx)
+    testImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
 }

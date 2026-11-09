@@ -43,10 +43,11 @@ private fun guestState(
     selectedVenueId: Int,
 ): GuestUiState {
     val nearby = VenueSamples.filter { it.distanceKm <= radiusKm }.sortedBy { it.distanceKm }
+    val selected = nearby.firstOrNull { it.id == selectedVenueId }
     return GuestUiState(
         radiusKm = radiusKm,
-        selectedVenueId = selectedVenueId,
+        selectedVenueId = selected?.id ?: NO_VENUE,
         nearby = nearby,
-        selectedVenue = nearby.firstOrNull { it.id == selectedVenueId },
+        selectedVenue = selected,
     )
 }

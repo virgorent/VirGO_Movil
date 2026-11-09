@@ -14,8 +14,10 @@
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T101 | Pantalla A1 Inicio para visitantes y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | 🔄 |
-| T102 | Pantalla A3 Vista previa del salón y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | 🔄 |
-| T103 | Repositorio y casos de uso | T101 | `dev-android` | Pruebas con MockWebServer en verde | ⏳ |
-| T104 | Pruebas unitarias, de UI y de seguridad | T102 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ⏳ |
+| T101 | Pantalla A1 Inicio para visitantes y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ✅ |
+| T102 | Pantalla A3 Vista previa del salón y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ✅ |
+| T103 | Repositorio y casos de uso | T101 | `dev-android` | Pruebas con MockWebServer en verde | ⛔ |
+| T104 | Pruebas unitarias, de UI y de seguridad | T102 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ✅ |
 | T105 | Integrar con la URL real y hacer la prueba de humo | Specs de API | `qa-movil` | `check.md` completo | ⏳ |
+
+**Evidencia:** T101/T102 en commit `ec2882c` (refactor MVVM con UiState). T104: `ktlintCheck detekt testDebugUnitTest assembleDebug` → BUILD SUCCESSFUL (2026-11-09); `:core:domain:test` 30 pruebas y `:app:testDebugUnitTest` 29 pruebas, 0 fallos. T103 ⛔: el backend aún no expone el contrato de venues.

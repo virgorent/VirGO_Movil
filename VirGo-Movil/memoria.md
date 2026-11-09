@@ -225,4 +225,25 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - La entrada T005 anotaba AGP 9.5.1 y BOM 2026.09.00, pero el `libs.versions.toml` real traía AGP 9.0.0 y BOM 2026.06.01; se llevó AGP a 9.5.1 y se deja constancia de la discrepancia del BOM.
 - **Pendiente:** `ViewModel` + repositorios/casos de uso de 001–004 (T103, T203, T302, T403), pruebas (T104, T204, T303, T404), integración con la URL real, CA-02 (prueba de arranque en emulador) y resolver la discrepancia del BOM anotada en T005.
 
+### 2026-11-08 — CA-02, refactor MVVM de 001–004 y pruebas en verde
+
+- **Autor:** equipo + opencode (`qa-movil` / `dev-android`)
+- **Módulo / tareas:** `001-inicio-visitante`, `002-registro`, `003-iniciar-sesion` y `004-recuperar-contrasena` → T101, T102, T201, T202, T301, T401 y T402 ✅; T104, T204, T303 y T404 ✅; T103, T203 y T403 ⛔ (backend); T302 ⏳ (aprobación)
+- **Qué se hizo:**
+  - CA-02: evidencia de arranque en emulador (`am start -W` → `TotalTime 2677 ms`) con capturas en `docs/evidencia/CA-02-0*.png` y `check.md` marcado ✅ (commit `ba0d5fd`).
+  - Refactor MVVM (commit `ec2882c`): casos de uso de validación y recuperación en `:core:domain`, cuatro `ViewModel` con `UiState` inmutable y un solo `StateFlow`, eventos vía `SharedFlow`, y pantallas 001–004 con `hiltViewModel()` + `collectAsState()`.
+  - Pruebas: 30 unitarias de `:core:domain` + 19 de los cuatro `ViewModel` (Turbine) + 4 de UI Compose con Robolectric (`SmokeTest`), deps de testing en `libs.versions.toml` y `testOptions.unitTests.isIncludeAndroidResources`.
+- **Evidencia:** `./gradlew ktlintCheck detekt testDebugUnitTest assembleDebug` → `BUILD SUCCESSFUL` (2026-11-09 UTC); `:core:domain:test` 30 pruebas y `:app:testDebugUnitTest` 29 pruebas, 0 fallos (re-ejecutado con `--rerun-tasks`).
+- **Decisiones:**
+  - AGP `9.5.1` → `9.3.0` en `libs.versions.toml` (ajuste hecho desde Android Studio; builds en verde, no revertir); Kotlin 2.4.10 y KSP 2.3.13 se mantienen.
+  - Tests de UI en Robolectric (sin emulador): `@Config(sdk = [36])` y `@GraphicsMode(NATIVE)`; en `app/build.gradle.kts` se añaden `--add-exports=java.base/jdk.internal.access=ALL-UNNAMED` y `--add-opens=java.base/java.io=ALL-UNNAMED` al task de tests.
+  - Corrección de fidelidad en `GuestHomeViewModel.guestState`: `selectedVenueId = selected?.id ?: NO_VENUE` (achicar el radio limpia la selección, como en la UI original).
+- **Costo:** $0 / sin cambios.
+- **Aprendizaje:**
+  - `performClick` no sincroniza el frame: tras un click que dispara `LaunchedEffect` hace falta `compose.waitForIdle()` antes de aserciones sobre callbacks.
+  - `onNodeWithText` ambiguo cuando un título coincide con la etiqueta de un campo («Nueva contraseña»): usar un nodo único (`field_code`) o `performScrollTo()` para contenido fuera de pantalla (viewport Robolectric ≈ 320×470 dp).
+  - Robolectric 4.17 + JDK 17 + SDK 36 falla en `ApplicationSharedMemory` sin `--add-exports jdk.internal.access`.
+  - `packageDebug` puede fallar en Windows por bloqueo transitorio del APK; un reintento lo resuelve.
+- **Pendiente:** commit de esta fase; T302 (login + MockWebServer) pendiente de aprobación; T103/T203/T403 ⛔ hasta que `VirGo-API` entregue contratos; T105/T205/T304/T405 (integración con URL real); regla `createComposeRule` v1 deprecada → migrar a `v2` cuando se estabilice.
+
 
