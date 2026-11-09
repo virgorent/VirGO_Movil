@@ -294,4 +294,25 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - `buildFeatures { buildConfig = true }` sigue funcionando en AGP 9, también en módulos biblioteca.
 - **Pendiente:** T021 (`HealthApi`) y T020 (interceptores); T028 (pruebas de red completas); T103/T203/T403 ⛔ (backend); T105/T205/T304/T405 (URL real); CA-03 para `check.md`.
 
+### 2026-11-08 - T021 y T023: HealthApi, HealthRepository con latencia y caso de uso
+
+- **Autor:** equipo + opencode (`dev-android` / `qa-movil`)
+- **Módulo / tareas:** `000-arquitectura-base` → T021 ✅ y T023 ✅ (19/39)
+- **Qué se hizo:**
+  - `:core:network`: `HealthApi` (`GET health` → `HealthStatusDto`, contrato `VirGo-API/specs/000-arquitectura-base/plan.md`: `200 {"status":"Healthy"}` sin auth) y refactor de `NetworkClientFactory` con `createRetrofit` compartido por `createAuthApi`/`createHealthApi`; `NetworkModule` agrega `@Provides HealthApi`.
+  - `:core:domain`: modelo `ApiHealth(status, latencyMs)`, interfaz `HealthRepository` y `CheckApiHealthUseCase` (delegación pura, `@Inject`).
+  - `:core:data`: `HealthRepositoryImpl` mide la latencia con `TimeSource.Monotonic` y convierte errores con el `toAppError()` de T302 (CancellationException se propaga); `HealthModule` con `@Binds`.
+  - Pruebas: `HealthRepositoryImplTest` (4 MockWebServer: 200 con aserción de path y latencia ≥ 0, 503 → `Server`, sin conexión → `Network`, JSON malformado → `Unknown`) y `CheckApiHealthUseCaseTest` (2: delegación y propagación de fallo).
+- **Evidencia:** commit `d6a7c9b`; `./gradlew ktlintCheck detekt testDebugUnitTest assembleDebug assembleRelease` → `BUILD SUCCESSFUL` (2026-11-09 UTC) y `:core:domain:test` en verde; **76 pruebas, 0 fallos** (32 app + 30+2 dominio + 8+4 data).
+- **Decisiones:**
+  - La latencia se mide en el repositorio (cerca de la llamada real), no en el caso de uso, para que el `AppResult` lleve el tiempo verdadero de la red.
+  - `status` se conserva como texto crudo (`"Healthy"`) y no se normaliza a `Boolean`; la UI de T024 decidirá el formato.
+  - T021 y T023 se ejecutaron juntas por la dependencia directa (T023 depende de T021) con evidencia por tarea.
+- **Costo:** $0 / sin cambios.
+- **Aprendizaje:**
+  - `./gradlew testDebugUnitTest` **no** ejecuta `:core:domain:test`: los módulos JVM puros usan el task `test`. El pipeline de CI (T031) debe usar `test` (o agregar `:core:domain:test`) para no perder las pruebas de dominio.
+  - `kotlin.time.TimeSource.Monotonic` es stdlib y no necesita dependencia ni opt-in en Kotlin 2.4.
+  - `createRetrofit` compartido evita duplicar la configuración de JSON/OkHttp cuando aparece un segundo API.
+- **Pendiente:** T022 (`TokenStore`) → desbloquea T020 (interceptores) → T028 (pruebas de red completas); T024-T025 (diagnóstico en debug, sobre T023); T103/T203/T403 ⛔ (backend); T105/T205/T304/T405 (URL real).
+
 
