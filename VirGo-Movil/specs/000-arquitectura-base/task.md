@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `000-arquitectura-base` |
 | Versión | 1.1.0 |
-| Estado | Aprobado. 16/39 tareas hechas. |
+| Estado | Aprobado. 17/39 tareas hechas. |
 | Fecha | 2026-10-29 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 | Constitución | v1.1.0 |
@@ -62,13 +62,13 @@
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
 | T018 | `AppError` y `AppResult` en `:core:common` | T007 | `dev-android` | Compila; las pruebas de T028 cubren cada variante | ✅ |
-| T019 | `:core:network`: OkHttp (timeouts de 10 y 20 s), Retrofit con kotlinx.serialization y `API_BASE_URL` por variante; *release* falla al compilar si la URL no es `https://` | T018 | `dev-android` | `assembleDebug` OK; `assembleRelease` con una URL `http://` falla con un mensaje claro | 🔄 |
+| T019 | `:core:network`: OkHttp (timeouts de 10 y 20 s), Retrofit con kotlinx.serialization y `API_BASE_URL` por variante; *release* falla al compilar si la URL no es `https://` | T018 | `dev-android` | `assembleDebug` OK; `assembleRelease` con una URL `http://` falla con un mensaje claro | ✅ |
 | T020 | [P] Interceptores: `CorrelationIdInterceptor`, `AuthInterceptor` (con `TokenStore`) y logging solo en *debug* | T019, T022 | `dev-android` | Las pruebas de MockWebServer verifican los encabezados (T028) | ⏳ |
 | T021 | [P] `ProblemDetailsDto`, conversión de error de HTTP o excepción a `AppError`, y `HealthApi` (`GET health`) | T019 | `dev-android` | Pruebas de conversión en verde (T028) | 🔄 |
 | T022 | `:core:datastore`: `TokenStore` con DataStore y Tink AEAD con una llave en el Android Keystore; revisión de `seguridad-ci` | T007 | `dev-android` + `seguridad-ci` | Guardar, leer y borrar funcionan; el archivo no tiene el token en claro (CA-07) | ⏳ |
 | T023 | `CheckApiHealthUseCase` en `:core:domain` y `HealthRepository` en `:core:data` (mide la latencia y devuelve `AppResult`) | T021 | `dev-android` | Pruebas unitarias en verde (T028) | ⏳ |
 
-> **T018** hecha con T302 de `003` (commit `c76d17a`): `AppError` (Network, Timeout, Unauthorized, NotFound, Validation, Server, Unknown) y `AppResult` en `:core:common`; las 7 variantes quedan cubiertas por `AuthRepositoryImplTest` (`:core:data`). **T019** en curso: `createAuthApi` con OkHttp (10/20 s) + Retrofit + kotlinx.serialization ya existe; faltan `API_BASE_URL` por variante y la guarda `https://` de *release*. **T021** en curso: `ProblemDetailsDto` y la conversión HTTP/excepción → `AppError` ya existen; falta `HealthApi`.
+> **T018** hecha con T302 de `003` (commit `c76d17a`): `AppError` (Network, Timeout, Unauthorized, NotFound, Validation, Server, Unknown) y `AppResult` en `:core:common`; las 7 variantes quedan cubiertas por `AuthRepositoryImplTest` (`:core:data`). **T019** hecha con T301 de `003` (commit `32e6eec`): `API_BASE_URL` por variante con `buildConfigField` en `:core:network` (debug: `local.properties → virgo.apiBaseUrl` o `http://10.0.2.2:5122/`; release: `VIRGO_API_BASE_URL`), validación que rechaza una URL `http://` de release con mensaje claro, y `NetworkModule` con `@Provides AuthApi`; verificado con `assembleDebug` y `assembleRelease` en verde y con `VIRGO_API_BASE_URL=http://…` → BUILD FAILED. **T021** en curso: `ProblemDetailsDto` y la conversión HTTP/excepción → `AppError` ya existen; falta `HealthApi`.
 
 ## F5 · Diagnóstico de integración
 

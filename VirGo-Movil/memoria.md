@@ -270,4 +270,28 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - `ktlintFormat` reordena imports (grupo `java`/`javax` al final) y reformatea firmas; conviene releer el archivo tras formatear antes de volver a editarlo.
 - **Pendiente:** wiring de `LoginViewModel` al caso de uso (ofrecido al usuario); T019 (API_BASE_URL por variante + guarda `https://` en release) y T021 (`HealthApi`); T103/T203/T403 ⛔ (backend); T105/T205/T304/T405 (URL real); T028 (pruebas de red completas).
 
+### 2026-11-08 - T301: LoginViewModel integrado con LoginUseCase y T019 cerrada
+
+- **Autor:** equipo + opencode (`dev-android` / `qa-movil`)
+- **Módulo / tareas:** `003-iniciar-sesion` → T301 (integración con T302); `000-arquitectura-base` → T019 ✅ (17/39)
+- **Qué se hizo:**
+  - `LoginViewModel` inyecta `LoginUseCase`; `submit()` valida en local, evita doble envío, marca `isLoading` y mapea `AppResult` → `loggedIn` o `error: AppError?` en `LoginUiState`; editar un campo limpia el error.
+  - `LoginScreen` muestra el error de API con textos de `strings.xml` (`login_error_generic` para 401 según RF-02, `login_error_network`, `login_error_timeout`, `login_error_server`) y deshabilita «Entrar» mientras carga (CA-02); bloque de error extraído a `LoginErrorText` por el límite de 60 líneas de detekt.
+  - DI: `NetworkModule` (`@Provides AuthApi` con `BuildConfig.API_BASE_URL`) en `:core:network` y `AuthModule` (`@Binds AuthRepositoryImpl → AuthRepository`) en `:core:data`, ambos con el plugin `virgo.hilt`.
+  - `API_BASE_URL` por variante (ADR-08) en `:core:network`: debug = `local.properties → virgo.apiBaseUrl` o `http://10.0.2.2:5122/`; release = `VIRGO_API_BASE_URL` con validación `https://` que falla la construcción si es `http://`.
+  - `:core:testing` con `FakeAuthRepository`, `sampleAuthSession()` y `MainDispatcherRule` (plan §4); `LoginViewModelTest` con 7 pruebas y `SmokeTest` actualizados al nuevo constructor.
+- **Evidencia:** commit `32e6eec`; `./gradlew ktlintCheck detekt testDebugUnitTest assembleDebug assembleRelease` → `BUILD SUCCESSFUL` (2026-11-09 UTC); 70 pruebas, 0 fallos (32 app + 30 dominio + 8 data); `VIRGO_API_BASE_URL=http://inseguro.example/ ./gradlew help` → `BUILD FAILED` con «VIRGO_API_BASE_URL de release debe empezar con https:// (ADR-08)».
+- **Decisiones:**
+  - El error de API vive en el `UiState` como `AppError?` y la pantalla lo resuelve a texto (el VM no ve `Context`).
+  - `device` se manda `null` (opcional en el contrato) hasta que se defina qué identificador de dispositivo envía la app.
+  - `VIRGO_API_BASE_URL` queda vacío en release mientras no exista T033; la validación solo corre cuando la variable está definida.
+  - CA-03 (estado de error al abrir la pantalla sin conexión, con reintento) queda para la fase de `check.md`, no para el wiring.
+- **Costo:** $0 / sin cambios.
+- **Aprendizaje:**
+  - Con `MainDispatcherRule` (`Dispatchers.setMain(UnconfinedTestDispatcher())`), `viewModelScope.launch` con repo fake corre inline y los tests del VM siguen siendo síncronos.
+  - Los `@Module/@Binds` viven en bibliotecas Android y necesitan `virgo.hilt` (KSP + compiler) además del `@Inject` del constructor; la cadena Hilt completa es `AuthApi → AuthRepositoryImpl → AuthRepository → LoginUseCase → LoginViewModel`.
+  - detekt `LongMethod` (60) aplica a composables: extraer bloques como el texto de error a su propio `@Composable` lo resuelve sin tocar la lógica.
+  - `buildFeatures { buildConfig = true }` sigue funcionando en AGP 9, también en módulos biblioteca.
+- **Pendiente:** T021 (`HealthApi`) y T020 (interceptores); T028 (pruebas de red completas); T103/T203/T403 ⛔ (backend); T105/T205/T304/T405 (URL real); CA-03 para `check.md`.
+
 
