@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,12 +48,16 @@ import mx.virgo.app.ui.auth.AuthDivider
 import mx.virgo.app.ui.auth.AuthTextField
 import mx.virgo.app.ui.auth.PasswordField
 import mx.virgo.app.ui.auth.SocialAuthRow
+import mx.virgo.core.common.AppError
+import mx.virgo.core.common.AppResult
 import mx.virgo.core.designsystem.components.VirGoButton
 import mx.virgo.core.designsystem.theme.Slate500
 import mx.virgo.core.designsystem.theme.Slate900
 import mx.virgo.core.designsystem.theme.VirGoPurple
 import mx.virgo.core.designsystem.theme.VirGoPurpleDark
 import mx.virgo.core.designsystem.theme.VirGoTheme
+import mx.virgo.core.domain.AuthRepository
+import mx.virgo.core.domain.LoginUseCase
 import mx.virgo.core.domain.ValidateEmailUseCase
 import mx.virgo.core.domain.ValidateLoginFormUseCase
 
@@ -74,6 +79,18 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
+
+    val errorText =
+        state.error?.let { error ->
+            stringResource(
+                when (error) {
+                    AppError.Unauthorized -> R.string.login_error_generic
+                    AppError.Network -> R.string.login_error_network
+                    AppError.Timeout -> R.string.login_error_timeout
+                    else -> R.string.login_error_server
+                },
+            )
+        }
 
     LaunchedEffect(state.loggedIn) {
         if (state.loggedIn) onLoginClick(state.email, state.password)
@@ -105,6 +122,8 @@ fun LoginScreen(
                         onPasswordChange = viewModel::onPasswordChange,
                         emailError = state.submitted && !state.emailValid,
                         passwordError = state.submitted && !state.passwordValid,
+                        error = errorText,
+                        loading = state.isLoading,
                         onSubmit = viewModel::submit,
                         onForgotPasswordClick = onForgotPasswordClick,
                     )
@@ -181,6 +200,8 @@ private fun LoginContent(
     onPasswordChange: (String) -> Unit,
     emailError: Boolean,
     passwordError: Boolean,
+    error: String?,
+    loading: Boolean,
     onSubmit: () -> Unit,
     onForgotPasswordClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -229,9 +250,31 @@ private fun LoginContent(
                 )
             }
         }
+        if (error != null) {
+            Spacer(modifier = Modifier.height(4.dp))
+            LoginErrorText(error = error)
+        }
         Spacer(modifier = Modifier.height(12.dp))
-        VirGoButton(onClick = onSubmit, text = stringResource(R.string.login_submit))
+        VirGoButton(
+            onClick = onSubmit,
+            text = stringResource(R.string.login_submit),
+            enabled = !loading,
+        )
     }
+}
+
+@Composable
+private fun LoginErrorText(
+    error: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = error,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.error,
+        textAlign = TextAlign.Center,
+        modifier = modifier.fillMaxWidth(),
+    )
 }
 
 @Composable
@@ -266,7 +309,19 @@ private fun LoginFooter(
 fun LoginScreenPreview() {
     VirGoTheme {
         LoginScreen(
-            viewModel = LoginViewModel(ValidateLoginFormUseCase(ValidateEmailUseCase())),
+            viewModel =
+                LoginViewModel(
+                    ValidateLoginFormUseCase(ValidateEmailUseCase()),
+                    LoginUseCase(
+                        object : AuthRepository {
+                            override suspend fun login(
+                                email: String,
+                                password: String,
+                                device: String?,
+                            ) = AppResult.Failure(AppError.Unknown)
+                        },
+                    ),
+                ),
         )
     }
 }

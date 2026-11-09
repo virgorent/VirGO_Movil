@@ -1,5 +1,6 @@
 plugins {
     id("virgo.android.library")
+    id("virgo.hilt")
 }
 
 android {

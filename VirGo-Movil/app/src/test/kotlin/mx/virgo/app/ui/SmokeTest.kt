@@ -20,10 +20,12 @@ import mx.virgo.app.ui.register.RegisterScreen
 import mx.virgo.app.ui.register.RegisterViewModel
 import mx.virgo.core.designsystem.theme.VirGoTheme
 import mx.virgo.core.domain.GenerateRecoveryCodeUseCase
+import mx.virgo.core.domain.LoginUseCase
 import mx.virgo.core.domain.ValidateEmailUseCase
 import mx.virgo.core.domain.ValidateLoginFormUseCase
 import mx.virgo.core.domain.ValidateRecoveryUseCase
 import mx.virgo.core.domain.ValidateRegisterFormUseCase
+import mx.virgo.core.testing.FakeAuthRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -62,7 +64,11 @@ class SmokeTest {
     @Test
     fun loginSubmitForwardsCredentials() {
         var result: Pair<String, String>? = null
-        val vm = LoginViewModel(ValidateLoginFormUseCase(ValidateEmailUseCase()))
+        val vm =
+            LoginViewModel(
+                ValidateLoginFormUseCase(ValidateEmailUseCase()),
+                LoginUseCase(FakeAuthRepository()),
+            )
         compose.setContent {
             VirGoTheme {
                 LoginScreen(

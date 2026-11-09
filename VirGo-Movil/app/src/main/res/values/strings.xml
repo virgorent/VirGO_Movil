@@ -19,6 +19,9 @@
     <string name="login_error_generic">Correo o contraseña incorrectos</string>
     <string name="login_error_email">Introduce un correo válido.</string>
     <string name="login_error_password">Introduce tu contraseña.</string>
+    <string name="login_error_network">Sin conexión. Revisa tu internet e inténtalo de nuevo.</string>
+    <string name="login_error_timeout">El servidor tardó en responder. Inténtalo de nuevo.</string>
+    <string name="login_error_server">No pudimos iniciar sesión. Inténtalo más tarde.</string>
 
     <!-- Campos -->
     <string name="field_name">Nombre completo</string>
