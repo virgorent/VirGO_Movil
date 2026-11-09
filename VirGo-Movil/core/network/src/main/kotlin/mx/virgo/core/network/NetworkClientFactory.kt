@@ -2,6 +2,7 @@ package mx.virgo.core.network
 
 import kotlinx.serialization.json.Json
 import mx.virgo.core.network.api.AuthApi
+import mx.virgo.core.network.api.HealthApi
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -15,16 +16,12 @@ private const val JSON_MEDIA_TYPE = "application/json"
 fun createAuthApi(
     baseUrl: String,
     client: OkHttpClient = defaultOkHttpClient(),
-): AuthApi {
-    val json = Json { ignoreUnknownKeys = true }
-    return Retrofit
-        .Builder()
-        .baseUrl(baseUrl)
-        .client(client)
-        .addConverterFactory(json.asConverterFactory(JSON_MEDIA_TYPE.toMediaType()))
-        .build()
-        .create(AuthApi::class.java)
-}
+): AuthApi = createRetrofit(baseUrl, client).create(AuthApi::class.java)
+
+fun createHealthApi(
+    baseUrl: String,
+    client: OkHttpClient = defaultOkHttpClient(),
+): HealthApi = createRetrofit(baseUrl, client).create(HealthApi::class.java)
 
 fun defaultOkHttpClient(): OkHttpClient =
     OkHttpClient
@@ -32,3 +29,16 @@ fun defaultOkHttpClient(): OkHttpClient =
         .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
         .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
         .build()
+
+private fun createRetrofit(
+    baseUrl: String,
+    client: OkHttpClient,
+): Retrofit {
+    val json = Json { ignoreUnknownKeys = true }
+    return Retrofit
+        .Builder()
+        .baseUrl(baseUrl)
+        .client(client)
+        .addConverterFactory(json.asConverterFactory(JSON_MEDIA_TYPE.toMediaType()))
+        .build()
+}
