@@ -246,4 +246,28 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - `packageDebug` puede fallar en Windows por bloqueo transitorio del APK; un reintento lo resuelve.
 - **Pendiente:** commit de esta fase; T302 (login + MockWebServer) pendiente de aprobación; T103/T203/T403 ⛔ hasta que `VirGo-API` entregue contratos; T105/T205/T304/T405 (integración con URL real); regla `createComposeRule` v1 deprecada → migrar a `v2` cuando se estabilice.
 
+### 2026-11-08 - T302: repositorio de login y caso de uso con MockWebServer
+
+- **Autor:** equipo + opencode (`dev-android` / `qa-movil`)
+- **Módulo / tareas:** `003-iniciar-sesion` → T302 ✅; `000-arquitectura-base` → T018 ✅, T019 y T021 🔄 (parciales)
+- **Qué se hizo:**
+  - `:core:common`: `AppError` (Network, Timeout, Unauthorized, NotFound, Validation, Server, Unknown) y `AppResult` (T018).
+  - `:core:network`: DTOs `LoginRequestDto`/`LoginResponseDto`/`UserDto`/`ProblemDetailsDto`, `AuthApi` (`POST api/v1/auth/login`) y `createAuthApi` con OkHttp (timeouts 10/20 s) + converter kotlinx.serialization; en `libs.versions.toml` `retrofit = 3.0.0` y `okhttp = 4.12.0`.
+  - `:core:domain`: `AuthRepository`, `AuthSession`/`LoggedInUser` y `LoginUseCase` (delega al repositorio, sin normalizar el correo).
+  - `:core:data`: `AuthRepositoryImpl` con `@Inject` y mapeo de errores: 400 → `Validation(errors)`, 401 → `Unauthorized`, 404 → `NotFound`, 5xx → `Server(traceId)`, `IOException` → `Network`, `SocketTimeoutException` → `Timeout`, resto → `Unknown`; `CancellationException` se propaga.
+  - `AuthRepositoryImplTest`: 8 pruebas MockWebServer (200 con aserción de path y body, 401, 400 con `errors`, 500 con `traceId`, 404, sin conexión, timeout con `NO_RESPONSE`, 200 malformado) que cubren las 7 variantes de `AppError`.
+- **Evidencia:** `./gradlew ktlintCheck detekt testDebugUnitTest assembleDebug` → `BUILD SUCCESSFUL` (2026-11-09 UTC); `:core:data:testDebugUnitTest` 8 pruebas, 0 fallos; total del pipeline 67 pruebas (30 dominio + 29 app + 8 data).
+- **Decisiones:**
+  - Retrofit 3.0.0: `HttpException.response()` es nullable → `response()?.toAppError() ?: AppError.Unknown`.
+  - `catch (Exception)` en `login` con `@Suppress("TooGenericExceptionCaught")` (detekt corre con `buildUponDefaultConfig`) y rethrow de `CancellationException`; códigos HTTP como constantes `HTTP_*` por `MagicNumber`.
+  - El 429 del contrato se mapea a `Server(traceId)` porque no hay variante `RateLimited`; candidata a nueva variante si el rate limit se vuelve visible en UI.
+  - El wiring de `LoginViewModel` → `LoginUseCase` queda como siguiente paso (cambia T301: el test del VM usará un fake de `AuthRepository`).
+- **Costo:** $0 / sin cambios.
+- **Aprendizaje:**
+  - El plugin `kotlin.serialization` se aplica solo en el módulo que declara `@Serializable`; basta con la librería en quien decodifica.
+  - `Json.asConverterFactory("application/json".toMediaType())` exige `ignoreUnknownKeys = true` para tolerar campos nuevos del backend sin romper el login.
+  - MockWebServer corre en JVM dentro de un módulo Android sin Robolectric; `SocketPolicy.NO_RESPONSE` + timeouts de 100 ms reproducen `SocketTimeoutException` de forma rápida y estable.
+  - `ktlintFormat` reordena imports (grupo `java`/`javax` al final) y reformatea firmas; conviene releer el archivo tras formatear antes de volver a editarlo.
+- **Pendiente:** wiring de `LoginViewModel` al caso de uso (ofrecido al usuario); T019 (API_BASE_URL por variante + guarda `https://` en release) y T021 (`HealthApi`); T103/T203/T403 ⛔ (backend); T105/T205/T304/T405 (URL real); T028 (pruebas de red completas).
+
 
