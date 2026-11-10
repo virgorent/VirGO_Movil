@@ -1,10 +1,14 @@
 package mx.virgo.core.network
 
 import kotlinx.serialization.json.Json
+import mx.virgo.core.common.AuthTokenProvider
 import mx.virgo.core.network.api.AuthApi
 import mx.virgo.core.network.api.HealthApi
+import mx.virgo.core.network.interceptor.AuthInterceptor
+import mx.virgo.core.network.interceptor.CorrelationIdInterceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.TimeUnit
@@ -29,6 +33,20 @@ fun defaultOkHttpClient(): OkHttpClient =
         .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
         .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
         .build()
+
+fun createOkHttpClient(
+    authTokenProvider: AuthTokenProvider,
+    isDebug: Boolean,
+): OkHttpClient =
+    defaultOkHttpClient()
+        .newBuilder()
+        .addInterceptor(CorrelationIdInterceptor())
+        .addInterceptor(AuthInterceptor(authTokenProvider))
+        .apply {
+            if (isDebug) {
+                addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
+            }
+        }.build()
 
 private fun createRetrofit(
     baseUrl: String,

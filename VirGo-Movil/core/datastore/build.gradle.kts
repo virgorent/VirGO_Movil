@@ -21,6 +21,7 @@ tasks.withType<Test>().configureEach {
 }
 
 dependencies {
+    implementation(project(":core:common"))
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.tink.android)
     implementation(libs.kotlinx.coroutines.core)

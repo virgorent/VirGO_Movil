@@ -26,11 +26,13 @@ android {
 
     defaultConfig {
         buildConfigField("String", "API_BASE_URL", "\"$debugBaseUrl\"")
+        buildConfigField("boolean", "IS_DEBUGGABLE", "true")
     }
 
     buildTypes {
         release {
             buildConfigField("String", "API_BASE_URL", "\"$releaseBaseUrl\"")
+            buildConfigField("boolean", "IS_DEBUGGABLE", "false")
         }
     }
 }
@@ -41,4 +43,9 @@ dependencies {
     implementation(libs.retrofit.kotlinx.serialization)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.okhttp.mockwebserver)
 }

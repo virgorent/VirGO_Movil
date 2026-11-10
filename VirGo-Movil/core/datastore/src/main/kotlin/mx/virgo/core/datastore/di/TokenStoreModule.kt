@@ -4,6 +4,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import mx.virgo.core.common.AuthTokenProvider
 import mx.virgo.core.datastore.TokenStore
 import mx.virgo.core.datastore.TokenStoreImpl
 import javax.inject.Singleton
@@ -14,4 +15,8 @@ abstract class TokenStoreModule {
     @Binds
     @Singleton
     abstract fun bindTokenStore(impl: TokenStoreImpl): TokenStore
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthTokenProvider(impl: TokenStore): AuthTokenProvider
 }

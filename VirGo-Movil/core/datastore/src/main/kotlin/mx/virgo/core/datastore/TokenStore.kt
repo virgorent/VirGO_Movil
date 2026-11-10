@@ -1,10 +1,8 @@
 package mx.virgo.core.datastore
 
-import kotlinx.coroutines.flow.Flow
+import mx.virgo.core.common.AuthTokenProvider
 
-interface TokenStore {
-    val token: Flow<String?>
-
+interface TokenStore : AuthTokenProvider {
     suspend fun save(token: String)
 
     suspend fun clear()
