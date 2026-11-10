@@ -335,6 +335,27 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Un `@Composable fun X(...) = Unit` sirve como stub de variante sin disparar `EmptyFunctionBlock` de detekt.
 - **Pendiente:** T022 (`TokenStore`) → desbloquea T020 (interceptores) → T028 (pruebas de red completas); T024 evidencia CA-04/CA-05 con la API local (T030); T026/T027 (seguridad); T103/T203/T403 ⛔ (backend); T105/T205/T304/T405 (URL real).
 
+### 2026-11-10 - T020 y T028: interceptores de red y pruebas MockWebServer
+
+- **Autor:** equipo + opencode (`dev-android` / `qa-movil`)
+- **Módulo / tareas:** `000-arquitectura-base` → T020 ✅ y T028 ✅ (23/39); **F4 completa (7/7)**
+- **Qué se hizo:**
+  - Puerto `AuthTokenProvider` (`val token: Flow<String?>`) en `:core:common`: `:core:network` no puede depender de `:core:datastore` (§4), así que `TokenStore` lo implementa y `TokenStoreModule` lo liga con `@Binds`.
+  - `CorrelationIdInterceptor` (UUID nuevo en `X-Correlation-Id` por petición, reemplaza el valor que traiga la petición) y `AuthInterceptor` (`Authorization: Bearer <token>` solo si hay token; lee el `Flow` con `runBlocking { first() }` porque OkHttp es síncrono).
+  - `createOkHttpClient(authTokenProvider, isDebug)` en `NetworkClientFactory`: timeouts 10 s/20 s + correlación + auth, y `HttpLoggingInterceptor` con nivel `BASIC` solo si `BuildConfig.IS_DEBUGGABLE` (nuevo `buildConfigField` por variante en `:core:network`). `NetworkModule` ahora provee un `OkHttpClient` `@Singleton` compartido por `AuthApi` y `HealthApi`.
+  - Dependencia nueva: `com.squareup.okhttp3:logging-interceptor:4.12.0`.
+  - T028: 4 clases de prueba en `:core:network` (9 pruebas) con MockWebServer: `CorrelationIdInterceptorTest` (id único por petición y reemplaza al del caller), `AuthInterceptorTest` (Bearer presente, ausente y en blanco) y `OkHttpClientConfigurationTest` (BASIC solo en debug, sin logging en release, timeouts 10/20 s y 2 interceptores). La conversión a `AppError` ya estaba cubierta por `AuthRepositoryImplTest` (8) y `HealthRepositoryImplTest` (4); `CheckApiHealthUseCaseTest` (2) y `TokenStoreTest` (4) completan lo que pide T028.
+- **Evidencia:** commits `0600d0f` (T020) y `86624c5` (T028); pipeline `ktlintCheck detekt testDebugUnitTest assembleDebug assembleRelease` + `:core:domain:test` → BUILD SUCCESSFUL; **94 pruebas, 0 fallos** (+9).
+- **Decisiones:**
+  - El puerto del token vive en `:core:common` (no en `:core:network`) para que `:core:datastore` pueda implementarlo sin depender de red.
+  - Logging con nivel `BASIC` (solo línea de petición/ respuesta): no imprime headers ni body, así `Authorization` nunca llega a los logs (refuerzo de T027).
+  - `AuthInterceptor` usa `runBlocking`: OkHttp es síncrono y DataStore ya cachea el valor en memoria; el costo por petición es mínimo.
+- **Costo:** $0 / sin cambios (misma versión de OkHttp).
+- **Aprendizaje:**
+  - Un `@Module` de Dagger acepta varios `@Binds` abstractos; lo que no puede es mezclar `@Provides` concretos con `@Binds` en el mismo módulo.
+  - `BuildConfig.IS_DEBUGGABLE` explícito por variante es más portable que depender de `BuildConfig.DEBUG` en módulos biblioteca.
+- **Pendiente:** T024 evidencia CA-04/CA-05 (T030); T026/T027 (seguridad); T029/T030/T038 (pruebas); T031–T035/T039 (CI y release, varios 🧑); T002/T004/T036/T037.
+
 ### 2026-11-10 - T022: TokenStore cifrado con DataStore y Tink AEAD
 
 - **Autor:** equipo + opencode (`dev-android`)
