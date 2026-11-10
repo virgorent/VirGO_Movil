@@ -315,4 +315,24 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - `createRetrofit` compartido evita duplicar la configuración de JSON/OkHttp cuando aparece un segundo API.
 - **Pendiente:** T022 (`TokenStore`) → desbloquea T020 (interceptores) → T028 (pruebas de red completas); T024-T025 (diagnóstico en debug, sobre T023); T103/T203/T403 ⛔ (backend); T105/T205/T304/T405 (URL real).
 
+### 2026-11-09 - T024 (en curso) y T025: diagnóstico en debug y menú de desarrollo
+
+- **Autor:** equipo + opencode (`dev-android` / `qa-movil`)
+- **Módulo / tareas:** `000-arquitectura-base` → T025 ✅ y T024 🔄 (20/39)
+- **Qué se hizo:**
+  - Source set `debug` de `:app`: `DiagnosticsRoute`, `DiagnosticsUiState`/`DiagnosticsViewModel` (el `init` lanza `CheckApiHealthUseCase` y expone versión de `BuildConfig`, `API_BASE_URL` de `:core:network`, estado, latencia y `AppError`) y `DiagnosticsScreen` (encabezado con regresar, `VirGoCard` con versión/URL/estado/latencia, texto de error en español y botón Reintentar); textos en `app/src/debug/res/values/strings.xml`.
+  - T025: `DevMenu` (⋮ → «Diagnóstico» → `navigate(DiagnosticsRoute)`) y `NavGraphBuilder.developmentDestinations(...)` con implementación real en `debug` y no-op `= Unit` en `app/src/release`; `VirGoApp` muestra el menú en el `topBar` del `Scaffold` solo en el inicio provisional y `VirGoNavHost` registra `developmentDestinations(navController)`.
+  - `buildFeatures.buildConfig = true` en `:app` (para `BuildConfig.VERSION_NAME`) y `FakeHealthRepository` en `:core:testing` con `yield()` para poder observar el estado de carga en las pruebas.
+  - Pruebas nuevas en `app/src/testDebug` (5): `DiagnosticsViewModelTest` con Turbine y `MainDispatcherRule(StandardTestDispatcher())` (carga → éxito, carga → error y reintento tras error) y `DiagnosticsScreenTest` con Robolectric («API disponible» y mensaje de error claro sin cerrar la pantalla).
+- **Evidencia:** commit `b826b05`; pipeline `ktlintCheck detekt testDebugUnitTest assembleDebug assembleRelease` + `:core:domain:test` → `BUILD SUCCESSFUL`; **81 pruebas, 0 fallos**. T025 verificado sobre los artefactos de `assembleRelease`: sin clases `Diagnostics*`, el bytecode de `DevMenuKt` de release no contiene `DropdownMenu`/`MoreVert` y los `values.xml` de release no incluyen `diagnostics_*` ni `dev_menu_*` (debug sí).
+- **Decisiones:**
+  - Las pruebas de pantallas de debug viven en `src/testDebug` (no en `src/test`) para que `testReleaseUnitTest` no intente compilar clases que no existen en release.
+  - El menú solo en la pantalla de inicio: en release el `topBar` queda vacío (0 dp) y no cambia la UI.
+  - T024 queda 🔄: el código y las pruebas están hechos, pero CA-04/CA-05 exigen la evidencia real contra la API local y `VirGo-API` todavía no tiene código (T009) → se retoma en T030.
+- **Costo:** $0 / sin cambios.
+- **Aprendizaje:**
+  - En AGP 9 las clases compiladas ya no están en `app/build/tmp/kotlin-classes/{variante}`: están en `app/build/intermediates/built_in_kotlinc/{variante}/compile{Variante}Kotlin/classes`, y los strings combinados en `app/build/intermediates/incremental/{variante}/merge{Variante}Resources/merged.dir/values/values.xml`. Así se aporta la evidencia de «ausente en release».
+  - Un `@Composable fun X(...) = Unit` sirve como stub de variante sin disparar `EmptyFunctionBlock` de detekt.
+- **Pendiente:** T022 (`TokenStore`) → desbloquea T020 (interceptores) → T028 (pruebas de red completas); T024 evidencia CA-04/CA-05 con la API local (T030); T026/T027 (seguridad); T103/T203/T403 ⛔ (backend); T105/T205/T304/T405 (URL real).
+
 

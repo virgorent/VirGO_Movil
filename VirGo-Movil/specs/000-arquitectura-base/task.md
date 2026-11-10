@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `000-arquitectura-base` |
 | Versión | 1.1.0 |
-| Estado | Aprobado. 19/39 tareas hechas. |
+| Estado | Aprobado. 20/39 tareas hechas. |
 | Fecha | 2026-10-29 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 | Constitución | v1.1.0 |
@@ -74,8 +74,10 @@
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T024 | `DiagnosticsViewModel` y `DiagnosticsScreen` en el *source set* `debug`: versión de la app, `API_BASE_URL`, estado y latencia de `/health`, y errores convertidos a textos en español | T017, T023 | `dev-android` | Con la API local en marcha muestra «API disponible» (CA-04); con la API apagada, un mensaje claro sin cierre (CA-05) | ⏳ |
-| T025 | Menú de desarrollo en la barra superior (solo *debug*) para abrir el diagnóstico | T024 | `dev-android` | El menú no existe en el APK de *release* | ⏳ |
+| T024 | `DiagnosticsViewModel` y `DiagnosticsScreen` en el *source set* `debug`: versión de la app, `API_BASE_URL`, estado y latencia de `/health`, y errores convertidos a textos en español | T017, T023 | `dev-android` | Con la API local en marcha muestra «API disponible» (CA-04); con la API apagada, un mensaje claro sin cierre (CA-05) | 🔄 |
+| T025 | Menú de desarrollo en la barra superior (solo *debug*) para abrir el diagnóstico | T024 | `dev-android` | El menú no existe en el APK de *release* | ✅ |
+
+> **T025** ✅ y **T024** 🔄 en el commit `b826b05`: `DiagnosticsRoute`/`DiagnosticsViewModel`/`DiagnosticsScreen` y los textos viven solo en `app/src/debug` (`src/debug/res/values/strings.xml`); `DevMenu` y `developmentDestinations(...)` tienen implementación no-op `= Unit` en `app/src/release`; el menú se muestra en el `topBar` del `Scaffold` solo en el inicio provisional. Pruebas en `app/src/testDebug` (5): `DiagnosticsViewModelTest` con Turbine (carga → éxito, carga → error, reintento) y `DiagnosticsScreenTest` con Robolectric («API disponible» y mensaje de error sin cierre). **Evidencia T025:** en `assembleRelease` no existe ninguna clase `Diagnostics*`, el `DevMenu` de release es un stub sin `DropdownMenu` y los `values.xml` de release no contienen `diagnostics_*` ni `dev_menu_*` (sí los de `main`). **Pendiente en T024:** la evidencia real CA-04/CA-05 («API disponible» con la API local y mensaje claro con ella apagada) requiere `VirGo-API` corriendo (`dotnet run` + `GET /health`); el backend todavía no tiene código (T009), así que queda para T030.
 
 ## F6 · Seguridad de la compilación
 
