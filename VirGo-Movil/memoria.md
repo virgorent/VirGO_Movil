@@ -335,6 +335,27 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Un `@Composable fun X(...) = Unit` sirve como stub de variante sin disparar `EmptyFunctionBlock` de detekt.
 - **Pendiente:** T022 (`TokenStore`) → desbloquea T020 (interceptores) → T028 (pruebas de red completas); T024 evidencia CA-04/CA-05 con la API local (T030); T026/T027 (seguridad); T103/T203/T403 ⛔ (backend); T105/T205/T304/T405 (URL real).
 
+### 2026-11-10 - T022: TokenStore cifrado con DataStore y Tink AEAD
+
+- **Autor:** equipo + opencode (`dev-android`)
+- **Módulo / tareas:** `000-arquitectura-base` → T022 ✅ (21/39)
+- **Qué se hizo:**
+  - `:core:datastore`: interfaz `TokenStore` (`val token: Flow<String?>`, `suspend fun save(token)`, `suspend fun clear()`) y `TokenStoreImpl` que cifra con un `Aead` de Tink y guarda en DataStore Preferences solo el texto cifrado en Base64; al leer, `GeneralSecurityException` o Base64 inválido se convierten en `null`.
+  - `KeystoreAead` fabrica el `Aead` con `AndroidKeysetManager` (`withSharedPref` + `withMasterKeyUri("android-keystore://virgo_token_master_key")` + plantilla `AES256_GCM`): la llave de datos queda protegida por el Android Keystore.
+  - Módulos Hilt en `core/datastore/.../di/`: `DataStoreModule` (`@Provides DataStore<Preferences>` con el delegate `preferencesDataStore(name = "token_store")` y `@Provides Aead`) y `TokenStoreModule` (`@Binds TokenStore`).
+  - Dependencias nuevas en `libs.versions.toml`: `androidx.datastore:datastore-preferences:1.3.0` y `com.google.crypto.tink:tink-android:1.18.0`.
+  - 4 pruebas Robolectric (`TokenStoreTest`): guardar→leer, borrar→null, el archivo no contiene el token en claro (CA-07) y valor ilegible (Base64 inválido o cifrado ajeno)→`null`.
+- **Evidencia:** commit `456d738`; pipeline `ktlintCheck detekt testDebugUnitTest assembleDebug assembleRelease` + `:core:domain:test` → BUILD SUCCESSFUL; **85 pruebas, 0 fallos** (+4).
+- **Decisiones:**
+  - El `Aead` de producción (Keystore) es una dependencia inyectable: Robolectric no implementa `AndroidKeyStore`, así que las pruebas usan un `AesGcmJce` local con llave aleatoria para verificar guardar/leer/borrar y que el archivo no contiene el token en claro; la ruta del Keystore real se valida en dispositivo (T030/T027).
+  - Un `@Module` de Dagger no puede mezclar `@Provides` concretos con `@Binds` abstractos: se separó en `DataStoreModule` (object) y `TokenStoreModule` (clase abstracta), siguiendo el patrón de `NetworkModule` y `AuthModule`.
+  - `SwallowedException` de detekt se cumple nombrando el parámetro del `catch` como `ignored`.
+- **Costo:** $0 / sin cambios.
+- **Aprendizaje:**
+  - En DataStore 1.3.0 (KMP) `PreferenceDataStoreFactory` vive en `androidx.datastore.preferences.core` (artefacto `datastore-preferences-core`, expuesto como `api` por `datastore-preferences`), mientras que el delegate `preferencesDataStore` sigue en `androidx.datastore.preferences`.
+  - `tink-android` 1.18.0 trae `AndroidKeysetManager` en el paquete `com.google.crypto.tink.integration.android` y `KeyTemplates.get("AES256_GCM")` funciona sin registrar claves.
+- **Pendiente:** T020 (interceptores, ya desbloqueado por T022) → T028 (pruebas de red completas); T024 evidencia CA-04/CA-05 con la API local (T030); T026/T027 (seguridad); T103/T203/T403 ⛔ (backend); T105/T205/T304/T405 (URL real).
+
 ### 2026-11-10 - T020 y T028: interceptores de red y pruebas MockWebServer
 
 - **Autor:** equipo + opencode (`dev-android` / `qa-movil`)
@@ -356,25 +377,22 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - `BuildConfig.IS_DEBUGGABLE` explícito por variante es más portable que depender de `BuildConfig.DEBUG` en módulos biblioteca.
 - **Pendiente:** T024 evidencia CA-04/CA-05 (T030); T026/T027 (seguridad); T029/T030/T038 (pruebas); T031–T035/T039 (CI y release, varios 🧑); T002/T004/T036/T037.
 
-### 2026-11-10 - T022: TokenStore cifrado con DataStore y Tink AEAD
+### 2026-11-10 - T026: network security config, R8 y firma de release
 
-- **Autor:** equipo + opencode (`dev-android`)
-- **Módulo / tareas:** `000-arquitectura-base` → T022 ✅ (21/39)
+- **Autor:** equipo + opencode (`seguridad-ci`)
+- **Módulo / tareas:** `000-arquitectura-base` → T026 ✅ (24/39)
 - **Qué se hizo:**
-  - `:core:datastore`: interfaz `TokenStore` (`val token: Flow<String?>`, `suspend fun save(token)`, `suspend fun clear()`) y `TokenStoreImpl` que cifra con un `Aead` de Tink y guarda en DataStore Preferences solo el texto cifrado en Base64; al leer, `GeneralSecurityException` o Base64 inválido se convierten en `null`.
-  - `KeystoreAead` fabrica el `Aead` con `AndroidKeysetManager` (`withSharedPref` + `withMasterKeyUri("android-keystore://virgo_token_master_key")` + plantilla `AES256_GCM`): la llave de datos queda protegida por el Android Keystore.
-  - Módulos Hilt en `core/datastore/.../di/`: `DataStoreModule` (`@Provides DataStore<Preferences>` con el delegate `preferencesDataStore(name = "token_store")` y `@Provides Aead`) y `TokenStoreModule` (`@Binds TokenStore`).
-  - Dependencias nuevas en `libs.versions.toml`: `androidx.datastore:datastore-preferences:1.3.0` y `com.google.crypto.tink:tink-android:1.18.0`.
-  - 4 pruebas Robolectric (`TokenStoreTest`): guardar→leer, borrar→null, el archivo no contiene el token en claro (CA-07) y valor ilegible (Base64 inválido o cifrado ajeno)→`null`.
-- **Evidencia:** commit `456d738`; pipeline `ktlintCheck detekt testDebugUnitTest assembleDebug assembleRelease` + `:core:domain:test` → BUILD SUCCESSFUL; **85 pruebas, 0 fallos** (+4).
+  - `network_security_config` en `app/src/main` con `cleartextTrafficPermitted="false"` y el atributo `android:networkSecurityConfig` en el manifiesto; en `app/src/debug` un `domain-config` que permite en claro **solo** `10.0.2.2` (host del emulador hacia el backend).
+  - R8 en *release*: `isMinifyEnabled = true`, `isShrinkResources = true`, `isDebuggable = false` y `app/proguard-rules.pro` con reglas de kotlinx.serialization (`**$$serializer` y `Companion`), retrofit2 (`Call`, `Response`, `Continuation`) y `-keep class com.google.crypto.tink.** { *; }`.
+  - Firma de *release* desde variables de entorno (`SIGNING_KEYSTORE_FILE`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`, `SIGNING_STORE_PASSWORD`): si se pide una tarea `*Release*` sin ellas, la configuración lanza `GradleException` con mensaje claro; *release* nunca se firma con la llave de debug.
+- **Evidencia:** commit `c0b7e64`; pipeline `ktlintCheck detekt testDebugUnitTest assembleDebug assembleRelease` + `:core:domain:test` → BUILD SUCCESSFUL; **94 pruebas, 0 fallos**; `app/build/outputs/mapping/release/mapping.txt` generado (42 MB); `apksigner verify --print-certs` → firma **V2** con el keystore local dedicado; el XML empaquetado de *release* no contiene `10.0.2.2` ni `domain-config` (el de *debug* sí); manifiesto mergeado de *release* sin `android:debuggable` (el de *debug* lo trae); `assembleRelease` sin las 4 variables → `BUILD FAILED` con «Falta la firma de release… Release nunca se firma con la llave de debug (T026)».
 - **Decisiones:**
-  - El `Aead` de producción (Keystore) es una dependencia inyectable: Robolectric no implementa `AndroidKeyStore`, así que las pruebas usan un `AesGcmJce` local con llave aleatoria para verificar guardar/leer/borrar y que el archivo no contiene el token en claro; la ruta del Keystore real se valida en dispositivo (T030/T027).
-  - Un `@Module` de Dagger no puede mezclar `@Provides` concretos con `@Binds` abstractos: se separó en `DataStoreModule` (object) y `TokenStoreModule` (clase abstracta), siguiendo el patrón de `NetworkModule` y `AuthModule`.
-  - `SwallowedException` de detekt se cumple nombrando el parámetro del `catch` como `ignored`.
-- **Costo:** $0 / sin cambios.
+  - Keystore local dedicado (autofirmado, fuera del repo, en el temp de opencode) para poder correr el pipeline con firma; el keystore real llega en T033 (🧑, GitHub Secrets) y la custodia es P-02.
+  - La evidencia runtime de CA-06 (bloqueo de una solicitud `http://` en *release*) queda en T030: exige dispositivo/emulador y la API local; T026 aporta la evidencia de build (manifiesto y XML por variante).
+- **Costo:** $0 / keystore autofirmado local; `SIGNING_*` viven en variables de entorno de usuario, nunca en el repo.
 - **Aprendizaje:**
-  - En DataStore 1.3.0 (KMP) `PreferenceDataStoreFactory` vive en `androidx.datastore.preferences.core` (artefacto `datastore-preferences-core`, expuesto como `api` por `datastore-preferences`), mientras que el delegate `preferencesDataStore` sigue en `androidx.datastore.preferences`.
-  - `tink-android` 1.18.0 trae `AndroidKeysetManager` en el paquete `com.google.crypto.tink.integration.android` y `KeyTemplates.get("AES256_GCM")` funciona sin registrar claves.
-- **Pendiente:** T020 (interceptores, ya desbloqueado por T022) → T028 (pruebas de red completas); T024 evidencia CA-04/CA-05 con la API local (T030); T026/T027 (seguridad); T103/T203/T403 ⛔ (backend); T105/T205/T304/T405 (URL real).
+  - En AGP 9 el XML empaquetado por variante queda en `app/build/intermediates/packaged_res/{variante}/package{Variante}Resources/xml/` y el manifiesto mergeado en `intermediates/merged_manifest/{variante}`.
+  - `jarsigner -verify` reporta «jar is unsigned» porque AGP firma con esquema v2/v3; la verificación correcta es `apksigner verify --print-certs`.
+- **Pendiente:** T027 (revisión de seguridad, ya desbloqueada); T029/T030/T038 (pruebas); T031–T035/T039 (CI y release, varios 🧑); T002/T004/T036/T037.
 
 
