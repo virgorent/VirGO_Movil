@@ -395,4 +395,25 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - `jarsigner -verify` reporta «jar is unsigned» porque AGP firma con esquema v2/v3; la verificación correcta es `apksigner verify --print-certs`.
 - **Pendiente:** T027 (revisión de seguridad, ya desbloqueada); T029/T030/T038 (pruebas); T031–T035/T039 (CI y release, varios 🧑); T002/T004/T036/T037.
 
+### 2026-11-10 - T027: revisión de seguridad de la app
+
+- **Autor:** equipo + opencode (`seguridad-ci`)
+- **Módulo / tareas:** `000-arquitectura-base` → T027 ✅ (25/39)
+- **Qué se hizo (reporte):**
+  - **Permisos:** hallazgo **alto** — el manifiesto no declaraba `android.permission.INTERNET`; sin él la app no puede hacer ninguna llamada de red en dispositivo (las pruebas MockWebServer corren en JVM y no lo detectan). Corregido en `app/src/main/AndroidManifest.xml`; el manifiesto mergeado de *release* ahora lo incluye. No hay permisos peligrosos (cámara, ubicación, contactos, etc.); solo la firma `DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` de AndroidX.
+  - **Secretos:** sin credenciales, tokens ni API keys en código (las únicas coincidencias son strings de prueba: `virgo-token-abc`, `password1`); ningún `.jks`/`.keystore`/`local.properties` trackeado; las variables `SIGNING_*` viven en el entorno, nunca en el repo. Gitleaks corre en CI (`security.yml`, T031).
+  - **Logs:** cero `Log.*`, `println` o `System.out` en el código; `HttpLoggingInterceptor` con nivel `BASIC` solo en *debug* (cubierto por `OkHttpClientConfigurationTest`).
+  - **Almacenamiento:** sin `SharedPreferences` en claro; el único almacenamiento es `TokenStore` cifrado con Tink + Keystore (CA-07).
+  - **R8:** `isMinifyEnabled`/`isShrinkResources` en *release*, `proguard-rules.pro` completo y `mapping.txt` generado (42 MB).
+  - **Lint (hallazgos medios corregidos):** 8 errores — `LocalContextGetResourceValueCall` ×3 en `RecoverScreen` (strings izados con `stringResource` en composición y `format(event.code)` dentro del efecto) y `ViewModelConstructorInComposable` ×5 (2 previews → `@SuppressLint`, patrón ya usado por Login/Register; 3 tests de `SmokeTest` → construcción del VM izada fuera de `setContent`, como el test de login de ese mismo archivo).
+- **Evidencia:** commit `ad6a18c`; pipeline `ktlintCheck detekt lint testDebugUnitTest assembleDebug assembleRelease` + `:core:domain:test` → BUILD SUCCESSFUL; `lint` **0 errores, 21 warnings** (versiones de dependencias, recursos sin usar, `MissingApplicationIcon`, `PluralsCandidate` — sin hallazgos críticos ni altos); manifest mergeado de *release* con `INTERNET` y sin `debuggable`; **94 pruebas, 0 fallos**.
+- **Decisiones:**
+  - Los previews usan `@SuppressLint("ViewModelConstructorInComposable")` (patrón existente en el proyecto) porque construir el VM es intencional ahí; en tests se izó la construcción, que además evita recrear el VM en cada recomposición.
+  - El icono de app (`MissingApplicationIcon`) y los strings sin usar quedan para cuando el spec de diseño traiga el recurso; no son hallazgos de seguridad.
+- **Costo:** $0 / sin cambios.
+- **Aprendizaje:**
+  - `lint` no era parte del pipeline local; al agregarlo aparecieron 8 errores preexistentes que el CI de T031 habría bloqueado — correr el pipeline completo del plan (`ktlintCheck detekt lint …`) desde el inicio evita sorpresas en CI.
+  - OkHttp/Retrofit no agregan `INTERNET` al manifiesto: es responsabilidad de la app declararlo.
+- **Pendiente:** T029/T030/T038 (pruebas); T031–T035/T039 (CI y release, varios 🧑); T002/T004/T036/T037.
+
 

@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `000-arquitectura-base` |
 | Versión | 1.1.0 |
-| Estado | Aprobado. 24/39 tareas hechas. |
+| Estado | Aprobado. 25/39 tareas hechas. |
 | Fecha | 2026-10-29 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 | Constitución | v1.1.0 |
@@ -84,9 +84,11 @@
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
 | T026 | `network_security_config` de *debug* (solo `10.0.2.2` en claro) y de *release* (sin tráfico en claro); R8 con sus reglas; firma de *release* desde variables de entorno sin respaldo con la llave de *debug* | T019 | `seguridad-ci` | `assembleRelease` minificado; en *release* una solicitud `http://` se bloquea (CA-06) | ✅ |
-| T027 | Revisión de seguridad de la app: permisos, secretos, logs, almacenamiento y R8 | T022, T026 | `seguridad-ci` | Reporte sin hallazgos críticos ni altos | ⏳ |
+| T027 | Revisión de seguridad de la app: permisos, secretos, logs, almacenamiento y R8 | T022, T026 | `seguridad-ci` | Reporte sin hallazgos críticos ni altos | ✅ |
 
 > **T026** hecha en el commit `c0b7e64`: `network_security_config` en `app/src/main` (`cleartextTrafficPermitted="false"`) con `android:networkSecurityConfig` en el manifiesto, y en `app/src/debug` un `domain-config` adicional que permite en claro **solo** `10.0.2.2` (emulador). R8: `isMinifyEnabled`/`isShrinkResources` en *release* con `proguard-rules.pro` (kotlinx.serialization `**$$serializer`/`Companion`, `retrofit2.Call`/`Response`, `Continuation` y `com.google.crypto.tink.**`). Firma desde variables de entorno (`SIGNING_KEYSTORE_FILE`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`, `SIGNING_STORE_PASSWORD`): si se pide una tarea `*Release*` sin ellas, el build falla con «Falta la firma de release… Release nunca se firma con la llave de debug (T026)» — verificado (`BUILD FAILED`, exit 1). **Evidencia:** `assembleRelease` minificado → BUILD SUCCESSFUL con `mapping.txt` (42 MB); `apksigner verify` → firma **V2** con el keystore local dedicado (nunca el de debug); el XML empaquetado de *release* no contiene `10.0.2.2` ni `domain-config` (el de *debug* sí); manifiesto mergeado de *release* sin `android:debuggable`. Pipeline en verde con **94 pruebas, 0 fallos**. **Queda en T030** la evidencia runtime de CA-06 (bloqueo de `http://` en dispositivo) porque el tráfico real sale contra la API local.
+
+> **T027** hecha en el commit `ad6a18c` (reporte completo en `memoria.md`): revisión de permisos, secretos, logs, almacenamiento y R8. **1 hallazgo alto corregido:** el manifiesto no declaraba `android.permission.INTERNET` (sin él la app no puede hacer ninguna llamada en dispositivo; las pruebas MockWebServer corren en JVM y no lo detectan). Hallazgos medios corregidos: `lint` marcaba 8 errores (`LocalContextGetResourceValueCall` en `RecoverScreen` → strings izados con `stringResource`, y `ViewModelConstructorInComposable` en 2 previews → `@SuppressLint` como ya hacían Login/Register, y en 3 tests de `SmokeTest` → construcción del VM izada fuera de `setContent`, como el test de login). **Resultado:** `lint` 0 errores / 21 warnings benignos (versiones de dependencias, recursos sin usar, icono de app pendiente), sin permisos peligrosos, sin secretos en código (solo strings de prueba), sin `Log`/`println`, sin `SharedPreferences` en claro (solo `TokenStore` cifrado), R8 activo con `mapping.txt` y `apksigner` en verde. Pipeline `ktlintCheck detekt lint testDebugUnitTest assembleDebug assembleRelease` + `:core:domain:test` → **94 pruebas, 0 fallos**.
 
 ## F7 · Pruebas y verificación
 
