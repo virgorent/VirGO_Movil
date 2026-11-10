@@ -47,12 +47,13 @@ class SmokeTest {
     @Test
     fun guestHomeShowsBrandAndLoginForwards() {
         var loginClicked = false
+        val vm = GuestHomeViewModel()
         compose.setContent {
             VirGoTheme {
                 GuestHomeScreen(
                     onLoginClick = { loginClicked = true },
                     onRegisterClick = {},
-                    viewModel = GuestHomeViewModel(),
+                    viewModel = vm,
                 )
             }
         }
@@ -92,12 +93,12 @@ class SmokeTest {
 
     @Test
     fun registerShowsFormFields() {
+        val vm = RegisterViewModel(ValidateRegisterFormUseCase(ValidateEmailUseCase()))
         compose.setContent {
             VirGoTheme {
                 RegisterScreen(
                     venueId = null,
-                    viewModel =
-                        RegisterViewModel(ValidateRegisterFormUseCase(ValidateEmailUseCase())),
+                    viewModel = vm,
                 )
             }
         }
@@ -108,15 +109,16 @@ class SmokeTest {
 
     @Test
     fun recoverFlowSendsCodeAndShowsPasswordStep() {
+        val vm =
+            RecoverViewModel(
+                ValidateEmailUseCase(),
+                GenerateRecoveryCodeUseCase(),
+                ValidateRecoveryUseCase(),
+            )
         compose.setContent {
             VirGoTheme {
                 RecoverScreen(
-                    viewModel =
-                        RecoverViewModel(
-                            ValidateEmailUseCase(),
-                            GenerateRecoveryCodeUseCase(),
-                            ValidateRecoveryUseCase(),
-                        ),
+                    viewModel = vm,
                 )
             }
         }

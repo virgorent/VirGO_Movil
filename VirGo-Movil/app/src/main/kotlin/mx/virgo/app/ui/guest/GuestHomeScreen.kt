@@ -1,5 +1,6 @@
 package mx.virgo.app.ui.guest
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -442,6 +443,7 @@ private fun VenuePhoto(
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
 fun GuestHomeScreenPreview() {

@@ -1,5 +1,6 @@
 package mx.virgo.app.ui.recover
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -71,21 +71,21 @@ fun RecoverScreen(
     val state by viewModel.state.collectAsState()
     val snackbarHost = LocalSnackbarHost.current
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
+    val sentTemplate = stringResource(R.string.recover_sent_demo)
+    val successTitle = stringResource(R.string.recover_success_title)
+    val successBody = stringResource(R.string.recover_success_body)
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 is RecoverEvent.Sent ->
                     scope.launch {
-                        val message = context.getString(R.string.recover_sent_demo, event.code)
+                        val message = sentTemplate.format(event.code)
                         snackbarHost.showSnackbar(message)
                     }
                 RecoverEvent.Done -> {
                     scope.launch {
-                        val title = context.getString(R.string.recover_success_title)
-                        val body = context.getString(R.string.recover_success_body)
-                        snackbarHost.showSnackbar("$title — $body")
+                        snackbarHost.showSnackbar("$successTitle — $successBody")
                     }
                     onDone()
                 }
@@ -327,6 +327,7 @@ private fun RecoverPasswordFields(
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
 fun RecoverScreenPreview() {
