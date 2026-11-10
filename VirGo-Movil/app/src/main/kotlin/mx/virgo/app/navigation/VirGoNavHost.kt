@@ -48,6 +48,7 @@ fun VirGoNavHost(
             onBackClick = { navController.popBackStack() },
         )
         homeDestination()
+        developmentDestinations(navController)
     }
 }
 

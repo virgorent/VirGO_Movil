@@ -1,5 +1,8 @@
 package mx.virgo.app
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -15,9 +18,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import mx.virgo.app.dev.DevMenu
 import mx.virgo.app.navigation.HomeRoute
 import mx.virgo.app.navigation.VirGoNavHost
 import mx.virgo.app.navigation.topLevelDestinations
@@ -36,6 +41,19 @@ fun VirGoApp() {
         CompositionLocalProvider(LocalSnackbarHost provides snackbarHostState) {
             Scaffold(
                 snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+                topBar = {
+                    if (onHomeDestination) {
+                        Row(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp),
+                            horizontalArrangement = Arrangement.End,
+                        ) {
+                            DevMenu(navController = navController)
+                        }
+                    }
+                },
                 bottomBar = {
                     if (onHomeDestination) {
                         VirGoBottomBar(
