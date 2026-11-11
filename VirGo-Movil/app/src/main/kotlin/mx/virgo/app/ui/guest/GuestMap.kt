@@ -99,17 +99,17 @@ internal fun GuestMap(
     onClearSelection: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .pointerInput(radiusKm) { detectTapGestures { onClearSelection() } },
-    ) {
-        val pins = computePins(nearby = nearby, selectedId = selectedId, pxPerKm = RangeRadius / radiusKm)
-
-        Canvas(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Canvas(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .pointerInput(radiusKm) { detectTapGestures { onClearSelection() } },
+        ) {
             drawMap(center = Offset(x = size.width * CENTER_FRACTION, y = size.height * CENTER_FRACTION))
         }
+
+        val pins = computePins(nearby = nearby, selectedId = selectedId, pxPerKm = RangeRadius / radiusKm)
 
         Text(
             text = stringResource(R.string.guest_range_option, radiusKm),
