@@ -456,18 +456,22 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Pendiente:** T030 (emulador); T031/T032/T034 (workflows `.github/`, T034 requiere T033 🧑); T002/T004/T033/T035/T036/T037/T039.
 
 
-### 2026-11-11 - Repositorio espejo ccabrera-dev8/VirGo-Movil (equipo Play Store)
+### 2026-11-11 - Sincronizacion a virgorent/VirGO_Movil (equipo Play Store)
 
 - **Autor:** equipo + opencode
 - **Modulo / tareas:** solicitud extra fuera del task.md (apoyo a T035/T036)
 - **Que se hizo:**
-  - Snapshot del contenido de `VirGo-Movil/` (274 archivos trackeados, sin artefactos de build ni `gradle-daemon-jvm.properties`) extraido con `git archive` desde `451418d` (27/39) y publicado en el repositorio privado **`ccabrera-dev8/VirGo-Movil`** (rama `main`, commit `a1e44c3 chore: snapshot from virGO_App feat/001-flujo-visitante (27/39)`).
+  - Snapshot del contenido de `VirGo-Movil/` (274 archivos trackeados, sin artefactos de build ni `gradle-daemon-jvm.properties`) extraido con `git archive` desde `451418d` (27/39) y sincronizado al repo de la organizacion **`virgorent/VirGO_Movil`** (espejo del monorepo creado por `Karasu0001`, con la app bajo `VirGo-Movil/`).
+  - El `main` de ese repo esta protegido por el ruleset `main-protection` (PR + 1 aprobacion + checks `gitleaks` y `dependency review`), asi que la subida fue por **PR #3** (rama `sync/001-snapshot-27-39`, commit `fbf6774`, autor `ccabrera-dev8`): 147 cambios = 95 archivos nuevos, 0 archivos propios del repo eliminados (el snapshot es superset de la copia que ya tenia).
   - Motivo: el equipo que subira la app a Play Store necesita el codigo en un repo propio.
-- **Evidencia:** `gh repo view ccabrera-dev8/VirGo-Movil` (privado); clone de prueba en temp con **274 archivos** (identico al origen) y `gradlew help` -> OK.
+- **Evidencia:** PR https://github.com/virgorent/VirGO_Movil/pull/3 con **ambos checks en verde** (`gitleaks` + `dependency review`); clone de prueba en temp con **274 archivos** (identico al origen) y `gradlew help` -> OK; revision solicitada a `Karasu0001`.
 - **Decisiones:**
-  - **Snapshot unico, sin sincronizacion automatica**: los cambios futuros de `virGO_App` no llegan solos; se repite el snapshot (`git archive` + push) cuando se pida.
-  - **Sin `.github/`**: los workflows viven en la raiz de `virGO_App` y no forman parte de `VirGo-Movil/`; el espejo queda sin CI ni release workflow.
-  - Primer intento en `motosos215-lab/VirGo-Movil` (cuenta ajena, token local sin `delete_repo`): quedo **vacio y privado**, pendiente de borrar desde su Danger Zone por su propietario.
-- **Invitar al equipo de Play Store:** `gh api -X PUT repos/ccabrera-dev8/VirGo-Movil/collaborators/<usuario> -f permission=push` (o Settings -> Collaborators).
-- **Pendiente:** repetir snapshot al cierre de T036; borrar `motosos215-lab/VirGo-Movil`.
+  - **Snapshot unico, sin sincronizacion automatica**: los cambios futuros de `virGO_App` no llegan solos; se repite el snapshot (`git archive` + rama + PR) cuando se pida.
+  - **Habilitar Dependency graph en repos nuevos**: `VirGO_Movil` nacio con el graph apagado y el check `dependency review` fallaba con "Dependency graph is not enabled"; no hay endpoint REST para ese toggle, pero `PUT /repos/{owner}/{repo}/vulnerability-alerts` lo habilita como efecto necesario (verificado con `GET .../dependency-graph/sbom`).
+  - **Identidad del commit**: usar siempre `ccabrera-dev8` (`-c user.name/-c user.email`); el primer snapshot (`a1e44c3`) quedo con el autor de la cuenta con la que estaba autenticado `gh` y por eso se descarto como destino.
+- **Intentos descartados:**
+  - `motosos215-lab/VirGo-Movil` (cuenta ajena, token local sin `delete_repo`): quedo **vacio y privado**, pendiente de borrar desde su Danger Zone por su propietario.
+  - `ccabrera-dev8/VirGo-Movil`: creado por error con el snapshot (`a1e44c3`); **pendiente de borrar** (requiere scope `delete_repo` en `gh auth refresh`).
+- **Colaboradores del repo de la org:** `Karasu0001` y `ccabrera-dev8`; el equipo de Play Store se invita con `gh api -X PUT repos/virgorent/VirGO_Movil/collaborators/<usuario> -f permission=push`.
+- **Pendiente:** merge del PR #3 (falta la aprobacion de `Karasu0001`; el autor no puede aprobar su propio PR); repetir snapshot al cierre de T036; borrar `ccabrera-dev8/VirGo-Movil` y `motosos215-lab/VirGo-Movil`.
 
