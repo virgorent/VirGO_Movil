@@ -417,3 +417,23 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Pendiente:** T029/T030/T038 (pruebas); T031–T035/T039 (CI y release, varios 🧑); T002/T004/T036/T037.
 
 
+
+### 2026-11-11 - T029: pruebas de UI, designsystem y navegacion del flujo visitante
+
+- **Autor:** equipo + opencode (`qa-movil`)
+- **Modulo / tareas:** `000-arquitectura-base` -> T029 -> (26/39)
+- **Que se hizo:**
+  - `DesignSystemComponentsTest` (5 pruebas, modulo `core/designsystem`): se agregaron las dependencias de test al `build.gradle.kts` del modulo y se cubrieron los componentes base del sistema de diseno.
+  - `FontScaleTest` (2 pruebas): escala de fuente 2.0 con `FontScale`.
+  - `NavigationTest` (2 pruebas): destino inicial provisional (marca + login) y flujo pin -> "Ver mas." -> `register_title` -> back -> inicio provisional.
+  - Fix en `GuestMap.kt`: el `pointerInput` con `detectTapGestures` (limpiar seleccion) se movio del `Box` ancestro al `Canvas` (hermano detras de los pins); con eso un pin aislado si recibe el toque.
+- **Evidencia:** commit `7d8e0c7`; pipeline `ktlintCheck detekt lint testDebugUnitTest assembleDebug assembleRelease` + `:core:domain:test` -> BUILD SUCCESSFUL; **103 pruebas, 0 fallos**; APK debug (21.7 MB) y release (2.4 MB) generados.
+- **Decisiones:**
+  - Robolectric no implementa `AndroidKeyStore`: los destinos con `hiltViewModel`/Hilt (`KeystoreAead.create`) crascan en "The token keyset could not be initialized"; por eso los tests de navegacion usan destinos con VMs puros (registro via pin).
+  - Hallazgo de UI: en pantalla completa la tarjeta opaca de la cabecera (`GuestCard`, bounds `(16,76)-(304,222)`) cubre fisicamente los pins cercanos al centro (p. ej. Casa Oliva `(151,178)-(199,226)`): el toque en su centro no llega a ningun handler. El test usa un pin visible debajo de la tarjeta (Brincolin Fiestas, y 230-278) con matcher por subcadena ASCII que funciona con ambas variantes (`CompactPin` con `contentDescription` y `LabelledPin` con texto).
+- **Costo:** $0 / sin cambios de producto; solo pruebas y el fix del puntero.
+- **Aprendizaje:**
+  - El hit-test de Compose reparte el toque por z-order: un nodo opaco posterior (la tarjeta) absorbe los toques de los pins que quedan debajo; verificar la visibilidad geometrica antes de diagnosticar fallos de dispatch.
+  - `computePins` alterna `CompactPin` (cd `guest_pin_cd`) y `LabelledPin` (texto `"<short>, <km> km"`) segun solape; buscar pins por cd exacta con acentos es fragil (normalizacion Unicode), mejor matcher por subcadena ASCII.
+- **Pendiente:** T030/T038 (pruebas); T031-T035/T039 (CI y release, varios P); T002/T004/T036/T037.
+
