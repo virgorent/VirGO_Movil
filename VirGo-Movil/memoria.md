@@ -455,3 +455,19 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Con `build-logic` (plugins precompilados), verificar nombres de tarea reales con `gradlew :app:tasks --all` antes de diagnosticar.
 - **Pendiente:** T030 (emulador); T031/T032/T034 (workflows `.github/`, T034 requiere T033 🧑); T002/T004/T033/T035/T036/T037/T039.
 
+
+### 2026-11-11 - Repositorio espejo ccabrera-dev8/VirGo-Movil (equipo Play Store)
+
+- **Autor:** equipo + opencode
+- **Modulo / tareas:** solicitud extra fuera del task.md (apoyo a T035/T036)
+- **Que se hizo:**
+  - Snapshot del contenido de `VirGo-Movil/` (274 archivos trackeados, sin artefactos de build ni `gradle-daemon-jvm.properties`) extraido con `git archive` desde `451418d` (27/39) y publicado en el repositorio privado **`ccabrera-dev8/VirGo-Movil`** (rama `main`, commit `a1e44c3 chore: snapshot from virGO_App feat/001-flujo-visitante (27/39)`).
+  - Motivo: el equipo que subira la app a Play Store necesita el codigo en un repo propio.
+- **Evidencia:** `gh repo view ccabrera-dev8/VirGo-Movil` (privado); clone de prueba en temp con **274 archivos** (identico al origen) y `gradlew help` -> OK.
+- **Decisiones:**
+  - **Snapshot unico, sin sincronizacion automatica**: los cambios futuros de `virGO_App` no llegan solos; se repite el snapshot (`git archive` + push) cuando se pida.
+  - **Sin `.github/`**: los workflows viven en la raiz de `virGO_App` y no forman parte de `VirGo-Movil/`; el espejo queda sin CI ni release workflow.
+  - Primer intento en `motosos215-lab/VirGo-Movil` (cuenta ajena, token local sin `delete_repo`): quedo **vacio y privado**, pendiente de borrar desde su Danger Zone por su propietario.
+- **Invitar al equipo de Play Store:** `gh api -X PUT repos/ccabrera-dev8/VirGo-Movil/collaborators/<usuario> -f permission=push` (o Settings -> Collaborators).
+- **Pendiente:** repetir snapshot al cierre de T036; borrar `motosos215-lab/VirGo-Movil`.
+
