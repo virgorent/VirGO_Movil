@@ -74,7 +74,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en el backend (`virgorent/virGO_App`, `VirGo-API/specs`) |
+| Endpoint | Spec en `VirGo-API/specs` |
 |---|---|
 | `GET /api/v1/venues/mine` | `025-get-venues-mine` |
 | `PATCH /api/v1/venues/:id` | `027-patch-venues-id` |

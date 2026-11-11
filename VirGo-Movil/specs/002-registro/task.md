@@ -14,8 +14,10 @@
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T201 | Pantalla A2 Registro y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T202 | Pantalla A4 Registro con errores y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T203 | Repositorio y casos de uso | T201 | `dev-android` | Pruebas con MockWebServer en verde | ⏳ |
-| T204 | Pruebas unitarias, de UI y de seguridad | T202 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ⏳ |
+| T201 | Pantalla A2 Registro y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ✅ |
+| T202 | Pantalla A4 Registro con errores y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ✅ |
+| T203 | Repositorio y casos de uso | T201 | `dev-android` | Pruebas con MockWebServer en verde | ⛔ |
+| T204 | Pruebas unitarias, de UI y de seguridad | T202 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ✅ |
 | T205 | Integrar con la URL real y hacer la prueba de humo | Specs de API | `qa-movil` | `check.md` completo | ⏳ |
+
+**Evidencia:** T201/T202 en commit `ec2882c` (refactor MVVM con UiState). T204: `ktlintCheck detekt testDebugUnitTest assembleDebug` → BUILD SUCCESSFUL (2026-11-09); `:core:domain:test` 30 pruebas y `:app:testDebugUnitTest` 29 pruebas, 0 fallos. T203 ⛔: el backend aún no expone el contrato de registro.

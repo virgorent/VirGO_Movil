@@ -52,7 +52,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en el backend (`virgorent/virGO_App`, `VirGo-API/specs`) |
+| Endpoint | Spec en `VirGo-API/specs` |
 |---|---|
 | `GET /api/v1/events/:id` | `045-get-events-id` |
 | `PATCH /api/v1/events/:id` | `046-patch-events-id` |

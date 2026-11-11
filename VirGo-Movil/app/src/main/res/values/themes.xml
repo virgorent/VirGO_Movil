@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.VirGo" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/virgo_slate_900</item>
+        <item name="android:statusBarColor">@color/virgo_slate_900</item>
+    </style>
+
+    <style name="Theme.VirGo.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/virgo_slate_900</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_virgo_splash</item>
+        <item name="windowSplashScreenAnimationDuration">400</item>
+        <item name="postSplashScreenTheme">@style/Theme.VirGo</item>
+    </style>
+</resources>
