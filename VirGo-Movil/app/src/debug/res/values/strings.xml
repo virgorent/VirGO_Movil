@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Diagnóstico (solo debug) -->
+    <string name="diagnostics_title">Diagnóstico</string>
+    <string name="diagnostics_version_label">Versión</string>
+    <string name="diagnostics_api_url_label">URL de la API</string>
+    <string name="diagnostics_status_label">Estado de la API</string>
+    <string name="diagnostics_latency_label">Latencia</string>
+    <string name="diagnostics_checking">Verificando…</string>
+    <string name="diagnostics_api_available">API disponible</string>
+    <string name="diagnostics_api_unavailable">API no disponible</string>
+    <string name="diagnostics_latency_value">%1$d ms</string>
+    <string name="diagnostics_latency_none">Sin dato</string>
+    <string name="diagnostics_error_network">No hay conexión con la API. Revisa tu internet e inténtalo de nuevo.</string>
+    <string name="diagnostics_error_server">No se pudo consultar la API. Inténtalo más tarde.</string>
+    <string name="diagnostics_retry">Reintentar</string>
+
+    <!-- Menú de desarrollo (solo debug) -->
+    <string name="dev_menu_content_description">Menú de desarrollo</string>
+    <string name="dev_menu_diagnostics">Diagnóstico</string>
+</resources>

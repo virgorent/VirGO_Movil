@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `000-arquitectura-base` |
 | Versión | 1.1.0 |
-| Estado | Aprobado. 12/39 tareas hechas. |
+| Estado | Aprobado. 27/39 tareas hechas. |
 | Fecha | 2026-10-29 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 | Constitución | v1.1.0 |
@@ -53,42 +53,54 @@
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T015 | *Splash* con `core-splashscreen` y la marca VirGo; `strings.xml` base en español | T012 | `dev-android` | Al abrir la app se ve el *splash* (CA-02) | ⏳ |
-| T016 | `VirGoNavHost` con rutas tipadas `@Serializable`, extensiones `NavGraphBuilder` por destino, `TopLevelDestination` y `HomePlaceholder` | T009, T013 | `dev-android` | La navegación abre el inicio provisional | ⏳ |
-| T017 | `VirGoApp()` raíz: tema, `Scaffold`, barra inferior configurable (oculta en la base) y `SnackbarHost` | T016 | `dev-android` | La app muestra el inicio provisional con el tema de la maqueta (CA-02) | ⏳ |
+| T015 | *Splash* con `core-splashscreen` y la marca VirGo; `strings.xml` base en español | T012 | `dev-android` | Al abrir la app se ve el *splash* (CA-02) | ✅ |
+| T016 | `VirGoNavHost` con rutas tipadas `@Serializable`, extensiones `NavGraphBuilder` por destino, `TopLevelDestination` y `HomePlaceholder` | T009, T013 | `dev-android` | La navegación abre el inicio provisional | ✅ |
+| T017 | `VirGoApp()` raíz: tema, `Scaffold`, barra inferior configurable (oculta en la base) y `SnackbarHost` | T016 | `dev-android` | La app muestra el inicio provisional con el tema de la maqueta (CA-02) | ✅ |
 
 ## F4 · Red, datos y almacenamiento seguro
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T018 | `AppError` y `AppResult` en `:core:common` | T007 | `dev-android` | Compila; las pruebas de T028 cubren cada variante | ⏳ |
-| T019 | `:core:network`: OkHttp (timeouts de 10 y 20 s), Retrofit con kotlinx.serialization y `API_BASE_URL` por variante; *release* falla al compilar si la URL no es `https://` | T018 | `dev-android` | `assembleDebug` OK; `assembleRelease` con una URL `http://` falla con un mensaje claro | ⏳ |
-| T020 | [P] Interceptores: `CorrelationIdInterceptor`, `AuthInterceptor` (con `TokenStore`) y logging solo en *debug* | T019, T022 | `dev-android` | Las pruebas de MockWebServer verifican los encabezados (T028) | ⏳ |
-| T021 | [P] `ProblemDetailsDto`, conversión de error de HTTP o excepción a `AppError`, y `HealthApi` (`GET health`) | T019 | `dev-android` | Pruebas de conversión en verde (T028) | ⏳ |
-| T022 | `:core:datastore`: `TokenStore` con DataStore y Tink AEAD con una llave en el Android Keystore; revisión de `seguridad-ci` | T007 | `dev-android` + `seguridad-ci` | Guardar, leer y borrar funcionan; el archivo no tiene el token en claro (CA-07) | ⏳ |
-| T023 | `CheckApiHealthUseCase` en `:core:domain` y `HealthRepository` en `:core:data` (mide la latencia y devuelve `AppResult`) | T021 | `dev-android` | Pruebas unitarias en verde (T028) | ⏳ |
+| T018 | `AppError` y `AppResult` en `:core:common` | T007 | `dev-android` | Compila; las pruebas de T028 cubren cada variante | ✅ |
+| T019 | `:core:network`: OkHttp (timeouts de 10 y 20 s), Retrofit con kotlinx.serialization y `API_BASE_URL` por variante; *release* falla al compilar si la URL no es `https://` | T018 | `dev-android` | `assembleDebug` OK; `assembleRelease` con una URL `http://` falla con un mensaje claro | ✅ |
+| T020 | [P] Interceptores: `CorrelationIdInterceptor`, `AuthInterceptor` (con `TokenStore`) y logging solo en *debug* | T019, T022 | `dev-android` | Las pruebas de MockWebServer verifican los encabezados (T028) | ✅ |
+| T021 | [P] `ProblemDetailsDto`, conversión de error de HTTP o excepción a `AppError`, y `HealthApi` (`GET health`) | T019 | `dev-android` | Pruebas de conversión en verde (T028) | ✅ |
+| T022 | `:core:datastore`: `TokenStore` con DataStore y Tink AEAD con una llave en el Android Keystore; revisión de `seguridad-ci` | T007 | `dev-android` + `seguridad-ci` | Guardar, leer y borrar funcionan; el archivo no tiene el token en claro (CA-07) | ✅ |
+| T023 | `CheckApiHealthUseCase` en `:core:domain` y `HealthRepository` en `:core:data` (mide la latencia y devuelve `AppResult`) | T021 | `dev-android` | Pruebas unitarias en verde (T028) | ✅ |
+
+> **T018** hecha con T302 de `003` (commit `c76d17a`): `AppError` (Network, Timeout, Unauthorized, NotFound, Validation, Server, Unknown) y `AppResult` en `:core:common`; las 7 variantes quedan cubiertas por `AuthRepositoryImplTest` (`:core:data`). **T019** hecha con T301 de `003` (commit `32e6eec`): `API_BASE_URL` por variante con `buildConfigField` en `:core:network` (debug: `local.properties → virgo.apiBaseUrl` o `http://10.0.2.2:5122/`; release: `VIRGO_API_BASE_URL`), validación que rechaza una URL `http://` de release con mensaje claro, y `NetworkModule` con `@Provides AuthApi`; verificado con `assembleDebug` y `assembleRelease` en verde y con `VIRGO_API_BASE_URL=http://…` → BUILD FAILED. **T021 y T023** hechas en el commit `d6a7c9b`: `HealthApi` (`GET health` → `HealthStatusDto`) con `@Provides` en `NetworkModule`, `HealthRepository`/`CheckApiHealthUseCase` y `HealthRepositoryImpl` que mide la latencia con `TimeSource.Monotonic`; pruebas MockWebServer en `:core:data` (4) y del caso de uso en `:core:domain` (2). **T022** hecha en el commit `456d738`: `TokenStore` (`token: Flow<String?>`, `save`, `clear`) en `:core:datastore` con DataStore Preferences 1.3.0, cifrando con un `Aead` de Tink 1.18.0 (`AES256_GCM`) cuya llave maestra vive en el Android Keystore (`AndroidKeysetManager`); en el archivo solo queda el texto cifrado en Base64 y un valor ilegible se lee como `null`. Pruebas Robolectric (4) en `:core:datastore`: guardar→leer, borrar→null, **el archivo no contiene el token en claro (CA-07)** y Base64 inválido o cifrado ajeno→null. El `Aead` de Keystore se inyecta como dependencia porque Robolectric no implementa `AndroidKeyStore`; las pruebas usan un `AesGcmJce` local (la ruta del Keystore real queda en T030/T027). **T020** hecha en el commit `0600d0f` y **T028** en `86624c5`: puerto `AuthTokenProvider` en `:core:common` (para respetar §4: `network → common`; `TokenStore` lo implementa y `TokenStoreModule` lo liga con `@Binds`), `CorrelationIdInterceptor` (UUID nuevo en `X-Correlation-Id` por petición), `AuthInterceptor` (`Authorization: Bearer` solo cuando hay token) y `HttpLoggingInterceptor` con nivel `BASIC` solo si `BuildConfig.IS_DEBUGGABLE` (`createOkHttpClient` en `NetworkClientFactory`; `NetworkModule` provee un `OkHttpClient` `@Singleton` compartido por `AuthApi` y `HealthApi`). Dependencia nueva: `okhttp logging-interceptor` 4.12.0. Pruebas MockWebServer (9): `X-Correlation-Id` único y que reemplaza al del caller, `Bearer` presente/ausente/en blanco, logging solo en *debug* con nivel `BASIC`, timeouts 10 s/20 s y los 2 interceptores siempre presentes. La conversión a `AppError` ya estaba cubierta por `AuthRepositoryImplTest` (8) y `HealthRepositoryImplTest` (4). **F4 completa (7/7)**; `testDebugUnitTest` en **94 pruebas, 0 fallos** (T028 verificado).
 
 ## F5 · Diagnóstico de integración
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T024 | `DiagnosticsViewModel` y `DiagnosticsScreen` en el *source set* `debug`: versión de la app, `API_BASE_URL`, estado y latencia de `/health`, y errores convertidos a textos en español | T017, T023 | `dev-android` | Con la API local en marcha muestra «API disponible» (CA-04); con la API apagada, un mensaje claro sin cierre (CA-05) | ⏳ |
-| T025 | Menú de desarrollo en la barra superior (solo *debug*) para abrir el diagnóstico | T024 | `dev-android` | El menú no existe en el APK de *release* | ⏳ |
+| T024 | `DiagnosticsViewModel` y `DiagnosticsScreen` en el *source set* `debug`: versión de la app, `API_BASE_URL`, estado y latencia de `/health`, y errores convertidos a textos en español | T017, T023 | `dev-android` | Con la API local en marcha muestra «API disponible» (CA-04); con la API apagada, un mensaje claro sin cierre (CA-05) | 🔄 |
+| T025 | Menú de desarrollo en la barra superior (solo *debug*) para abrir el diagnóstico | T024 | `dev-android` | El menú no existe en el APK de *release* | ✅ |
+
+> **T025** ✅ y **T024** 🔄 en el commit `b826b05`: `DiagnosticsRoute`/`DiagnosticsViewModel`/`DiagnosticsScreen` y los textos viven solo en `app/src/debug` (`src/debug/res/values/strings.xml`); `DevMenu` y `developmentDestinations(...)` tienen implementación no-op `= Unit` en `app/src/release`; el menú se muestra en el `topBar` del `Scaffold` solo en el inicio provisional. Pruebas en `app/src/testDebug` (5): `DiagnosticsViewModelTest` con Turbine (carga → éxito, carga → error, reintento) y `DiagnosticsScreenTest` con Robolectric («API disponible» y mensaje de error sin cierre). **Evidencia T025:** en `assembleRelease` no existe ninguna clase `Diagnostics*`, el `DevMenu` de release es un stub sin `DropdownMenu` y los `values.xml` de release no contienen `diagnostics_*` ni `dev_menu_*` (sí los de `main`). **Pendiente en T024:** la evidencia real CA-04/CA-05 («API disponible» con la API local y mensaje claro con ella apagada) requiere `VirGo-API` corriendo (`dotnet run` + `GET /health`); el backend todavía no tiene código (T009), así que queda para T030.
 
 ## F6 · Seguridad de la compilación
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T026 | `network_security_config` de *debug* (solo `10.0.2.2` en claro) y de *release* (sin tráfico en claro); R8 con sus reglas; firma de *release* desde variables de entorno sin respaldo con la llave de *debug* | T019 | `seguridad-ci` | `assembleRelease` minificado; en *release* una solicitud `http://` se bloquea (CA-06) | ⏳ |
-| T027 | Revisión de seguridad de la app: permisos, secretos, logs, almacenamiento y R8 | T022, T026 | `seguridad-ci` | Reporte sin hallazgos críticos ni altos | ⏳ |
+| T026 | `network_security_config` de *debug* (solo `10.0.2.2` en claro) y de *release* (sin tráfico en claro); R8 con sus reglas; firma de *release* desde variables de entorno sin respaldo con la llave de *debug* | T019 | `seguridad-ci` | `assembleRelease` minificado; en *release* una solicitud `http://` se bloquea (CA-06) | ✅ |
+| T027 | Revisión de seguridad de la app: permisos, secretos, logs, almacenamiento y R8 | T022, T026 | `seguridad-ci` | Reporte sin hallazgos críticos ni altos | ✅ |
+
+> **T026** hecha en el commit `c0b7e64`: `network_security_config` en `app/src/main` (`cleartextTrafficPermitted="false"`) con `android:networkSecurityConfig` en el manifiesto, y en `app/src/debug` un `domain-config` adicional que permite en claro **solo** `10.0.2.2` (emulador). R8: `isMinifyEnabled`/`isShrinkResources` en *release* con `proguard-rules.pro` (kotlinx.serialization `**$$serializer`/`Companion`, `retrofit2.Call`/`Response`, `Continuation` y `com.google.crypto.tink.**`). Firma desde variables de entorno (`SIGNING_KEYSTORE_FILE`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`, `SIGNING_STORE_PASSWORD`): si se pide una tarea `*Release*` sin ellas, el build falla con «Falta la firma de release… Release nunca se firma con la llave de debug (T026)» — verificado (`BUILD FAILED`, exit 1). **Evidencia:** `assembleRelease` minificado → BUILD SUCCESSFUL con `mapping.txt` (42 MB); `apksigner verify` → firma **V2** con el keystore local dedicado (nunca el de debug); el XML empaquetado de *release* no contiene `10.0.2.2` ni `domain-config` (el de *debug* sí); manifiesto mergeado de *release* sin `android:debuggable`. Pipeline en verde con **94 pruebas, 0 fallos**. **Queda en T030** la evidencia runtime de CA-06 (bloqueo de `http://` en dispositivo) porque el tráfico real sale contra la API local.
+
+> **T027** hecha en el commit `ad6a18c` (reporte completo en `memoria.md`): revisión de permisos, secretos, logs, almacenamiento y R8. **1 hallazgo alto corregido:** el manifiesto no declaraba `android.permission.INTERNET` (sin él la app no puede hacer ninguna llamada en dispositivo; las pruebas MockWebServer corren en JVM y no lo detectan). Hallazgos medios corregidos: `lint` marcaba 8 errores (`LocalContextGetResourceValueCall` en `RecoverScreen` → strings izados con `stringResource`, y `ViewModelConstructorInComposable` en 2 previews → `@SuppressLint` como ya hacían Login/Register, y en 3 tests de `SmokeTest` → construcción del VM izada fuera de `setContent`, como el test de login). **Resultado:** `lint` 0 errores / 21 warnings benignos (versiones de dependencias, recursos sin usar, icono de app pendiente), sin permisos peligrosos, sin secretos en código (solo strings de prueba), sin `Log`/`println`, sin `SharedPreferences` en claro (solo `TokenStore` cifrado), R8 activo con `mapping.txt` y `apksigner` en verde. Pipeline `ktlintCheck detekt lint testDebugUnitTest assembleDebug assembleRelease` + `:core:domain:test` → **94 pruebas, 0 fallos**.
 
 ## F7 · Pruebas y verificación
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T028 | [P] Pruebas unitarias y de red: conversión a `AppError`, interceptores (MockWebServer), `HealthRepository`, `CheckApiHealthUseCase` y `TokenStore` (Robolectric) | T020–T023 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ⏳ |
-| T029 | [P] Pruebas de UI (Compose Test + Robolectric): componentes base, navegación al inicio provisional, `DiagnosticsViewModel` con Turbine y escala de fuente 2.0 | T013, T017, T024 | `qa-movil` | Pruebas en verde (CA-10) | ⏳ |
-| T038 | [P] Pruebas de mutación con `gradle-pitest-plugin` en `:core:domain` y `:core:common`; medir la línea base | T028 | `qa-movil` | `./gradlew pitest` termina; puntaje base en `memoria.md` | ⏳ |
+| T028 | [P] Pruebas unitarias y de red: conversión a `AppError`, interceptores (MockWebServer), `HealthRepository`, `CheckApiHealthUseCase` y `TokenStore` (Robolectric) | T020–T023 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ✅ |
+| T029 | [P] Pruebas de UI (Compose Test + Robolectric): componentes base, navegación al inicio provisional, `DiagnosticsViewModel` con Turbine y escala de fuente 2.0 | T013, T017, T024 | `qa-movil` | Pruebas en verde (CA-10) | ✅ |
+
+> T029 hecha: 103 pruebas verdes (0 fallos) con `ktlintCheck detekt lint testDebugUnitTest assembleDebug assembleRelease :core:domain:test` en verde. Cubre `DesignSystemComponentsTest` (5), `FontScaleTest` (2), `NavigationTest` (2: inicio provisional y pin → registro → back) y las suites existentes. Fix necesario: el `pointerInput` de limpieza vive en el `Canvas` del mapa (no en el `Box` padre) para que los pins reciban el toque; la tarjeta de cabecera cubre pins cercanos al centro, así que el flujo de navegación usa un pin visible debajo de la tarjeta (commit `7d8e0c7`).
+| T038 | [P] Pruebas de mutación con `gradle-pitest-plugin` en `:core:domain` y `:core:common`; medir la línea base | T028 | `qa-movil` | `./gradlew pitest` termina; puntaje base en `memoria.md` | ✅ |
+
+> T038 hecha: plugin `info.solidsoft.pitest` 1.19.0 en `:core:domain` y `:core:common` con `targetClasses` explícitos por paquete. `./gradlew pitest` → BUILD SUCCESSFUL. Línea base: **dominio 73% de mutación (35/48, test strength 97%, línea 71%)** y **common 33% (1/3, test strength 100%, línea 100%)** — common solo tiene tipos sellados (3 mutaciones); su primera suite (`AppResultTest`, 4 pruebas) se agregó para que PIT tuviera qué matar (commit `04cbcd2`).
 | T030 | Verificación manual en el emulador: arranque en frío medido, modo oscuro, diagnóstico contra la API local y APK de *release* sin tráfico en claro | T026, T029 | `qa-movil` | Tiempos y capturas en `memoria.md` (CA-02, CA-03, CA-04, CA-06; RNF-03) | ⏳ |
 
 ## F8 · CI/CD y publicación
