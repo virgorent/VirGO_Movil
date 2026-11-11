@@ -437,3 +437,21 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - `computePins` alterna `CompactPin` (cd `guest_pin_cd`) y `LabelledPin` (texto `"<short>, <km> km"`) segun solape; buscar pins por cd exacta con acentos es fragil (normalizacion Unicode), mejor matcher por subcadena ASCII.
 - **Pendiente:** T030/T038 (pruebas); T031-T035/T039 (CI y release, varios P); T002/T004/T036/T037.
 
+
+### 2026-11-11 - T038: linea base de mutacion con Pitest
+
+- **Autor:** equipo + opencode (`qa-movil`)
+- **Modulo / tareas:** `000-arquitectura-base` -> T038 -> (27/39)
+- **Que se hizo:**
+  - Plugin `info.solidsoft.pitest` 1.19.0 (`gradle-pitest-plugin`) en `:core:domain` y `:core:common` via catalogo de versiones (`libs.versions.toml`), con `alias(... ) apply false` en la raiz y `targetClasses` explicitos por paquete (`mx.virgo.core.domain.*`, `mx.virgo.core.common.*`): sin el filtro, el default usa `project.group` (vacio) y PIT falla con "No mutations found".
+  - `:core:common` no tenia pruebas; se agrego `AppResultTest` (4 pruebas: valor de Success/Failure, igualdad de valores) mas `testImplementation(libs.junit)`, porque PIT exige al menos una prueba que pueda matar mutaciones.
+- **Evidencia:** commit `04cbcd2`; `./gradlew pitest` -> BUILD SUCCESSFUL. Linea base: **`:core:domain` 73% de mutacion (35/48 mutaciones matadas, test strength 97% 35/36, linea 71%)**; **`:core:common` 33% (1/3, test strength 100%, linea 100%)** - solo 3 mutaciones porque el modulo son tipos sellados. Pipeline completo (`ktlintCheck detekt lint testDebugUnitTest assembleDebug assembleRelease :core:domain:test :core:common:test pitest`) -> BUILD SUCCESSFUL; **107 pruebas, 0 fallos**.
+- **Decisiones:**
+  - Primero se mide, despues se fija el umbral (plan sec. "Mutacion"): el 73% de `domain` es la referencia actual; el umbral de CI llega con T031 cuando se integre `pitest` al workflow.
+  - `common` queda con porcentaje bajo por artefacto (3 mutaciones en tipos sellados sin logica); no representa riesgo y se documenta para no fijar un umbral global ingenuo.
+- **Costo:** $0 / plugin open source corriendo en local y en CI.
+- **Aprendizaje:**
+  - Un timeout de build (15 min) puede dejar el arbol de dependencias Hilt a medias: `VirGoApplication_ComponentTreeDeps.java` perdio los `@Module` de `:core:data` (`AuthModule`, `HealthModule`) y `hiltJavaCompileDebug` fallo con `Dagger/MissingBinding` aunque el codigo estaba intacto. Fix: `gradlew :app:hiltAggregateDepsDebug --rerun-tasks` (el nombre de tarea en esta version es `hiltAggregateDeps*`, no `hiltAggregateDependencies*`).
+  - Con `build-logic` (plugins precompilados), verificar nombres de tarea reales con `gradlew :app:tasks --all` antes de diagnosticar.
+- **Pendiente:** T030 (emulador); T031/T032/T034 (workflows `.github/`, T034 requiere T033 🧑); T002/T004/T033/T035/T036/T037/T039.
+

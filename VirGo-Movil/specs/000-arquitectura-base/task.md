@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `000-arquitectura-base` |
 | Versión | 1.1.0 |
-| Estado | Aprobado. 26/39 tareas hechas. |
+| Estado | Aprobado. 27/39 tareas hechas. |
 | Fecha | 2026-10-29 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 | Constitución | v1.1.0 |
@@ -98,7 +98,9 @@
 | T029 | [P] Pruebas de UI (Compose Test + Robolectric): componentes base, navegación al inicio provisional, `DiagnosticsViewModel` con Turbine y escala de fuente 2.0 | T013, T017, T024 | `qa-movil` | Pruebas en verde (CA-10) | ✅ |
 
 > T029 hecha: 103 pruebas verdes (0 fallos) con `ktlintCheck detekt lint testDebugUnitTest assembleDebug assembleRelease :core:domain:test` en verde. Cubre `DesignSystemComponentsTest` (5), `FontScaleTest` (2), `NavigationTest` (2: inicio provisional y pin → registro → back) y las suites existentes. Fix necesario: el `pointerInput` de limpieza vive en el `Canvas` del mapa (no en el `Box` padre) para que los pins reciban el toque; la tarjeta de cabecera cubre pins cercanos al centro, así que el flujo de navegación usa un pin visible debajo de la tarjeta (commit `7d8e0c7`).
-| T038 | [P] Pruebas de mutación con `gradle-pitest-plugin` en `:core:domain` y `:core:common`; medir la línea base | T028 | `qa-movil` | `./gradlew pitest` termina; puntaje base en `memoria.md` | ⏳ |
+| T038 | [P] Pruebas de mutación con `gradle-pitest-plugin` en `:core:domain` y `:core:common`; medir la línea base | T028 | `qa-movil` | `./gradlew pitest` termina; puntaje base en `memoria.md` | ✅ |
+
+> T038 hecha: plugin `info.solidsoft.pitest` 1.19.0 en `:core:domain` y `:core:common` con `targetClasses` explícitos por paquete. `./gradlew pitest` → BUILD SUCCESSFUL. Línea base: **dominio 73% de mutación (35/48, test strength 97%, línea 71%)** y **common 33% (1/3, test strength 100%, línea 100%)** — common solo tiene tipos sellados (3 mutaciones); su primera suite (`AppResultTest`, 4 pruebas) se agregó para que PIT tuviera qué matar (commit `04cbcd2`).
 | T030 | Verificación manual en el emulador: arranque en frío medido, modo oscuro, diagnóstico contra la API local y APK de *release* sin tráfico en claro | T026, T029 | `qa-movil` | Tiempos y capturas en `memoria.md` (CA-02, CA-03, CA-04, CA-06; RNF-03) | ⏳ |
 
 ## F8 · CI/CD y publicación
