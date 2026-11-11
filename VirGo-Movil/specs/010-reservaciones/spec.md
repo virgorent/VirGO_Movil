@@ -52,7 +52,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en el backend (`virgorent/virGO_App`, `VirGo-API/specs`) |
+| Endpoint | Spec en `VirGo-API/specs` |
 |---|---|
 | `GET /api/v1/bookings` | `066-get-bookings` |
 | `GET /api/v1/bookings/:id` | `067-get-bookings-id` |

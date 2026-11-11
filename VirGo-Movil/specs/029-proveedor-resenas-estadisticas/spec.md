@@ -50,7 +50,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en el backend (`virgorent/virGO_App`, `VirGo-API/specs`) |
+| Endpoint | Spec en `VirGo-API/specs` |
 |---|---|
 | `GET /api/v1/providers/:id/reviews` | `073-get-providers-id-reviews` |
 | `POST /api/v1/reviews/:id/reply` | `075-post-reviews-id-reply` |

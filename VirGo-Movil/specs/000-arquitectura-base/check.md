@@ -23,7 +23,7 @@ Lista de verificación del módulo (Art. I.4). Cada casilla lleva su evidencia. 
 | CA | Evidencia | Estado |
 |---|---|---|
 | CA-01 | Compilación de módulos y CI (T007, T031) | ⏳ |
-| CA-02 | Arranque e inicio provisional en el emulador (T015, T017, T030) | ⏳ |
+| CA-02 | Arranque e inicio provisional en el emulador (T015, T017, T030). Evidencia: `docs/evidencia/CA-02-01-splash.png` (splash) y `docs/evidencia/CA-02-02-inicio-visitante.png` (inicio visitante), Pixel_10_Pro 2026-11-07; `am start -W` → `TotalTime 2677 ms` (emulador, debug; RNF-03 pendiente de medición en release). T030 sigue ⏳ | ✅ |
 | CA-03 | Sistema de diseño y modo oscuro (T014, T030) | ⏳ |
 | CA-04 | Diagnóstico contra la API (T024, T030) | ⏳ |
 | CA-05 | Diagnóstico en *debug* (T024) | ⏳ |
