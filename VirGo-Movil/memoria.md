@@ -495,3 +495,17 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - `git rebase --onto origin/main <ultimo-commit-sincronizado>` tras un merge por metodo merge conserva los commits locales de docs/ci sin duplicar el snapshot.
 - **Pendiente:** T032 (CodeQL), T034 (release, requiere T033), T004; borrar `ccabrera-dev8/VirGo-Movil` (scope `delete_repo`) y `motosos215-lab/VirGo-Movil`.
 
+
+### 2026-11-11 - Correccion de movil-build-test en el PR 4 (T031)
+
+- **Autor:** equipo + opencode (`seguridad-ci`)
+- **Modulo / tareas:** `000-arquitectura-base` -> T031 -> (28/39)
+- **Que se hizo:** el check `movil-build-test` del **PR #4** salio rojo en `testDebugUnitTest` (no en ktlint/detekt/lint/pitest): `DesignSystemComponentsTest > classMethod FAILED` con `UnsupportedOperationException at DefaultSdkProvider.java:174` = Robolectric 4.17 exige **Java 21** para `@Config(sdk = [36])` y el daemon de CI corría con el JDK 17 del `setup-java`. En local nunca falto porque `gradle/gradle-daemon-jvm.properties` (`toolchainVersion=21`) levanta el daemon en 21. Corregido en la misma rama commiteando ese archivo (commit `7492292`); el toolchain de compilacion sigue en 17 (`jvmTarget 17`, `sourceCompatibility` 17).
+- **Evidencia:** PR #4 con los 4 checks en verde (`movil-build-test` 7m24s); `task.md` actualizado con la evidencia real.
+- **Decisiones:** mantener JDK 17 como objetivo de compilacion y subir solo el daemon de Gradle a 21 (menor cambio que migrar todo el workflow a 21).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Paradoja local-vs-CI: un `gradle-daemon-jvm.properties` sin commitear hace que local pase y CI falle; commitear el archivo de toolchain del daemon alinea ambos entornos.
+  - Robolectric liga la version de Java requerida al SDK del `@Config` (API 36 -> Java 21); cualquier subida de SDK en tests implica revisar el JDK del CI.
+  - La evidencia en `task.md` debe escribirse solo cuando el check este en verde (Karasu senalo la afirmacion prematura).
+- **Pendiente:** aprobacion de `Karasu0001` en PR #4; T032 (CodeQL), T034 (release, requiere T033), T004.
