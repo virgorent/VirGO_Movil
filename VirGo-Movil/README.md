@@ -1,6 +1,6 @@
 # VirGo Mobile (Android)
 
-Android app for **VirGo**, a platform that connects people organizing an event with venues and service providers. This folder of the [`virGO_App`](https://github.com/virgorent/virGO_App) repository consumes the REST API from [`VirGo-API`](https://github.com/virgorent/virGO_App/tree/main/VirGo-API).
+Android app for **VirGo**, a platform that connects people organizing an event with venues and service providers. This folder of the [`VirGO_Backend`](https://github.com/virgorent/VirGO_Backend) repository consumes the REST API from [`VirGo-API`](https://github.com/virgorent/VirGO_Backend/tree/main/VirGo-API).
 
 > **Status:** base architecture approved on 2026-11-05. The Gradle scaffold is in place; there is no application code yet.
 

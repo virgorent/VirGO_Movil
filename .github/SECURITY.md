@@ -20,4 +20,4 @@ Incluye:
 
 ## Alcance
 
-Aplica a `virgorent/VirGO_Movil` (`VirGo-Movil` y gobernanza global). El backend tiene su propia política en `virgorent/virGO_App`.
+Aplica a `virgorent/VirGO_Movil` (`VirGo-Movil` y gobernanza global). El backend tiene su propia política en `virgorent/VirGO_Backend`.

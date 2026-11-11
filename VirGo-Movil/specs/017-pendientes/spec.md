@@ -57,7 +57,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en el backend (`virgorent/virGO_App`, `VirGo-API/specs`) |
+| Endpoint | Spec en el backend (`virgorent/VirGO_Backend`, `VirGo-API/specs`) |
 |---|---|
 | `GET /api/v1/events/:id/tasks` | `052-get-events-id-tasks` |
 | `POST /api/v1/events/:id/tasks` | `053-post-events-id-tasks` |

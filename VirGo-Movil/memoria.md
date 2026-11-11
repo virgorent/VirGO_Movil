@@ -38,7 +38,7 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | ADR-12 | 2026-11-03 | **Pitest** (`gradle-pitest-plugin`) en módulos JVM puros | Mutación sin dispositivo; umbral tras medir |
 | ADR-13 | 2026-11-03 | MCP permitidos: `figma` (lectura del *canvas*) y `github` | Pantallas al vuelo desde la maqueta oficial |
 | ADR-14 | 2026-11-03 | Google Play como destino futuro, con enmienda | Tiene un pago único; por ahora GitHub Releases |
-| ADR-15 | 2026-11-03 | **Repositorio único** `virgorent/virGO_App` con carpetas por proyecto | Decisión del equipo |
+| ADR-15 | 2026-11-03 | **Repositorio único** `virgorent/VirGO_Backend` con carpetas por proyecto | Decisión del equipo |
 
 ## Cambios de contrato (compartidos con Backend)
 
@@ -117,9 +117,9 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 
 - **Autor:** equipo + Claude Code (`arquitecto-movil`)
 - **Módulo / tareas:** gobernanza · `specs/000-arquitectura-base` · ninguna tarea ejecutada
-- **Qué se hizo:** no se pudo transferir `Karasu0001/virGO_App`, así que se creó `virgorent/virGO_App` vacío y se subieron `main`, `rama-apis`, `rama-backend`, `rama-movil` y `docs/sdd-virgo` con su historial. Las referencias vigentes apuntan al repositorio nuevo; las entradas anteriores de esta bitácora conservan el nombre de entonces.
+- **Qué se hizo:** no se pudo transferir `Karasu0001/virGO_App`, así que se creó `virgorent/VirGO_Backend` vacío y se subieron `main`, `rama-apis`, `rama-backend`, `rama-movil` y `docs/sdd-virgo` con su historial. Las referencias vigentes apuntan al repositorio nuevo; las entradas anteriores de esta bitácora conservan el nombre de entonces.
 - **Evidencia:** `git ls-remote` muestra los mismos commits en ambos repositorios.
-- **Decisiones:** `virgorent/virGO_App` es el repositorio oficial.
+- **Decisiones:** `virgorent/VirGO_Backend` es el repositorio oficial.
 - **Costo:** $0.
 - **Aprendizaje:** ninguno.
 - **Pendiente:** archivar `Karasu0001/virGO_App` cuando el equipo confirme; `VirGo-API` `002` P-02 (el repositorio es privado y el ruleset no aplicaría).
@@ -128,7 +128,7 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 
 - **Autor:** equipo + Claude Code (`arquitecto-movil`)
 - **Módulo / tareas:** gobernanza · ninguna tarea ejecutada
-- **Qué se hizo:** se comprobó que `virgorent/virGO_App` es público, con lo que el ruleset y los revisores de los *environments* ya están disponibles en el plan Free.
+- **Qué se hizo:** se comprobó que `virgorent/VirGO_Backend` es público, con lo que el ruleset y los revisores de los *environments* ya están disponibles en el plan Free.
 - **Evidencia:** la API pública de GitHub responde `visibility: public`. `Karasu0001/virGO_App` responde «not found».
 - **Decisiones:** se resuelve `VirGo-API` `002` P-02.
 - **Costo:** $0.
@@ -144,7 +144,7 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Decisiones:** ninguna.
 - **Costo:** $0.
 - **Aprendizaje:** ver `VirGo-API/memoria.md`.
-- **Pendiente:** usar las longitudes de [`Modelo de datos VirGo.md`](https://github.com/virgorent/virGO_App/blob/main/Modelo%20de%20datos%20VirGo.md) (sección 8) en los formularios.
+- **Pendiente:** usar las longitudes de [`Modelo de datos VirGo.md`](https://github.com/virgorent/VirGO_Backend/blob/main/Modelo%20de%20datos%20VirGo.md) (sección 8) en los formularios.
 
 ### 2026-11-05 · Aprobación de la gobernanza móvil y corrección del puerto local
 
@@ -162,7 +162,7 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Autor:** equipo + opencode (`seguridad-ci` / `dev-android`)
 - **Módulo / tareas:** `000-arquitectura-base` · T001, T003 y T005 hechas; T037 bloqueada
 - **Qué se hizo:**
-  - T001: se confirmó el remoto `https://github.com/virgorent/virGO_App.git`, la presencia de `VirGo-Movil/.gitignore` y `README.md`, y que `git check-ignore VirGo-Movil/local.properties` lo ignora.
+  - T001: se confirmó el remoto `https://github.com/virgorent/VirGO_Backend.git`, la presencia de `VirGo-Movil/.gitignore` y `README.md`, y que `git check-ignore VirGo-Movil/local.properties` lo ignora.
   - T003: se agregó `VirGo-Movil/.editorconfig` con `ktlint_official`, longitud máxima de 120 y estilo Kotlin; el bloque `gradle` de `VirGo-Movil` ya existía en `.github/dependabot.yml`.
   - T005: se creó el wrapper de Gradle 9.8.2, `settings.gradle.kts`, `build.gradle.kts`, `gradle.properties` y `gradle/libs.versions.toml` con AGP 9.5.1, Kotlin 2.4.10, KSP 2.3.13, Hilt 2.60.1 y Compose BOM 2026.09.00. Se usa Kotlin integrado de AGP 9 en módulos Android y KGP 2.4.10 para JVM.
 - **Evidencia:** `./gradlew help` termina en `BUILD SUCCESSFUL`; `git check-ignore -v VirGo-Movil/local.properties` responde con la regla de `.gitignore`.

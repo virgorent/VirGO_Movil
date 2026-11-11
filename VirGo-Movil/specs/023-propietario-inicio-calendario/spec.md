@@ -62,7 +62,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en el backend (`virgorent/virGO_App`, `VirGo-API/specs`) |
+| Endpoint | Spec en el backend (`virgorent/VirGO_Backend`, `VirGo-API/specs`) |
 |---|---|
 | `GET /api/v1/venues/:id/availability` | `031-get-venues-id-availability` |
 | `POST /api/v1/venues/:id/blocks` | `032-post-venues-id-blocks` |
