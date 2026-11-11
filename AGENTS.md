@@ -30,7 +30,7 @@
 
 ## 3. Fases
 
-Este repositorio es el **frontend**. El backend vive en [`virgorent/virGO_App`](https://github.com/virgorent/virGO_App).
+Este repositorio es el **frontend**. El backend vive en [`virgorent/VirGO_Backend`](https://github.com/virgorent/VirGO_Backend).
 
 
 | Fase | Objetivo | Estado |

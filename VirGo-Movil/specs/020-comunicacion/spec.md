@@ -55,7 +55,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en `VirGo-API/specs` |
+| Endpoint | Spec en el backend (`virgorent/VirGO_Backend`, `VirGo-API/specs`) |
 |---|---|
 | `GET /api/v1/conversations` | `084-get-conversations` |
 | `POST /api/v1/conversations` | `085-post-conversations` |

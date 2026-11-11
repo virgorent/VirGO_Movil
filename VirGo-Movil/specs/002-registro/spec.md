@@ -56,7 +56,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en `VirGo-API/specs` |
+| Endpoint | Spec en el backend (`virgorent/VirGO_Backend`, `VirGo-API/specs`) |
 |---|---|
 | `POST /api/v1/auth/register` | `005-auth-register` |
 | `POST /api/v1/auth/email/verify` | `014-post-auth-email-verify` |

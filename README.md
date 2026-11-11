@@ -6,4 +6,4 @@
 |---|---|---|
 | Android app | [`VirGo-Movil/`](VirGo-Movil/README.md) | Kotlin, Jetpack Compose |
 
-The backend (API and MongoDB) lives in [`virgorent/virGO_App`](https://github.com/virgorent/virGO_App). Global SDD rules are in [`constitution.md`](constitution.md) and [`AGENTS.md`](AGENTS.md); they are kept aligned with the backend repository. Project documentation is written in Spanish.
+The backend (API and MongoDB) lives in [`virgorent/VirGO_Backend`](https://github.com/virgorent/VirGO_Backend). Global SDD rules are in [`constitution.md`](constitution.md) and [`AGENTS.md`](AGENTS.md); they are kept aligned with the backend repository. Project documentation is written in Spanish.

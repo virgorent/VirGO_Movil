@@ -52,7 +52,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en `VirGo-API/specs` |
+| Endpoint | Spec en el backend (`virgorent/VirGO_Backend`, `VirGo-API/specs`) |
 |---|---|
 | `GET /api/v1/events/:id/collaborators` | `056-get-events-id-collaborators` |
 | `POST /api/v1/events/:id/collaborators` | `057-post-events-id-collaborators` |
