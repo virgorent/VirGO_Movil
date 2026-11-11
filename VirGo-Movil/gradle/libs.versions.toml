@@ -1,9 +1,9 @@
 [versions]
-agp = "9.0.0"
-kotlin = "2.4.10"
+agp = "9.5.1"
+kotlin = "2.4.21"
 ksp = "2.3.13"
 hilt = "2.60.1"
-composeBom = "2026.06.01"
+composeBom = "2026.09.00"
 ktlint = "14.2.0"
 detekt = "1.23.8"
 activity = "1.13.0"
