@@ -1,5 +1,10 @@
 plugins {
     id("virgo.jvm.library")
+    alias(libs.plugins.pitest)
+}
+
+pitest {
+    targetClasses.set(listOf("mx.virgo.core.domain.*"))
 }
 
 dependencies {
