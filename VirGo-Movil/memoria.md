@@ -475,3 +475,23 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Colaboradores del repo de la org:** `Karasu0001` y `ccabrera-dev8`; el equipo de Play Store se invita con `gh api -X PUT repos/virgorent/VirGO_Movil/collaborators/<usuario> -f permission=push`.
 - **Pendiente:** merge del PR #3 (falta la aprobacion de `Karasu0001`; el autor no puede aprobar su propio PR); repetir snapshot al cierre de T036; borrar `ccabrera-dev8/VirGo-Movil` y `motosos215-lab/VirGo-Movil`.
 
+
+### 2026-11-11 - T031 y cambio de repositorio canonico del movil
+
+- **Autor:** equipo + opencode (`seguridad-ci`)
+- **Modulo / tareas:** `000-arquitectura-base` -> T031 -> (28/39)
+- **Que se hizo:**
+  - **El movil ya no vive en el monorepo**: `virgorent/virGO_App` quedo solo como backend (`VirGO_Backend`) y el codigo del movil trabaja ahora en **`virgorent/VirGO_Movil`** (repo de la organizacion, app bajo `VirGo-Movil/`). El workspace local re-enraizo en la misma ruta `C:\Users\cesar\virgo\virGO_App` (origin -> `VirGO_Movil`); `VirGo-API/` y `VirGo-Database/` salieron del disco (su historia queda en la rama `archive/001-flujo-visitante` del repo nuevo y en el backend).
+  - Snapshot 27/39 subido via **PR #3** (aprobado y mergeado por `Karasu0001`); los commits locales T001-T038 se preservaron como `archive/001-flujo-visitante`.
+  - **T031:** `.github/workflows/movil-ci.yml` en el repo nuevo: JDK 17, `setup-gradle`, job `changes` (`dorny/paths-filter` sobre `VirGo-Movil/**`), job `movil-build-test` con `ktlintCheck detekt lint testDebugUnitTest pitest assembleDebug`, artefactos (APK debug + reporte Pitest) y `concurrency`. Actions pinneados por SHA.
+- **Evidencia:** PR **#4** (CA-08) con checks `gitleaks`, `dependency review`, `changes` y `movil-build-test`; commits `88c46fc` (codigo) + docs.
+- **Decisiones:**
+  - Flujo de trabajo en el repo nuevo: rama por tarea -> **PR** -> aprobacion de `Karasu0001` (el ruleset `main-protection` no permite auto-aprobacion ni bypass); la identidad de commits es `ccabrera-dev8@users.noreply.github.com` para que quede atribuida (si no, `require_extra_approval_for_unattributed_changes` exigiria 2 aprobaciones).
+  - `dependency graph` estaba apagado en el repo nuevo y `dependency review` fallaba; se habilito con `PUT /repos/{owner}/{repo}/vulnerability-alerts` (no hay endpoint REST directo para ese toggle).
+  - El `security.yml` del repo nuevo ya era la version con deteccion de manifiestos; no requirio cambios.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Un repo nuevo dentro de una organizacion puede heredar el ruleset `main-protection` sin `bypass_actors`: ni siquiera un admin fusiona sin aprobacion ajena; planificar el flujo PR + revisor desde el inicio.
+  - `git rebase --onto origin/main <ultimo-commit-sincronizado>` tras un merge por metodo merge conserva los commits locales de docs/ci sin duplicar el snapshot.
+- **Pendiente:** T032 (CodeQL), T034 (release, requiere T033), T004; borrar `ccabrera-dev8/VirGo-Movil` (scope `delete_repo`) y `motosos215-lab/VirGo-Movil`.
+
