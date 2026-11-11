@@ -61,7 +61,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en `VirGo-API/specs` |
+| Endpoint | Spec en el backend (`virgorent/virGO_App`, `VirGo-API/specs`) |
 |---|---|
 | `POST /api/v1/providers` | `037-post-providers` |
 | `GET /api/v1/providers/me` | `036-get-providers-me` |

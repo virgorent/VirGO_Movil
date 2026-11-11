@@ -25,4 +25,3 @@
 ## Datos y validaciones
 
 - [ ] Todo campo de texto nuevo tiene longitud máxima y sus pruebas.
-- [ ] `python VirGo-API/db/tools/check_schema.py` pasa, si cambió el esquema.

@@ -48,7 +48,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en `VirGo-API/specs` |
+| Endpoint | Spec en el backend (`virgorent/virGO_App`, `VirGo-API/specs`) |
 |---|---|
 | `GET /api/v1/assistant/messages` | `093-get-assistant-messages` |
 | `POST /api/v1/assistant/messages` | `094-post-assistant-messages` |

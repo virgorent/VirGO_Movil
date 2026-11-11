@@ -144,7 +144,7 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Decisiones:** ninguna.
 - **Costo:** $0.
 - **Aprendizaje:** ver `VirGo-API/memoria.md`.
-- **Pendiente:** usar las longitudes de `Modelo de datos VirGo.md` (sección 8) en los formularios.
+- **Pendiente:** usar las longitudes de [`Modelo de datos VirGo.md`](https://github.com/virgorent/virGO_App/blob/main/Modelo%20de%20datos%20VirGo.md) (sección 8) en los formularios.
 
 ### 2026-11-05 · Aprobación de la gobernanza móvil y corrección del puerto local
 

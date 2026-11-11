@@ -11,8 +11,7 @@
 - [ ] No hay secretos, código muerto ni `TODO` sin contexto.
 
 ### Datos
-- [ ] Todo texto de entrada tiene longitud máxima en el DTO y en `db/schema/`.
-- [ ] `python db/tools/check_schema.py` pasa.
+- [ ] Todo campo de texto tiene longitud máxima, igual a la del contrato de la API.
 
 ### Pruebas
 - [ ] Unitarias, integración y seguridad en verde.

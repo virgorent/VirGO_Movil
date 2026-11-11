@@ -26,19 +26,18 @@
 | CI/CD compartido | `.github/` | Workflows, Dependabot, ruleset y plantilla de PR |
 | Documentación de apoyo | `docs/` | Notas y diagramas (README) |
 | Scripts de apoyo | `scripts/` | Automatizaciones locales (README) |
-| Backend | `VirGo-API/` | Gobernanza y specs `NNN-…` propios |
 | Móvil | `VirGo-Movil/` | Gobernanza y specs `NNN-…` propios |
-| Base de datos | `VirGo-Database/` | Catálogo de MongoDB; specs `NNN-…` propios |
-| Datos | `Modelo de datos VirGo.md` | Modelo de MongoDB compartido |
 
 ## 3. Fases
+
+Este repositorio es el **frontend**. El backend vive en [`virgorent/virGO_App`](https://github.com/virgorent/virGO_App).
+
 
 | Fase | Objetivo | Estado |
 |---|---|---|
 | **nv-00** | Constitución SDD y reglas globales | Cumplido (2026-11-04) |
 | **nv-01** | Arquitectura base SDD | Cumplido (2026-11-04) |
 | **nv-02** | Gobernanza global de proyectos | Cumplido con pendiente operativo (aplicar ruleset) |
-| **VirGo-API** | Backend .NET 10 (specs `000`–`004`) | Especificación |
 | **VirGo-Movil** | App Android (spec `000`) | Especificación |
 
 ## 4. Convenciones

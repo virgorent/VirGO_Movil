@@ -52,7 +52,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en `VirGo-API/specs` |
+| Endpoint | Spec en el backend (`virgorent/virGO_App`, `VirGo-API/specs`) |
 |---|---|
 | `POST /api/v1/auth/password/forgot` | `011-post-auth-password-forgot` |
 | `POST /api/v1/auth/password/reset` | `012-post-auth-password-reset` |

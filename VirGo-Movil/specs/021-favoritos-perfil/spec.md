@@ -60,7 +60,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en `VirGo-API/specs` |
+| Endpoint | Spec en el backend (`virgorent/virGO_App`, `VirGo-API/specs`) |
 |---|---|
 | `GET /api/v1/users/me` | `006-users-me` |
 | `PATCH /api/v1/users/me` | `015-patch-users-me` |

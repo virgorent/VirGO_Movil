@@ -60,7 +60,7 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en `VirGo-API/specs` |
+| Endpoint | Spec en el backend (`virgorent/virGO_App`, `VirGo-API/specs`) |
 |---|---|
 | `POST /api/v1/quotes` | `008-quotes-create` |
 | `GET /api/v1/quotes` | `060-get-quotes` |
