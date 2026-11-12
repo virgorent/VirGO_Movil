@@ -5,7 +5,7 @@
 | Versión | 1.0.0 |
 | Ratificada | 2026-11-04 |
 | Estado | Vigente |
-| Ámbito | Gobernanza global de VirGo, copiada en `virgorent/VirGO_Movil` (frontend) y `virgorent/virGO_App` (backend) |
+| Ámbito | Gobernanza global de VirGo, copiada en `virgorent/VirGO_Movil` (frontend) y `virgorent/VirGO_Backend` (backend) |
 
 > Rector SDD. Ante conflicto con otro artefacto, **manda esta constitución**.
 > Filosofía madre: base SDD para proyecto Backend y Móvil, arquitectura ejecutable sin funcionalidad específica.
@@ -93,4 +93,4 @@
 
 - Esta constitución manda en los **principios generales**. La de cada proyecto los desarrolla y manda en lo **técnico** de ese proyecto.
 - `.github/` vive en la raíz y se comparte: GitHub no lee esa carpeta dentro de subcarpetas.
-- El backend (`VirGo-API` y `VirGo-Database`) vive en [`virgorent/virGO_App`](https://github.com/virgorent/virGO_App). El contrato entre ambos es el OpenAPI que publica la API.
+- El backend (`VirGo-API` y `VirGo-Database`) vive en [`virgorent/VirGO_Backend`](https://github.com/virgorent/VirGO_Backend). El contrato entre ambos es el OpenAPI que publica la API.
