@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `000-arquitectura-base` |
 | Versión | 1.1.0 |
-| Estado | Aprobado. 28/39 tareas hechas. |
+| Estado | Aprobado. 29/39 tareas hechas. |
 | Fecha | 2026-10-29 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 | Constitución | v1.1.0 |
@@ -110,7 +110,9 @@
 | T031 | `.github/workflows/movil-ci.yml`: JDK 17, `setup-gradle`, jobs `changes` y `movil-build-test` con `ktlintCheck detekt lint testDebugUnitTest pitest assembleDebug`, artefactos (APK de *debug* y reporte de Pitest) y `concurrency` | T028, T029, T038 | `seguridad-ci` | PR de prueba con todos los checks en verde (CA-08) | ✅ |
 
 > T031 hecha: workflow en `.github/workflows/movil-ci.yml` del repositorio `virgorent/VirGO_Movil` (el móvil ya no vive en el monorepo). SHA pinneados de actions, job `changes` con `dorny/paths-filter` sobre `VirGo-Movil/**` y `working-directory: VirGo-Movil`. Evidencia CA-08: **PR #4** con checks `gitleaks`, `dependency review`, `changes` y `movil-build-test` en verde (7m24s). El primer intento falló en `testDebugUnitTest`: Robolectric 4.17 con `@Config(sdk = [36])` exige Java 21 y el daemon de CI corría con el JDK 17 del `setup-java`; se corrigió en la misma rama con `gradle/gradle-daemon-jvm.properties` (`toolchainVersion=21`, commit `7492292`) — el toolchain de compilación sigue en 17 (`jvmTarget 17`).
-| T032 | [P] `.github/workflows/movil-codeql.yml` (`java-kotlin`) | T031 | `seguridad-ci` | Check de CodeQL en el PR sin alertas altas | ⏳ |
+| T032 | [P] `.github/workflows/movil-codeql.yml` (`java-kotlin`) | T031 | `seguridad-ci` | Check de CodeQL en el PR sin alertas altas | ✅ |
+
+> T032 hecha: `.github/workflows/movil-codeql.yml` commiteado en este mismo PR #4 (commit `5a31fdd`) de `virgorent/VirGO_Movil`. Disparadores `pull_request` y `push` sobre `main` más cron semanal; lenguaje `java-kotlin` con `github/codeql-action` pinneado en `33d7b85da1a04171e211befe2c739303b9a4c066` (v4.39.3), build explícito `./gradlew assembleDebug` con `working-directory: VirGo-Movil`, permisos `security-events: write` solo en el job y `concurrency` que cancela corridas previas del mismo PR. Evidencia: checks `analyze` (workflow `movil-codeql`, run `43239028981`) y `CodeQL` en verde en el PR #4, y 0 alertas de code scanning (`gh api /repos/virgorent/VirGO_Movil/code-scanning/alerts` → `0`), es decir, sin alertas altas.
 | T033 | 🧑 Generar el keystore de *release* y guardarlo en GitHub Secrets (`SIGNING_*`); crear la variable `VIRGO_API_BASE_URL` con la URL HTTPS que entrega T210 del backend | T026 | `seguridad-ci` | Secretos y variable visibles en GitHub; respaldo del keystore confirmado (P-02) | ⏳ |
 | T034 | `.github/workflows/movil-release.yml`: **solo `workflow_dispatch`** desde `main` con la versión como entrada → `assembleRelease`, `apksigner verify` y `gh release create vX.Y.Z` con el APK | T031, T033 | `seguridad-ci` | YAML válido; sin secretos impresos en los logs | ⏳ |
 | T035 | 🧑 Primer release `v0.1.0` con *Run workflow*: descargar, instalar y hacer la prueba de humo (la app abre y el diagnóstico llega a la API de producción por HTTPS) | T034 | `seguridad-ci` + `qa-movil` | Release publicado con el APK firmado, la versión y el commit (CA-09) | ⏳ |

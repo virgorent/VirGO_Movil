@@ -509,3 +509,15 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Robolectric liga la version de Java requerida al SDK del `@Config` (API 36 -> Java 21); cualquier subida de SDK en tests implica revisar el JDK del CI.
   - La evidencia en `task.md` debe escribirse solo cuando el check este en verde (Karasu senalo la afirmacion prematura).
 - **Pendiente:** aprobacion de `Karasu0001` en PR #4; T032 (CodeQL), T034 (release, requiere T033), T004.
+
+
+### 2026-11-12 - T032: workflow de CodeQL dentro del PR 4
+
+- **Autor:** equipo + opencode (`seguridad-ci`)
+- **Módulo / tareas:** `000-arquitectura-base` -> T032 -> (29/39)
+- **Qué se hizo:** `.github/workflows/movil-codeql.yml` (lenguaje `java-kotlin`) quedó commiteado en la rama `feat/001-flujo-visitante` dentro del **PR #4** (commit `5a31fdd`, identidad `Cesar Augusto <ccabrera-dev8@users.noreply.github.com>`): disparadores `pull_request` y `push` sobre `main` más cron semanal (`0 7 * * 1`), `github/codeql-action` pinneado en `33d7b85da1a04171e211befe2c739303b9a4c066` (v4.39.3), build explícito `./gradlew assembleDebug` con `working-directory: VirGo-Movil`, permisos `security-events: write` a nivel de job y `concurrency` que cancela corridas previas del mismo PR.
+- **Evidencia:** en PR #4 los checks `analyze` (workflow `movil-codeql`, run `43239028981`), `CodeQL`, `gitleaks`, `dependency review`, `changes` y `movil-build-test` en verde; `gh api /repos/virgorent/VirGO_Movil/code-scanning/alerts` devuelve `0` alertas (sin alertas altas).
+- **Decisiones:** al ya estar el archivo en la rama del PR #4, T032 se cierra en ese mismo PR en lugar de abrir una rama nueva; queda registrado aquí para no romper la trazabilidad `spec -> plan -> task -> check`.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:** al commitear un workflow en `.github/workflows/` de una rama con PR abierto, GitHub lo ejecuta de inmediato en ese PR; revisar permisos (`security-events: write`) y los pines SHA antes de subirlo evita re-trabajar el PR.
+- **Pendiente:** aprobación de `Karasu0001` en PR #4; T034 (release, requiere T033 🧑), T004; borrar `ccabrera-dev8/VirGo-Movil` (scope `delete_repo`).
