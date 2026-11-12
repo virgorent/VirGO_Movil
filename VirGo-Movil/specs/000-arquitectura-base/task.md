@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `000-arquitectura-base` |
 | Versión | 1.1.0 |
-| Estado | Aprobado. 31/40 tareas hechas. |
+| Estado | Aprobado. 32/40 tareas hechas. |
 | Fecha | 2026-10-29 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 | Constitución | v1.1.1 |
@@ -78,9 +78,11 @@
 |---|---|---|---|---|---|
 | T024 | `DiagnosticsViewModel` y `DiagnosticsScreen` en el *source set* `debug`: versión de la app, `API_BASE_URL`, estado y latencia de `/health`, y errores convertidos a textos en español | T017, T023 | `dev-android` | Con la API local en marcha muestra «API disponible» (CA-04); con la API apagada, un mensaje claro sin cierre (CA-05) | 🔄 |
 | T025 | Menú de desarrollo en la barra superior (solo *debug*) para abrir el diagnóstico | T024 | `dev-android` | El menú no existe en el APK de *release* | ✅ |
-| T040 | [P] Timber solo en *debug*: plantar un `Tree` de plantilla en `VirGoApplication` (nivel `debug`), sin imprimir tokens ni cuerpos de respuesta; en *release* no se planta ningún árbol (Art. IX) | T009 | `dev-android` | `ktlintCheck detekt` en verde; sin `Log`/`println` en el código (revisión T027) | ⏳ |
+| T040 | [P] Timber solo en *debug*: plantar un `Tree` de plantilla en `VirGoApplication` (nivel `debug`), sin imprimir tokens ni cuerpos de respuesta; en *release* no se planta ningún árbol (Art. IX) | T009 | `dev-android` | `ktlintCheck detekt` en verde; sin `Log`/`println` en el código (revisión T027) | ✅ |
 
 > **T025** ✅ y **T024** 🔄 en el commit `b826b05`: `DiagnosticsRoute`/`DiagnosticsViewModel`/`DiagnosticsScreen` y los textos viven solo en `app/src/debug` (`src/debug/res/values/strings.xml`); `DevMenu` y `developmentDestinations(...)` tienen implementación no-op `= Unit` en `app/src/release`; el menú se muestra en el `topBar` del `Scaffold` solo en el inicio provisional. Pruebas en `app/src/testDebug` (5): `DiagnosticsViewModelTest` con Turbine (carga → éxito, carga → error, reintento) y `DiagnosticsScreenTest` con Robolectric («API disponible» y mensaje de error sin cierre). **Evidencia T025:** en `assembleRelease` no existe ninguna clase `Diagnostics*`, el `DevMenu` de release es un stub sin `DropdownMenu` y los `values.xml` de release no contienen `diagnostics_*` ni `dev_menu_*` (sí los de `main`). **Pendiente en T024:** la evidencia real CA-04/CA-05 («API disponible» con la API local y mensaje claro con ella apagada) requiere `VirGo-API` corriendo (`dotnet run` + `GET /health`); el backend todavía no tiene código (T009), así que queda para T030.
+
+> **T040** hecha: Timber `5.0.1` en el version catalog (`com.jakewharton.timber:timber`) y `implementation(libs.timber)` en `app/build.gradle.kts`; en `VirGoApplication.onCreate` se planta `Timber.DebugTree()` **solo** dentro de `if (BuildConfig.DEBUG)`, por lo que en *release* no se planta ningún árbol y R8 elimina el código muerto (ninguna llamada a `Timber.d(...)` existe todavía; los únicos puntos de registro son este `plant`). **Evidencia:** pipeline local completo en verde — `ktlintCheck detekt lint` (7m06s), `testDebugUnitTest` + `assembleDebug` + `assembleRelease` + `:core:domain:test` + `:core:common:test` + `pitest` → **BUILD SUCCESSFUL** (7m06s); grep sobre `*.kt` sin `Log.[vdiew](`, `println(` ni `System.out.print` (revisión T027), y `Timber.` aparece una sola vez, en `VirGoApplication.kt`.
 
 ## F6 · Seguridad de la compilación
 

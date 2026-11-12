@@ -7,17 +7,17 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | Campo | Valor |
 |---|---|
 | Constitución | v1.1.1 (enmienda 2026-11-12; v1.1.0 aprobada el 2026-11-05) |
-| Módulo en curso | `000-arquitectura-base`: 31/40 tareas hechas (detalle y estados en `task.md`) |
-| Tareas | 31 / 40 hechas (T037 bloqueada por MCP) |
+| Módulo en curso | `000-arquitectura-base`: 32/40 tareas hechas (detalle y estados en `task.md`) |
+| Tareas | 32 / 40 hechas (T037 bloqueada por MCP) |
 | `API_BASE_URL` de *release* | Pendiente (la entrega `VirGo-API` en `002`: T210) |
 | Última versión publicada | Ninguna |
-| Siguiente paso | Cerrar T004 y aprobar el PR #4; T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030 y T037 |
+| Siguiente paso | PR de T040 (`feat/000-timber`) a verde y fusionado; después T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030, T037, T035 y T036 |
 
 ## Módulos
 
 | Módulo | Estado | Notas |
 |---|---|---|
-| `000-arquitectura-base` | 🚧 Aprobado; 31/40 tareas hechas | Base técnica sin pantallas del negocio |
+| `000-arquitectura-base` | 🚧 Aprobado; 32/40 tareas hechas | Base técnica sin pantallas del negocio |
 | `001-…` pantallas | 🚧 `001`–`004` aprobados (retroactivo 2026-11-12) e implementados; `005+` sin iniciar | Un spec atómico por pantalla o flujo, al vuelo; los siguientes usan el JSON de `VirGo-API` |
 
 ## Decisiones (ADR)
@@ -560,3 +560,17 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Los blockquotes de evidencia dentro de `task.md` rompen las tablas al renderizar; la evidencia va al final de cada sección, después de la última fila.
   - Con dos pasadas (diagnóstico → corrección → re-verificación) el resultado «Alineado» queda respaldado en lugar de autodeclarado.
 - **Pendiente:** aprobación de `Karasu0001` en PR #4; T040 (Timber), T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030, T037, T035 y T036.
+
+
+### 2026-11-12 - T040: Timber solo en debug
+
+- **Autor:** equipo + opencode (`dev-android`)
+- **Módulo / tareas:** `000-arquitectura-base` -> T040 -> (32/40)
+- **Qué se hizo:** Timber `5.0.1` añadido al version catalog (`com.jakewharton.timber:timber`) y `implementation(libs.timber)` en `app/build.gradle.kts`. En `VirGoApplication.onCreate` se planta `Timber.plant(Timber.DebugTree())` **solo** dentro de `if (BuildConfig.DEBUG)`: en *release* no se planta ningún árbol y R8 elimina el código muerto. Hoy no existe ninguna llamada `Timber.d(...)` en el código, así que no puede imprimirse ningún token ni cuerpo de respuesta. Rama `feat/000-timber` desde `main` (`de58165`).
+- **Evidencia:** pipeline local completo en verde — `ktlintCheck detekt lint` (7m06s) y `testDebugUnitTest` + `assembleDebug` + `assembleRelease` + `:core:domain:test` + `:core:common:test` + `pitest` → **BUILD SUCCESSFUL** (7m06s); grep sobre `*.kt`: 0 ocurrencias de `Log.[vdiew](`, `println(` o `System.out.print` (revisión T027) y `Timber.` una sola vez (`VirGoApplication.kt`).
+- **Decisiones:** dependencia `implementation` (no `debugImplementation`) con el guardia `BuildConfig.DEBUG` en `onCreate`, porque `VirGoApplication` vive en el source set `main` y debe compilar también en *release*; sin el guardia, en *release* se plantaría un árbol (violaría Art. IX).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - «Solo debug» en una clase de `main` se resuelve con `BuildConfig.DEBUG` + R8, no con `debugImplementation`: esta última rompería la compilación de *release* al no existir la clase en ese classpath.
+  - El guardia hace que R8 pueda eliminar Timber completo del APK de *release* (sin árbol plantado no hay código alcanzable), lo que convierte el criterio del Art. IX en verificable con el `mapping.txt`.
+- **Pendiente:** checks del PR de T040 en verde y fusión; T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030, T037, T035 y T036.
