@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `000-arquitectura-base` |
 | Versión | 1.1.0 |
-| Estado | Aprobado. 29/39 tareas hechas. |
+| Estado | Aprobado. 30/39 tareas hechas. |
 | Fecha | 2026-10-29 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 | Constitución | v1.1.0 |
@@ -113,8 +113,12 @@
 | T032 | [P] `.github/workflows/movil-codeql.yml` (`java-kotlin`) | T031 | `seguridad-ci` | Check de CodeQL en el PR sin alertas altas | ✅ |
 
 > T032 hecha: `.github/workflows/movil-codeql.yml` commiteado en este mismo PR #4 (commit `5a31fdd`) de `virgorent/VirGO_Movil`. Disparadores `pull_request` y `push` sobre `main` más cron semanal; lenguaje `java-kotlin` con `github/codeql-action` pinneado en `33d7b85da1a04171e211befe2c739303b9a4c066` (v4.39.3), build explícito `./gradlew assembleDebug` con `working-directory: VirGo-Movil`, permisos `security-events: write` solo en el job y `concurrency` que cancela corridas previas del mismo PR. Evidencia: checks `analyze` (workflow `movil-codeql`, run `43239028981`) y `CodeQL` en verde en el PR #4, y 0 alertas de code scanning (`gh api /repos/virgorent/VirGO_Movil/code-scanning/alerts` → `0`), es decir, sin alertas altas.
-| T033 | 🧑 Generar el keystore de *release* y guardarlo en GitHub Secrets (`SIGNING_*`); crear la variable `VIRGO_API_BASE_URL` con la URL HTTPS que entrega T210 del backend | T026 | `seguridad-ci` | Secretos y variable visibles en GitHub; respaldo del keystore confirmado (P-02) | ⏳ |
-| T034 | `.github/workflows/movil-release.yml`: **solo `workflow_dispatch`** desde `main` con la versión como entrada → `assembleRelease`, `apksigner verify` y `gh release create vX.Y.Z` con el APK | T031, T033 | `seguridad-ci` | YAML válido; sin secretos impresos en los logs | ⏳ |
+| T033 | 🧑 Generar el keystore de *release* y guardarlo en GitHub Secrets (`SIGNING_*`); crear la variable `VIRGO_API_BASE_URL` con la URL HTTPS que entrega T210 del backend | T026 | `seguridad-ci` | Secretos y variable visibles en GitHub; respaldo del keystore confirmado (P-02) | 🔄 |
+
+> T033 en curso: keystore de release `virgo-release.jks` (alias `virgo-release`, certificado `CN=VirGo Local, O=VirGo`) y sus 4 secretos en `virgorent/VirGO_Movil` — `SIGNING_KEYSTORE_BASE64`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`, `SIGNING_STORE_PASSWORD` — visibles con `gh secret list` (2026-11-12). Firma probada en local con el keystore real: `SIGNING_*=… ./gradlew assembleRelease` → `BUILD SUCCESSFUL` (1m31s) y `apksigner verify` → exit 0. **Falta:** la variable `VIRGO_API_BASE_URL` (T210 del backend sigue sin desplegar: «AWS … todavía sin desplegar con URL HTTPS», `VirGO_Backend/docs/ESTADO-PROYECTO.md`) y el respaldo del keystore (P-02): el archivo vive en `Temp\opencode\` y requiere custodia humana.
+| T034 | `.github/workflows/movil-release.yml`: **solo `workflow_dispatch`** desde `main` con la versión como entrada → `assembleRelease`, `apksigner verify` y `gh release create vX.Y.Z` con el APK | T031, T033 | `seguridad-ci` | YAML válido; sin secretos impresos en los logs | ✅ |
+
+> T034 hecha: `.github/workflows/movil-release.yml` en la raíz del repositorio (commit `c7793ed`): solo `workflow_dispatch` con entrada `version` validada (`^[0-9]+\.[0-9]+\.[0-9]+$`), job condicionado a `refs/heads/main`, SHA pinneados de `checkout`, `setup-java` y `setup-gradle` (los mismos de `movil-ci.yml`), keystore decodificado desde `SIGNING_KEYSTORE_BASE64` hacia `$RUNNER_TEMP`, `assembleRelease` con `SIGNING_*` y `vars.VIRGO_API_BASE_URL`, `apksigner verify --print-certs` y `gh release create vX.Y.Z` con `GH_TOKEN` (`permissions: contents: write` solo en el job). Los secretos se pasan por `env:` en cada paso, nunca interpolados dentro del `run`, por lo que no se imprimen en los logs. Evidencia: `actionlint` v1.7.12 → exit 0 y `yaml.safe_load` → YAML OK; el workflow no aparece en `gh workflow list` desde una rama distinta de la predeterminada (GitHub solo registra `workflow_dispatch` desde `main`), su ejecución real es T035.
 | T035 | 🧑 Primer release `v0.1.0` con *Run workflow*: descargar, instalar y hacer la prueba de humo (la app abre y el diagnóstico llega a la API de producción por HTTPS) | T034 | `seguridad-ci` + `qa-movil` | Release publicado con el APK firmado, la versión y el commit (CA-09) | ⏳ |
 
 ## F9 · Cierre

@@ -521,3 +521,18 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Costo:** $0 / solo tiempo de CI.
 - **Aprendizaje:** al commitear un workflow en `.github/workflows/` de una rama con PR abierto, GitHub lo ejecuta de inmediato en ese PR; revisar permisos (`security-events: write`) y los pines SHA antes de subirlo evita re-trabajar el PR.
 - **Pendiente:** aprobación de `Karasu0001` en PR #4; T034 (release, requiere T033 🧑), T004; borrar `ccabrera-dev8/VirGo-Movil` (scope `delete_repo`).
+
+
+### 2026-11-12 - T033/T034: secretos de firma y workflow de release
+
+- **Autor:** equipo + opencode (`seguridad-ci`)
+- **Módulo / tareas:** `000-arquitectura-base` -> T033 (en curso) + T034 -> (30/39)
+- **Qué se hizo:** los 4 secretos de firma se subieron a `virgorent/VirGO_Movil` (`SIGNING_KEYSTORE_BASE64` con el keystore `virgo-release.jks`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`, `SIGNING_STORE_PASSWORD`) y se commiteó `.github/workflows/movil-release.yml` en `feat/001-flujo-visitante` (commit `c7793ed`, dentro del PR #4): solo `workflow_dispatch` con entrada `version` validada como `X.Y.Z`, job condicionado a `refs/heads/main`, SHA pinneados de `checkout`/`setup-java`/`setup-gradle` (los mismos de `movil-ci.yml`), decode del keystore hacia `$RUNNER_TEMP`, `assembleRelease` con `SIGNING_*` y `vars.VIRGO_API_BASE_URL`, `apksigner verify --print-certs` y `gh release create vX.Y.Z` con `GH_TOKEN`.
+- **Evidencia:** `gh secret list` con los 4 secretos; `assembleRelease` local en verde (1m31s) con el keystore real y `apksigner verify` → exit 0 (`CN=VirGo Local, O=VirGo`, SHA-256 `22578bc3…`); `actionlint` v1.7.12 → exit 0 y `yaml.safe_load` → YAML OK.
+- **Decisiones:** la variable `VIRGO_API_BASE_URL` NO se crea todavía: el backend sigue sin desplegar (T210 pendiente) y `vars.VIRGO_API_BASE_URL` vacío compila igual porque la validación `https://` solo corre si la variable está definida; el workflow entra en el PR #4 por la misma razón que T032 (evitar conflictos de `task.md`/`memoria.md` entre ramas).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Un workflow solo `workflow_dispatch` no aparece en `gh workflow list` mientras vive en una rama distinta de la predeterminada: GitHub lo registra al llegar a `main`; la validación previa útil es `actionlint` + `yaml.safe_load`.
+  - Pasar cada secreto por `env:` en su paso (nunca `${{ secrets.X }}` interpolado dentro de `run`) evita que se impriman en los logs y cumple «sin secretos impresos».
+  - El keystore vive en `Temp\opencode\` (puede limpiarse en cualquier momento): el respaldo P-02 con custodia humana es urgente antes del primer release real.
+- **Pendiente:** `VIRGO_API_BASE_URL` (T210) y respaldo P-02 del keystore para cerrar T033; T035 (release `v0.1.0`); T004; aprobación de `Karasu0001` en PR #4; borrar `ccabrera-dev8/VirGo-Movil` (scope `delete_repo`).
