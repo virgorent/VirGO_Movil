@@ -1,10 +1,10 @@
 # Constitution — VirGo Móvil (Android)
 
-**Versión:** 1.1.0 · **Ratificada:** 2026-10-29 · **Última enmienda:** 2026-11-03
+**Versión:** 1.1.1 · **Ratificada:** 2026-10-29 · **Última enmienda:** 2026-11-12
 
 Este documento norma el proyecto Móvil de VirGo. Todos los demás archivos (`AGENTS.md`, `memoria.md`, subagentes, skills y specs) deben estar alineados con él. Si un archivo lo contradice, prevalece este documento y el otro archivo se corrige.
 
-VirGo conecta a quien organiza un evento con salones y proveedores de servicios. Este proyecto vive en la carpeta `VirGo-Movil/` del repositorio [`virgorent/VirGO_Backend`](https://github.com/virgorent/VirGO_Backend) y contiene la app Android, que consume la API del proyecto `VirGo-API/`.
+VirGo conecta a quien organiza un evento con salones y proveedores de servicios. Este proyecto vive en la carpeta `VirGo-Movil/` del repositorio [`virgorent/VirGO_Movil`](https://github.com/virgorent/VirGO_Movil) y contiene la app Android, que consume la API del proyecto `VirGo-API/` del repositorio [`virgorent/VirGO_Backend`](https://github.com/virgorent/VirGO_Backend).
 
 Se subordina a la constitución global de la raíz (`../constitution.md`): esta desarrolla sus principios para el proyecto. En lo técnico del proyecto manda este documento; en los principios generales, la global. El diseño de referencia es la maqueta funcional de Figma «Pantallas VirGo».
 
@@ -103,7 +103,7 @@ Se subordina a la constitución global de la raíz (`../constitution.md`): esta 
 4. Solo se usan herramientas gratuitas: GitHub Actions y GitHub Releases. Una tienda o servicio de pago requiere enmendar este documento. **Google Play** es el destino final del curso; su cuenta de desarrollador tiene un pago único, por lo que se agregará con una enmienda cuando el equipo la tenga.
 5. `API_BASE_URL` de *release* es la URL HTTPS publicada por el despliegue del backend y se inyecta desde una variable de GitHub.
 6. Antes de integrar un endpoint, el backend entrega su URL HTTPS y el JSON probado (petición y respuesta). Sin esa entrega, la pantalla se prueba solo contra MockWebServer.
-7. **Repositorio único:** los workflows, el ruleset y Dependabot viven en `.github/` de la raíz del repositorio, compartidos con el backend; los de este proyecto llevan el prefijo `movil-`. Ningún workflow requerido usa filtros `paths`: cada uno decide con un job `changes`.
+7. **Archivos compartidos con el backend:** los workflows comunes (`security.yml`, `dependabot.yml`) y las reglas del ruleset se mantienen idénticos en este repositorio y en `VirGO_Backend`; los workflows exclusivos de este proyecto viven en `.github/` de la raíz y llevan el prefijo `movil-`. Ningún workflow requerido usa filtros `paths`: cada uno decide con un job `changes`.
 8. Después de un release exitoso se registra en `memoria.md` lo aprendido, el spec se marca como *Publicado* y se proponen las mejoras a la constitución, `AGENTS.md`, las skills y los subagentes.
 
 ## Artículo IX. Observabilidad
@@ -144,3 +144,4 @@ Se subordina a la constitución global de la raíz (`../constitution.md`): esta 
 |---|---|---|
 | 1.0.0 | 2026-10-29 | Versión inicial |
 | 1.1.0 | 2026-11-03 | **Aprobada por el equipo el 2026-11-05.** Lineamientos de la clase del 28 y 29 de octubre: `check.md` y specs atómicos por pantalla (I.4–I.7), redacción anticipada (II.2), `.gitignore` y Gitleaks (V.6, V.8), cinco tipos de prueba con mutación y humo (VI.6–VI.7), ruleset, CD manual, Google Play como destino futuro, entrega de URL y JSON por el backend, repositorio único y aprendizaje tras el release (VIII), servidores MCP (XI.6) y README en inglés (XII.1). |
+| 1.1.1 | 2026-11-12 | Corrección factual sin cambios normativos: el proyecto vive en `virgorent/VirGO_Movil` (cabecera) y VIII.7 ya no asume repositorio único con el backend tras la separación del monorepo. |

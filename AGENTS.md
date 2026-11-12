@@ -6,7 +6,7 @@
 ## 1. Forma de trabajo
 
 - **Metodología**: Spec-Driven Development (SDD).
-- **Fase actual**: gobernanza global cerrada (`nv-00`, `nv-01` y `nv-02` cumplidos; pendiente operativo: aplicar el ruleset de `main`). `VirGo-API` y `VirGo-Movil` están en fase de especificación. **Todavía no hay código.**
+- **Fase actual**: gobernanza global cerrada (`nv-00`, `nv-01` y `nv-02` cumplidos; pendiente operativo: aplicar el ruleset de `main`). `VirGo-API` está en fase de especificación; `VirGo-Movil` tiene su spec `000` aprobado e **implementado en curso** (31/40 tareas, código en `main`).
 - **Principio**: `spec → plan → task → check`. No ejecutar tareas sin aprobación explícita.
 - **DevSecOps**: ningún cambio se fusiona sin escaneo de secretos, revisión de dependencias y, cuando el proyecto ya tenga su workflow, análisis estático en verde.
 - **Todo debe alinearse** a `constitution.md`.
@@ -38,7 +38,7 @@ Este repositorio es el **frontend**. El backend vive en [`virgorent/VirGO_Backen
 | **nv-00** | Constitución SDD y reglas globales | Cumplido (2026-11-04) |
 | **nv-01** | Arquitectura base SDD | Cumplido (2026-11-04) |
 | **nv-02** | Gobernanza global de proyectos | Cumplido con pendiente operativo (aplicar ruleset) |
-| **VirGo-Movil** | App Android (spec `000`) | Especificación |
+| **VirGo-Movil** | App Android (spec `000`) | Implementación (31/40) |
 
 ## 4. Convenciones
 
@@ -51,7 +51,7 @@ Este repositorio es el **frontend**. El backend vive en [`virgorent/VirGO_Backen
 - **Sin duplicidad**: la bitácora canónica es `Memoria.md` (global) o `memoria.md` (proyecto).
 - **Sin funcionalidad**: no crear código de negocio sin spec aprobado.
 
-**Ramas:** `main` se protege con el ruleset de `.github/rulesets/main-protection.json` (aplicación manual pendiente). `rama-backend`, `rama-apis` y `rama-movil` integran por PR. Las ramas de trabajo usan `feat/NNN-modulo` o `fix/…`.
+**Ramas:** `main` se protege con el ruleset de `.github/rulesets/main-protection.json` (aplicación manual pendiente). Las ramas de trabajo usan `feat/NNN-modulo`, `docs/…` o `fix/…` e integran por PR con revisión y checks en verde.
 
 ## 5. Sub-agentes
 

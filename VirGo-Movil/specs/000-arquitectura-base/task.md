@@ -4,10 +4,10 @@
 |---|---|
 | Módulo | `000-arquitectura-base` |
 | Versión | 1.1.0 |
-| Estado | Aprobado. 27/39 tareas hechas. |
+| Estado | Aprobado. 31/40 tareas hechas. |
 | Fecha | 2026-10-29 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
-| Constitución | v1.1.0 |
+| Constitución | v1.1.1 |
 
 **Estados:** ⏳ Pendiente · 🔄 En curso · ✅ Hecha (con evidencia) · ⛔ Bloqueada
 
@@ -21,13 +21,15 @@
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T001 | Confirmar que `VirGo-Movil/` entró a `main` del repositorio `virgorent/VirGO_Backend` con su `.gitignore` DevSecOps (Art. V.8) y su `README.md` en inglés | — | `seguridad-ci` | `git remote -v` correcto; `git check-ignore local.properties` lo ignora | ✅ |
+| T001 | Confirmar que `VirGo-Movil/` entró a `main` del repositorio `virgorent/VirGO_Movil` con su `.gitignore` DevSecOps (Art. V.8) y su `README.md` en inglés | — | `seguridad-ci` | `git remote -v` correcto; `git check-ignore local.properties` lo ignora | ✅ |
 | T002 | 🧑 Coordinar con `VirGo-API` T207 el ruleset único `main-protection` del repositorio (PR, 1 revisión, checks requeridos, sin *force push* ni borrado) y la protección de push contra secretos | T001 | `seguridad-ci` | Reglas visibles en GitHub (captura o `gh api`) | ⏳ |
 | T003 | [P] Agregar `.editorconfig` (ktlint) y, en la raíz del repositorio, el bloque de `VirGo-Movil` en `.github/dependabot.yml`; la plantilla de PR es común (Gradle agrupado por familia y Actions) | T001 | `seguridad-ci` | Archivos en el repositorio; Dependabot activo | ✅ |
-| T004 | [P] Revisar la alineación de la gobernanza con `verificar-constitucion` | — | `arquitecto-movil` | Resultado «Alineado» en `memoria.md` | ⏳ |
+| T004 | [P] Revisar la alineación de la gobernanza con `verificar-constitucion` | — | `arquitecto-movil` | Resultado «Alineado» en `memoria.md` | ✅ |
 | T037 | [P] Instalar y probar los MCP `figma` (lectura del *canvas* de «Pantallas VirGo») y `github` de `opencode.json`, con tokens en variables de entorno | — | `arquitecto-movil` | `opencode mcp list` los muestra conectados; captura en `memoria.md` | ⛔ |
 
 > T037 bloqueada: `figma` responde `HTTP 405` en `https://mcp.figma.com/mcp` (problema conocido de opencode) y `github` sigue deshabilitado; requiere OAuth de Figma y `GITHUB_MCP_PAT`.
+
+> T004 hecha: auditoría con `verificar-constitucion` sobre la gobernanza en dos pasadas con el subagente `arquitecto-movil`. La primera pasada dio **No alineado** (❌ Art. II y ❌ Art. XI); tras las correcciones, la re-verificación dio **Alineado** (0 ❌, 6 ⚠️ registrados como pendientes de cierre). Correcciones aplicadas con aprobación del equipo: aprobación retroactiva de los specs `001`–`004` (`spec.md`, `plan.md` y `task.md`), enmienda constitucional **1.1.1** (repo `VirGO_Movil` y VIII.7), referencias stale corregidas en `AGENTS.md` (raíz y móvil), `README.md`, `plan.md`, T001 y cabecera/ADRs de `memoria.md`, tarea **T040** (Timber, Art. IX) y reparación de las tablas F7/F8. Tabla final de 12 artículos y decisiones humanas en la entrada de `memoria.md`.
 
 ## F1 · Proyecto Gradle y módulos
 
@@ -76,6 +78,7 @@
 |---|---|---|---|---|---|
 | T024 | `DiagnosticsViewModel` y `DiagnosticsScreen` en el *source set* `debug`: versión de la app, `API_BASE_URL`, estado y latencia de `/health`, y errores convertidos a textos en español | T017, T023 | `dev-android` | Con la API local en marcha muestra «API disponible» (CA-04); con la API apagada, un mensaje claro sin cierre (CA-05) | 🔄 |
 | T025 | Menú de desarrollo en la barra superior (solo *debug*) para abrir el diagnóstico | T024 | `dev-android` | El menú no existe en el APK de *release* | ✅ |
+| T040 | [P] Timber solo en *debug*: plantar un `Tree` de plantilla en `VirGoApplication` (nivel `debug`), sin imprimir tokens ni cuerpos de respuesta; en *release* no se planta ningún árbol (Art. IX) | T009 | `dev-android` | `ktlintCheck detekt` en verde; sin `Log`/`println` en el código (revisión T027) | ⏳ |
 
 > **T025** ✅ y **T024** 🔄 en el commit `b826b05`: `DiagnosticsRoute`/`DiagnosticsViewModel`/`DiagnosticsScreen` y los textos viven solo en `app/src/debug` (`src/debug/res/values/strings.xml`); `DevMenu` y `developmentDestinations(...)` tienen implementación no-op `= Unit` en `app/src/release`; el menú se muestra en el `topBar` del `Scaffold` solo en el inicio provisional. Pruebas en `app/src/testDebug` (5): `DiagnosticsViewModelTest` con Turbine (carga → éxito, carga → error, reintento) y `DiagnosticsScreenTest` con Robolectric («API disponible» y mensaje de error sin cierre). **Evidencia T025:** en `assembleRelease` no existe ninguna clase `Diagnostics*`, el `DevMenu` de release es un stub sin `DropdownMenu` y los `values.xml` de release no contienen `diagnostics_*` ni `dev_menu_*` (sí los de `main`). **Pendiente en T024:** la evidencia real CA-04/CA-05 («API disponible» con la API local y mensaje claro con ella apagada) requiere `VirGo-API` corriendo (`dotnet run` + `GET /health`); el backend todavía no tiene código (T009), así que queda para T030.
 
@@ -96,22 +99,30 @@
 |---|---|---|---|---|---|
 | T028 | [P] Pruebas unitarias y de red: conversión a `AppError`, interceptores (MockWebServer), `HealthRepository`, `CheckApiHealthUseCase` y `TokenStore` (Robolectric) | T020–T023 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ✅ |
 | T029 | [P] Pruebas de UI (Compose Test + Robolectric): componentes base, navegación al inicio provisional, `DiagnosticsViewModel` con Turbine y escala de fuente 2.0 | T013, T017, T024 | `qa-movil` | Pruebas en verde (CA-10) | ✅ |
+| T038 | [P] Pruebas de mutación con `gradle-pitest-plugin` en `:core:domain` y `:core:common`; medir la línea base | T028 | `qa-movil` | `./gradlew pitest` termina; puntaje base en `memoria.md` | ✅ |
+| T030 | Verificación manual en el emulador: arranque en frío medido, modo oscuro, diagnóstico contra la API local y APK de *release* sin tráfico en claro | T026, T029 | `qa-movil` | Tiempos y capturas en `memoria.md` (CA-02, CA-03, CA-04, CA-06; RNF-03) | ⏳ |
 
 > T029 hecha: 103 pruebas verdes (0 fallos) con `ktlintCheck detekt lint testDebugUnitTest assembleDebug assembleRelease :core:domain:test` en verde. Cubre `DesignSystemComponentsTest` (5), `FontScaleTest` (2), `NavigationTest` (2: inicio provisional y pin → registro → back) y las suites existentes. Fix necesario: el `pointerInput` de limpieza vive en el `Canvas` del mapa (no en el `Box` padre) para que los pins reciban el toque; la tarjeta de cabecera cubre pins cercanos al centro, así que el flujo de navegación usa un pin visible debajo de la tarjeta (commit `7d8e0c7`).
-| T038 | [P] Pruebas de mutación con `gradle-pitest-plugin` en `:core:domain` y `:core:common`; medir la línea base | T028 | `qa-movil` | `./gradlew pitest` termina; puntaje base en `memoria.md` | ✅ |
 
 > T038 hecha: plugin `info.solidsoft.pitest` 1.19.0 en `:core:domain` y `:core:common` con `targetClasses` explícitos por paquete. `./gradlew pitest` → BUILD SUCCESSFUL. Línea base: **dominio 73% de mutación (35/48, test strength 97%, línea 71%)** y **common 33% (1/3, test strength 100%, línea 100%)** — common solo tiene tipos sellados (3 mutaciones); su primera suite (`AppResultTest`, 4 pruebas) se agregó para que PIT tuviera qué matar (commit `04cbcd2`).
-| T030 | Verificación manual en el emulador: arranque en frío medido, modo oscuro, diagnóstico contra la API local y APK de *release* sin tráfico en claro | T026, T029 | `qa-movil` | Tiempos y capturas en `memoria.md` (CA-02, CA-03, CA-04, CA-06; RNF-03) | ⏳ |
 
 ## F8 · CI/CD y publicación
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T031 | `.github/workflows/movil-ci.yml`: JDK 17, `setup-gradle`, jobs `changes` y `movil-build-test` con `ktlintCheck detekt lint testDebugUnitTest pitest assembleDebug`, artefactos (APK de *debug* y reporte de Pitest) y `concurrency` | T028, T029, T038 | `seguridad-ci` | PR de prueba con todos los checks en verde (CA-08) | ⏳ |
-| T032 | [P] `.github/workflows/movil-codeql.yml` (`java-kotlin`) | T031 | `seguridad-ci` | Check de CodeQL en el PR sin alertas altas | ⏳ |
-| T033 | 🧑 Generar el keystore de *release* y guardarlo en GitHub Secrets (`SIGNING_*`); crear la variable `VIRGO_API_BASE_URL` con la URL HTTPS que entrega T210 del backend | T026 | `seguridad-ci` | Secretos y variable visibles en GitHub; respaldo del keystore confirmado (P-02) | ⏳ |
-| T034 | `.github/workflows/movil-release.yml`: **solo `workflow_dispatch`** desde `main` con la versión como entrada → `assembleRelease`, `apksigner verify` y `gh release create vX.Y.Z` con el APK | T031, T033 | `seguridad-ci` | YAML válido; sin secretos impresos en los logs | ⏳ |
+| T031 | `.github/workflows/movil-ci.yml`: JDK 17, `setup-gradle`, jobs `changes` y `movil-build-test` con `ktlintCheck detekt lint testDebugUnitTest pitest assembleDebug`, artefactos (APK de *debug* y reporte de Pitest) y `concurrency` | T028, T029, T038 | `seguridad-ci` | PR de prueba con todos los checks en verde (CA-08) | ✅ |
+| T032 | [P] `.github/workflows/movil-codeql.yml` (`java-kotlin`) | T031 | `seguridad-ci` | Check de CodeQL en el PR sin alertas altas | ✅ |
+| T033 | 🧑 Generar el keystore de *release* y guardarlo en GitHub Secrets (`SIGNING_*`); crear la variable `VIRGO_API_BASE_URL` con la URL HTTPS que entrega T210 del backend | T026 | `seguridad-ci` | Secretos y variable visibles en GitHub; respaldo del keystore confirmado (P-02) | 🔄 |
+| T034 | `.github/workflows/movil-release.yml`: **solo `workflow_dispatch`** desde `main` con la versión como entrada → `assembleRelease`, `apksigner verify` y `gh release create vX.Y.Z` con el APK | T031, T033 | `seguridad-ci` | YAML válido; sin secretos impresos en los logs | ✅ |
 | T035 | 🧑 Primer release `v0.1.0` con *Run workflow*: descargar, instalar y hacer la prueba de humo (la app abre y el diagnóstico llega a la API de producción por HTTPS) | T034 | `seguridad-ci` + `qa-movil` | Release publicado con el APK firmado, la versión y el commit (CA-09) | ⏳ |
+
+> T031 hecha: workflow en `.github/workflows/movil-ci.yml` del repositorio `virgorent/VirGO_Movil` (el móvil ya no vive en el monorepo). SHA pinneados de actions, job `changes` con `dorny/paths-filter` sobre `VirGo-Movil/**` y `working-directory: VirGo-Movil`. Evidencia CA-08: **PR #4** con checks `gitleaks`, `dependency review`, `changes` y `movil-build-test` en verde (7m24s). El primer intento falló en `testDebugUnitTest`: Robolectric 4.17 con `@Config(sdk = [36])` exige Java 21 y el daemon de CI corría con el JDK 17 del `setup-java`; se corrigió en la misma rama con `gradle/gradle-daemon-jvm.properties` (`toolchainVersion=21`, commit `7492292`) — el toolchain de compilación sigue en 17 (`jvmTarget 17`).
+
+> T032 hecha: `.github/workflows/movil-codeql.yml` commiteado en este mismo PR #4 (commit `5a31fdd`) de `virgorent/VirGO_Movil`. Disparadores `pull_request` y `push` sobre `main` más cron semanal; lenguaje `java-kotlin` con `github/codeql-action` pinneado en `33d7b85da1a04171e211befe2c739303b9a4c066` (v4.39.3), build explícito `./gradlew assembleDebug` con `working-directory: VirGo-Movil`, permisos `security-events: write` solo en el job y `concurrency` que cancela corridas previas del mismo PR. Evidencia: checks `analyze` (workflow `movil-codeql`, run `43239028981`) y `CodeQL` en verde en el PR #4, y 0 alertas de code scanning (`gh api /repos/virgorent/VirGO_Movil/code-scanning/alerts` → `0`), es decir, sin alertas altas.
+
+> T033 en curso: keystore de release `virgo-release.jks` (alias `virgo-release`, certificado `CN=VirGo Local, O=VirGo`) y sus 4 secretos en `virgorent/VirGO_Movil` — `SIGNING_KEYSTORE_BASE64`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`, `SIGNING_STORE_PASSWORD` — visibles con `gh secret list` (2026-11-12). Firma probada en local con el keystore real: `SIGNING_*=… ./gradlew assembleRelease` → `BUILD SUCCESSFUL` (1m31s) y `apksigner verify` → exit 0. **Falta:** la variable `VIRGO_API_BASE_URL` (T210 del backend sigue sin desplegar: «AWS … todavía sin desplegar con URL HTTPS», `VirGO_Backend/docs/ESTADO-PROYECTO.md`) y el respaldo del keystore (P-02): el archivo vive en `Temp\opencode\` y requiere custodia humana.
+
+> T034 hecha: `.github/workflows/movil-release.yml` en la raíz del repositorio (commit `c7793ed`): solo `workflow_dispatch` con entrada `version` validada (`^[0-9]+\.[0-9]+\.[0-9]+$`), job condicionado a `refs/heads/main`, SHA pinneados de `checkout`, `setup-java` y `setup-gradle` (los mismos de `movil-ci.yml`), keystore decodificado desde `SIGNING_KEYSTORE_BASE64` hacia `$RUNNER_TEMP`, `assembleRelease` con `SIGNING_*` y `vars.VIRGO_API_BASE_URL`, `apksigner verify --print-certs` y `gh release create vX.Y.Z` con `GH_TOKEN` (`permissions: contents: write` solo en el job). Los secretos se pasan por `env:` en cada paso, nunca interpolados dentro del `run`, por lo que no se imprimen en los logs. Evidencia: `actionlint` v1.7.12 → exit 0 y `yaml.safe_load` → YAML OK; el workflow no aparece en `gh workflow list` desde una rama distinta de la predeterminada (GitHub solo registra `workflow_dispatch` desde `main`), su ejecución real es T035.
 
 ## F9 · Cierre
 

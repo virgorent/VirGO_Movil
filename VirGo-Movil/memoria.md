@@ -6,19 +6,19 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 
 | Campo | Valor |
 |---|---|
-| Constitución | v1.1.0 aprobada por el equipo el 2026-11-05 |
-| Módulo en curso | `000-arquitectura-base`: T001, T003, T005, T006, T007, T008, T009, T010, T011, T012, T013, T014 hechas |
-| Tareas | 12 / 39 hechas (T037 bloqueada por MCP) |
+| Constitución | v1.1.1 (enmienda 2026-11-12; v1.1.0 aprobada el 2026-11-05) |
+| Módulo en curso | `000-arquitectura-base`: 31/40 tareas hechas (detalle y estados en `task.md`) |
+| Tareas | 31 / 40 hechas (T037 bloqueada por MCP) |
 | `API_BASE_URL` de *release* | Pendiente (la entrega `VirGo-API` en `002`: T210) |
 | Última versión publicada | Ninguna |
-| Siguiente paso | Ejecutar T006 y T007; desbloquear T037; resolver P-01/P-02 |
+| Siguiente paso | Cerrar T004 y aprobar el PR #4; T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030 y T037 |
 
 ## Módulos
 
 | Módulo | Estado | Notas |
 |---|---|---|
-| `000-arquitectura-base` | 🚧 Aprobado; T001/T003/T005 hechas | Base técnica sin pantallas del negocio |
-| `001-…` pantallas | ⏸ No iniciados | Un spec atómico por pantalla o flujo, al vuelo; los primeros serán «Iniciar sesión» y «Cerrar sesión», con el JSON de `VirGo-API` `003` y `004` |
+| `000-arquitectura-base` | 🚧 Aprobado; 31/40 tareas hechas | Base técnica sin pantallas del negocio |
+| `001-…` pantallas | 🚧 `001`–`004` aprobados (retroactivo 2026-11-12) e implementados; `005+` sin iniciar | Un spec atómico por pantalla o flujo, al vuelo; los siguientes usan el JSON de `VirGo-API` |
 
 ## Decisiones (ADR)
 
@@ -38,7 +38,8 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | ADR-12 | 2026-11-03 | **Pitest** (`gradle-pitest-plugin`) en módulos JVM puros | Mutación sin dispositivo; umbral tras medir |
 | ADR-13 | 2026-11-03 | MCP permitidos: `figma` (lectura del *canvas*) y `github` | Pantallas al vuelo desde la maqueta oficial |
 | ADR-14 | 2026-11-03 | Google Play como destino futuro, con enmienda | Tiene un pago único; por ahora GitHub Releases |
-| ADR-15 | 2026-11-03 | **Repositorio único** `virgorent/VirGO_Backend` con carpetas por proyecto | Decisión del equipo |
+| ADR-15 | 2026-11-03 | **Repositorio único** `virgorent/VirGO_Backend` con carpetas por proyecto | Decisión del equipo; **superseded** por ADR-16 (2026-11-12) |
+| ADR-16 | 2026-11-12 | Repositorio propio `virgorent/VirGO_Movil` para el móvil (fin del monorepo); el backend vive en `virgorent/VirGO_Backend` | Separa CI, permisos y despliegues por proyecto |
 
 ## Cambios de contrato (compartidos con Backend)
 
@@ -455,3 +456,107 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Con `build-logic` (plugins precompilados), verificar nombres de tarea reales con `gradlew :app:tasks --all` antes de diagnosticar.
 - **Pendiente:** T030 (emulador); T031/T032/T034 (workflows `.github/`, T034 requiere T033 🧑); T002/T004/T033/T035/T036/T037/T039.
 
+
+### 2026-11-11 - Sincronizacion a virgorent/VirGO_Movil (equipo Play Store)
+
+- **Autor:** equipo + opencode
+- **Modulo / tareas:** solicitud extra fuera del task.md (apoyo a T035/T036)
+- **Que se hizo:**
+  - Snapshot del contenido de `VirGo-Movil/` (274 archivos trackeados, sin artefactos de build ni `gradle-daemon-jvm.properties`) extraido con `git archive` desde `451418d` (27/39) y sincronizado al repo de la organizacion **`virgorent/VirGO_Movil`** (espejo del monorepo creado por `Karasu0001`, con la app bajo `VirGo-Movil/`).
+  - El `main` de ese repo esta protegido por el ruleset `main-protection` (PR + 1 aprobacion + checks `gitleaks` y `dependency review`), asi que la subida fue por **PR #3** (rama `sync/001-snapshot-27-39`, commit `fbf6774`, autor `ccabrera-dev8`): 147 cambios = 95 archivos nuevos, 0 archivos propios del repo eliminados (el snapshot es superset de la copia que ya tenia).
+  - Motivo: el equipo que subira la app a Play Store necesita el codigo en un repo propio.
+- **Evidencia:** PR https://github.com/virgorent/VirGO_Movil/pull/3 con **ambos checks en verde** (`gitleaks` + `dependency review`); clone de prueba en temp con **274 archivos** (identico al origen) y `gradlew help` -> OK; revision solicitada a `Karasu0001`.
+- **Decisiones:**
+  - **Snapshot unico, sin sincronizacion automatica**: los cambios futuros de `virGO_App` no llegan solos; se repite el snapshot (`git archive` + rama + PR) cuando se pida.
+  - **Habilitar Dependency graph en repos nuevos**: `VirGO_Movil` nacio con el graph apagado y el check `dependency review` fallaba con "Dependency graph is not enabled"; no hay endpoint REST para ese toggle, pero `PUT /repos/{owner}/{repo}/vulnerability-alerts` lo habilita como efecto necesario (verificado con `GET .../dependency-graph/sbom`).
+  - **Identidad del commit**: usar siempre `ccabrera-dev8` (`-c user.name/-c user.email`); el primer snapshot (`a1e44c3`) quedo con el autor de la cuenta con la que estaba autenticado `gh` y por eso se descarto como destino.
+- **Intentos descartados:**
+  - `motosos215-lab/VirGo-Movil` (cuenta ajena, token local sin `delete_repo`): quedo **vacio y privado**, pendiente de borrar desde su Danger Zone por su propietario.
+  - `ccabrera-dev8/VirGo-Movil`: creado por error con el snapshot (`a1e44c3`); **pendiente de borrar** (requiere scope `delete_repo` en `gh auth refresh`).
+- **Colaboradores del repo de la org:** `Karasu0001` y `ccabrera-dev8`; el equipo de Play Store se invita con `gh api -X PUT repos/virgorent/VirGO_Movil/collaborators/<usuario> -f permission=push`.
+- **Pendiente:** merge del PR #3 (falta la aprobacion de `Karasu0001`; el autor no puede aprobar su propio PR); repetir snapshot al cierre de T036; borrar `ccabrera-dev8/VirGo-Movil` y `motosos215-lab/VirGo-Movil`.
+
+
+### 2026-11-11 - T031 y cambio de repositorio canonico del movil
+
+- **Autor:** equipo + opencode (`seguridad-ci`)
+- **Modulo / tareas:** `000-arquitectura-base` -> T031 -> (28/39)
+- **Que se hizo:**
+  - **El movil ya no vive en el monorepo**: `virgorent/virGO_App` quedo solo como backend (`VirGO_Backend`) y el codigo del movil trabaja ahora en **`virgorent/VirGO_Movil`** (repo de la organizacion, app bajo `VirGo-Movil/`). El workspace local re-enraizo en la misma ruta `C:\Users\cesar\virgo\virGO_App` (origin -> `VirGO_Movil`); `VirGo-API/` y `VirGo-Database/` salieron del disco (su historia queda en la rama `archive/001-flujo-visitante` del repo nuevo y en el backend).
+  - Snapshot 27/39 subido via **PR #3** (aprobado y mergeado por `Karasu0001`); los commits locales T001-T038 se preservaron como `archive/001-flujo-visitante`.
+  - **T031:** `.github/workflows/movil-ci.yml` en el repo nuevo: JDK 17, `setup-gradle`, job `changes` (`dorny/paths-filter` sobre `VirGo-Movil/**`), job `movil-build-test` con `ktlintCheck detekt lint testDebugUnitTest pitest assembleDebug`, artefactos (APK debug + reporte Pitest) y `concurrency`. Actions pinneados por SHA.
+- **Evidencia:** PR **#4** (CA-08) con checks `gitleaks`, `dependency review`, `changes` y `movil-build-test`; commits `88c46fc` (codigo) + docs.
+- **Decisiones:**
+  - Flujo de trabajo en el repo nuevo: rama por tarea -> **PR** -> aprobacion de `Karasu0001` (el ruleset `main-protection` no permite auto-aprobacion ni bypass); la identidad de commits es `ccabrera-dev8@users.noreply.github.com` para que quede atribuida (si no, `require_extra_approval_for_unattributed_changes` exigiria 2 aprobaciones).
+  - `dependency graph` estaba apagado en el repo nuevo y `dependency review` fallaba; se habilito con `PUT /repos/{owner}/{repo}/vulnerability-alerts` (no hay endpoint REST directo para ese toggle).
+  - El `security.yml` del repo nuevo ya era la version con deteccion de manifiestos; no requirio cambios.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Un repo nuevo dentro de una organizacion puede heredar el ruleset `main-protection` sin `bypass_actors`: ni siquiera un admin fusiona sin aprobacion ajena; planificar el flujo PR + revisor desde el inicio.
+  - `git rebase --onto origin/main <ultimo-commit-sincronizado>` tras un merge por metodo merge conserva los commits locales de docs/ci sin duplicar el snapshot.
+- **Pendiente:** T032 (CodeQL), T034 (release, requiere T033), T004; borrar `ccabrera-dev8/VirGo-Movil` (scope `delete_repo`) y `motosos215-lab/VirGo-Movil`.
+
+
+### 2026-11-11 - Correccion de movil-build-test en el PR 4 (T031)
+
+- **Autor:** equipo + opencode (`seguridad-ci`)
+- **Modulo / tareas:** `000-arquitectura-base` -> T031 -> (28/39)
+- **Que se hizo:** el check `movil-build-test` del **PR #4** salio rojo en `testDebugUnitTest` (no en ktlint/detekt/lint/pitest): `DesignSystemComponentsTest > classMethod FAILED` con `UnsupportedOperationException at DefaultSdkProvider.java:174` = Robolectric 4.17 exige **Java 21** para `@Config(sdk = [36])` y el daemon de CI corría con el JDK 17 del `setup-java`. En local nunca falto porque `gradle/gradle-daemon-jvm.properties` (`toolchainVersion=21`) levanta el daemon en 21. Corregido en la misma rama commiteando ese archivo (commit `7492292`); el toolchain de compilacion sigue en 17 (`jvmTarget 17`, `sourceCompatibility` 17).
+- **Evidencia:** PR #4 con los 4 checks en verde (`movil-build-test` 7m24s); `task.md` actualizado con la evidencia real.
+- **Decisiones:** mantener JDK 17 como objetivo de compilacion y subir solo el daemon de Gradle a 21 (menor cambio que migrar todo el workflow a 21).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Paradoja local-vs-CI: un `gradle-daemon-jvm.properties` sin commitear hace que local pase y CI falle; commitear el archivo de toolchain del daemon alinea ambos entornos.
+  - Robolectric liga la version de Java requerida al SDK del `@Config` (API 36 -> Java 21); cualquier subida de SDK en tests implica revisar el JDK del CI.
+  - La evidencia en `task.md` debe escribirse solo cuando el check este en verde (Karasu senalo la afirmacion prematura).
+- **Pendiente:** aprobacion de `Karasu0001` en PR #4; T032 (CodeQL), T034 (release, requiere T033), T004.
+
+
+### 2026-11-12 - T032: workflow de CodeQL dentro del PR 4
+
+- **Autor:** equipo + opencode (`seguridad-ci`)
+- **Módulo / tareas:** `000-arquitectura-base` -> T032 -> (29/39)
+- **Qué se hizo:** `.github/workflows/movil-codeql.yml` (lenguaje `java-kotlin`) quedó commiteado en la rama `feat/001-flujo-visitante` dentro del **PR #4** (commit `5a31fdd`, identidad `Cesar Augusto <ccabrera-dev8@users.noreply.github.com>`): disparadores `pull_request` y `push` sobre `main` más cron semanal (`0 7 * * 1`), `github/codeql-action` pinneado en `33d7b85da1a04171e211befe2c739303b9a4c066` (v4.39.3), build explícito `./gradlew assembleDebug` con `working-directory: VirGo-Movil`, permisos `security-events: write` a nivel de job y `concurrency` que cancela corridas previas del mismo PR.
+- **Evidencia:** en PR #4 los checks `analyze` (workflow `movil-codeql`, run `43239028981`), `CodeQL`, `gitleaks`, `dependency review`, `changes` y `movil-build-test` en verde; `gh api /repos/virgorent/VirGO_Movil/code-scanning/alerts` devuelve `0` alertas (sin alertas altas).
+- **Decisiones:** al ya estar el archivo en la rama del PR #4, T032 se cierra en ese mismo PR en lugar de abrir una rama nueva; queda registrado aquí para no romper la trazabilidad `spec -> plan -> task -> check`.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:** al commitear un workflow en `.github/workflows/` de una rama con PR abierto, GitHub lo ejecuta de inmediato en ese PR; revisar permisos (`security-events: write`) y los pines SHA antes de subirlo evita re-trabajar el PR.
+- **Pendiente:** aprobación de `Karasu0001` en PR #4; T034 (release, requiere T033 🧑), T004; borrar `ccabrera-dev8/VirGo-Movil` (scope `delete_repo`).
+
+
+### 2026-11-12 - T033/T034: secretos de firma y workflow de release
+
+- **Autor:** equipo + opencode (`seguridad-ci`)
+- **Módulo / tareas:** `000-arquitectura-base` -> T033 (en curso) + T034 -> (30/39)
+- **Qué se hizo:** los 4 secretos de firma se subieron a `virgorent/VirGO_Movil` (`SIGNING_KEYSTORE_BASE64` con el keystore `virgo-release.jks`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`, `SIGNING_STORE_PASSWORD`) y se commiteó `.github/workflows/movil-release.yml` en `feat/001-flujo-visitante` (commit `c7793ed`, dentro del PR #4): solo `workflow_dispatch` con entrada `version` validada como `X.Y.Z`, job condicionado a `refs/heads/main`, SHA pinneados de `checkout`/`setup-java`/`setup-gradle` (los mismos de `movil-ci.yml`), decode del keystore hacia `$RUNNER_TEMP`, `assembleRelease` con `SIGNING_*` y `vars.VIRGO_API_BASE_URL`, `apksigner verify --print-certs` y `gh release create vX.Y.Z` con `GH_TOKEN`.
+- **Evidencia:** `gh secret list` con los 4 secretos; `assembleRelease` local en verde (1m31s) con el keystore real y `apksigner verify` → exit 0 (`CN=VirGo Local, O=VirGo`, SHA-256 `22578bc3…`); `actionlint` v1.7.12 → exit 0 y `yaml.safe_load` → YAML OK.
+- **Decisiones:** la variable `VIRGO_API_BASE_URL` NO se crea todavía: el backend sigue sin desplegar (T210 pendiente) y `vars.VIRGO_API_BASE_URL` vacío compila igual porque la validación `https://` solo corre si la variable está definida; el workflow entra en el PR #4 por la misma razón que T032 (evitar conflictos de `task.md`/`memoria.md` entre ramas).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Un workflow solo `workflow_dispatch` no aparece en `gh workflow list` mientras vive en una rama distinta de la predeterminada: GitHub lo registra al llegar a `main`; la validación previa útil es `actionlint` + `yaml.safe_load`.
+  - Pasar cada secreto por `env:` en su paso (nunca `${{ secrets.X }}` interpolado dentro de `run`) evita que se impriman en los logs y cumple «sin secretos impresos».
+  - El keystore vive en `Temp\opencode\` (puede limpiarse en cualquier momento): el respaldo P-02 con custodia humana es urgente antes del primer release real.
+- **Pendiente:** `VIRGO_API_BASE_URL` (T210) y respaldo P-02 del keystore para cerrar T033; T035 (release `v0.1.0`); T004; aprobación de `Karasu0001` en PR #4; borrar `ccabrera-dev8/VirGo-Movil` (scope `delete_repo`).
+
+
+### 2026-11-12 - T004: verificación de alineación con la constitución
+
+- **Autor:** equipo + opencode (`arquitecto-movil`)
+- **Módulo / tareas:** `000-arquitectura-base` -> T004 -> (31/40)
+- **Qué se hizo:** revisión con la skill `verificar-constitucion` sobre la gobernanza (constitución, `AGENTS.md` raíz y del móvil, `README.md`, `plan.md`/`task.md`/`check.md` del `000`, `memoria.md` y `opencode.json`) en dos pasadas. Primera pasada: **No alineado** — ❌ Art. II (pantallas de negocio con `000` abierto) y ❌ Art. XI (specs `001`–`004` en Borrador con tareas ejecutadas), más 8 ⚠️. Correcciones aplicadas con aprobación del equipo:
+  - Specs `001`–`004`: `spec.md`, `plan.md` y `task.md` → **Aprobado (aprobación retroactiva 2026-11-12)**.
+  - Constitución → **enmienda 1.1.1** (corrección factual: el proyecto vive en `virgorent/VirGO_Movil`; VIII.7 reescrita como «Archivos compartidos con el backend»; sin cambios normativos).
+  - Referencias stale corregidas: `AGENTS.md` raíz (fase actual, tabla de fases, ramas), `VirGo-Movil/AGENTS.md` (repo, estado, estructura, `.github/`, MCP `figma`, ramas), `README.md`, `plan.md:83`, `task.md` T001, cabecera de `memoria.md` y ADR-15 «superseded» + **ADR-16** (repositorio propio del móvil).
+  - **T040** agregada en `task.md` (Timber solo en *debug*, Art. IX) y tablas F7/F8 reordenadas (los blockquotes de evidencia partían las tablas).
+- **Evidencia:** segunda pasada del auditor → **Alineado** (0 ❌). ⚠️ restantes registrados como pendientes de cierre: VIII (aprobar PR #4, T002/T039/T035), IX (ejecutar T040), V (respaldo P-02), VI (totales en `check.md`), I/II/X (cierre en T036).
+- **Decisiones humanas (2026-11-12):**
+  1. Aprobar retroactivamente los specs `001`–`004` (ya ejecutados).
+  2. Aceptar la implementación anticipada de las pantallas `001`–`004` con `000` abierto; `000` se cierra en **T036** antes de empezar `005+` (Art. II).
+  3. Añadir la tarea **T040** (Timber) en lugar de enmendar el plan.
+  4. Enmienda constitucional **1.1.1**.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Las referencias stale del monorepo eran sistémicas: corregirlas por capa (constitución → AGENTS → specs → memoria) evita que la siguiente revisión vuelva a encontrarlas.
+  - Los blockquotes de evidencia dentro de `task.md` rompen las tablas al renderizar; la evidencia va al final de cada sección, después de la última fila.
+  - Con dos pasadas (diagnóstico → corrección → re-verificación) el resultado «Alineado» queda respaldado en lugar de autodeclarado.
+- **Pendiente:** aprobación de `Karasu0001` en PR #4; T040 (Timber), T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030, T037, T035 y T036.
