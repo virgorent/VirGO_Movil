@@ -1,6 +1,6 @@
 # AGENTS.md — VirGo Móvil (Android)
 
-Guía base para los agentes de IA y las personas que trabajan en este proyecto (carpeta `VirGo-Movil/` del repositorio `virgorent/VirGO_Backend`). Sigue lo que dice [`constitution.md`](constitution.md); si algo aquí lo contradice, gana la constitución.
+Guía base para los agentes de IA y las personas que trabajan en este proyecto (carpeta `VirGo-Movil/` del repositorio [`virgorent/VirGO_Movil`](https://github.com/virgorent/VirGO_Movil)). Sigue lo que dice [`constitution.md`](constitution.md); si algo aquí lo contradice, gana la constitución.
 
 ## Contexto del proyecto
 
@@ -8,7 +8,7 @@ Guía base para los agentes de IA y las personas que trabajan en este proyecto (
 - **Stack:** Kotlin, Jetpack Compose (Material 3), MVVM/UDF, Hilt, Retrofit + OkHttp + kotlinx.serialization, DataStore, Gradle con *version catalog* y GitHub Actions.
 - **Backend:** `VirGo-API` (.NET 10 en AWS). Su contrato está en el Art. IV.
 - **Diseño de referencia:** la maqueta funcional de VirGo y el archivo de Figma «Pantallas VirGo».
-- **Estado actual:** `000-arquitectura-base` aprobado el 2026-11-05; T001, T003 y T005 hechas. El proyecto Gradle ya existe, pero todavía **no hay código** de la app. Los specs de pantallas (`001-…`) se crean uno por pantalla o flujo, al vuelo, cuando el backend entregue la URL y el JSON de sus endpoints.
+- **Estado actual:** `000-arquitectura-base` aprobado el 2026-11-05 y en curso (31/40 tareas hechas); el proyecto Gradle y el código de la app (`app/`, `core/`) ya existen. Los specs de pantallas `001`–`004` están aprobados (aprobación retroactiva el 2026-11-12); los demás (`005-…`) se crean uno por pantalla o flujo, al vuelo, cuando el backend entregue la URL y el JSON de sus endpoints.
 
 ## Estructura del proyecto
 
@@ -34,12 +34,12 @@ VirGo-Movil/
 ├── gradle/
 │   ├── libs.versions.toml     # Versiones centralizadas (T005)
 │   └── wrapper/               # Jar y propiedades del wrapper (T005)
-├── app/                       # (pendiente) Aplicación, navegación y tema raíz
-├── core/                      # (pendiente) designsystem, network, data, datastore, common, testing
+├── app/                       # Aplicación, navegación y tema raíz
+├── core/                      # designsystem, network, data, datastore, common, testing
 └── (sin .github aquí)         # GitHub solo lee `.github/` de la raíz del repositorio
 ```
 
-En la raíz del repositorio están `.github/` (pendiente: `movil-ci.yml`, `movil-codeql.yml`, `movil-release.yml`, `security.yml`, `rulesets/`) y la gobernanza global. Todos los comandos de abajo se ejecutan dentro de `VirGo-Movil/`.
+En la raíz del repositorio están `.github/` (`movil-ci.yml`, `movil-codeql.yml`, `movil-release.yml`, `security.yml`, `dependabot.yml`, `rulesets/main-protection.json` y la plantilla de PR) y la gobernanza global. Todos los comandos de abajo se ejecutan dentro de `VirGo-Movil/`.
 
 ## Comandos
 
@@ -49,7 +49,7 @@ Ya funciona el esqueleto de Gradle:
 ./gradlew help                        # Verifica el wrapper y la configuración raíz (T005)
 ```
 
-Estos comandos estarán disponibles al terminar la arquitectura base:
+Estos comandos ya están en verde (pipeline completo de `task.md`):
 
 ```powershell
 ./gradlew ktlintCheck detekt lint     # Análisis estático
@@ -125,7 +125,7 @@ Se configuran en [`opencode.json`](opencode.json) y se instalan **antes** de cod
 
 | MCP | Estado | Para qué | Credencial | Quién lo usa |
 |---|---|---|---|---|
-| `figma` (servidor remoto oficial) | ✅ Permitido, activo | Leer el *canvas* de «Pantallas VirGo»: medidas, tokens y estructura de cada pantalla al especificarla | Inicio de sesión de Figma (OAuth) | `arquitecto-movil`, `ui-designsystem`, `dev-android` |
+| `figma` (servidor remoto oficial) | ✅ Permitido; activación ⛔ pendiente (T037) | Leer el *canvas* de «Pantallas VirGo»: medidas, tokens y estructura de cada pantalla al especificarla | Inicio de sesión de Figma (OAuth) | `arquitecto-movil`, `ui-designsystem`, `dev-android` |
 | `github` (servidor remoto oficial) | ✅ Permitido, se activa en T037 | Leer PRs, checks y ejecuciones del release | `GITHUB_MCP_PAT`: token de grano fino solo de este repositorio | Todos |
 | Canva MCP | 🔍 En evaluación | Solo si el equipo diseña material en Canva; la maqueta oficial está en Figma | — | — |
 | MCP de emulador o dispositivo (`mobile-mcp`) | 🔍 En evaluación | Automatizar la prueba de humo del APK en el emulador | — | `qa-movil` |
@@ -137,7 +137,7 @@ Un MCP nuevo se evalúa (necesidad real, mantenedor, permisos que pide) y se agr
 
 - **Código** en inglés y **textos y documentación** en español (Art. XII).
 - **Paquete base:** `mx.virgo.app`; los módulos usan `mx.virgo.core.<nombre>`.
-- **Commits:** `tipo(TNNN): descripción`. **Ramas:** Móvil se integra en `rama-movil`. Las ramas `feat/NNN-modulo` y `fix/…` salen de ahí, y `rama-movil` entra a `main` por PR.
+- **Commits:** `tipo(TNNN): descripción`. **Ramas:** se trabaja en `feat/NNN-modulo` o `fix/…` desde `main` y se integra por PR (1 revisión y checks en verde).
 - **Estado de pantalla:** `data class XxxUiState` inmutable; un solo `StateFlow` por ViewModel.
 - **Errores:** los Problem Details de la API se convierten en `AppError` y se muestran con textos de `strings.xml`.
 

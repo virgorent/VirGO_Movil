@@ -1,6 +1,6 @@
 # VirGo Mobile (Android)
 
-Android app for **VirGo**, a platform that connects people organizing an event with venues and service providers. This folder of the [`VirGO_Backend`](https://github.com/virgorent/VirGO_Backend) repository consumes the REST API from [`VirGo-API`](https://github.com/virgorent/VirGO_Backend/tree/main/VirGo-API).
+Android app for **VirGo**, a platform that connects people organizing an event with venues and service providers. This is the repository [`virgorent/VirGO_Movil`](https://github.com/virgorent/VirGO_Movil); it consumes the REST API from [`VirGo-API`](https://github.com/virgorent/VirGO_Backend/tree/main/VirGo-API) in [`VirGO_Backend`](https://github.com/virgorent/VirGO_Backend).
 
 > **Status:** base architecture approved on 2026-11-05. The Gradle scaffold is in place; there is no application code yet.
 
@@ -76,8 +76,8 @@ Releases are manual: run the `movil-release.yml` workflow from GitHub (**Run wor
 ## Contributing
 
 1. Pick a task from an approved `task.md`.
-2. Branch from `rama-movil` (`feat/NNN-module`), commit with Conventional Commits citing the task ID (`feat(T012): ...`).
-3. Merge into `rama-movil`, then open a PR to `main`. CI must be green and one review is required.
+2. Branch from `main` (`feat/NNN-module`), commit with Conventional Commits citing the task ID (`feat(T012): ...`).
+3. Open a PR to `main`. CI must be green and one review is required.
 4. Fill in the module's `check.md` and add an entry to `memoria.md`.
 
 Project documentation (constitution, specs, log) is written in Spanish.

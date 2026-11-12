@@ -6,19 +6,19 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 
 | Campo | Valor |
 |---|---|
-| Constitución | v1.1.0 aprobada por el equipo el 2026-11-05 |
-| Módulo en curso | `000-arquitectura-base`: T001, T003, T005, T006, T007, T008, T009, T010, T011, T012, T013, T014 hechas |
-| Tareas | 12 / 39 hechas (T037 bloqueada por MCP) |
+| Constitución | v1.1.1 (enmienda 2026-11-12; v1.1.0 aprobada el 2026-11-05) |
+| Módulo en curso | `000-arquitectura-base`: 31/40 tareas hechas (detalle y estados en `task.md`) |
+| Tareas | 31 / 40 hechas (T037 bloqueada por MCP) |
 | `API_BASE_URL` de *release* | Pendiente (la entrega `VirGo-API` en `002`: T210) |
 | Última versión publicada | Ninguna |
-| Siguiente paso | Ejecutar T006 y T007; desbloquear T037; resolver P-01/P-02 |
+| Siguiente paso | Cerrar T004 y aprobar el PR #4; T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030 y T037 |
 
 ## Módulos
 
 | Módulo | Estado | Notas |
 |---|---|---|
-| `000-arquitectura-base` | 🚧 Aprobado; T001/T003/T005 hechas | Base técnica sin pantallas del negocio |
-| `001-…` pantallas | ⏸ No iniciados | Un spec atómico por pantalla o flujo, al vuelo; los primeros serán «Iniciar sesión» y «Cerrar sesión», con el JSON de `VirGo-API` `003` y `004` |
+| `000-arquitectura-base` | 🚧 Aprobado; 31/40 tareas hechas | Base técnica sin pantallas del negocio |
+| `001-…` pantallas | 🚧 `001`–`004` aprobados (retroactivo 2026-11-12) e implementados; `005+` sin iniciar | Un spec atómico por pantalla o flujo, al vuelo; los siguientes usan el JSON de `VirGo-API` |
 
 ## Decisiones (ADR)
 
@@ -38,7 +38,8 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | ADR-12 | 2026-11-03 | **Pitest** (`gradle-pitest-plugin`) en módulos JVM puros | Mutación sin dispositivo; umbral tras medir |
 | ADR-13 | 2026-11-03 | MCP permitidos: `figma` (lectura del *canvas*) y `github` | Pantallas al vuelo desde la maqueta oficial |
 | ADR-14 | 2026-11-03 | Google Play como destino futuro, con enmienda | Tiene un pago único; por ahora GitHub Releases |
-| ADR-15 | 2026-11-03 | **Repositorio único** `virgorent/VirGO_Backend` con carpetas por proyecto | Decisión del equipo |
+| ADR-15 | 2026-11-03 | **Repositorio único** `virgorent/VirGO_Backend` con carpetas por proyecto | Decisión del equipo; **superseded** por ADR-16 (2026-11-12) |
+| ADR-16 | 2026-11-12 | Repositorio propio `virgorent/VirGO_Movil` para el móvil (fin del monorepo); el backend vive en `virgorent/VirGO_Backend` | Separa CI, permisos y despliegues por proyecto |
 
 ## Cambios de contrato (compartidos con Backend)
 
@@ -536,3 +537,26 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Pasar cada secreto por `env:` en su paso (nunca `${{ secrets.X }}` interpolado dentro de `run`) evita que se impriman en los logs y cumple «sin secretos impresos».
   - El keystore vive en `Temp\opencode\` (puede limpiarse en cualquier momento): el respaldo P-02 con custodia humana es urgente antes del primer release real.
 - **Pendiente:** `VIRGO_API_BASE_URL` (T210) y respaldo P-02 del keystore para cerrar T033; T035 (release `v0.1.0`); T004; aprobación de `Karasu0001` en PR #4; borrar `ccabrera-dev8/VirGo-Movil` (scope `delete_repo`).
+
+
+### 2026-11-12 - T004: verificación de alineación con la constitución
+
+- **Autor:** equipo + opencode (`arquitecto-movil`)
+- **Módulo / tareas:** `000-arquitectura-base` -> T004 -> (31/40)
+- **Qué se hizo:** revisión con la skill `verificar-constitucion` sobre la gobernanza (constitución, `AGENTS.md` raíz y del móvil, `README.md`, `plan.md`/`task.md`/`check.md` del `000`, `memoria.md` y `opencode.json`) en dos pasadas. Primera pasada: **No alineado** — ❌ Art. II (pantallas de negocio con `000` abierto) y ❌ Art. XI (specs `001`–`004` en Borrador con tareas ejecutadas), más 8 ⚠️. Correcciones aplicadas con aprobación del equipo:
+  - Specs `001`–`004`: `spec.md`, `plan.md` y `task.md` → **Aprobado (aprobación retroactiva 2026-11-12)**.
+  - Constitución → **enmienda 1.1.1** (corrección factual: el proyecto vive en `virgorent/VirGO_Movil`; VIII.7 reescrita como «Archivos compartidos con el backend»; sin cambios normativos).
+  - Referencias stale corregidas: `AGENTS.md` raíz (fase actual, tabla de fases, ramas), `VirGo-Movil/AGENTS.md` (repo, estado, estructura, `.github/`, MCP `figma`, ramas), `README.md`, `plan.md:83`, `task.md` T001, cabecera de `memoria.md` y ADR-15 «superseded» + **ADR-16** (repositorio propio del móvil).
+  - **T040** agregada en `task.md` (Timber solo en *debug*, Art. IX) y tablas F7/F8 reordenadas (los blockquotes de evidencia partían las tablas).
+- **Evidencia:** segunda pasada del auditor → **Alineado** (0 ❌). ⚠️ restantes registrados como pendientes de cierre: VIII (aprobar PR #4, T002/T039/T035), IX (ejecutar T040), V (respaldo P-02), VI (totales en `check.md`), I/II/X (cierre en T036).
+- **Decisiones humanas (2026-11-12):**
+  1. Aprobar retroactivamente los specs `001`–`004` (ya ejecutados).
+  2. Aceptar la implementación anticipada de las pantallas `001`–`004` con `000` abierto; `000` se cierra en **T036** antes de empezar `005+` (Art. II).
+  3. Añadir la tarea **T040** (Timber) en lugar de enmendar el plan.
+  4. Enmienda constitucional **1.1.1**.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Las referencias stale del monorepo eran sistémicas: corregirlas por capa (constitución → AGENTS → specs → memoria) evita que la siguiente revisión vuelva a encontrarlas.
+  - Los blockquotes de evidencia dentro de `task.md` rompen las tablas al renderizar; la evidencia va al final de cada sección, después de la última fila.
+  - Con dos pasadas (diagnóstico → corrección → re-verificación) el resultado «Alineado» queda respaldado en lugar de autodeclarado.
+- **Pendiente:** aprobación de `Karasu0001` en PR #4; T040 (Timber), T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030, T037, T035 y T036.

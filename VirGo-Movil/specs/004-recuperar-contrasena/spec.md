@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `004-recuperar-contrasena` |
 | Versión | 1.0.0 |
-| Estado | Borrador |
+| Estado | Aprobado (2026-11-12, aprobación retroactiva; ver `memoria.md`) |
 | Fecha | 2026-11-05 |
 | Rol | Visitante |
 | Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
