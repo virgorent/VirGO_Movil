@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `000-arquitectura-base` |
 | Versión | 1.1.0 |
-| Estado | Aprobado. 32/40 tareas hechas. |
+| Estado | Aprobado. 34/40 tareas hechas. |
 | Fecha | 2026-10-29 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 | Constitución | v1.1.1 |
@@ -22,7 +22,7 @@
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
 | T001 | Confirmar que `VirGo-Movil/` entró a `main` del repositorio `virgorent/VirGO_Movil` con su `.gitignore` DevSecOps (Art. V.8) y su `README.md` en inglés | — | `seguridad-ci` | `git remote -v` correcto; `git check-ignore local.properties` lo ignora | ✅ |
-| T002 | 🧑 Coordinar con `VirGo-API` T207 el ruleset único `main-protection` del repositorio (PR, 1 revisión, checks requeridos, sin *force push* ni borrado) y la protección de push contra secretos | T001 | `seguridad-ci` | Reglas visibles en GitHub (captura o `gh api`) | ⏳ |
+| T002 | 🧑 Coordinar con `VirGo-API` T207 el ruleset único `main-protection` del repositorio (PR, 1 revisión, checks requeridos, sin *force push* ni borrado) y la protección de push contra secretos | T001 | `seguridad-ci` | Reglas visibles en GitHub (captura o `gh api`) | ✅ |
 | T003 | [P] Agregar `.editorconfig` (ktlint) y, en la raíz del repositorio, el bloque de `VirGo-Movil` en `.github/dependabot.yml`; la plantilla de PR es común (Gradle agrupado por familia y Actions) | T001 | `seguridad-ci` | Archivos en el repositorio; Dependabot activo | ✅ |
 | T004 | [P] Revisar la alineación de la gobernanza con `verificar-constitucion` | — | `arquitecto-movil` | Resultado «Alineado» en `memoria.md` | ✅ |
 | T037 | [P] Instalar y probar los MCP `figma` (lectura del *canvas* de «Pantallas VirGo») y `github` de `opencode.json`, con tokens en variables de entorno | — | `arquitecto-movil` | `opencode mcp list` los muestra conectados; captura en `memoria.md` | ⛔ |
@@ -30,6 +30,8 @@
 > T037 bloqueada: `figma` responde `HTTP 405` en `https://mcp.figma.com/mcp` (problema conocido de opencode) y `github` sigue deshabilitado; requiere OAuth de Figma y `GITHUB_MCP_PAT`.
 
 > T004 hecha: auditoría con `verificar-constitucion` sobre la gobernanza en dos pasadas con el subagente `arquitecto-movil`. La primera pasada dio **No alineado** (❌ Art. II y ❌ Art. XI); tras las correcciones, la re-verificación dio **Alineado** (0 ❌, 6 ⚠️ registrados como pendientes de cierre). Correcciones aplicadas con aprobación del equipo: aprobación retroactiva de los specs `001`–`004` (`spec.md`, `plan.md` y `task.md`), enmienda constitucional **1.1.1** (repo `VirGO_Movil` y VIII.7), referencias stale corregidas en `AGENTS.md` (raíz y móvil), `README.md`, `plan.md`, T001 y cabecera/ADRs de `memoria.md`, tarea **T040** (Timber, Art. IX) y reparación de las tablas F7/F8. Tabla final de 12 artículos y decisiones humanas en la entrada de `memoria.md`.
+
+> T002 hecha (2026-11-13): decisión humana «Aplicar su JSON completo» → el ruleset vivo de `VirGO_Backend` (id 26558561) pasó de `no push main` (0 revisiones, 0 checks) a `main-protection` idéntico a su `.github/rulesets/main-protection.json`: PR obligatorio con 1 revisión, hilos resueltos y 7 checks requeridos (`api-build-test`, `api-iac`, `api-schema`, `CodeQL`, `database`, `gitleaks`, `dependency review`), más `deletion` y `non_fast_forward`; era el único ruleset activo tras el `PUT`. Evidencia: `gh api repos/virgorent/VirGO_Backend/rulesets/26558561` con `enforcement=active` y `required_approving_review_count=1`; el PR #19 del backend reporta sus 7 checks en verde. El móvil ya cumplía con `main-protection` (id 27049892) y push protection + secret scanning activados en ambos repos. El *drift* JSON↔ruleset vivo quedó eliminado.
 
 ## F1 · Proyecto Gradle y módulos
 
@@ -130,8 +132,10 @@
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T039 | Agregar `movil-build-test` y `movil-codeql` como checks requeridos del ruleset único y actualizar `.github/rulesets/main-protection.json` en la raíz | T002, T031 | `seguridad-ci` | *Push* directo a `main` rechazado; JSON en el repositorio | ⏳ |
+| T039 | Agregar `movil-build-test` y `movil-codeql` como checks requeridos del ruleset único y actualizar `.github/rulesets/main-protection.json` en la raíz | T002, T031 | `seguridad-ci` | *Push* directo a `main` rechazado; JSON en el repositorio | ✅ |
 | T036 | Completar `check.md`; verificación final con `verificar-constitucion`; marcar el spec, el plan y las tareas como *Cerrado*; entrada de cierre en `memoria.md` con lo aprendido | T001–T039 | `qa-movil` + `arquitecto-movil` | Resultado «Alineado» y todos los criterios de aceptación con evidencia | ⏳ |
+
+> T039 hecha (2026-11-13): decisión humana «`movil-build-test` + `analyze`» → el ruleset vivo de `VirGO_Movil` (id 27049892) exige hoy 4 checks: `gitleaks`, `dependency review`, `movil-build-test` y `analyze` (el check de CodeQL se llama `analyze`; `movil-codeql` no existe como check-run, por lo que se requirió `analyze` en lugar del nombre del workflow). El JSON `.github/rulesets/main-protection.json` de la raíz quedó idéntico en el PR #7 (commit `73020da`). Evidencia del criterio de aceptación: *push* directo a `main` rechazado con `GH013` «Changes must be made through a pull request» y «4 of 4 required status checks are expected» (commit de prueba `933a78b` descartado con `git reset --hard`). **Prueba empírica del *skip*:** el PR #7 solo tocaba `.github/` (fuera de `VirGo-Movil/**`), `movil-build-test` se skipeó con la condicional `if:` y reportó *Success*; tras la aprobación el merge pasó a `CLEAN` y se fusionó (`716cc70`), confirmando que un job skipeado por `if:` satisface el check requerido (documentación de GitHub) mientras que un workflow skipeado por filtro `paths` en `on:` quedaría *Pending* y bloquearía.
 
 ---
 
