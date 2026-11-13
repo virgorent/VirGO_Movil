@@ -35,6 +35,12 @@
           },
           {
             "context": "dependency review"
+          },
+          {
+            "context": "movil-build-test"
+          },
+          {
+            "context": "analyze"
           }
         ]
       }
