@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -47,6 +48,7 @@ fun VirGoApp() {
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
+                                    .statusBarsPadding()
                                     .padding(horizontal = 8.dp),
                             horizontalArrangement = Arrangement.End,
                         ) {
