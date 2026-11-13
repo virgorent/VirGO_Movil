@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.timber)
 
     implementation(project(":core:designsystem"))
     implementation(project(":core:common"))

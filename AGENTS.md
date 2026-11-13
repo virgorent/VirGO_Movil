@@ -6,7 +6,7 @@
 ## 1. Forma de trabajo
 
 - **Metodología**: Spec-Driven Development (SDD).
-- **Fase actual**: gobernanza global cerrada (`nv-00`, `nv-01` y `nv-02` cumplidos; pendiente operativo: aplicar el ruleset de `main`). `VirGo-API` está en fase de especificación; `VirGo-Movil` tiene su spec `000` aprobado e **implementado en curso** (31/40 tareas, código en `main`).
+- **Fase actual**: gobernanza global cerrada (`nv-00`, `nv-01` y `nv-02` cumplidos; pendiente operativo: aplicar el ruleset de `main`). `VirGo-API` está en fase de especificación; `VirGo-Movil` tiene su spec `000` aprobado e **implementado en curso** (32/40 tareas, código en `main`).
 - **Principio**: `spec → plan → task → check`. No ejecutar tareas sin aprobación explícita.
 - **DevSecOps**: ningún cambio se fusiona sin escaneo de secretos, revisión de dependencias y, cuando el proyecto ya tenga su workflow, análisis estático en verde.
 - **Todo debe alinearse** a `constitution.md`.
