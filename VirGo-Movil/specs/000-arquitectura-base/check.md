@@ -60,4 +60,13 @@ Lista de verificación del módulo (Art. I.4). Cada casilla lleva su evidencia. 
 ## 6. Memoria y aprendizaje
 
 - [ ] Entrada de cierre en `memoria.md` con lo aprendido.
+
+## 7. Retos no funcionales (RNF)
+
+| RNF | Evidencia | Estado |
+|---|---|---|
+| RNF-03 Ceros en claro | `network_security_config.xml` con `<base-config cleartextTrafficPermitted="false" />`; manifiesto de *release* sin `usesCleartextTraffic` y con `networkSecurityConfig` (verificado con `aapt dump xmltree` sobre el APK de *release*: `res/8G.xml` → `cleartextTrafficPermitted=(type 0x12)0x0`) | ✅ |
+| RNF-04 Keystore robusto | `KeystoreAead.create` pre-registra AeadConfig antes de crear el keyset (logcat `[I ConfigManager] Registered [config_id=1] for algorithm AESGCM with keysize 128`) y tiene fallback a clave estática si no existe keyset; fix en el PR #9 (`c1d4552`) | ✅ |
+
+> **Causa del incidente de arranque:** el emulador arrancando por *snapshot* corrompía el registro del keystore; el fix es pre-registrar AeadConfig y evitar el arranque por snapshot. Detalle en `memoria.md` (entrada 2026-11-12).
 - [ ] Mejoras propuestas a la constitución, `AGENTS.md`, skills o subagentes (o «ninguna»).

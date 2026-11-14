@@ -570,7 +570,10 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Evidencia:** pipeline local completo en verde — `ktlintCheck detekt lint` (7m06s) y `testDebugUnitTest` + `assembleDebug` + `assembleRelease` + `:core:domain:test` + `:core:common:test` + `pitest` → **BUILD SUCCESSFUL** (7m06s); grep sobre `*.kt`: 0 ocurrencias de `Log.[vdiew](`, `println(` o `System.out.print` (revisión T027) y `Timber.` una sola vez (`VirGoApplication.kt`). CI: PR #6 con los 6 checks en verde (`movil-build-test` 4m34s, `analyze` 5m45s, `CodeQL`, `gitleaks`, `dependency review`, `changes`).
 - **Decisiones:** dependencia `implementation` (no `debugImplementation`) con el guardia `BuildConfig.DEBUG` en `onCreate`, porque `VirGoApplication` vive en el source set `main` y debe compilar también en *release*; sin el guardia, en *release* se plantaría un árbol (violaría Art. IX).
 - **Costo:** $0 / solo tiempo de CI.
-- **Aprendizaje:**
+- **RNF (retos no funcionales):**  
+  ✅ RNF-03: ceros en claro (`network_security_config.xml` con `cleartextTrafficPermitted="false"`; manifiesto release sin `usesCleartextTraffic`).  
+  ✅ RNF-04: AeadConfig pre-registrado (logcat `[I ConfigManager] Registered [config_id=1] for algorithm AESGCM with keysize 128` antes de crear el keyset).
+- **Aprendizaje:**  
   - «Solo debug» en una clase de `main` se resuelve con `BuildConfig.DEBUG` + R8, no con `debugImplementation`: esta última rompería la compilación de *release* al no existir la clase en ese classpath.
   - El guardia hace que R8 pueda eliminar Timber completo del APK de *release* (sin árbol plantado no hay código alcanzable), lo que convierte el criterio del Art. IX en verificable con el `mapping.txt`.
 - **Pendiente:** aprobación con permiso `write` y fusión del PR #6; T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030, T037, T035 y T036.
@@ -587,3 +590,4 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - La fuente de verdad del ruleset es el JSON del repositorio; el ruleset vivo puede divergir y hay que compararlos con `gh api` después de cada cambio.
   - Los 4 checks requeridos viven en `movil-ci.yml` (`movil-build-test`) y `movil-codeql.yml` (`analyze`); `gitleaks` y `dependency review` vienen de los workflows globales.
 - **Pendiente:** PR de Play (AAB, icono, respaldo, versión 0.2.0) pedido por el equipo; T033 (respaldo P-02), T035, T030, T036, T024 y T037.
+
