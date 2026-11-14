@@ -9,15 +9,15 @@ Guía para subir una versión de la app Android de VirGo (`mx.virgo.app`) a Goog
 - **La llave de firma no se cambia.** Después de la primera versión en Play, todas las actualizaciones se firman con la misma llave de subida. Si se pierde, hay que pedirle a Google que la reinicie, y eso tarda días. Respáldala en cuanto la generes.
 - **El `versionCode` nunca se repite ni baja.** Play rechaza el bundle sin más explicación.
 - **Google Play exige AAB, no APK.**
-- **Hoy hay bloqueos para publicar.** Revisa la sección 1 antes de invertir tiempo en lo demás.
+- **Para la prueba interna ya no hay bloqueos de código.** Para la prueba cerrada y producción faltan B4 a B6 (sección 1).
 
 ## 1. Bloqueos actuales
 
 | # | Bloqueo | Responsable | Qué falta |
 |---|---|---|---|
-| B1 | El workflow genera APK, no AAB | Móvil | `movil-release.yml`: `assembleRelease` → `bundleRelease` y subir el `.aab` |
-| B2 | La app no tiene icono | Móvil | Icono adaptativo en `res/mipmap-anydpi-v26/` y `android:icon`/`android:roundIcon` en el manifiesto |
-| B3 | `allowBackup` no está declarado (por defecto es `true`) | Móvil | `android:allowBackup="false"` y `android:dataExtractionRules` que excluyan la sesión |
+| B1 | ~~El workflow genera APK, no AAB~~ | Móvil | ✅ Resuelto en el PR #10: `movil-release.yml` genera APK y AAB, verifica las firmas y publica los dos |
+| B2 | ~~La app no tiene icono~~ | Móvil | ✅ Resuelto en el PR #10: icono adaptativo provisional ("V" blanca sobre morado) y `docs/play/icon-512.png`. Cambiarlo por el logo final antes de producción |
+| B3 | ~~`allowBackup` no está declarado~~ | Móvil | ✅ Resuelto en el PR #10: `allowBackup="false"` y `dataExtractionRules` que excluyen el DataStore y el *keyset* del token |
 | B4 | No hay aviso de privacidad ni página de eliminación de cuenta | Equipo | Publicarlos con GitHub Pages (sección 6) |
 | B5 | Eliminar la cuenta está bloqueado (`018 DELETE /users/me`) | Equipo y API | Google exige que una app con registro permita borrar la cuenta desde la app y desde una URL |
 | B6 | No hay cuenta de prueba en producción para el revisor de Google | Base de datos | Usuario de prueba real en la base `virgo` (la cuenta `demo@virgo.mx` solo existe en local) |
@@ -62,8 +62,8 @@ Pide, en orden: la contraseña del almacén, el nombre y apellidos, la unidad or
 En `VirGo-Movil/app/build.gradle.kts`:
 
 ```kotlin
-versionCode = 2          // siempre mayor que el último subido a Play
-versionName = "0.2.0"    // el que ve la gente
+versionCode = 3          // siempre mayor que el último subido a Play (0.2.0 usó el 2)
+versionName = "0.3.0"    // el que ve la gente
 ```
 
 Registra la versión en `memoria.md` con la fecha y lo que cambió.
