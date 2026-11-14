@@ -570,7 +570,10 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Evidencia:** pipeline local completo en verde — `ktlintCheck detekt lint` (7m06s) y `testDebugUnitTest` + `assembleDebug` + `assembleRelease` + `:core:domain:test` + `:core:common:test` + `pitest` → **BUILD SUCCESSFUL** (7m06s); grep sobre `*.kt`: 0 ocurrencias de `Log.[vdiew](`, `println(` o `System.out.print` (revisión T027) y `Timber.` una sola vez (`VirGoApplication.kt`). CI: PR #6 con los 6 checks en verde (`movil-build-test` 4m34s, `analyze` 5m45s, `CodeQL`, `gitleaks`, `dependency review`, `changes`).
 - **Decisiones:** dependencia `implementation` (no `debugImplementation`) con el guardia `BuildConfig.DEBUG` en `onCreate`, porque `VirGoApplication` vive en el source set `main` y debe compilar también en *release*; sin el guardia, en *release* se plantaría un árbol (violaría Art. IX).
 - **Costo:** $0 / solo tiempo de CI.
-- **Aprendizaje:**
+- **RNF (retos no funcionales):**  
+  ✅ RNF-03: ceros en claro (`network_security_config.xml` con `cleartextTrafficPermitted="false"`; manifiesto release sin `usesCleartextTraffic`).  
+  ✅ RNF-04: AeadConfig pre-registrado (logcat `[I ConfigManager] Registered [config_id=1] for algorithm AESGCM with keysize 128` antes de crear el keyset).
+- **Aprendizaje:**  
   - «Solo debug» en una clase de `main` se resuelve con `BuildConfig.DEBUG` + R8, no con `debugImplementation`: esta última rompería la compilación de *release* al no existir la clase en ese classpath.
   - El guardia hace que R8 pueda eliminar Timber completo del APK de *release* (sin árbol plantado no hay código alcanzable), lo que convierte el criterio del Art. IX en verificable con el `mapping.txt`.
 - **Pendiente:** aprobación con permiso `write` y fusión del PR #6; T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030, T037, T035 y T036.
@@ -587,3 +590,23 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - La fuente de verdad del ruleset es el JSON del repositorio; el ruleset vivo puede divergir y hay que compararlos con `gh api` después de cada cambio.
   - Los 4 checks requeridos viven en `movil-ci.yml` (`movil-build-test`) y `movil-codeql.yml` (`analyze`); `gitleaks` y `dependency review` vienen de los workflows globales.
 - **Pendiente:** PR de Play (AAB, icono, respaldo, versión 0.2.0) pedido por el equipo; T033 (respaldo P-02), T035, T030, T036, T024 y T037.
+
+
+### 2026-11-14 - T024, T030 y T035: diagnostico, verificacion manual y release v0.2.0
+
+- **Autor:** equipo + opencode (`qa-movil`)
+- **Modulo / tareas:** `000-arquitectura-base` -> T024, T030, T035 -> (36/40)
+- **Que se hizo:**
+  - Fusionados los PR #8 (docs T002/T039), #9 (fix AeadConfig + DevMenu) y #10 (Play: AAB, icono adaptativo, `allowBackup=false`, version 0.2.0); aprobados por EsauRamireZ/Karasu0001 con los 6 checks en verde cada uno.
+  - Lanzado `movil-release` con `version=0.2.0` (run `43544624048`, en verde): release `v0.2.0` con `app-release.aab` (5 661 199 B) y `app-release.apk` (2 530 468 B), `versionCode 2`.
+  - **T024** CA-04/CA-05: login QA real contra produccion (`POST /api/v1/auth/login` -> 200) y Diagnostico con «API disponible» (227 ms); con modo avion, mensaje en espanol «No hay conexion con la API. Revisa tu internet e intentalo de nuevo.» sin cierre y «Reintentar» que recupera (1123 ms).
+  - **T030**: arranque en frio 1791/1854/1885 ms (1935 tras reinicio) en debug y 698 ms con el APK de release; modo oscuro, icono de launcher y capturas del DevMenu/Diagnostico.
+  - **T035**: APK del release descargado del GitHub Release, instalado en el emulador (uninstall + install, sin mezclar firmas) y prueba de humo: abre el inicio visitante y el login llega a «Inicio».
+- **Evidencia:** `docs/evidencia/` con CA-04, CA-05, CA-09, T030-devmenu-diagnostico, evidencia-mod-oscuro e icono-launcher; PR #11 con la evidencia RNF-03/RNF-04.
+- **Decisiones:** la «API apagada» de CA-05 se simulo con modo avion porque la API real es la de produccion; el diagnostico local (T210) ya no aplica; se publico `v0.2.0` en lugar de `v0.1.0` porque el alcance crecio con el PR #10.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - El teclado del emulador cubre la mitad inferior: un `input tap` sobre un boton debajo del IME termina presionando una tecla del teclado (chars fantasma); hay que cerrar el IME con `keyevent 4` antes de tocar y releer coordenadas.
+  - El `screenrecord --size 720x1280` + ffmpeg (frame 0, sin `-ss`) da capturas confiables cuando `screencap` sale negro por el glitch de gfxstream.
+  - Los snapshots del emulador corrompen el keystore: arrancar siempre con `-no-snapshot`.
+- **Pendiente:** T033 (respaldo P-02 del keystore, custodia humana), T036 (cierre), T037 (MCP figma/github), subir el AAB a prueba interna de Play (equipo) y B4/B5 (aviso de privacidad y borrado de cuenta, Equipo/API).
