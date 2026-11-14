@@ -7,17 +7,17 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | Campo | Valor |
 |---|---|
 | Constitución | v1.1.1 (enmienda 2026-11-12; v1.1.0 aprobada el 2026-11-05) |
-| Módulo en curso | `000-arquitectura-base`: 32/40 tareas hechas (detalle y estados en `task.md`) |
-| Tareas | 32 / 40 hechas (T037 bloqueada por MCP) |
-| `API_BASE_URL` de *release* | Pendiente (la entrega `VirGo-API` en `002`: T210) |
+| Módulo en curso | `000-arquitectura-base`: 34/40 tareas hechas (detalle y estados en `task.md`) |
+| Tareas | 34 / 40 hechas (T037 bloqueada por MCP) |
+| `API_BASE_URL` de *release* | Variable `VIRGO_API_BASE_URL` creada en `VirGO_Movil` con la URL de producción; falta el respaldo P-02 del keystore para cerrar T033 |
 | Última versión publicada | Ninguna |
-| Siguiente paso | PR de T040 (`feat/000-timber`) a verde y fusionado; después T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030, T037, T035 y T036 |
+| Siguiente paso | PR de Play (AAB, icono, respaldo + versión 0.2.0) pedido por el equipo; después T033 (respaldo P-02), T035, T030, T036, T024 y T037 |
 
 ## Módulos
 
 | Módulo | Estado | Notas |
 |---|---|---|
-| `000-arquitectura-base` | 🚧 Aprobado; 32/40 tareas hechas | Base técnica sin pantallas del negocio |
+| `000-arquitectura-base` | 🚧 Aprobado; 34/40 tareas hechas | Base técnica sin pantallas del negocio |
 | `001-…` pantallas | 🚧 `001`–`004` aprobados (retroactivo 2026-11-12) e implementados; `005+` sin iniciar | Un spec atómico por pantalla o flujo, al vuelo; los siguientes usan el JSON de `VirGo-API` |
 
 ## Decisiones (ADR)
@@ -574,3 +574,16 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - «Solo debug» en una clase de `main` se resuelve con `BuildConfig.DEBUG` + R8, no con `debugImplementation`: esta última rompería la compilación de *release* al no existir la clase en ese classpath.
   - El guardia hace que R8 pueda eliminar Timber completo del APK de *release* (sin árbol plantado no hay código alcanzable), lo que convierte el criterio del Art. IX en verificable con el `mapping.txt`.
 - **Pendiente:** aprobación con permiso `write` y fusión del PR #6; T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030, T037, T035 y T036.
+
+### 2026-11-13 - T002 + T039: rulesets del backend y checks requeridos del móvil
+
+- **Autor:** equipo + opencode (`seguridad-ci`)
+- **Módulo / tareas:** `000-arquitectura-base` -> T002, T039 -> (34/40)
+- **Qué se hizo:** T002 — decisión humana «Aplicar su JSON completo»: el ruleset vivo de `VirGO_Backend` (id 26558561) se reemplazó vía `PUT` para quedar idéntico a su `.github/rulesets/main-protection.json` (PR obligatorio, 1 revisión, hilos resueltos, 7 checks: `api-build-test`, `api-iac`, `api-schema`, `CodeQL`, `database`, `gitleaks`, `dependency review`; más `deletion` y `non_fast_forward`), único ruleset activo, *drift* JSON↔vivo eliminado. T039 — decisión humana «`movil-build-test` + `analyze`»: el ruleset de `VirGO_Movil` (id 27049892) exige 4 checks y `.github/rulesets/main-protection.json` quedó idéntico en el PR #7 (`73020da`).
+- **Evidencia:** `gh api repos/virgorent/VirGO_Backend/rulesets/26558561` → `enforcement=active`, `required_approving_review_count=1`, 7 `required_status_checks`; PR #19 del backend en verde. Móvil: *push* directo a `main` rechazado con `GH013` «4 of 4 required status checks are expected» (commit de prueba `933a78b` descartado); PR #7 fusionado (`716cc70`) con `movil-build-test` skipeado por la condicional `if:` reportando *Success* → prueba empírica de que un job skipeado satisface el check requerido.
+- **Decisiones:** el check de CodeQL se llama `analyze` (no existe el check-run `movil-codeql`), así que se requirió `analyze`; un workflow skipeado por filtro `paths` en `on:` quedaría *Pending* y bloquearía, por lo que el filtro `paths` sigue solo en `movil-ci.yml` con job `changes`.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - La fuente de verdad del ruleset es el JSON del repositorio; el ruleset vivo puede divergir y hay que compararlos con `gh api` después de cada cambio.
+  - Los 4 checks requeridos viven en `movil-ci.yml` (`movil-build-test`) y `movil-codeql.yml` (`analyze`); `gitleaks` y `dependency review` vienen de los workflows globales.
+- **Pendiente:** PR de Play (AAB, icono, respaldo, versión 0.2.0) pedido por el equipo; T033 (respaldo P-02), T035, T030, T036, T024 y T037.
