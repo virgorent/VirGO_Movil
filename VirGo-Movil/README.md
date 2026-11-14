@@ -71,7 +71,7 @@ The release `API_BASE_URL` is the HTTPS URL published by the `VirGo-API` deploy 
 
 ## Releases
 
-Releases are manual: run the `movil-release.yml` workflow from GitHub (**Run workflow**) on `main`. It builds a signed APK and publishes it as a GitHub Release. Publishing to Google Play is planned for later.
+Releases are manual: run the `movil-release.yml` workflow from GitHub (**Run workflow**) on `main`. It builds a signed APK and publishes it as a GitHub Release. The Google Play guide (in Spanish), including the current blockers, is in [`docs/PUBLICAR-PLAY.md`](docs/PUBLICAR-PLAY.md).
 
 ## Contributing
 

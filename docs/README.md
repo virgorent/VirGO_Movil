@@ -7,3 +7,4 @@ Documentación transversal del monorepo que no pertenece a un proyecto concreto.
 - No guardar secretos, tokens ni datos personales.
 - La documentación de cada proyecto vive en su propia carpeta (`VirGo-Movil/`).
 - [`frontend/MAPA-SPECS.md`](frontend/MAPA-SPECS.md): specs de Móvil, por flujo.
+- [`../VirGo-Movil/docs/PUBLICAR-PLAY.md`](../VirGo-Movil/docs/PUBLICAR-PLAY.md): cómo publicar la app en Google Play y qué falta hoy.
