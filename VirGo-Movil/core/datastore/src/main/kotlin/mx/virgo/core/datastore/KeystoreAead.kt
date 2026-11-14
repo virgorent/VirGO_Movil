@@ -3,6 +3,7 @@ package mx.virgo.core.datastore
 import android.content.Context
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
+import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import java.io.IOException
 import java.security.GeneralSecurityException
@@ -15,6 +16,7 @@ internal object KeystoreAead {
 
     fun create(context: Context): Aead =
         try {
+            AeadConfig.register()
             AndroidKeysetManager
                 .Builder()
                 .withSharedPref(context.applicationContext, KEYSET_NAME, PREFS_FILE)
