@@ -8,7 +8,7 @@ Guía base para los agentes de IA y las personas que trabajan en este proyecto (
 - **Stack:** Kotlin, Jetpack Compose (Material 3), MVVM/UDF, Hilt, Retrofit + OkHttp + kotlinx.serialization, DataStore, Gradle con *version catalog* y GitHub Actions.
 - **Backend:** `VirGo-API` (.NET 10 en AWS). Su contrato está en el Art. IV.
 - **Diseño de referencia:** la maqueta funcional de VirGo y el archivo de Figma «Pantallas VirGo».
-- **Estado actual:** `000-arquitectura-base` aprobado el 2026-11-05 y en curso (34/40 tareas hechas); el proyecto Gradle y el código de la app (`app/`, `core/`) ya existen. Los specs de pantallas `001`–`004` están aprobados (aprobación retroactiva el 2026-11-12); los demás (`005-…`) se crean uno por pantalla o flujo, al vuelo, cuando el backend entregue la URL y el JSON de sus endpoints.
+- **Estado actual:** `000-arquitectura-base` aprobado el 2026-11-05 y en curso (36/40 tareas hechas); el proyecto Gradle y el código de la app (`app/`, `core/`) ya existen. Los specs de pantallas `001`–`004` están aprobados (aprobación retroactiva el 2026-11-12); los demás (`005-…`) se crean uno por pantalla o flujo, al vuelo, cuando el backend entregue la URL y el JSON de sus endpoints.
 
 ## Estructura del proyecto
 
