@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VirGo — Organiza tu evento</title>
+  <meta name="description" content="VirGo reúne salones y proveedores para tu evento en un solo lugar. Encuentra salones cerca de ti y organiza tu fiesta sin hojas de cálculo.">
+  <meta name="theme-color" content="#7357F5">
+  <meta property="og:title" content="VirGo — Organiza tu evento">
+  <meta property="og:description" content="Salones y proveedores para tu evento, en un solo lugar.">
+  <meta property="og:image" content="https://virgorent.github.io/VirGO_Movil/assets/virgo-hero-poster.jpg">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #7357F5;
+      --brand-strong: #5B3FE0;
+      --brand-soft: #F1EEFE;
+      --ink: #0F172A;
+      --ink-soft: #475569;
+      --bg: #FFFFFF;
+      --bg-alt: #F7F6FC;
+      --card: #FFFFFF;
+      --line: #E6E3F3;
+      --ok: #16A34A;
+      --radius: 20px;
+      --shadow: 0 12px 40px rgba(15, 23, 42, .08);
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --brand: #8B74FF;
+        --brand-strong: #A493FF;
+        --brand-soft: #221B45;
+        --ink: #F1F5F9;
+        --ink-soft: #A5B0C2;
+        --bg: #0F172A;
+        --bg-alt: #131C33;
+        --card: #18223D;
+        --line: #26304D;
+        --ok: #4ADE80;
+        --shadow: 0 12px 40px rgba(0, 0, 0, .35);
+        color-scheme: dark;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    body {
+      margin: 0;
+      font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    h1, h2, h3 { font-family: "Manrope", "DM Sans", system-ui, sans-serif; line-height: 1.15; margin: 0; letter-spacing: -0.02em; }
+    p { margin: 0; }
+    a { color: inherit; }
+    img, video { display: block; max-width: 100%; }
+    .wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+    .skip { position: absolute; left: -9999px; }
+    .skip:focus { left: 16px; top: 16px; z-index: 100; background: var(--bg); padding: 8px 12px; border-radius: 8px; }
+    :focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; border-radius: 6px; }
+
+    /* Navegación */
+    .nav { position: absolute; inset: 0 0 auto; z-index: 10; }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 20px; }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; font-family: "Manrope", sans-serif; font-weight: 800; font-size: 22px; }
+    .logo img { width: 36px; height: 36px; border-radius: 10px; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { color: rgba(255,255,255,.9); text-decoration: none; font-weight: 500; font-size: 15px; }
+    .nav-links a:hover { color: #fff; }
+    @media (max-width: 720px) { .nav-links a:not(.btn) { display: none; } }
+
+    /* Botones */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 12px 24px; border-radius: 999px; font-weight: 700; font-size: 16px; text-decoration: none; border: 2px solid transparent; transition: transform .15s ease, background .15s ease; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--brand); color: #fff; }
+    .btn-primary:hover { background: var(--brand-strong); }
+    .btn-ghost { border-color: rgba(255,255,255,.6); color: #fff; }
+    .btn-ghost:hover { background: rgba(255,255,255,.12); }
+    .btn-small { min-height: 40px; padding: 8px 18px; font-size: 15px; }
+    @media (prefers-reduced-motion: reduce) { .btn { transition: none; } .btn:hover { transform: none; } }
+
+    /* Hero con video */
+    .hero { position: relative; min-height: min(92vh, 820px); display: flex; align-items: flex-end; color: #fff; overflow: hidden; background: #0F172A; }
+    .hero video, .hero .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,42,.55) 0%, rgba(15,23,42,.15) 35%, rgba(15,23,42,.85) 100%); }
+    .hero-content { position: relative; z-index: 2; padding-block: 140px 72px; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.14); backdrop-filter: blur(8px); font-size: 14px; font-weight: 500; margin-bottom: 20px; }
+    .badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #4ADE80; }
+    .hero h1 { font-size: clamp(38px, 6.4vw, 72px); font-weight: 800; max-width: 14ch; }
+    .hero h1 em { font-style: normal; color: #C9BEFF; }
+    .hero p.lead { font-size: clamp(18px, 2.2vw, 21px); max-width: 46ch; margin-top: 18px; color: rgba(255,255,255,.9); }
+    .hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .video-toggle { position: absolute; z-index: 3; right: 16px; bottom: 16px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(15,23,42,.6); color: #fff; cursor: pointer; display: grid; place-items: center; }
+    .video-toggle svg { width: 18px; height: 18px; }
+
+    /* Secciones */
+    section { padding-block: 96px; }
+    .alt { background: var(--bg-alt); }
+    .eyebrow { color: var(--brand); font-weight: 700; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; }
+    .section-head { max-width: 640px; margin-bottom: 48px; }
+    .section-head h2 { font-size: clamp(30px, 4vw, 44px); font-weight: 800; }
+    .section-head p { color: var(--ink-soft); margin-top: 14px; font-size: 18px; }
+
+    .grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); }
+    .card .icon { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); margin-bottom: 18px; }
+    .card .icon svg { width: 24px; height: 24px; }
+    .card h3 { font-size: 20px; font-weight: 700; }
+    .card p { color: var(--ink-soft); margin-top: 8px; }
+    .tag { display: inline-block; margin-top: 16px; font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+    .tag.now { color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+    .tag.soon { color: var(--brand); background: var(--brand-soft); }
+
+    /* Cómo funciona */
+    .how { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .phone { justify-self: center; width: min(320px, 100%); border-radius: 40px; padding: 12px; background: #0F172A; box-shadow: 0 30px 80px rgba(91,63,224,.35); }
+    .phone img { border-radius: 30px; width: 100%; height: auto; }
+    .steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 28px; counter-reset: step; }
+    .steps li { display: grid; grid-template-columns: 52px 1fr; gap: 18px; }
+    .steps li::before { counter-increment: step; content: counter(step); width: 52px; height: 52px; border-radius: 16px; background: var(--brand); color: #fff; font-family: "Manrope", sans-serif; font-weight: 800; font-size: 22px; display: grid; place-items: center; }
+    .steps h3 { font-size: 20px; }
+    .steps p { color: var(--ink-soft); margin-top: 4px; }
+    @media (max-width: 860px) { .how { grid-template-columns: 1fr; gap: 48px; } .phone { order: 2; } }
+
+    /* Confianza */
+    .trust { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; }
+    .trust div { border-left: 3px solid var(--brand); padding-left: 18px; }
+    .trust h3 { font-size: 18px; }
+    .trust p { color: var(--ink-soft); margin-top: 6px; font-size: 16px; }
+
+    /* CTA final */
+    .cta { background: linear-gradient(135deg, #7357F5 0%, #4C33C9 100%); color: #fff; border-radius: 32px; padding: clamp(36px, 6vw, 64px); display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; }
+    .cta h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 800; }
+    .cta p { margin-top: 10px; color: rgba(255,255,255,.88); max-width: 52ch; }
+    .cta .btn-primary { background: #fff; color: #4C33C9; }
+    .cta .btn-primary:hover { background: #F1EEFE; }
+    @media (max-width: 760px) { .cta { grid-template-columns: 1fr; } }
+
+    footer { padding-block: 48px; color: var(--ink-soft); font-size: 15px; border-top: 1px solid var(--line); }
+    footer .wrap { display: flex; flex-wrap: wrap; gap: 16px 32px; justify-content: space-between; align-items: center; }
+    footer nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+    footer a { text-decoration: none; }
+    footer a:hover { color: var(--brand); text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+
+  <header class="nav">
+    <div class="wrap">
+      <a class="logo" href="#" aria-label="VirGo, inicio">
+        <img src="assets/virgo-icon.png" alt="" width="36" height="36">
+        VirGo
+      </a>
+      <nav class="nav-links" aria-label="Principal">
+        <a href="#funciones">Funciones</a>
+        <a href="#como-funciona">Cómo funciona</a>
+        <a href="#negocios">Para negocios</a>
+        <a class="btn btn-primary btn-small" href="#unete">Probar la app</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="hero" aria-label="Presentación">
+      <img class="poster" src="assets/virgo-hero-poster.jpg" alt="" aria-hidden="true">
+      <video id="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/virgo-hero-poster.jpg" aria-hidden="true">
+        <source src="assets/virgo-hero.mp4" type="video/mp4">
+      </video>
+      <div class="wrap hero-content">
+        <span class="badge"><span class="dot" aria-hidden="true"></span>En prueba en Google Play</span>
+        <h1>Tu evento, sin hojas de cálculo. <em>Solo dale GO.</em></h1>
+        <p class="lead">VirGo reúne salones y proveedores en un solo lugar para que organices tu fiesta, boda o evento desde tu teléfono.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#unete">Quiero probarla</a>
+          <a class="btn btn-ghost" href="#como-funciona">Ver cómo funciona</a>
+        </div>
+      </div>
+      <button class="video-toggle" id="video-toggle" type="button" aria-label="Pausar video" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path id="video-icon" d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>
+      </button>
+    </section>
+
+    <section id="funciones">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Funciones</p>
+          <h2>Todo lo que tu evento necesita, en una app</h2>
+          <p>Deja de comparar salones en chats, hojas de cálculo y llamadas. VirGo lo pone todo en el mismo lugar.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></div>
+            <h3>Salones cerca de ti</h3>
+            <p>Mira en el mapa los salones a 2, 5 o 10 km y compara distancias de un vistazo.</p>
+            <span class="tag now">Disponible</span>
+          </article>
+          <article class="card">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+            <h3>Tu cuenta, segura</h3>
+            <p>Crea tu cuenta con correo y contraseña. Tu sesión viaja cifrada y puedes borrar tu cuenta cuando quieras.</p>
+            <span class="tag now">Disponible</span>
+          </article>
+          <article class="card">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 14h6M9 18h4"/></svg></div>
+            <h3>Cotiza y reserva</h3>
+            <p>Pide cotizaciones a varios salones, compáralas y reserva la fecha sin salir de la app.</p>
+            <span class="tag soon">Próximamente</span>
+          </article>
+          <article class="card">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></div>
+            <h3>Proveedores e invitados</h3>
+            <p>Banquetes, música y decoración, además de tu lista de invitados, presupuesto y pendientes.</p>
+            <span class="tag soon">Próximamente</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="como-funciona" class="alt">
+      <div class="wrap how">
+        <div>
+          <div class="section-head">
+            <p class="eyebrow">Cómo funciona</p>
+            <h2>De la idea a la fiesta en tres pasos</h2>
+          </div>
+          <ol class="steps">
+            <li><div><h3>Explora</h3><p>Abre VirGo y mira los salones cercanos, sin necesidad de crear una cuenta.</p></div></li>
+            <li><div><h3>Elige</h3><p>Compara opciones y guarda las que más te gusten para tu evento.</p></div></li>
+            <li><div><h3>Dale GO</h3><p>Pide tu cotización, reserva y sigue todo desde un solo lugar.</p></div></li>
+          </ol>
+        </div>
+        <div class="phone">
+          <img src="assets/app-inicio.jpg" alt="Pantalla de VirGo con un mapa de salones cercanos a 5 km en Juriquilla, Querétaro" width="540" height="1205" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <section id="negocios">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Para salones y proveedores</p>
+          <h2>Llega a quien ya está organizando su evento</h2>
+          <p>Si tienes un salón o das servicios para eventos, VirGo te conecta con clientes listos para contratar.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3>Recibe solicitudes</h3>
+            <p>Las cotizaciones llegan a tu bandeja con la fecha, el número de invitados y lo que necesita el cliente.</p>
+            <span class="tag soon">Próximamente</span>
+          </article>
+          <article class="card">
+            <h3>Agenda y calendario</h3>
+            <p>Ve tus fechas ocupadas y disponibles para no prometer el mismo día dos veces.</p>
+            <span class="tag soon">Próximamente</span>
+          </article>
+          <article class="card">
+            <h3>Reseñas y estadísticas</h3>
+            <p>Construye tu reputación con las calificaciones de tus clientes y mide cómo te encuentran.</p>
+            <span class="tag soon">Próximamente</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="alt" aria-labelledby="confianza">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Privacidad</p>
+          <h2 id="confianza">Tus datos, en tus manos</h2>
+        </div>
+        <div class="trust">
+          <div><h3>Solo HTTPS</h3><p>La app no acepta conexiones sin cifrar.</p></div>
+          <div><h3>Sin anuncios</h3><p>No vendemos tus datos ni usamos herramientas de publicidad.</p></div>
+          <div><h3>Lo mínimo necesario</h3><p>Solo pedimos nombre, correo y teléfono para tu cuenta.</p></div>
+          <div><h3>Borra tu cuenta</h3><p>Cuando quieras. <a href="legal/eliminar-cuenta/">Así se hace</a>.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="unete">
+      <div class="wrap">
+        <div class="cta">
+          <div>
+            <h2>Sé de los primeros en probar VirGo</h2>
+            <p>VirGo está en prueba cerrada en Google Play para Android. Escríbenos con el correo de Gmail de tu teléfono y te enviamos la invitación.</p>
+          </div>
+          <a class="btn btn-primary" href="mailto:virgorent6@gmail.com?subject=Quiero%20probar%20VirGo&amp;body=Hola%2C%20quiero%20probar%20VirGo.%20Mi%20correo%20de%20Gmail%20en%20Android%20es%3A%20">Pedir invitación</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>© 2026 KarasuDev · VirGo</p>
+      <nav aria-label="Legal">
+        <a href="legal/privacidad/">Aviso de privacidad</a>
+        <a href="legal/terminos/">Términos de uso</a>
+        <a href="legal/eliminar-cuenta/">Eliminar cuenta</a>
+        <a href="mailto:virgorent6@gmail.com">Contacto</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var video = document.getElementById('hero-video');
+      var button = document.getElementById('video-toggle');
+      var icon = document.getElementById('video-icon');
+      var PAUSE = 'M7 5h3v14H7zM14 5h3v14h-3z';
+      var PLAY = 'M8 5v14l11-7z';
+      function sync() {
+        var paused = video.paused;
+        icon.setAttribute('d', paused ? PLAY : PAUSE);
+        button.setAttribute('aria-label', paused ? 'Reproducir video' : 'Pausar video');
+        button.setAttribute('aria-pressed', String(paused));
+      }
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        video.removeAttribute('autoplay');
+        video.pause();
+      }
+      button.addEventListener('click', function () {
+        if (video.paused) { video.play(); } else { video.pause(); }
+      });
+      video.addEventListener('play', sync);
+      video.addEventListener('pause', sync);
+      sync();
+    })();
+  </script>
+</body>
+</html>
