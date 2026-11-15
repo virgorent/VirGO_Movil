@@ -104,7 +104,7 @@ Están definidos en `.opencode/agents/`.
 | [`sdd-flujo`](.opencode/skills/sdd-flujo/SKILL.md) | Crear o revisar `spec.md`, `plan.md` y `task.md` |
 | [`registrar-memoria`](.opencode/skills/registrar-memoria/SKILL.md) | Agregar una entrada a `memoria.md` |
 | [`verificar-constitucion`](.opencode/skills/verificar-constitucion/SKILL.md) | Revisar la alineación con la constitución |
-| [`compilar-publicar-apk`](.opencode/skills/compilar-publicar-apk/SKILL.md) | Compilar, firmar y publicar el APK en GitHub Releases |
+| [`compilar-publicar-apk`](.opencode/skills/compilar-publicar-apk/SKILL.md) | Compilar, firmar y publicar el APK y el AAB en GitHub Releases y subir el AAB a Google Play |
 
 ### Externas: lista filtrada
 

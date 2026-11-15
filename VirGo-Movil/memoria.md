@@ -6,12 +6,12 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 
 | Campo | Valor |
 |---|---|
-| Constitución | v1.1.1 (enmienda 2026-11-12; v1.1.0 aprobada el 2026-11-05) |
+| Constitución | v1.2.0 propuesta (Google Play, 2026-11-15); vigente v1.1.1 |
 | Módulo en curso | `000-arquitectura-base`: 34/40 tareas hechas (detalle y estados en `task.md`) |
 | Tareas | 34 / 40 hechas (T037 bloqueada por MCP) |
 | `API_BASE_URL` de *release* | Variable `VIRGO_API_BASE_URL` creada en `VirGO_Movil` con la URL de producción; falta el respaldo P-02 del keystore para cerrar T033 |
-| Última versión publicada | Ninguna |
-| Siguiente paso | PR de Play (AAB, icono, respaldo + versión 0.2.0) pedido por el equipo; después T033 (respaldo P-02), T035, T030, T036, T024 y T037 |
+| Última versión publicada | **v0.2.0** (versionCode 2): GitHub Release `v0.2.0` y Google Play, prueba interna activa; prueba cerrada en revisión desde el 2026-11-15 |
+| Siguiente paso | Aprobación de la prueba cerrada y 14 días con 12 *testers*; botón «Eliminar cuenta» (B5) y registro conectado a la API en v0.3.0 (versionCode 3) |
 
 ## Módulos
 
@@ -38,6 +38,7 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | ADR-12 | 2026-11-03 | **Pitest** (`gradle-pitest-plugin`) en módulos JVM puros | Mutación sin dispositivo; umbral tras medir |
 | ADR-13 | 2026-11-03 | MCP permitidos: `figma` (lectura del *canvas*) y `github` | Pantallas al vuelo desde la maqueta oficial |
 | ADR-14 | 2026-11-03 | Google Play como destino futuro, con enmienda | Tiene un pago único; por ahora GitHub Releases |
+| ADR-15 | 2026-11-15 | **Google Play** como canal de distribución con firma de apps de Play (enmienda v1.2.0) | La cuenta ya existe y su pago es único; el AAB sale del mismo workflow de release |
 | ADR-15 | 2026-11-03 | **Repositorio único** `virgorent/VirGO_Backend` con carpetas por proyecto | Decisión del equipo; **superseded** por ADR-16 (2026-11-12) |
 | ADR-16 | 2026-11-12 | Repositorio propio `virgorent/VirGO_Movil` para el móvil (fin del monorepo); el backend vive en `virgorent/VirGO_Backend` | Separa CI, permisos y despliegues por proyecto |
 
@@ -587,3 +588,31 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - La fuente de verdad del ruleset es el JSON del repositorio; el ruleset vivo puede divergir y hay que compararlos con `gh api` después de cada cambio.
   - Los 4 checks requeridos viven en `movil-ci.yml` (`movil-build-test`) y `movil-codeql.yml` (`analyze`); `gitleaks` y `dependency review` vienen de los workflows globales.
 - **Pendiente:** PR de Play (AAB, icono, respaldo, versión 0.2.0) pedido por el equipo; T033 (respaldo P-02), T035, T030, T036, T024 y T037.
+
+### 2026-11-15 - Publicación de v0.2.0 en Google Play y enmienda v1.2.0
+
+- **Autor:** Angélica (`Karasu0001`), con Claude Code
+- **Módulo / tareas:** `000-arquitectura-base` -> T033, T035 (release) · bloqueos B4–B6 de `docs/PUBLICAR-PLAY.md`
+- **Qué se hizo:**
+  - Llave de subida nueva (`upload`, RSA 2048) generada por la titular de la cuenta de Play. El keystore y sus contraseñas están solo en GitHub Secrets y en su respaldo privado.
+  - `movil-release` publicó la GitHub Release `v0.2.0` con `app-release.aab` y `app-release.apk`.
+  - App `mx.virgo.app` creada en Play Console. El AAB 2 (0.2.0) quedó activo en **prueba interna** y se envió a revisión en la **prueba cerrada** (Alpha, México y El Salvador, 12 *testers*).
+  - Panel completado: detalles de acceso, anuncios (No), clasificación de contenido (Todos; «los usuarios interactúan»), público objetivo 18+, seguridad de los datos (nombre, correo, ID de usuario y teléfono; recopilados y no compartidos; cifrados en tránsito), ID de publicidad (No), categoría Eventos, ficha de Play Store y declaración de recursos con IA.
+  - Avisos legales (B4) publicados con GitHub Pages (PR #14): privacidad, términos y eliminación de cuenta. Responsable KarasuDev, contacto `virgorent6@gmail.com`.
+  - Cuenta de revisión `revisor.play@virgo.mx` creada en la base `virgo` (B6). **No se borra.**
+  - Propuesta la enmienda **v1.2.0** de `constitution.md` (Art. VIII.3–VIII.4), con `AGENTS.md`, las skills y el subagente alineados.
+- **Evidencia:**
+  - Certificado del AAB: `CN=Angélica Viridiana Arguelles Méndez, OU=Desarrollo, O=VirGO`. SHA-256 de la llave de subida: `B4:22:BE:19:FC:23:2C:4D:4D:2D:C3:40:88:31:DF:8D:D4:08:50:03:7D:9C:0A:57:C1:97:0C:E0:FE:A8:59:E1`.
+  - El manifiesto del AAB solo declara `INTERNET` (y `DUMP` de AndroidX *profileinstaller*); no hay `AD_ID` ni SDK de anuncios o analítica.
+  - `https://virgorent.github.io/VirGO_Movil/legal/{privacidad,terminos,eliminar-cuenta}/` → 200.
+  - Login de la cuenta de revisión en producción → 200.
+  - `DELETE /api/v1/users/me` probado en producción con una cuenta desechable: 204; token anterior 401; login 401; perfil público «Cuenta eliminada» sin correo ni teléfono.
+- **Decisiones:** ADR-15. Las declaraciones describen solo lo que hace v0.2.0. Chat, pagos y ubicación se declararán **antes** de subir la versión que los incluya. La eliminación de cuenta se atiende por correo hasta que exista el botón en la app.
+- **Costo:** $0 adicional (la cuenta de Play ya estaba pagada).
+- **Aprendizaje:**
+  - El primer `movil-release` salió firmado con una llave de desarrollo (`CN=VirGo Local`) porque se ejecutó antes de configurar los secretos. Se borraron el release y la etiqueta y se regeneró con la llave oficial **antes** de subir nada a Play: la primera subida fija la llave de subida.
+  - `vars.X` y `secrets.X` son espacios distintos: `VIRGO_API_BASE_URL` creada como *secret* llegó vacía y la guarda `https://` de ADR-08 detuvo el build, que es lo esperado.
+  - «keystore password was incorrect» aparece al **empaquetar** (unos 2 minutos), no al configurar. El fallo rápido (unos 59 s) era el secreto o la variable faltante.
+  - Con SDK de destino 33 o mayor, Play exige la declaración de ID de publicidad aunque no aparezca en la lista de «Contenido de la app».
+  - Las capturas de 1280×2856 superan la proporción 2:1 que acepta Play; se montaron en un lienzo de 1440×2880.
+- **Pendiente:** aprobación de la prueba cerrada y 14 días con 12 *testers*; B5 (botón en Perfil); registro conectado a `POST /api/v1/auth/register`; datos de ejemplo en `virgo`; aprobación de la enmienda v1.2.0 en este PR.
