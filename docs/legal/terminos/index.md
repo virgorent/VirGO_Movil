@@ -48,6 +48,6 @@ Podemos actualizar estos términos. Si el cambio es importante, te lo avisaremos
 
 ## 8. Contacto
 
-[virgo.virgo@gmail.com](mailto:virgo.virgo@gmail.com)
+[virgorent6@gmail.com](mailto:virgorent6@gmail.com)
 
 Estos términos se rigen por las leyes de México.

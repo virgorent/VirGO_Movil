@@ -13,7 +13,7 @@ Este aviso explica qué datos personales trata la aplicación **VirGo** para And
 | | |
 |---|---|
 | Responsable | KarasuDev, desarrollador de VirGo |
-| Correo de contacto | [virgo.virgo@gmail.com](mailto:virgo.virgo@gmail.com) |
+| Correo de contacto | [virgorent6@gmail.com](mailto:virgorent6@gmail.com) |
 | País | México |
 
 VirGo es una plataforma para buscar y contratar salones y proveedores de eventos. Actualmente está en fase de pruebas.
@@ -72,7 +72,7 @@ Esto implica una transferencia internacional de datos a encargados, permitida po
 
 Puedes **acceder** a tus datos, **rectificarlos**, **cancelarlos** u **oponerte** a su tratamiento, así como revocar tu consentimiento.
 
-Escribe a [virgo.virgo@gmail.com](mailto:virgo.virgo@gmail.com) **desde el correo de tu cuenta**, indicando tu nombre y el derecho que quieres ejercer. Responderemos en un máximo de **20 días hábiles** y, si procede, lo aplicaremos en los 15 días hábiles siguientes.
+Escribe a [virgorent6@gmail.com](mailto:virgorent6@gmail.com) **desde el correo de tu cuenta**, indicando tu nombre y el derecho que quieres ejercer. Responderemos en un máximo de **20 días hábiles** y, si procede, lo aplicaremos en los 15 días hábiles siguientes.
 
 Para borrar tu cuenta, sigue los pasos de [Eliminar tu cuenta de VirGo](../eliminar-cuenta/).
 

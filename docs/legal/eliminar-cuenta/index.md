@@ -8,7 +8,7 @@ Esta página explica cómo solicitar que se borre tu cuenta de la app **VirGo** 
 
 ## Cómo solicitarlo
 
-1. Desde el **correo electrónico con el que creaste tu cuenta**, escribe a [virgo.virgo@gmail.com](mailto:virgo.virgo@gmail.com?subject=Eliminar%20mi%20cuenta%20de%20VirGo).
+1. Desde el **correo electrónico con el que creaste tu cuenta**, escribe a [virgorent6@gmail.com](mailto:virgorent6@gmail.com?subject=Eliminar%20mi%20cuenta%20de%20VirGo).
 2. Usa el asunto **«Eliminar mi cuenta de VirGo»**.
 3. En el mensaje, escribe el nombre con el que te registraste.
 
@@ -37,4 +37,4 @@ No conservamos ningún otro dato después de borrar la cuenta.
 
 ## Dudas
 
-Escríbenos a [virgo.virgo@gmail.com](mailto:virgo.virgo@gmail.com). Consulta también el [aviso de privacidad](../privacidad/).
+Escríbenos a [virgorent6@gmail.com](mailto:virgorent6@gmail.com). Consulta también el [aviso de privacidad](../privacidad/).
