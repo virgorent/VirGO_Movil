@@ -609,4 +609,4 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - `adb shell input text` no decodifica `%40`: escribir `@` directo; `input tap` rechaza coordenadas con decimales (redondear a enteros).
   - Comparar textos con acentos desde PowerShell falla por codificación (`-ceq`): usar subcadenas ASCII con `-like`.
   - Un `POST` a una ruta inexistente en producción devuelve Problem Details 404 con `instance` de la ruta: sirve como sondeo barato para saber si un endpoint ya está desplegado.
-- **Pendiente:** T405 (humo contra producción) a la espera de `011`/`012` y de P-01 (correo); PR de esta rama; PR #18 (`001-inicio-visitante`, verde 6/6) y PR #17 (`002-registro`, verde) esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
+- **Pendiente:** T405 (humo contra producción) a la espera de `011`/`012` y de P-01 (correo); PR #19 de esta rama; PR #18 (`001-inicio-visitante`, verde 6/6) y PR #17 (`002-registro`, verde) esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).

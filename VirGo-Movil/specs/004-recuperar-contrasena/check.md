@@ -28,7 +28,7 @@
 
 ## 3. PR y release
 
-- [ ] PR: enlace —
+- [x] PR: https://github.com/virgorent/VirGO_Movil/pull/19 (`feat(T403): recuperar contrasena con MockWebServer (004 4/5)`).
 - [ ] Una revisión aprobada.
 
 ## 4. Memoria y aprendizaje
