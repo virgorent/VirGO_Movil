@@ -27,7 +27,7 @@
 
 ## 3. PR y release
 
-- [x] PR: enlace —
+- [x] PR: https://github.com/virgorent/VirGO_Movil/pull/20 (`docs(T304): humo de login contra produccion (003 4/4)`).
 - [ ] Una revisión aprobada.
 
 ## 4. Memoria y aprendizaje

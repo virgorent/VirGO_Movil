@@ -603,4 +603,4 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Aprendizaje:**
   - En el emulador, `adb shell cmd connectivity airplane-mode enable/disable` es la vía rápida para simular «sin conexión» y restaurarla sin tocar la UI; verificar con `settings get global airplane_mode_on`.
   - El error de red llega en ~10 s (connect timeout de OkHttp): esperar al menos 12–15 s antes de capturar o el mensaje aún no aparece.
-- **Pendiente:** PR de esta rama; PR #19 (`004-recuperar-contrasena` 4/5, verde 6/6), PR #18 (`001-inicio-visitante`, verde 6/6) y PR #17 (`002-registro`, verde) esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
+- **Pendiente:** PR #20 de esta rama; PR #19 (`004-recuperar-contrasena` 4/5, verde 6/6), PR #18 (`001-inicio-visitante`, verde 6/6) y PR #17 (`002-registro`, verde) esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
