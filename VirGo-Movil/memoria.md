@@ -47,6 +47,7 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 |---|---|---|
 | 2026-10-29 | Contrato base acordado: `/api/v1`, Problem Details, `camelCase`, fechas UTC, JWT Bearer, `GET /health`, `GET /openapi/v1.json`, `X-Correlation-Id` | ✅ |
 | 2026-11-03 | **Propuesto:** `POST /api/v1/auth/login` (devuelve `accessToken` de 15 min, `refreshToken` de 30 días y `user` con `role`) y `POST /api/v1/auth/logout` (204; ante 204 o 401 la app borra sus tokens). JSON en `VirGo-API/specs/003-auth-login` y `004-auth-logout` | ✅ |
+| 2026-11-16 | **Borrador:** `POST /api/v1/auth/password/forgot` (202; errores 400/429/500; la respuesta no revela si el correo existe) y `POST /api/v1/auth/password/reset` (200; código incorrecto o vencido → 400 con mensaje genérico) — specs `011` y `012` del backend en Borrador con sus tareas `T1101`–`T1103` ⏳. Producción responde **404** (2026-11-16, igual que una ruta inexistente de control), así que Móvil implementa contra MockWebServer con los cuerpos asumidos `{email}` y `{code,password}` (`API-HANDOFF.md` §9.2 no define los de recuperación) | ⏳ (specs `011`/`012` en Borrador) |
 
 ## Versiones de librerías
 
@@ -587,3 +588,25 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - La fuente de verdad del ruleset es el JSON del repositorio; el ruleset vivo puede divergir y hay que compararlos con `gh api` después de cada cambio.
   - Los 4 checks requeridos viven en `movil-ci.yml` (`movil-build-test`) y `movil-codeql.yml` (`analyze`); `gitleaks` y `dependency review` vienen de los workflows globales.
 - **Pendiente:** PR de Play (AAB, icono, respaldo, versión 0.2.0) pedido por el equipo; T033 (respaldo P-02), T035, T030, T036, T024 y T037.
+
+### 2026-11-16 - T403: repositorio y casos de uso de recuperacion (004-recuperar-contrasena 4/5)
+
+- **Autor:** equipo + opencode (`dev-android` + `qa-movil`)
+- **Módulo / tareas:** `004-recuperar-contrasena` → T403 → (4/5)
+- **Qué se hizo:**
+  - **T403:** capa de recuperación contra los specs `011-post-auth-password-forgot` y `012-post-auth-password-reset` del backend (ambos en **Borrador**), aplicando el riesgo del plan «MockWebServer con el contrato del spec de API». En `:core:network`, `AuthApi.forgotPassword`/`resetPassword` + `ForgotPasswordRequestDto` (`{"email"}`) y `ResetPasswordRequestDto` (`{"code","password"}`); en `:core:domain`, `RecoveryRepository`, `ForgotPasswordUseCase` y `ResetPasswordUseCase`; en `:core:data`, `RecoveryRepositoryImpl` (reutiliza `Throwable.toAppError()`) y `RecoveryModule` (`@Binds`); en `:core:testing`, `FakeRecoveryRepository`.
+  - **Humo de pantallas (CA-01, CA-02 y RF-04):** APK *debug* de la rama en el emulador `Pixel_10_Pro`: A6 → correo → «Enviar código» → A7 con código, contraseña y confirmación, y rechazo local de código incorrecto («El código no es correcto.»).
+  - Documentación: `task.md` 4/5 con blockquotes, `check.md` (2/4 CA y 6 filas) y esta bitácora.
+- **Evidencia:** `docs/evidencia/CA-01-recuperar-a6.png`, `docs/evidencia/CA-02-recuperar-a7.png` y `docs/evidencia/RF-04-recuperar-codigo-incorrecto.png`; pipeline local `ktlintCheck detekt lint testDebugUnitTest` + `:core:domain:test` + `:core:common:test` + `pitest` + `assembleDebug` → BUILD SUCCESSFUL con **119 pruebas, 0 fallos** y mutación **72 %** (38/53); `RecoveryRepositoryImplTest` 8 con MockWebServer (202 con ruta y cuerpo, 400 con `errors`, 429, 500, sin conexión, 200 con cuerpo, 400 genérico y sin conexión en reset).
+- **Decisiones:**
+  1. `POST /api/v1/auth/password/forgot` responde **404** en producción (2026-11-16, idéntico al de una ruta inexistente de control): T405 queda ⛔ hasta que el backend entregue `011`/`012` (`T1101`–`T1103` ⏳); la pantalla se prueba con MockWebServer, como manda el Art. VIII.6 del spec.
+  2. `RecoverViewModel` **no** se conecta en T403: RF-02 (aprobado) dice que la app genera el código de 6 dígitos y la maqueta lo muestra en pantalla, y sin mecanismo de correo aprobado (P-01) la app no podría recibir el código real; la conexión se hará en T405 con el JSON probado.
+  3. Cuerpos asumidos porque §9.2 de `API-HANDOFF.md` no define los de recuperación: `{"email"}` en forgot y `{"code","password"}` en reset; quedan como asunción para confirmar con el backend.
+  4. `429` cae en `AppError.Server` (el `when` compartido no tiene variante de rate limit): el mensaje de UI sigue genérico y sin texto técnico (CA-03).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - En el emulador, revisar `dumpsys input_method` (`mInputShown=true`) antes de tocar coordenadas: con el teclado abierto los toques en la zona baja caen en el teclado (aquí, la barra espaciadora, que añadía un espacio al correo y dejaba «Enviar código» deshabilitado). `input keyevent 4` solo si el IME está visible y releer coordenadas después.
+  - `adb shell input text` no decodifica `%40`: escribir `@` directo; `input tap` rechaza coordenadas con decimales (redondear a enteros).
+  - Comparar textos con acentos desde PowerShell falla por codificación (`-ceq`): usar subcadenas ASCII con `-like`.
+  - Un `POST` a una ruta inexistente en producción devuelve Problem Details 404 con `instance` de la ruta: sirve como sondeo barato para saber si un endpoint ya está desplegado.
+- **Pendiente:** T405 (humo contra producción) a la espera de `011`/`012` y de P-01 (correo); PR de esta rama; PR #18 (`001-inicio-visitante`, verde 6/6) y PR #17 (`002-registro`, verde) esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
