@@ -38,7 +38,7 @@ Este repositorio es el **frontend**. El backend vive en [`virgorent/VirGO_Backen
 | **nv-00** | Constitución SDD y reglas globales | Cumplido (2026-11-04) |
 | **nv-01** | Arquitectura base SDD | Cumplido (2026-11-04) |
 | **nv-02** | Gobernanza global de proyectos | Cumplido con pendiente operativo (aplicar ruleset) |
-| **VirGo-Movil** | App Android (spec `000`) | Implementación (36/40) |
+| **VirGo-Movil** | App Android (specs `000`–`004`) | Implementación (`000` 36/40; `002-registro` completo 5/5) |
 
 ## 4. Convenciones
 

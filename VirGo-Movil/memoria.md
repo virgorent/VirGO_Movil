@@ -47,6 +47,7 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 |---|---|---|
 | 2026-10-29 | Contrato base acordado: `/api/v1`, Problem Details, `camelCase`, fechas UTC, JWT Bearer, `GET /health`, `GET /openapi/v1.json`, `X-Correlation-Id` | ✅ |
 | 2026-11-03 | **Propuesto:** `POST /api/v1/auth/login` (devuelve `accessToken` de 15 min, `refreshToken` de 30 días y `user` con `role`) y `POST /api/v1/auth/logout` (204; ante 204 o 401 la app borra sus tokens). JSON en `VirGo-API/specs/003-auth-login` y `004-auth-logout` | ✅ |
+| 2026-11-16 | **Consumado:** `POST /api/v1/auth/register` (`VirGo-API/specs/005-auth-register/plan.md`) — `{"name","email","password","phone"}` → `201 {"id","name","email","phone","role","isVerified"}`, duplicado → `409`, inválido → `400` Problem Details; el rol inicial siempre es `client` y el cliente no puede enviar `role`. Probado contra producción (201 y 409) | ✅ (spec `005-auth-register` del backend) |
 
 ## Versiones de librerías
 
@@ -610,3 +611,22 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - El `screenrecord --size 720x1280` + ffmpeg (frame 0, sin `-ss`) da capturas confiables cuando `screencap` sale negro por el glitch de gfxstream.
   - Los snapshots del emulador corrompen el keystore: arrancar siempre con `-no-snapshot`.
 - **Pendiente:** T033 (respaldo P-02 del keystore, custodia humana), T036 (cierre), T037 (MCP figma/github), subir el AAB a prueba interna de Play (equipo) y B4/B5 (aviso de privacidad y borrado de cuenta, Equipo/API).
+
+### 2026-11-16 - T203 + T205: registro conectado a produccion (002-registro 5/5)
+
+- **Autor:** equipo + opencode (`dev-android` + `qa-movil`)
+- **Modulo / tareas:** `002-registro` -> T203, T205 -> (5/5, primer modulo de pantallas completo)
+- **Que se hizo:**
+  - **T203:** se consumio el contrato `005-auth-register` que el backend dejo en `VirGo-API/specs/005-auth-register/plan.md`. En `:core:common` `AppError.Conflict` (409); en `:core:network` `RegisterRequestDto`/`RegisterResponseDto` y `AuthApi.register`; en `:core:data` `AuthRepositoryImpl.register` (409 -> `Conflict`, 400 -> `Validation`, 201 -> `RegisteredUser`); en `:core:domain` `AuthRepository.register`, `RegisterUseCase` (trim, correo en minusculas y prefijo `+52`) y `RegisteredEmailStore.contains()` para el fast-path de duplicado sin mutar el almacen.
+  - **T205:** humo contra produccion en el emulador `Pixel_10_Pro` (2026-11-14): registro valido -> `POST /api/v1/auth/register` **201** (7524 ms) y navegacion a «Inicio» (RF-09); con `force-stop` y el mismo correo -> **409** (6394 ms) y píldora «Ya existe una cuenta con este correo. Inicia sesión.» sin cierre (RF-08, CA-03).
+  - Evidencia nueva de criterios: `CA-01-registro-a2-formulario.png` (pantalla A2 limpia) y `CA-04-registro-sin-conexion.png` (modo avion: `UnknownHostException` -> «No pudimos crear tu cuenta. Revisa tu conexión e inténtalo de nuevo.» con el boton «Crear cuenta» habilitado para reintentar).
+  - Documentacion cerrada: `task.md` (5/5 con blockquotes de evidencia), `check.md` (4/4 CA y 6/6 filas de pruebas), `AGENTS.md` (raiz y movil).
+- **Evidencia:** `docs/evidencia/` con T205-registro-201-exitoso.png, T205-registro-409-duplicado.png, CA-01-registro-a2-formulario.png y CA-04-registro-sin-conexion.png; pipeline local `ktlintCheck detekt lint testDebugUnitTest assembleDebug` + `:core:domain:test` + `:core:common:test` + `pitest` -> BUILD SUCCESSFUL con **115 pruebas, 0 fallos** y mutacion **63 %** (39/62).
+- **Decisiones:** el correo QA `qa-register-1794636322@virgo.mx` quedo dado de alta en produccion como evidencia del 201; la "API apagada" de CA-04 se simulo con modo avion porque la API real es la de produccion; los tests de `:core:domain` usan fakes locales porque ese modulo no puede depender de `:core:testing` (dependencia circular).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - El IME del emulador se dibuja **encima** de los campos inferiores sin redimensionar la ventana: un `input tap` a una coordenada tapada por el teclado teclea en el campo enfocado (o en una tecla). Flujo fiable: tocar campo -> escribir -> `keyevent 4` solo si `mIsImeShowing=true` -> releer coordenadas; nunca `keyevent 4` a ciegas, porque con el IME ya cerrado BACK sale de la pantalla o de la app.
+  - En PowerShell, `-like '*Correo*'` es insensible a mayusculas y coincide con «o con tu correo» (un `Text` estatico, no enfocable): usar `-ceq` para coincidir con el placeholder exacto del campo.
+  - El emulador se cayo dos veces durante la automatizacion; relanzarlo con `-gpu swiftshader_indirect` estabilizo la sesion.
+  - `RegisterUseCaseTest` no compila si se importa `core:testing` desde `:core:domain`: el fake vive en la propia suite.
+- **Pendiente:** PR de `002-registro` (aprobacion + fusion), PR #11 y #13 en espera, T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
