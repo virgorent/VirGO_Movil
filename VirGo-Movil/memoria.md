@@ -47,6 +47,7 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 |---|---|---|
 | 2026-10-29 | Contrato base acordado: `/api/v1`, Problem Details, `camelCase`, fechas UTC, JWT Bearer, `GET /health`, `GET /openapi/v1.json`, `X-Correlation-Id` | ✅ |
 | 2026-11-03 | **Propuesto:** `POST /api/v1/auth/login` (devuelve `accessToken` de 15 min, `refreshToken` de 30 días y `user` con `role`) y `POST /api/v1/auth/logout` (204; ante 204 o 401 la app borra sus tokens). JSON en `VirGo-API/specs/003-auth-login` y `004-auth-logout` | ✅ |
+| 2026-11-16 | **Consumado:** `GET /api/v1/venues?zone=&category=` del backend (`VirGo-API/specs/007-venues-catalog/plan.md`) — `200 {"data":[…]}` con `location` GeoJSON `{type:"Point",coordinates:[lng,lat]}` y `rating:{average,count}`; probado contra producción (200 con catálogo vacío). `GET /api/v1/venues/:id` (spec `024`) sigue en borrador y queda fuera del alcance de T103 | ✅ (spec `007-venues-catalog` del backend) |
 
 ## Versiones de librerías
 
@@ -587,3 +588,24 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - La fuente de verdad del ruleset es el JSON del repositorio; el ruleset vivo puede divergir y hay que compararlos con `gh api` después de cada cambio.
   - Los 4 checks requeridos viven en `movil-ci.yml` (`movil-build-test`) y `movil-codeql.yml` (`analyze`); `gitleaks` y `dependency review` vienen de los workflows globales.
 - **Pendiente:** PR de Play (AAB, icono, respaldo, versión 0.2.0) pedido por el equipo; T033 (respaldo P-02), T035, T030, T036, T024 y T037.
+
+### 2026-11-16 - T103 + T105: catalogo de salones conectado (001-inicio-visitante 5/5)
+
+- **Autor:** equipo + opencode (`dev-android` + `qa-movil`)
+- **Módulo / tareas:** `001-inicio-visitante` -> T103, T105 -> (5/5)
+- **Qué se hizo:**
+  - **T103:** consumo del contrato `VirGo-API/specs/007-venues-catalog/plan.md` (`GET /api/v1/venues?zone=&category=` → `200 {"data":[…]}`). En `:core:network` `VenuesApi` + `VenueDtos` (respuesta envuelta en `data`, `location` GeoJSON `{type:"Point",coordinates:[lng,lat]}` y `rating:{average,count}`), `createVenuesApi` y `provideVenuesApi`; en `:core:domain` `Venue`, `VenueRepository` y `GetVenuesUseCase`; en `:core:data` `VenueRepositoryImpl` (reutiliza `toAppError()`: 404 → `NotFound`, 500 → `Server`, sin conexión → `Network`) y `VenueModule` (`@Binds`); en `:app`, `GuestHomeViewModel` con carga en `init`, `refresh()`, estados `isLoading`/`hasError`, y mapeo `Venue` → `VenueSample` con haversine y rumbo desde el centro fijo de Juriquilla (`VenueMapping.kt`); UI de error con «Reintentar» en `GuestBottom.kt` (se extrajo de `GuestHomeScreen.kt` para no pasar el umbral de `TooManyFunctions`).
+  - **T105:** humo contra producción en el emulador `Pixel_10_Pro` (2026-11-16): arranque limpio → `GET /api/v1/venues` **200** en 8738 ms con `{"data":[]}` → catálogo vacío, la app cae en la muestra local («5 salones a 5 km»); toque en el pin → vista previa A3 («Jardín Magnolia · El Refugio · ★ 4.8 · hasta 160»); con modo avión y arranque en frío → «No pudimos cargar los salones. Revisa tu conexión e inténtalo de nuevo.» con «Reintentar», y el reintento con la conexión restaurada recarga y limpia el error.
+  - Documentación: `task.md` 5/5 con blockquotes, `check.md` 4/4 CA y 6/6 filas de pruebas, `AGENTS.md` del móvil.
+- **Evidencia:** `docs/evidencia/CA-01-inicio-visitante-a1.png`, `docs/evidencia/CA-02-inicio-visitante-a3-preview.png` y `docs/evidencia/CA-04-inicio-visitante-sin-conexion.png`; logcat `GET …/api/v1/venues <-- 200 (8738ms, 11-byte body)`; pipeline local `ktlintCheck detekt lint testDebugUnitTest` + `:core:domain:test` + `:core:common:test` + `pitest` + `assembleDebug` → BUILD SUCCESSFUL con **123 pruebas, 0 fallos** y mutación **61 %** (37/61).
+- **Decisiones:**
+  1. Catálogo vacío (estado real de producción) → fallback a `VenueSamples`, para que A1 no quede en blanco mientras el backend no cargue salones; la falla sí muestra error con reintento (CA-04).
+  2. `GET /api/v1/venues/:id` (spec `024`) queda fuera de T103: su cuerpo sigue en borrador («PROPUESTO» en `API-HANDOFF.md` §9.5) y la vista previa A3 se renderiza con los campos del catálogo; se consumirá con el JSON probado.
+  3. El `id` del pin se asigna por posición del catálogo (los ids de la API son UUID y `VenueSample.id` es `Int`).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Cambiar de rama con el mismo directorio `build/` mezcla artefactos: `:app:hiltJavaCompileDebug` falló con «Could not find class file for `RegisterUseCase`» (clase de la rama `feat/002-registro`); un `gradlew clean` lo resolvió. Limpiar al cambiar de rama evita diagnósticos falsos.
+  - `detekt TooManyFunctions` cuenta funciones por archivo (umbral 11): extraer `GuestHint`/`GuestError` a `GuestBottom.kt` devolvió el archivo a 10 sin tocar la lógica.
+  - Las aserciones deben leer el dato real: `VenueSamples` tiene 7 entradas pero solo 5 dentro de 5 km; comparar con `VenueSamples.count { it.distanceKm <= DEFAULT_RANGE_KM }` es más robusto que `VenueSamples.size`.
+  - En el emulador, tocar la **etiqueta** del pin (no el icono) es lo que dispara la vista previa: el `detectTapGestures` del mapa hitanea toda la caja del pin.
+- **Pendiente:** PR de `001-inicio-visitante` (aprobación + fusión); `003` T304 (humo de login) y `004` T403/T405 (recuperar contraseña); PR #17 (`002-registro`) en verde esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
