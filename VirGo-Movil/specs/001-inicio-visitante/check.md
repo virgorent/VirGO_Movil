@@ -28,7 +28,7 @@
 
 ## 3. PR y release
 
-- [ ] PR: enlace —
+- [x] PR: https://github.com/virgorent/VirGO_Movil/pull/18 (`feat(T103,T105): catalogo de salones conectado (001-inicio-visitante 5/5)`).
 - [ ] Una revisión aprobada.
 
 ## 4. Memoria y aprendizaje
