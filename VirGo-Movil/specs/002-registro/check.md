@@ -28,7 +28,7 @@
 
 ## 3. PR y release
 
-- [ ] PR: enlace —
+- [x] PR: https://github.com/virgorent/VirGO_Movil/pull/17 (`feat(T203,T205): registro conectado a la API (002-registro 5/5)`).
 - [ ] Una revisión aprobada.
 
 ## 4. Memoria y aprendizaje
