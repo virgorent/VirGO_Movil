@@ -20,12 +20,14 @@ import mx.virgo.app.ui.register.RegisterScreen
 import mx.virgo.app.ui.register.RegisterViewModel
 import mx.virgo.core.designsystem.theme.VirGoTheme
 import mx.virgo.core.domain.GenerateRecoveryCodeUseCase
+import mx.virgo.core.domain.GetVenuesUseCase
 import mx.virgo.core.domain.LoginUseCase
 import mx.virgo.core.domain.ValidateEmailUseCase
 import mx.virgo.core.domain.ValidateLoginFormUseCase
 import mx.virgo.core.domain.ValidateRecoveryUseCase
 import mx.virgo.core.domain.ValidateRegisterFormUseCase
 import mx.virgo.core.testing.FakeAuthRepository
+import mx.virgo.core.testing.FakeVenueRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -47,7 +49,7 @@ class SmokeTest {
     @Test
     fun guestHomeShowsBrandAndLoginForwards() {
         var loginClicked = false
-        val vm = GuestHomeViewModel()
+        val vm = GuestHomeViewModel(GetVenuesUseCase(FakeVenueRepository()))
         compose.setContent {
             VirGoTheme {
                 GuestHomeScreen(

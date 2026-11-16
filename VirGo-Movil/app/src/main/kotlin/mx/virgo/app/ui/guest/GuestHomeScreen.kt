@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import mx.virgo.app.R
+import mx.virgo.core.common.AppResult
 import mx.virgo.core.designsystem.components.VirGoCard
 import mx.virgo.core.designsystem.components.VirGoOutlinedButton
 import mx.virgo.core.designsystem.theme.Slate100
@@ -53,6 +54,9 @@ import mx.virgo.core.designsystem.theme.Slate900
 import mx.virgo.core.designsystem.theme.VirGoPurple
 import mx.virgo.core.designsystem.theme.VirGoPurpleDark
 import mx.virgo.core.designsystem.theme.VirGoTheme
+import mx.virgo.core.domain.GetVenuesUseCase
+import mx.virgo.core.domain.Venue
+import mx.virgo.core.domain.VenueRepository
 
 private const val PHOTO_ICON_ALPHA = 0.65f
 private const val PHOTO_BADGE_ALPHA = 0.92f
@@ -93,6 +97,11 @@ fun GuestHomeScreen(
                 venue = selected,
                 onClose = viewModel::clearVenue,
                 onSeeMore = { onRegisterClick(selected.id) },
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
+        } else if (state.hasError) {
+            GuestError(
+                onRetry = viewModel::refresh,
                 modifier = Modifier.align(Alignment.BottomCenter),
             )
         } else {
@@ -240,42 +249,6 @@ private fun RangePicker(
                     color = if (active) Color.White else Slate700,
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun GuestHint(
-    hasVenues: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-        shape = RoundedCornerShape(PinCorner),
-        color = Color.White,
-        shadowElevation = 3.dp,
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Place,
-                contentDescription = null,
-                tint = VirGoPurple,
-            )
-            Text(
-                text =
-                    stringResource(
-                        if (hasVenues) R.string.guest_hint_touch else R.string.guest_hint_empty,
-                    ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = Slate700,
-            )
         }
     }
 }
@@ -451,7 +424,14 @@ fun GuestHomeScreenPreview() {
         GuestHomeScreen(
             onLoginClick = {},
             onRegisterClick = {},
-            viewModel = GuestHomeViewModel(),
+            viewModel = GuestHomeViewModel(GetVenuesUseCase(PreviewVenueRepository)),
         )
     }
+}
+
+private object PreviewVenueRepository : VenueRepository {
+    override suspend fun getVenues(
+        zone: String?,
+        category: String?,
+    ): AppResult<List<Venue>> = AppResult.Success(emptyList())
 }

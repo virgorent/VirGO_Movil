@@ -54,6 +54,8 @@
     </plurals>
     <string name="guest_hint_touch">Toca un salón del mapa para ver una muestra</string>
     <string name="guest_hint_empty">No hay salones en este rango, amplíalo</string>
+    <string name="guest_error_load">No pudimos cargar los salones. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="guest_retry">Reintentar</string>
     <string name="guest_you_here">Tu ubicación</string>
     <string name="guest_pin_cd">%1$s, a %2$s km</string>
     <string name="guest_distance_format">%1$s km</string>
