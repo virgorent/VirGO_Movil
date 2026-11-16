@@ -21,6 +21,7 @@ import mx.virgo.app.ui.register.RegisterViewModel
 import mx.virgo.core.designsystem.theme.VirGoTheme
 import mx.virgo.core.domain.GenerateRecoveryCodeUseCase
 import mx.virgo.core.domain.LoginUseCase
+import mx.virgo.core.domain.RegisterUseCase
 import mx.virgo.core.domain.ValidateEmailUseCase
 import mx.virgo.core.domain.ValidateLoginFormUseCase
 import mx.virgo.core.domain.ValidateRecoveryUseCase
@@ -93,7 +94,11 @@ class SmokeTest {
 
     @Test
     fun registerShowsFormFields() {
-        val vm = RegisterViewModel(ValidateRegisterFormUseCase(ValidateEmailUseCase()))
+        val vm =
+            RegisterViewModel(
+                ValidateRegisterFormUseCase(ValidateEmailUseCase()),
+                RegisterUseCase(FakeAuthRepository()),
+            )
         compose.setContent {
             VirGoTheme {
                 RegisterScreen(

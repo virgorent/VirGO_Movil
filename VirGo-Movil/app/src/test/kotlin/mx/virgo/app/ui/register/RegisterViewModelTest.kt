@@ -2,17 +2,42 @@ package mx.virgo.app.ui.register
 
 import app.cash.turbine.test
 import kotlinx.coroutines.test.runTest
+import mx.virgo.core.common.AppError
+import mx.virgo.core.common.AppResult
+import mx.virgo.core.domain.RegisterUseCase
 import mx.virgo.core.domain.RegisteredEmailStore
 import mx.virgo.core.domain.ValidateEmailUseCase
 import mx.virgo.core.domain.ValidateRegisterFormUseCase
+import mx.virgo.core.testing.FakeAuthRepository
+import mx.virgo.core.testing.MainDispatcherRule
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 
 class RegisterViewModelTest {
-    private fun viewModel() = RegisterViewModel(ValidateRegisterFormUseCase(ValidateEmailUseCase()))
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
+    private val fakeRepository = FakeAuthRepository()
+
+    private fun viewModel() =
+        RegisterViewModel(
+            ValidateRegisterFormUseCase(ValidateEmailUseCase()),
+            RegisterUseCase(fakeRepository),
+        )
+
+    private fun fillValidForm(
+        viewModel: RegisterViewModel,
+        email: String,
+    ) {
+        viewModel.onNameChange("Ana Lopez")
+        viewModel.onEmailChange(email)
+        viewModel.onPhoneChange("5512345678")
+        viewModel.onPasswordChange("password1")
+    }
 
     @Test
     fun phoneChangeKeepsDigitsOnlyAndMaxTen() {
@@ -33,6 +58,7 @@ class RegisterViewModelTest {
         assertFalse(state.passwordValid)
         assertNull(state.formError)
         assertFalse(state.registered)
+        assertEquals(0, fakeRepository.registerCalls)
     }
 
     @Test
@@ -51,15 +77,45 @@ class RegisterViewModelTest {
     }
 
     @Test
-    fun duplicateEmailSetsFormErrorWithoutEvent() =
+    fun duplicateEmailSetsFormErrorWithoutCallingApi() =
         runTest {
             val email = "dup-${System.nanoTime()}@mail.com"
             RegisteredEmailStore.register(email)
             val viewModel = viewModel()
-            viewModel.onNameChange("Ana Lopez")
-            viewModel.onEmailChange(email)
-            viewModel.onPhoneChange("5512345678")
-            viewModel.onPasswordChange("password1")
+            fillValidForm(viewModel, email)
+            viewModel.events.test {
+                viewModel.submit()
+                assertEquals(RegisterFormError.DUPLICATE, viewModel.state.value.formError)
+                assertFalse(viewModel.state.value.registered)
+                assertEquals(0, fakeRepository.registerCalls)
+                expectNoEvents()
+            }
+        }
+
+    @Test
+    fun validSubmitCallsApiAndEmitsEvent() =
+        runTest {
+            val email = "ok-${System.nanoTime()}@mail.com"
+            val viewModel = viewModel()
+            fillValidForm(viewModel, email)
+            viewModel.events.test {
+                viewModel.submit()
+                assertEquals(RegisterEvent.Registered, awaitItem())
+                assertTrue(viewModel.state.value.registered)
+                assertNull(viewModel.state.value.formError)
+                assertFalse(viewModel.state.value.isLoading)
+                assertEquals(1, fakeRepository.registerCalls)
+                expectNoEvents()
+            }
+        }
+
+    @Test
+    fun apiConflictShowsDuplicateErrorWithoutEvent() =
+        runTest {
+            fakeRepository.registerResult = AppResult.Failure(AppError.Conflict)
+            val email = "conflict-${System.nanoTime()}@mail.com"
+            val viewModel = viewModel()
+            fillValidForm(viewModel, email)
             viewModel.events.test {
                 viewModel.submit()
                 assertEquals(RegisterFormError.DUPLICATE, viewModel.state.value.formError)
@@ -69,18 +125,17 @@ class RegisterViewModelTest {
         }
 
     @Test
-    fun validSubmitMarksRegisteredAndEmitsEvent() =
+    fun apiNetworkFailureShowsGenericErrorWithoutEvent() =
         runTest {
+            fakeRepository.registerResult = AppResult.Failure(AppError.Network)
+            val email = "offline-${System.nanoTime()}@mail.com"
             val viewModel = viewModel()
-            viewModel.onNameChange("Ana Lopez")
-            viewModel.onEmailChange("ok-${System.nanoTime()}@mail.com")
-            viewModel.onPhoneChange("5512345678")
-            viewModel.onPasswordChange("password1")
+            fillValidForm(viewModel, email)
             viewModel.events.test {
                 viewModel.submit()
-                assertEquals(RegisterEvent.Registered, awaitItem())
-                assertTrue(viewModel.state.value.registered)
-                assertNull(viewModel.state.value.formError)
+                assertEquals(RegisterFormError.GENERIC, viewModel.state.value.formError)
+                assertFalse(viewModel.state.value.registered)
+                assertFalse(viewModel.state.value.isLoading)
                 expectNoEvents()
             }
         }
