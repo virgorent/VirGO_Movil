@@ -26,3 +26,14 @@ data class UserDto(
     val email: String,
     val role: String,
 )
+
+@Serializable
+data class ForgotPasswordRequestDto(
+    val email: String,
+)
+
+@Serializable
+data class ResetPasswordRequestDto(
+    val code: String,
+    val password: String,
+)
