@@ -6,18 +6,18 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 
 | Campo | Valor |
 |---|---|
-| Constitución | v1.1.1 (enmienda 2026-11-12; v1.1.0 aprobada el 2026-11-05) |
-| Módulo en curso | `000-arquitectura-base`: 35/40 tareas hechas (detalle y estados en `task.md`) |
-| Tareas | 35 / 40 hechas (pendientes: T024 🔄, T033 🔄, T030 ⏳, T035 ⏳, T036 ⏳) |
+| Constitución | v1.2.0 propuesta (Google Play, 2026-11-15); vigente v1.1.1 |
+| Módulo en curso | `000-arquitectura-base`: 38/40 tareas hechas (detalle y estados en `task.md`) |
+| Tareas | 38 / 40 hechas (pendientes: T033 🔄, T036 ⏳) |
 | `API_BASE_URL` de *release* | Variable `VIRGO_API_BASE_URL` creada en `VirGO_Movil` con la URL de producción; falta el respaldo P-02 del keystore para cerrar T033 |
-| Última versión publicada | Ninguna |
-| Siguiente paso | Aprobar los PRs verdes de `001`–`004` (#17–#20); después T033 (respaldo P-02), T035, T030, T036 y T024 |
+| Última versión publicada | **v0.2.0** (versionCode 2): GitHub Release `v0.2.0` y Google Play, prueba interna activa; prueba cerrada en revisión desde el 2026-11-15 |
+| Siguiente paso | Aprobación de la prueba cerrada y 14 días con 12 *testers*; aprobación de los PRs verdes `001`–`004` (#17–#20); botón «Eliminar cuenta» (B5) y registro conectado a la API en v0.3.0 (versionCode 3); T033 (respaldo P-02) y T036 (cierre de `000`) |
 
 ## Módulos
 
 | Módulo | Estado | Notas |
 |---|---|---|
-| `000-arquitectura-base` | 🚧 Aprobado; 35/40 tareas hechas | Base técnica sin pantallas del negocio |
+| `000-arquitectura-base` | 🚧 Aprobado; 38/40 tareas hechas | Base técnica sin pantallas del negocio |
 | `001-…` pantallas | 🚧 `001`–`004` aprobados (retroactivo 2026-11-12) e implementados; `005+` sin iniciar | Un spec atómico por pantalla o flujo, al vuelo; los siguientes usan el JSON de `VirGo-API` |
 
 ## Decisiones (ADR)
@@ -38,6 +38,7 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | ADR-12 | 2026-11-03 | **Pitest** (`gradle-pitest-plugin`) en módulos JVM puros | Mutación sin dispositivo; umbral tras medir |
 | ADR-13 | 2026-11-03 | MCP permitidos: `figma` (lectura del *canvas*) y `github` | Pantallas al vuelo desde la maqueta oficial |
 | ADR-14 | 2026-11-03 | Google Play como destino futuro, con enmienda | Tiene un pago único; por ahora GitHub Releases |
+| ADR-15 | 2026-11-15 | **Google Play** como canal de distribución con firma de apps de Play (enmienda v1.2.0) | La cuenta ya existe y su pago es único; el AAB sale del mismo workflow de release |
 | ADR-15 | 2026-11-03 | **Repositorio único** `virgorent/VirGO_Backend` con carpetas por proyecto | Decisión del equipo; **superseded** por ADR-16 (2026-11-12) |
 | ADR-16 | 2026-11-12 | Repositorio propio `virgorent/VirGO_Movil` para el móvil (fin del monorepo); el backend vive en `virgorent/VirGO_Backend` | Separa CI, permisos y despliegues por proyecto |
 
@@ -47,6 +48,8 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 |---|---|---|
 | 2026-10-29 | Contrato base acordado: `/api/v1`, Problem Details, `camelCase`, fechas UTC, JWT Bearer, `GET /health`, `GET /openapi/v1.json`, `X-Correlation-Id` | ✅ |
 | 2026-11-03 | **Propuesto:** `POST /api/v1/auth/login` (devuelve `accessToken` de 15 min, `refreshToken` de 30 días y `user` con `role`) y `POST /api/v1/auth/logout` (204; ante 204 o 401 la app borra sus tokens). JSON en `VirGo-API/specs/003-auth-login` y `004-auth-logout` | ✅ |
+| 2026-11-16 | **Consumado:** `GET /api/v1/venues?zone=&category=` del backend (`VirGo-API/specs/007-venues-catalog/plan.md`) — `200 {"data":[…]}` con `location` GeoJSON `{type:"Point",coordinates:[lng,lat]}` y `rating:{average,count}`; probado contra producción (200 con catálogo vacío). `GET /api/v1/venues/:id` (spec `024`) sigue en borrador y queda fuera del alcance de T103 | ✅ (spec `007-venues-catalog` del backend) |
+| 2026-11-16 | **Consumado:** `POST /api/v1/auth/register` (`VirGo-API/specs/005-auth-register/plan.md`) — `{"name","email","password","phone"}` → `201 {"id","name","email","phone","role","isVerified"}`, duplicado → `409`, inválido → `400` Problem Details; el rol inicial siempre es `client` y el cliente no puede enviar `role`. Probado contra producción (201 y 409) | ✅ (spec `005-auth-register` del backend) |
 
 ## Versiones de librerías
 
@@ -570,7 +573,10 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Evidencia:** pipeline local completo en verde — `ktlintCheck detekt lint` (7m06s) y `testDebugUnitTest` + `assembleDebug` + `assembleRelease` + `:core:domain:test` + `:core:common:test` + `pitest` → **BUILD SUCCESSFUL** (7m06s); grep sobre `*.kt`: 0 ocurrencias de `Log.[vdiew](`, `println(` o `System.out.print` (revisión T027) y `Timber.` una sola vez (`VirGoApplication.kt`). CI: PR #6 con los 6 checks en verde (`movil-build-test` 4m34s, `analyze` 5m45s, `CodeQL`, `gitleaks`, `dependency review`, `changes`).
 - **Decisiones:** dependencia `implementation` (no `debugImplementation`) con el guardia `BuildConfig.DEBUG` en `onCreate`, porque `VirGoApplication` vive en el source set `main` y debe compilar también en *release*; sin el guardia, en *release* se plantaría un árbol (violaría Art. IX).
 - **Costo:** $0 / solo tiempo de CI.
-- **Aprendizaje:**
+- **RNF (retos no funcionales):**  
+  ✅ RNF-03: ceros en claro (`network_security_config.xml` con `cleartextTrafficPermitted="false"`; manifiesto release sin `usesCleartextTraffic`).  
+  ✅ RNF-04: AeadConfig pre-registrado (logcat `[I ConfigManager] Registered [config_id=1] for algorithm AESGCM with keysize 128` antes de crear el keyset).
+- **Aprendizaje:**  
   - «Solo debug» en una clase de `main` se resuelve con `BuildConfig.DEBUG` + R8, no con `debugImplementation`: esta última rompería la compilación de *release* al no existir la clase en ese classpath.
   - El guardia hace que R8 pueda eliminar Timber completo del APK de *release* (sin árbol plantado no hay código alcanzable), lo que convierte el criterio del Art. IX en verificable con el `mapping.txt`.
 - **Pendiente:** aprobación con permiso `write` y fusión del PR #6; T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030, T037, T035 y T036.
@@ -587,6 +593,112 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - La fuente de verdad del ruleset es el JSON del repositorio; el ruleset vivo puede divergir y hay que compararlos con `gh api` después de cada cambio.
   - Los 4 checks requeridos viven en `movil-ci.yml` (`movil-build-test`) y `movil-codeql.yml` (`analyze`); `gitleaks` y `dependency review` vienen de los workflows globales.
 - **Pendiente:** PR de Play (AAB, icono, respaldo, versión 0.2.0) pedido por el equipo; T033 (respaldo P-02), T035, T030, T036, T024 y T037.
+
+
+### 2026-11-16 - T103 + T105: catalogo de salones conectado (001-inicio-visitante 5/5)
+
+- **Autor:** equipo + opencode (`dev-android` + `qa-movil`)
+- **Módulo / tareas:** `001-inicio-visitante` -> T103, T105 -> (5/5)
+- **Qué se hizo:**
+  - **T103:** consumo del contrato `VirGo-API/specs/007-venues-catalog/plan.md` (`GET /api/v1/venues?zone=&category=` → `200 {"data":[…]}`). En `:core:network` `VenuesApi` + `VenueDtos` (respuesta envuelta en `data`, `location` GeoJSON `{type:"Point",coordinates:[lng,lat]}` y `rating:{average,count}`), `createVenuesApi` y `provideVenuesApi`; en `:core:domain` `Venue`, `VenueRepository` y `GetVenuesUseCase`; en `:core:data` `VenueRepositoryImpl` (reutiliza `toAppError()`: 404 → `NotFound`, 500 → `Server`, sin conexión → `Network`) y `VenueModule` (`@Binds`); en `:app`, `GuestHomeViewModel` con carga en `init`, `refresh()`, estados `isLoading`/`hasError`, y mapeo `Venue` → `VenueSample` con haversine y rumbo desde el centro fijo de Juriquilla (`VenueMapping.kt`); UI de error con «Reintentar» en `GuestBottom.kt` (se extrajo de `GuestHomeScreen.kt` para no pasar el umbral de `TooManyFunctions`).
+  - **T105:** humo contra producción en el emulador `Pixel_10_Pro` (2026-11-16): arranque limpio → `GET /api/v1/venues` **200** en 8738 ms con `{"data":[]}` → catálogo vacío, la app cae en la muestra local («5 salones a 5 km»); toque en el pin → vista previa A3 («Jardín Magnolia · El Refugio · ★ 4.8 · hasta 160»); con modo avión y arranque en frío → «No pudimos cargar los salones. Revisa tu conexión e inténtalo de nuevo.» con «Reintentar», y el reintento con la conexión restaurada recarga y limpia el error.
+  - Documentación: `task.md` 5/5 con blockquotes, `check.md` 4/4 CA y 6/6 filas de pruebas, `AGENTS.md` del móvil.
+- **Evidencia:** `docs/evidencia/CA-01-inicio-visitante-a1.png`, `docs/evidencia/CA-02-inicio-visitante-a3-preview.png` y `docs/evidencia/CA-04-inicio-visitante-sin-conexion.png`; logcat `GET …/api/v1/venues <-- 200 (8738ms, 11-byte body)`; pipeline local `ktlintCheck detekt lint testDebugUnitTest` + `:core:domain:test` + `:core:common:test` + `pitest` + `assembleDebug` → BUILD SUCCESSFUL con **123 pruebas, 0 fallos** y mutación **61 %** (37/61).
+- **Decisiones:**
+  1. Catálogo vacío (estado real de producción) → fallback a `VenueSamples`, para que A1 no quede en blanco mientras el backend no cargue salones; la falla sí muestra error con reintento (CA-04).
+  2. `GET /api/v1/venues/:id` (spec `024`) queda fuera de T103: su cuerpo sigue en borrador («PROPUESTO» en `API-HANDOFF.md` §9.5) y la vista previa A3 se renderiza con los campos del catálogo; se consumirá con el JSON probado.
+  3. El `id` del pin se asigna por posición del catálogo (los ids de la API son UUID y `VenueSample.id` es `Int`).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Cambiar de rama con el mismo directorio `build/` mezcla artefactos: `:app:hiltJavaCompileDebug` falló con «Could not find class file for `RegisterUseCase`» (clase de la rama `feat/002-registro`); un `gradlew clean` lo resolvió. Limpiar al cambiar de rama evita diagnósticos falsos.
+  - `detekt TooManyFunctions` cuenta funciones por archivo (umbral 11): extraer `GuestHint`/`GuestError` a `GuestBottom.kt` devolvió el archivo a 10 sin tocar la lógica.
+  - Las aserciones deben leer el dato real: `VenueSamples` tiene 7 entradas pero solo 5 dentro de 5 km; comparar con `VenueSamples.count { it.distanceKm <= DEFAULT_RANGE_KM }` es más robusto que `VenueSamples.size`.
+  - En el emulador, tocar la **etiqueta** del pin (no el icono) es lo que dispara la vista previa: el `detectTapGestures` del mapa hitanea toda la caja del pin.
+- **Pendiente:** PR #18 de `001-inicio-visitante` (aprobación + fusión); `003` T304 (humo de login) y `004` T403/T405 (recuperar contraseña); PR #17 (`002-registro`) en verde esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
+
+### 2026-11-14 - T024, T030 y T035: diagnostico, verificacion manual y release v0.2.0
+
+- **Autor:** equipo + opencode (`qa-movil`)
+- **Modulo / tareas:** `000-arquitectura-base` -> T024, T030, T035 -> (36/40)
+- **Que se hizo:**
+  - Fusionados los PR #8 (docs T002/T039), #9 (fix AeadConfig + DevMenu) y #10 (Play: AAB, icono adaptativo, `allowBackup=false`, version 0.2.0); aprobados por EsauRamireZ/Karasu0001 con los 6 checks en verde cada uno.
+  - Lanzado `movil-release` con `version=0.2.0` (run `43544624048`, en verde): release `v0.2.0` con `app-release.aab` (5 661 199 B) y `app-release.apk` (2 530 468 B), `versionCode 2`.
+  - **T024** CA-04/CA-05: login QA real contra produccion (`POST /api/v1/auth/login` -> 200) y Diagnostico con «API disponible» (227 ms); con modo avion, mensaje en espanol «No hay conexion con la API. Revisa tu internet e intentalo de nuevo.» sin cierre y «Reintentar» que recupera (1123 ms).
+  - **T030**: arranque en frio 1791/1854/1885 ms (1935 tras reinicio) en debug y 698 ms con el APK de release; modo oscuro, icono de launcher y capturas del DevMenu/Diagnostico.
+  - **T035**: APK del release descargado del GitHub Release, instalado en el emulador (uninstall + install, sin mezclar firmas) y prueba de humo: abre el inicio visitante y el login llega a «Inicio».
+- **Evidencia:** `docs/evidencia/` con CA-04, CA-05, CA-09, T030-devmenu-diagnostico, evidencia-mod-oscuro e icono-launcher; PR #11 con la evidencia RNF-03/RNF-04.
+- **Decisiones:** la «API apagada» de CA-05 se simulo con modo avion porque la API real es la de produccion; el diagnostico local (T210) ya no aplica; se publico `v0.2.0` en lugar de `v0.1.0` porque el alcance crecio con el PR #10.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - El teclado del emulador cubre la mitad inferior: un `input tap` sobre un boton debajo del IME termina presionando una tecla del teclado (chars fantasma); hay que cerrar el IME con `keyevent 4` antes de tocar y releer coordenadas.
+  - El `screenrecord --size 720x1280` + ffmpeg (frame 0, sin `-ss`) da capturas confiables cuando `screencap` sale negro por el glitch de gfxstream.
+  - Los snapshots del emulador corrompen el keystore: arrancar siempre con `-no-snapshot`.
+- **Pendiente:** T033 (respaldo P-02 del keystore, custodia humana), T036 (cierre), T037 (MCP figma/github), subir el AAB a prueba interna de Play (equipo) y B4/B5 (aviso de privacidad y borrado de cuenta, Equipo/API).
+
+
+### 2026-11-16 - T203 + T205: registro conectado a produccion (002-registro 5/5)
+
+- **Autor:** equipo + opencode (`dev-android` + `qa-movil`)
+- **Modulo / tareas:** `002-registro` -> T203, T205 -> (5/5, primer modulo de pantallas completo)
+- **Que se hizo:**
+  - **T203:** se consumio el contrato `005-auth-register` que el backend dejo en `VirGo-API/specs/005-auth-register/plan.md`. En `:core:common` `AppError.Conflict` (409); en `:core:network` `RegisterRequestDto`/`RegisterResponseDto` y `AuthApi.register`; en `:core:data` `AuthRepositoryImpl.register` (409 -> `Conflict`, 400 -> `Validation`, 201 -> `RegisteredUser`); en `:core:domain` `AuthRepository.register`, `RegisterUseCase` (trim, correo en minusculas y prefijo `+52`) y `RegisteredEmailStore.contains()` para el fast-path de duplicado sin mutar el almacen.
+  - **T205:** humo contra produccion en el emulador `Pixel_10_Pro` (2026-11-14): registro valido -> `POST /api/v1/auth/register` **201** (7524 ms) y navegacion a «Inicio» (RF-09); con `force-stop` y el mismo correo -> **409** (6394 ms) y píldora «Ya existe una cuenta con este correo. Inicia sesión.» sin cierre (RF-08, CA-03).
+  - Evidencia nueva de criterios: `CA-01-registro-a2-formulario.png` (pantalla A2 limpia) y `CA-04-registro-sin-conexion.png` (modo avion: `UnknownHostException` -> «No pudimos crear tu cuenta. Revisa tu conexión e inténtalo de nuevo.» con el boton «Crear cuenta» habilitado para reintentar).
+  - Documentacion cerrada: `task.md` (5/5 con blockquotes de evidencia), `check.md` (4/4 CA y 6/6 filas de pruebas), `AGENTS.md` (raiz y movil).
+- **Evidencia:** `docs/evidencia/` con T205-registro-201-exitoso.png, T205-registro-409-duplicado.png, CA-01-registro-a2-formulario.png y CA-04-registro-sin-conexion.png; pipeline local `ktlintCheck detekt lint testDebugUnitTest assembleDebug` + `:core:domain:test` + `:core:common:test` + `pitest` -> BUILD SUCCESSFUL con **115 pruebas, 0 fallos** y mutacion **63 %** (39/62).
+- **Decisiones:** el correo QA `qa-register-1794636322@virgo.mx` quedo dado de alta en produccion como evidencia del 201; la "API apagada" de CA-04 se simulo con modo avion porque la API real es la de produccion; los tests de `:core:domain` usan fakes locales porque ese modulo no puede depender de `:core:testing` (dependencia circular).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - El IME del emulador se dibuja **encima** de los campos inferiores sin redimensionar la ventana: un `input tap` a una coordenada tapada por el teclado teclea en el campo enfocado (o en una tecla). Flujo fiable: tocar campo -> escribir -> `keyevent 4` solo si `mIsImeShowing=true` -> releer coordenadas; nunca `keyevent 4` a ciegas, porque con el IME ya cerrado BACK sale de la pantalla o de la app.
+  - En PowerShell, `-like '*Correo*'` es insensible a mayusculas y coincide con «o con tu correo» (un `Text` estatico, no enfocable): usar `-ceq` para coincidir con el placeholder exacto del campo.
+  - El emulador se cayo dos veces durante la automatizacion; relanzarlo con `-gpu swiftshader_indirect` estabilizo la sesion.
+  - `RegisterUseCaseTest` no compila si se importa `core:testing` desde `:core:domain`: el fake vive en la propia suite.
+- **Pendiente:** PR de `002-registro` (aprobacion + fusion), PR #11 y #13 en espera, T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
+
+### 2026-11-15 - Publicación de v0.2.0 en Google Play y enmienda v1.2.0
+
+- **Autor:** Angélica (`Karasu0001`), con Claude Code
+- **Módulo / tareas:** `000-arquitectura-base` -> T033, T035 (release) · bloqueos B4–B6 de `docs/PUBLICAR-PLAY.md`
+- **Qué se hizo:**
+  - Llave de subida nueva (`upload`, RSA 2048) generada por la titular de la cuenta de Play. El keystore y sus contraseñas están solo en GitHub Secrets y en su respaldo privado.
+  - `movil-release` publicó la GitHub Release `v0.2.0` con `app-release.aab` y `app-release.apk`.
+  - App `mx.virgo.app` creada en Play Console. El AAB 2 (0.2.0) quedó activo en **prueba interna** y se envió a revisión en la **prueba cerrada** (Alpha, México y El Salvador, 12 *testers*).
+  - Panel completado: detalles de acceso, anuncios (No), clasificación de contenido (Todos; «los usuarios interactúan»), público objetivo 18+, seguridad de los datos (nombre, correo, ID de usuario y teléfono; recopilados y no compartidos; cifrados en tránsito), ID de publicidad (No), categoría Eventos, ficha de Play Store y declaración de recursos con IA.
+  - Avisos legales (B4) publicados con GitHub Pages (PR #14): privacidad, términos y eliminación de cuenta. Responsable KarasuDev, contacto `virgorent6@gmail.com`.
+  - Cuenta de revisión `revisor.play@virgo.mx` creada en la base `virgo` (B6). **No se borra.**
+  - Propuesta la enmienda **v1.2.0** de `constitution.md` (Art. VIII.3–VIII.4), con `AGENTS.md`, las skills y el subagente alineados.
+- **Evidencia:**
+  - Certificado del AAB: `CN=Angélica Viridiana Arguelles Méndez, OU=Desarrollo, O=VirGO`. SHA-256 de la llave de subida: `B4:22:BE:19:FC:23:2C:4D:4D:2D:C3:40:88:31:DF:8D:D4:08:50:03:7D:9C:0A:57:C1:97:0C:E0:FE:A8:59:E1`.
+  - El manifiesto del AAB solo declara `INTERNET` (y `DUMP` de AndroidX *profileinstaller*); no hay `AD_ID` ni SDK de anuncios o analítica.
+  - `https://virgorent.github.io/VirGO_Movil/legal/{privacidad,terminos,eliminar-cuenta}/` → 200.
+  - Login de la cuenta de revisión en producción → 200.
+  - `DELETE /api/v1/users/me` probado en producción con una cuenta desechable: 204; token anterior 401; login 401; perfil público «Cuenta eliminada» sin correo ni teléfono.
+- **Decisiones:** ADR-15. Las declaraciones describen solo lo que hace v0.2.0. Chat, pagos y ubicación se declararán **antes** de subir la versión que los incluya. La eliminación de cuenta se atiende por correo hasta que exista el botón en la app.
+- **Costo:** $0 adicional (la cuenta de Play ya estaba pagada).
+- **Aprendizaje:**
+  - El primer `movil-release` salió firmado con una llave de desarrollo (`CN=VirGo Local`) porque se ejecutó antes de configurar los secretos. Se borraron el release y la etiqueta y se regeneró con la llave oficial **antes** de subir nada a Play: la primera subida fija la llave de subida.
+  - `vars.X` y `secrets.X` son espacios distintos: `VIRGO_API_BASE_URL` creada como *secret* llegó vacía y la guarda `https://` de ADR-08 detuvo el build, que es lo esperado.
+  - «keystore password was incorrect» aparece al **empaquetar** (unos 2 minutos), no al configurar. El fallo rápido (unos 59 s) era el secreto o la variable faltante.
+  - Con SDK de destino 33 o mayor, Play exige la declaración de ID de publicidad aunque no aparezca en la lista de «Contenido de la app».
+  - Las capturas de 1280×2856 superan la proporción 2:1 que acepta Play; se montaron en un lienzo de 1440×2880.
+- **Pendiente:** aprobación de la prueba cerrada y 14 días con 12 *testers*; B5 (botón en Perfil); registro conectado a `POST /api/v1/auth/register`; datos de ejemplo en `virgo`; aprobación de la enmienda v1.2.0 en este PR.
+
+### 2026-11-16 - T304: humo de login contra produccion (003-iniciar-sesion 4/4)
+
+- **Autor:** equipo + opencode (`qa-movil`)
+- **Módulo / tareas:** `003-iniciar-sesion` → T304 → (4/4)
+- **Qué se hizo:**
+  - **T304:** prueba de humo del login contra producción (`POST /api/v1/auth/login`) con el APK *debug* en el emulador `Pixel_10_Pro` y la cuenta QA `qa-health@virgo.mx`: **CA-01** pantalla A5 completa (formularios, enlace «¿Olvidaste tu contraseña?» y «Entrar»); **CA-02** credenciales inexistentes → `401` real → «Correo o contraseña incorrectos» (genérico, RF-02); **CA-03** modo avión → «Sin conexión. Revisa tu internet e inténtalo de nuevo.» con «Entrar» habilitado y reintento exitoso tras restaurar la red; **RF-03** el reintento navega a la pantalla principal del rol («Inicio»).
+  - Documentación: `task.md` 4/4 con blockquote, `check.md` completo y esta bitácora.
+- **Evidencia:** `docs/evidencia/CA-01-iniciar-sesion-a5.png`, `docs/evidencia/CA-02-iniciar-sesion-error.png`, `docs/evidencia/CA-03-iniciar-sesion-sin-conexion.png` y `docs/evidencia/RF-03-iniciar-sesion-inicio-rol.png`.
+- **Decisiones / hallazgos:**
+  1. **La sesión no persiste entre reinicios:** el login exitoso solo pone `loggedIn = true` en el `UiState`; nadie llama a `TokenStore.save()` (el `TokenStore` está implementado y probado en `:core:datastore`, pero sin conectar), así que al volver a abrir la app se arranca en modo visitante. No rompe ningún CA de `003` (el spec no pide persistencia), pero va contra el espíritu de RNF-03 («tokens solo en `TokenStore`») y del endpoint `013-post-auth-refresh` listado en las dependencias: candidato a un spec `005-sesiones` (guardar token en el login, restaurar al arrancar, refresh y logout) antes de las pantallas de rol.
+  2. El reintento de CA-03 es re-pulsar «Entrar» (no hay botón «Reintentar» separado en A5); funciona y completa el flujo hasta la home del rol.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - En el emulador, `adb shell cmd connectivity airplane-mode enable/disable` es la vía rápida para simular «sin conexión» y restaurarla sin tocar la UI; verificar con `settings get global airplane_mode_on`.
+  - El error de red llega en ~10 s (connect timeout de OkHttp): esperar al menos 12–15 s antes de capturar o el mensaje aún no aparece.
+- **Pendiente:** PR #20 de esta rama; PR #19 (`004-recuperar-contrasena` 4/5, verde 6/6), PR #18 (`001-inicio-visitante`, verde 6/6) y PR #17 (`002-registro`, verde) esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
 
 ### 2026-11-16 - T037: MCP figma y github, resuelta como no aplica
 

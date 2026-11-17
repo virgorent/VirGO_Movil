@@ -319,6 +319,13 @@ fun LoginScreenPreview() {
                                 password: String,
                                 device: String?,
                             ) = AppResult.Failure(AppError.Unknown)
+
+                            override suspend fun register(
+                                name: String,
+                                email: String,
+                                phone: String,
+                                password: String,
+                            ) = AppResult.Failure(AppError.Unknown)
                         },
                     ),
                 ),
