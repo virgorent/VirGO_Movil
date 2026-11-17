@@ -588,6 +588,23 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Los 4 checks requeridos viven en `movil-ci.yml` (`movil-build-test`) y `movil-codeql.yml` (`analyze`); `gitleaks` y `dependency review` vienen de los workflows globales.
 - **Pendiente:** PR de Play (AAB, icono, respaldo, versión 0.2.0) pedido por el equipo; T033 (respaldo P-02), T035, T030, T036, T024 y T037.
 
+### 2026-11-16 - T304: humo de login contra produccion (003-iniciar-sesion 4/4)
+
+- **Autor:** equipo + opencode (`qa-movil`)
+- **Módulo / tareas:** `003-iniciar-sesion` → T304 → (4/4)
+- **Qué se hizo:**
+  - **T304:** prueba de humo del login contra producción (`POST /api/v1/auth/login`) con el APK *debug* en el emulador `Pixel_10_Pro` y la cuenta QA `qa-health@virgo.mx`: **CA-01** pantalla A5 completa (formularios, enlace «¿Olvidaste tu contraseña?» y «Entrar»); **CA-02** credenciales inexistentes → `401` real → «Correo o contraseña incorrectos» (genérico, RF-02); **CA-03** modo avión → «Sin conexión. Revisa tu internet e inténtalo de nuevo.» con «Entrar» habilitado y reintento exitoso tras restaurar la red; **RF-03** el reintento navega a la pantalla principal del rol («Inicio»).
+  - Documentación: `task.md` 4/4 con blockquote, `check.md` completo y esta bitácora.
+- **Evidencia:** `docs/evidencia/CA-01-iniciar-sesion-a5.png`, `docs/evidencia/CA-02-iniciar-sesion-error.png`, `docs/evidencia/CA-03-iniciar-sesion-sin-conexion.png` y `docs/evidencia/RF-03-iniciar-sesion-inicio-rol.png`.
+- **Decisiones / hallazgos:**
+  1. **La sesión no persiste entre reinicios:** el login exitoso solo pone `loggedIn = true` en el `UiState`; nadie llama a `TokenStore.save()` (el `TokenStore` está implementado y probado en `:core:datastore`, pero sin conectar), así que al volver a abrir la app se arranca en modo visitante. No rompe ningún CA de `003` (el spec no pide persistencia), pero va contra el espíritu de RNF-03 («tokens solo en `TokenStore`») y del endpoint `013-post-auth-refresh` listado en las dependencias: candidato a un spec `005-sesiones` (guardar token en el login, restaurar al arrancar, refresh y logout) antes de las pantallas de rol.
+  2. El reintento de CA-03 es re-pulsar «Entrar» (no hay botón «Reintentar» separado en A5); funciona y completa el flujo hasta la home del rol.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - En el emulador, `adb shell cmd connectivity airplane-mode enable/disable` es la vía rápida para simular «sin conexión» y restaurarla sin tocar la UI; verificar con `settings get global airplane_mode_on`.
+  - El error de red llega en ~10 s (connect timeout de OkHttp): esperar al menos 12–15 s antes de capturar o el mensaje aún no aparece.
+- **Pendiente:** PR #20 de esta rama; PR #19 (`004-recuperar-contrasena` 4/5, verde 6/6), PR #18 (`001-inicio-visitante`, verde 6/6) y PR #17 (`002-registro`, verde) esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
+
 ### 2026-11-16 - T037: MCP figma y github, resuelta como no aplica
 
 - **Autor:** equipo + opencode (`arquitecto-movil`)
