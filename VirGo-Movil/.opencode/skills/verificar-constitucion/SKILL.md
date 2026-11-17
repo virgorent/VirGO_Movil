@@ -18,7 +18,7 @@ description: Revisa que un spec, plan, task.md, PR o archivo de la app Android d
 | V | Seguridad: HTTPS, tokens cifrados, R8, sin secretos, `.gitignore`, Gitleaks, permisos | | |
 | VI | Pruebas unitarias, integración, UI, seguridad, mutación y humo; análisis estático | | |
 | VII | Sistema de diseño fiel a la maqueta, accesibilidad, textos en `strings.xml` | | |
-| VIII | Ruleset, CI en PR, release manual a GitHub Releases, JSON del backend y aprendizaje | | |
+| VIII | Ruleset, CI en PR, release manual a GitHub Releases, AAB subido a Google Play con declaraciones y `docs/legal/` al día, JSON del backend y aprendizaje | | |
 | IX | Observabilidad (Timber en *debug* y correlación) | | |
 | X | Memoria y trazabilidad | | |
 | XI | Agentes, skills y MCP permitidos | | |

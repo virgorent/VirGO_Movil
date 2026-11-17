@@ -25,4 +25,12 @@ class RegisteredEmailStoreTest {
         assertTrue(store.register("a-${System.nanoTime()}@mail.com"))
         assertTrue(store.register("b-${System.nanoTime()}@mail.com"))
     }
+
+    @Test
+    fun containsReportsStoredEmailWithoutAdding() {
+        val email = "contains-${System.nanoTime()}@mail.com"
+        assertFalse(store.contains(email))
+        assertTrue(store.register(email))
+        assertTrue(store.contains(email))
+    }
 }
