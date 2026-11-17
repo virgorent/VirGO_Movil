@@ -15,7 +15,7 @@ Lista de verificación del módulo (Art. I.4). Cada casilla lleva su evidencia. 
 - [x] El Constitution Check del plan no tiene ❌ (constitución v1.1.0 aprobada).
 - [x] `README.md` en inglés y `.gitignore` DevSecOps en el primer commit (T001). Evidencia: `git ls-tree origin/main VirGo-Movil/.gitignore VirGo-Movil/README.md`; `git check-ignore -v VirGo-Movil/local.properties`.
 - [ ] `verificar-constitucion` sobre la gobernanza: «Alineado» (T004).
-- [ ] MCP `figma` y `github` instalados y probados (T037).
+- [x] MCP `figma` y `github`: resueltos como **no aplica** (T037). Evidencia: `task.md` T037 (decisión 2026-11-16; `figma` → `HTTP 405`, sustituido por maqueta + `core:designsystem`; `github` → `gh` CLI).
 - [ ] P-01 (ID de la app) y P-02 (custodia del keystore) respondidas.
 
 ## 2. Criterios de aceptación

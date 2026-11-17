@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `000-arquitectura-base` |
 | Versión | 1.1.0 |
-| Estado | Aprobado. 34/40 tareas hechas. |
+| Estado | Aprobado. 35/40 tareas hechas. |
 | Fecha | 2026-10-29 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 | Constitución | v1.1.1 |
@@ -25,9 +25,9 @@
 | T002 | 🧑 Coordinar con `VirGo-API` T207 el ruleset único `main-protection` del repositorio (PR, 1 revisión, checks requeridos, sin *force push* ni borrado) y la protección de push contra secretos | T001 | `seguridad-ci` | Reglas visibles en GitHub (captura o `gh api`) | ✅ |
 | T003 | [P] Agregar `.editorconfig` (ktlint) y, en la raíz del repositorio, el bloque de `VirGo-Movil` en `.github/dependabot.yml`; la plantilla de PR es común (Gradle agrupado por familia y Actions) | T001 | `seguridad-ci` | Archivos en el repositorio; Dependabot activo | ✅ |
 | T004 | [P] Revisar la alineación de la gobernanza con `verificar-constitucion` | — | `arquitecto-movil` | Resultado «Alineado» en `memoria.md` | ✅ |
-| T037 | [P] Instalar y probar los MCP `figma` (lectura del *canvas* de «Pantallas VirGo») y `github` de `opencode.json`, con tokens en variables de entorno | — | `arquitecto-movil` | `opencode mcp list` los muestra conectados; captura en `memoria.md` | ⛔ |
+| T037 | [P] Instalar y probar los MCP `figma` (lectura del *canvas* de «Pantallas VirGo») y `github` de `opencode.json`, con tokens en variables de entorno | — | `arquitecto-movil` | `opencode mcp list` los muestra conectados; captura en `memoria.md` | ✅ |
 
-> T037 bloqueada: `figma` responde `HTTP 405` en `https://mcp.figma.com/mcp` (problema conocido de opencode) y `github` sigue deshabilitado; requiere OAuth de Figma y `GITHUB_MCP_PAT`.
+> T037 resuelta como **no aplica** (2026-11-16, decisión del equipo): `figma` responde `HTTP 405` en `https://mcp.figma.com/mcp` (problema conocido de opencode) y `github` sigue deshabilitado. Sin MCP de Figma, la fuente de las specs de pantalla es la maqueta funcional + `Checklist VirGo.md` con revisión por captura, y el sistema de diseño vive en `:core:designsystem`; sin MCP de GitHub se usa `gh` CLI (mismo alcance de lectura de PRs, checks y ejecuciones). La lectura del canvas de Figma se reabre como tarea sujeta a que el MCP funcione.
 
 > T004 hecha: auditoría con `verificar-constitucion` sobre la gobernanza en dos pasadas con el subagente `arquitecto-movil`. La primera pasada dio **No alineado** (❌ Art. II y ❌ Art. XI); tras las correcciones, la re-verificación dio **Alineado** (0 ❌, 6 ⚠️ registrados como pendientes de cierre). Correcciones aplicadas con aprobación del equipo: aprobación retroactiva de los specs `001`–`004` (`spec.md`, `plan.md` y `task.md`), enmienda constitucional **1.1.1** (repo `VirGO_Movil` y VIII.7), referencias stale corregidas en `AGENTS.md` (raíz y móvil), `README.md`, `plan.md`, T001 y cabecera/ADRs de `memoria.md`, tarea **T040** (Timber, Art. IX) y reparación de las tablas F7/F8. Tabla final de 12 artículos y decisiones humanas en la entrada de `memoria.md`.
 
