@@ -83,6 +83,7 @@
     <string name="register_switch_login">Inicia sesión</string>
     <string name="register_switch_register">Regístrate</string>
     <string name="register_duplicate_email">Ya existe una cuenta con este correo. Inicia sesión.</string>
+    <string name="register_error_generic">No pudimos crear tu cuenta. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="register_hero_meta">★ %1$s · %2$s km</string>
     <string name="register_success_greeting">Hola, %1$s</string>
     <string name="register_success_body">Ya puedes usar todas las funciones</string>

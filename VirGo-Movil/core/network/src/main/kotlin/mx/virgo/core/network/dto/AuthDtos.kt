@@ -26,3 +26,21 @@ data class UserDto(
     val email: String,
     val role: String,
 )
+
+@Serializable
+data class RegisterRequestDto(
+    val name: String,
+    val email: String,
+    val password: String,
+    val phone: String,
+)
+
+@Serializable
+data class RegisterResponseDto(
+    val id: String,
+    val name: String,
+    val email: String,
+    val phone: String,
+    val role: String,
+    val isVerified: Boolean,
+)
