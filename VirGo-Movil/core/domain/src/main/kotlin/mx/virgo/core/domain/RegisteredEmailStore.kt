@@ -5,4 +5,6 @@ object RegisteredEmailStore {
     private val emails = mutableSetOf<String>()
 
     fun register(email: String): Boolean = emails.add(email)
+
+    fun contains(email: String): Boolean = emails.contains(email)
 }

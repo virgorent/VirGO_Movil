@@ -27,7 +27,7 @@ Lee los artículos V y VIII de `constitution.md` y las secciones de seguridad y 
 ## Qué construyes
 
 - `.github/workflows/movil-ci.yml` con ktlint, detekt, Lint, pruebas unitarias y `assembleDebug`, más el APK de *debug* como artefacto.
-- `.github/workflows/movil-release.yml` (en la raíz del repositorio), que con `workflow_dispatch` desde `main` compila el APK *release* firmado con los secretos y lo publica en GitHub Releases.
+- `.github/workflows/movil-release.yml` (en la raíz del repositorio), que con `workflow_dispatch` desde `main` compila el APK y el AAB *release* firmados con los secretos, verifica sus firmas y los publica en GitHub Releases; el AAB es el que se sube a Google Play (Art. VIII.4).
 
 ## Límites
 

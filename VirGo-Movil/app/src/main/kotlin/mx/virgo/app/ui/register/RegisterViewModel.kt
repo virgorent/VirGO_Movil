@@ -1,6 +1,7 @@
 package mx.virgo.app.ui.register
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,13 +9,18 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import mx.virgo.core.common.AppError
+import mx.virgo.core.common.AppResult
 import mx.virgo.core.domain.PHONE_LENGTH
+import mx.virgo.core.domain.RegisterUseCase
 import mx.virgo.core.domain.RegisteredEmailStore
 import mx.virgo.core.domain.ValidateRegisterFormUseCase
 import javax.inject.Inject
 
 enum class RegisterFormError {
     DUPLICATE,
+    GENERIC,
 }
 
 sealed interface RegisterEvent {
@@ -32,6 +38,7 @@ data class RegisterUiState(
     val emailValid: Boolean = true,
     val phoneValid: Boolean = true,
     val passwordValid: Boolean = true,
+    val isLoading: Boolean = false,
     val formError: RegisterFormError? = null,
     val registered: Boolean = false,
 )
@@ -41,6 +48,7 @@ class RegisterViewModel
     @Inject
     constructor(
         private val validateRegisterForm: ValidateRegisterFormUseCase,
+        private val register: RegisterUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(RegisterUiState())
         val state: StateFlow<RegisterUiState> = _state.asStateFlow()
@@ -65,13 +73,30 @@ class RegisterViewModel
             val valid =
                 validateRegisterForm(current.name, current.email, current.phone, current.password)
             update { it.copy(submitted = true, formError = null) }
-            when {
-                !valid -> Unit
-                !RegisteredEmailStore.register(current.email.trim()) ->
-                    update { it.copy(formError = RegisterFormError.DUPLICATE) }
-                else -> {
-                    update { it.copy(registered = true) }
-                    _events.tryEmit(RegisterEvent.Registered)
+            if (!valid || current.isLoading) return
+            val email = current.email.trim().lowercase()
+            if (RegisteredEmailStore.contains(email)) {
+                update { it.copy(formError = RegisterFormError.DUPLICATE) }
+                return
+            }
+            viewModelScope.launch {
+                update { it.copy(isLoading = true) }
+                when (val result = register(current.name, current.email, current.phone, current.password)) {
+                    is AppResult.Success -> {
+                        RegisteredEmailStore.register(email)
+                        update { it.copy(isLoading = false, registered = true) }
+                        _events.tryEmit(RegisterEvent.Registered)
+                    }
+                    is AppResult.Failure -> {
+                        val conflict = result.error is AppError.Conflict
+                        if (conflict) RegisteredEmailStore.register(email)
+                        update {
+                            it.copy(
+                                isLoading = false,
+                                formError = if (conflict) RegisterFormError.DUPLICATE else RegisterFormError.GENERIC,
+                            )
+                        }
+                    }
                 }
             }
         }

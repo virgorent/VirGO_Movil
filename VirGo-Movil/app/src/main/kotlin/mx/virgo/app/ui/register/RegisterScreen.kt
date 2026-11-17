@@ -55,6 +55,8 @@ import mx.virgo.app.ui.auth.PasswordField
 import mx.virgo.app.ui.auth.SocialAuthRow
 import mx.virgo.app.ui.guest.VenueSample
 import mx.virgo.app.ui.guest.VenueSamples
+import mx.virgo.core.common.AppError
+import mx.virgo.core.common.AppResult
 import mx.virgo.core.designsystem.components.VirGoButton
 import mx.virgo.core.designsystem.theme.ErrorRed
 import mx.virgo.core.designsystem.theme.Slate100
@@ -63,6 +65,8 @@ import mx.virgo.core.designsystem.theme.Slate500
 import mx.virgo.core.designsystem.theme.Slate900
 import mx.virgo.core.designsystem.theme.VirGoPurple
 import mx.virgo.core.designsystem.theme.VirGoTheme
+import mx.virgo.core.domain.AuthRepository
+import mx.virgo.core.domain.RegisterUseCase
 import mx.virgo.core.domain.ValidateEmailUseCase
 import mx.virgo.core.domain.ValidateRegisterFormUseCase
 
@@ -121,6 +125,7 @@ fun RegisterScreen(
         formError =
             when (state.formError) {
                 RegisterFormError.DUPLICATE -> stringResource(R.string.register_duplicate_email)
+                RegisterFormError.GENERIC -> stringResource(R.string.register_error_generic)
                 null -> ""
             },
         onSubmit = viewModel::submit,
@@ -472,7 +477,25 @@ fun RegisterScreenPreview() {
         RegisterScreen(
             venueId = null,
             viewModel =
-                RegisterViewModel(ValidateRegisterFormUseCase(ValidateEmailUseCase())),
+                RegisterViewModel(
+                    ValidateRegisterFormUseCase(ValidateEmailUseCase()),
+                    RegisterUseCase(
+                        object : AuthRepository {
+                            override suspend fun login(
+                                email: String,
+                                password: String,
+                                device: String?,
+                            ) = AppResult.Failure(AppError.Unknown)
+
+                            override suspend fun register(
+                                name: String,
+                                email: String,
+                                phone: String,
+                                password: String,
+                            ) = AppResult.Failure(AppError.Unknown)
+                        },
+                    ),
+                ),
         )
     }
 }

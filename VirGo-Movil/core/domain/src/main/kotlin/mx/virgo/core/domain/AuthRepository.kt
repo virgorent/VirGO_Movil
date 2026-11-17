@@ -8,4 +8,11 @@ interface AuthRepository {
         password: String,
         device: String? = null,
     ): AppResult<AuthSession>
+
+    suspend fun register(
+        name: String,
+        email: String,
+        phone: String,
+        password: String,
+    ): AppResult<RegisteredUser>
 }
