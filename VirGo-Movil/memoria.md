@@ -7,17 +7,17 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | Campo | Valor |
 |---|---|
 | Constitución | v1.2.0 propuesta (Google Play, 2026-11-15); vigente v1.1.1 |
-| Módulo en curso | `000-arquitectura-base`: 34/40 tareas hechas (detalle y estados en `task.md`) |
-| Tareas | 34 / 40 hechas (T037 bloqueada por MCP) |
+| Módulo en curso | `000-arquitectura-base`: 35/40 tareas hechas (detalle y estados en `task.md`) |
+| Tareas | 35 / 40 hechas (pendientes: T024 🔄, T033 🔄, T030 ⏳, T035 ⏳, T036 ⏳) |
 | `API_BASE_URL` de *release* | Variable `VIRGO_API_BASE_URL` creada en `VirGO_Movil` con la URL de producción; falta el respaldo P-02 del keystore para cerrar T033 |
 | Última versión publicada | **v0.2.0** (versionCode 2): GitHub Release `v0.2.0` y Google Play, prueba interna activa; prueba cerrada en revisión desde el 2026-11-15 |
-| Siguiente paso | Aprobación de la prueba cerrada y 14 días con 12 *testers*; botón «Eliminar cuenta» (B5) y registro conectado a la API en v0.3.0 (versionCode 3) |
+| Siguiente paso | Aprobación de la prueba cerrada y 14 días con 12 *testers*; aprobación de los PRs verdes `001`–`004` (#17–#20); botón «Eliminar cuenta» (B5) y registro conectado a la API en v0.3.0 (versionCode 3); T033 (respaldo P-02), T035, T030, T036 y T024 |
 
 ## Módulos
 
 | Módulo | Estado | Notas |
 |---|---|---|
-| `000-arquitectura-base` | 🚧 Aprobado; 34/40 tareas hechas | Base técnica sin pantallas del negocio |
+| `000-arquitectura-base` | 🚧 Aprobado; 35/40 tareas hechas | Base técnica sin pantallas del negocio |
 | `001-…` pantallas | 🚧 `001`–`004` aprobados (retroactivo 2026-11-12) e implementados; `005+` sin iniciar | Un spec atómico por pantalla o flujo, al vuelo; los siguientes usan el JSON de `VirGo-API` |
 
 ## Decisiones (ADR)
@@ -616,3 +616,16 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Con SDK de destino 33 o mayor, Play exige la declaración de ID de publicidad aunque no aparezca en la lista de «Contenido de la app».
   - Las capturas de 1280×2856 superan la proporción 2:1 que acepta Play; se montaron en un lienzo de 1440×2880.
 - **Pendiente:** aprobación de la prueba cerrada y 14 días con 12 *testers*; B5 (botón en Perfil); registro conectado a `POST /api/v1/auth/register`; datos de ejemplo en `virgo`; aprobación de la enmienda v1.2.0 en este PR.
+
+### 2026-11-16 - T037: MCP figma y github, resuelta como no aplica
+
+- **Autor:** equipo + opencode (`arquitecto-movil`)
+- **Módulo / tareas:** `000-arquitectura-base` -> T037 -> (35/40)
+- **Qué se hizo:** T037 pasó de ⛔ a ✅ como **no aplica** (decisión del equipo, 2026-11-16): el MCP `figma` responde `HTTP 405` en `https://mcp.figma.com/mcp` (problema conocido de opencode) y el MCP `github` sigue deshabilitado; ninguno de los dos era indispensable. Sin MCP de Figma, la fuente de las specs de pantalla es la maqueta funcional + `Checklist VirGo.md` con revisión por captura, y el sistema de diseño vive en `:core:designsystem`; sin MCP de GitHub se usa `gh` CLI (mismo alcance de lectura de PRs, checks y ejecuciones). Se actualizaron `task.md` (T037 ✅ con su blockquote al final de la sección), `check.md` (casilla T037 marcada con evidencia) y `AGENTS.md` (tabla de MCP: ambos ➖ no aplica; contadores 34/40 → 35/40; specs `001`–`004` en PRs verdes). Rama `docs/0037-no-aplica` desde `origin/main` (`126b14b`).
+- **Evidencia:** `task.md` T037 ✅; `check.md` §1 casilla con evidencia; conteo de estados en `task.md` = 35 ✅ / 5 pendientes (T024 🔄, T033 🔄, T030 ⏳, T035 ⏳, T036 ⏳).
+- **Decisiones:** la lectura del canvas de Figma se reabre como tarea sujeta a que el MCP funcione; el alcance de `github` lo cubre `gh` CLI.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Una tarea bloqueada por una herramienta externa puede cerrarse como «no aplica» documentando el sustituto, en vez de quedarse ⛔ para siempre.
+  - Al actualizar el estado de una tarea hay que mover el contador en todos los lugares que lo replican (`task.md`, `AGENTS.md` raíz y móvil) para evitar *stale references*.
+- **Pendiente:** aprobación del PR docs; T024, T033, T030, T035 y T036.
