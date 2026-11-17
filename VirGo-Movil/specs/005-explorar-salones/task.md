@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `005-explorar-salones` |
 | Versión | 1.0.0 |
-| Estado | Borrador |
+| Estado | En revisión (2026-11-17). **Las tareas no se ejecutan hasta aprobar este archivo.** |
 | Fecha | 2026-11-05 |
 | Rol | Cliente |
 | Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
