@@ -10,6 +10,7 @@ import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.SocketPolicy
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -99,6 +100,51 @@ class AuthRepositoryImplTest {
         }
 
     @Test
+    fun registerSuccessResponseMapsToRegisteredUser() =
+        runTest {
+            server.enqueue(MockResponse().setResponseCode(201).setBody(REGISTER_201))
+
+            val result = repository.register("Ana Lopez", "ana@ejemplo.mx", "+525512345678", "secret1")
+
+            val user = (result as AppResult.Success).value
+            assertEquals("0b6c5d7e-2f1a-4c3b-9e8d-7a6b5c4d3e3f", user.id)
+            assertEquals("Ana Lopez", user.name)
+            assertEquals("ana@ejemplo.mx", user.email)
+            assertEquals("+525512345678", user.phone)
+            assertEquals("client", user.role)
+            assertFalse(user.isVerified)
+
+            val request = server.takeRequest()
+            assertEquals("/api/v1/auth/register", request.path)
+            val body = request.body.readUtf8()
+            assertTrue(body.contains("ana@ejemplo.mx"))
+            assertTrue(body.contains("secret1"))
+            assertTrue(body.contains("+525512345678"))
+            assertTrue(body.contains("Ana Lopez"))
+        }
+
+    @Test
+    fun conflictResponseMapsToConflictError() =
+        runTest {
+            server.enqueue(MockResponse().setResponseCode(409).setBody(PROBLEM_409))
+
+            val result = repository.register("Ana Lopez", "dup@ejemplo.mx", "+525512345678", "secret1")
+
+            assertEquals(AppError.Conflict, (result as AppResult.Failure).error)
+        }
+
+    @Test
+    fun registerValidationResponseMapsToValidationWithErrorFields() =
+        runTest {
+            server.enqueue(MockResponse().setResponseCode(400).setBody(PROBLEM_400))
+
+            val result = repository.register("Ana", "no-es-correo", "+525512345678", "secret1")
+
+            val error = (result as AppResult.Failure).error as AppError.Validation
+            assertEquals(listOf("El correo no tiene un formato valido."), error.fields["email"])
+        }
+
+    @Test
     fun shutdownServerMapsToNetworkError() =
         runTest {
             server.shutdown()
@@ -151,5 +197,10 @@ class AuthRepositoryImplTest {
             """{"title":"Ocurrio un problema al procesar tu solicitud.","status":500,""" +
                 """"traceId":"trace-abc-123"}"""
         const val PROBLEM_404 = """{"title":"Recurso no encontrado.","status":404}"""
+        const val REGISTER_201 =
+            """{"id":"0b6c5d7e-2f1a-4c3b-9e8d-7a6b5c4d3e3f","name":"Ana Lopez",""" +
+                """"email":"ana@ejemplo.mx","phone":"+525512345678","role":"client","isVerified":false}"""
+        const val PROBLEM_409 =
+            """{"title":"Ya existe una cuenta con ese correo.","status":409,"traceId":"trace-409"}"""
     }
 }

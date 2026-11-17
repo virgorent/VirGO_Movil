@@ -4,6 +4,7 @@ import kotlinx.serialization.json.Json
 import mx.virgo.core.common.AuthTokenProvider
 import mx.virgo.core.network.api.AuthApi
 import mx.virgo.core.network.api.HealthApi
+import mx.virgo.core.network.api.VenuesApi
 import mx.virgo.core.network.interceptor.AuthInterceptor
 import mx.virgo.core.network.interceptor.CorrelationIdInterceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -21,6 +22,11 @@ fun createAuthApi(
     baseUrl: String,
     client: OkHttpClient = defaultOkHttpClient(),
 ): AuthApi = createRetrofit(baseUrl, client).create(AuthApi::class.java)
+
+fun createVenuesApi(
+    baseUrl: String,
+    client: OkHttpClient = defaultOkHttpClient(),
+): VenuesApi = createRetrofit(baseUrl, client).create(VenuesApi::class.java)
 
 fun createHealthApi(
     baseUrl: String,

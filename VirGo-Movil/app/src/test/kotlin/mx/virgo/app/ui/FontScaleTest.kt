@@ -16,10 +16,12 @@ import mx.virgo.app.ui.guest.GuestHomeViewModel
 import mx.virgo.app.ui.login.LoginScreen
 import mx.virgo.app.ui.login.LoginViewModel
 import mx.virgo.core.designsystem.theme.VirGoTheme
+import mx.virgo.core.domain.GetVenuesUseCase
 import mx.virgo.core.domain.LoginUseCase
 import mx.virgo.core.domain.ValidateEmailUseCase
 import mx.virgo.core.domain.ValidateLoginFormUseCase
 import mx.virgo.core.testing.FakeAuthRepository
+import mx.virgo.core.testing.FakeVenueRepository
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,7 +42,7 @@ class FontScaleTest {
 
     @Test
     fun provisionalHomeKeepsTextsVisibleAtDoubleFontScale() {
-        val viewModel = GuestHomeViewModel()
+        val viewModel = GuestHomeViewModel(GetVenuesUseCase(FakeVenueRepository()))
         compose.setContent {
             val density = LocalDensity.current
             CompositionLocalProvider(
