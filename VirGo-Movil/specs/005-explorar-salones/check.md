@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `005-explorar-salones` |
-| Estado del spec | Borrador |
+| Estado del spec | En revisión |
 | Revisó | — |
 
 ## 1. Criterios de aceptación

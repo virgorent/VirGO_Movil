@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `005-explorar-salones` |
 | Versión | 1.0.0 |
-| Estado | Borrador |
+| Estado | En revisión (2026-11-17) |
 | Fecha | 2026-11-05 |
 | Rol | Cliente |
 | Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
@@ -74,11 +74,13 @@
 
 **Endpoints que consume:**
 
-| Endpoint | Spec en el backend (`virgorent/VirGO_Backend`, `VirGo-API/specs`) |
-|---|---|
-| `GET /api/v1/venues` | `007-venues-catalog` |
-| `GET /api/v1/notices` | `090-get-notices` |
-| `POST /api/v1/favorites` | `082-post-favorites` |
-| `DELETE /api/v1/favorites/:targetType/:targetId` | `083-delete-favorites-targettype-targetid` |
+| Endpoint | Spec en el backend (`virgorent/VirGO_Backend`, `VirGo-API/specs`) | Sondeo 2026-11-17 |
+|---|---|---|
+| `GET /api/v1/venues` | `007-venues-catalog` | ✅ **Desplegado**: `200 {"data":[]}` (con y sin `page`/`search`); el catálogo llega vacío hasta que haya salones publicados |
+| `GET /api/v1/notices` | `090-get-notices` (Borrador) | ❌ `404` no desplegado → RF-07 se prueba con MockWebServer |
+| `POST /api/v1/favorites` | `082-post-favorites` (Borrador) | ❌ `404` no desplegado → RF-08 se prueba con MockWebServer |
+| `DELETE /api/v1/favorites/:targetType/:targetId` | `083-delete-favorites-targettype-targetid` (Borrador) | ❌ `404` no desplegado → RF-08 se prueba con MockWebServer |
 
-Sin URL y JSON probados del backend, la pantalla se prueba solo con MockWebServer (Art. VIII.6).
+**Contrato verificado** (`007-venues-catalog`): respuesta `{"data":[<venue>...]}`; en producción hoy responde `{"data":[]}`. El JSON por venue queda pendiente de que el backend publique el primer salón; mientras tanto, el modelo de datos se fija con el contrato del spec de API y se prueba con MockWebServer (Art. VIII.6).
+
+Los endpoints sin desplegar se prueban solo con MockWebServer (Art. VIII.6); el humo con URL real (T507) queda en `GET /api/v1/venues`.
