@@ -8,7 +8,7 @@ Guía base para los agentes de IA y las personas que trabajan en este proyecto (
 - **Stack:** Kotlin, Jetpack Compose (Material 3), MVVM/UDF, Hilt, Retrofit + OkHttp + kotlinx.serialization, DataStore, Gradle con *version catalog* y GitHub Actions.
 - **Backend:** `VirGo-API` (.NET 10 en AWS). Su contrato está en el Art. IV.
 - **Diseño de referencia:** la maqueta funcional de VirGo y el archivo de Figma «Pantallas VirGo».
-- **Estado actual:** `000-arquitectura-base` aprobado el 2026-11-05 y en curso (34/40 tareas hechas); el proyecto Gradle y el código de la app (`app/`, `core/`) ya existen. Los specs de pantallas `001`–`004` están aprobados (aprobación retroactiva el 2026-11-12): `001-inicio-visitante` completo (5/5, catálogo conectado a `GET /api/v1/venues`), `003-iniciar-sesion` completo (4/4, humo contra producción) y `004-recuperar-contrasena` 4/5 (T405 bloqueada por el backend); los demás (`005-…`) se crean uno por pantalla o flujo, al vuelo, cuando el backend entregue la URL y el JSON de sus endpoints.
+- **Estado actual:** `000-arquitectura-base` aprobado el 2026-11-05 y en curso (35/40 tareas hechas); el proyecto Gradle y el código de la app (`app/`, `core/`) ya existen. Los specs de pantallas `001`–`004` están aprobados (aprobación retroactiva el 2026-11-12) e **implementados con PRs verdes** (`001` #18 5/5, `002` #17 5/5, `003` #20 4/4, `004` #19 4/5, pendientes de aprobación): `001-inicio-visitante` completo (catálogo conectado a `GET /api/v1/venues`), `003-iniciar-sesion` completo (humo contra producción) y `004-recuperar-contrasena` 4/5 (T405 bloqueada por el backend); los demás (`005-…`) se crean uno por pantalla o flujo, al vuelo, cuando el backend entregue la URL y el JSON de sus endpoints.
 
 ## Estructura del proyecto
 
@@ -125,8 +125,8 @@ Se configuran en [`opencode.json`](opencode.json) y se instalan **antes** de cod
 
 | MCP | Estado | Para qué | Credencial | Quién lo usa |
 |---|---|---|---|---|
-| `figma` (servidor remoto oficial) | ✅ Permitido; activación ⛔ pendiente (T037) | Leer el *canvas* de «Pantallas VirGo»: medidas, tokens y estructura de cada pantalla al especificarla | Inicio de sesión de Figma (OAuth) | `arquitecto-movil`, `ui-designsystem`, `dev-android` |
-| `github` (servidor remoto oficial) | ✅ Permitido, se activa en T037 | Leer PRs, checks y ejecuciones del release | `GITHUB_MCP_PAT`: token de grano fino solo de este repositorio | Todos |
+| `figma` (servidor remoto oficial) | ➖ No aplica por ahora (T037): responde `HTTP 405` | Leer el *canvas* de «Pantallas VirGo»: medidas, tokens y estructura de cada pantalla al especificarla. Mientras tanto la fuente es la maqueta funcional + `Checklist VirGo.md` con revisión por captura, y el sistema de diseño vive en `:core:designsystem` | Inicio de sesión de Figma (OAuth) | `arquitecto-movil`, `ui-designsystem`, `dev-android` |
+| `github` (servidor remoto oficial) | ➖ No aplica (T037): se sustituye por `gh` CLI | Leer PRs, checks y ejecuciones del release (mismo alcance con `gh pr list`, `gh pr checks`, `gh run list`) | `GITHUB_MCP_PAT`: token de grano fino solo de este repositorio | Todos |
 | Canva MCP | 🔍 En evaluación | Solo si el equipo diseña material en Canva; la maqueta oficial está en Figma | — | — |
 | MCP de emulador o dispositivo (`mobile-mcp`) | 🔍 En evaluación | Automatizar la prueba de humo del APK en el emulador | — | `qa-movil` |
 | Escritura en Figma (`use_figma`, `generate_figma_design`) | ⛔ No aplica | El móvil consume el diseño, no lo produce | — | — |

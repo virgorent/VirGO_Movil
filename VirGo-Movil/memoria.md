@@ -7,17 +7,17 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | Campo | Valor |
 |---|---|
 | Constitución | v1.1.1 (enmienda 2026-11-12; v1.1.0 aprobada el 2026-11-05) |
-| Módulo en curso | `000-arquitectura-base`: 34/40 tareas hechas (detalle y estados en `task.md`) |
-| Tareas | 34 / 40 hechas (T037 bloqueada por MCP) |
+| Módulo en curso | `000-arquitectura-base`: 35/40 tareas hechas (detalle y estados en `task.md`) |
+| Tareas | 35 / 40 hechas (pendientes: T024 🔄, T033 🔄, T030 ⏳, T035 ⏳, T036 ⏳) |
 | `API_BASE_URL` de *release* | Variable `VIRGO_API_BASE_URL` creada en `VirGO_Movil` con la URL de producción; falta el respaldo P-02 del keystore para cerrar T033 |
 | Última versión publicada | Ninguna |
-| Siguiente paso | PR de Play (AAB, icono, respaldo + versión 0.2.0) pedido por el equipo; después T033 (respaldo P-02), T035, T030, T036, T024 y T037 |
+| Siguiente paso | Aprobar los PRs verdes de `001`–`004` (#17–#20); después T033 (respaldo P-02), T035, T030, T036 y T024 |
 
 ## Módulos
 
 | Módulo | Estado | Notas |
 |---|---|---|
-| `000-arquitectura-base` | 🚧 Aprobado; 34/40 tareas hechas | Base técnica sin pantallas del negocio |
+| `000-arquitectura-base` | 🚧 Aprobado; 35/40 tareas hechas | Base técnica sin pantallas del negocio |
 | `001-…` pantallas | 🚧 `001`–`004` aprobados (retroactivo 2026-11-12) e implementados; `005+` sin iniciar | Un spec atómico por pantalla o flujo, al vuelo; los siguientes usan el JSON de `VirGo-API` |
 
 ## Decisiones (ADR)
@@ -604,3 +604,16 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - En el emulador, `adb shell cmd connectivity airplane-mode enable/disable` es la vía rápida para simular «sin conexión» y restaurarla sin tocar la UI; verificar con `settings get global airplane_mode_on`.
   - El error de red llega en ~10 s (connect timeout de OkHttp): esperar al menos 12–15 s antes de capturar o el mensaje aún no aparece.
 - **Pendiente:** PR #20 de esta rama; PR #19 (`004-recuperar-contrasena` 4/5, verde 6/6), PR #18 (`001-inicio-visitante`, verde 6/6) y PR #17 (`002-registro`, verde) esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
+
+### 2026-11-16 - T037: MCP figma y github, resuelta como no aplica
+
+- **Autor:** equipo + opencode (`arquitecto-movil`)
+- **Módulo / tareas:** `000-arquitectura-base` -> T037 -> (35/40)
+- **Qué se hizo:** T037 pasó de ⛔ a ✅ como **no aplica** (decisión del equipo, 2026-11-16): el MCP `figma` responde `HTTP 405` en `https://mcp.figma.com/mcp` (problema conocido de opencode) y el MCP `github` sigue deshabilitado; ninguno de los dos era indispensable. Sin MCP de Figma, la fuente de las specs de pantalla es la maqueta funcional + `Checklist VirGo.md` con revisión por captura, y el sistema de diseño vive en `:core:designsystem`; sin MCP de GitHub se usa `gh` CLI (mismo alcance de lectura de PRs, checks y ejecuciones). Se actualizaron `task.md` (T037 ✅ con su blockquote al final de la sección), `check.md` (casilla T037 marcada con evidencia) y `AGENTS.md` (tabla de MCP: ambos ➖ no aplica; contadores 34/40 → 35/40; specs `001`–`004` en PRs verdes). Rama `docs/0037-no-aplica` desde `origin/main` (`126b14b`).
+- **Evidencia:** `task.md` T037 ✅; `check.md` §1 casilla con evidencia; conteo de estados en `task.md` = 35 ✅ / 5 pendientes (T024 🔄, T033 🔄, T030 ⏳, T035 ⏳, T036 ⏳).
+- **Decisiones:** la lectura del canvas de Figma se reabre como tarea sujeta a que el MCP funcione; el alcance de `github` lo cubre `gh` CLI.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Una tarea bloqueada por una herramienta externa puede cerrarse como «no aplica» documentando el sustituto, en vez de quedarse ⛔ para siempre.
+  - Al actualizar el estado de una tarea hay que mover el contador en todos los lugares que lo replican (`task.md`, `AGENTS.md` raíz y móvil) para evitar *stale references*.
+- **Pendiente:** aprobación del PR docs; T024, T033, T030, T035 y T036.
