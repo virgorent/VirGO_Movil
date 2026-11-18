@@ -3,13 +3,62 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>VirGo — Organiza tu evento</title>
-  <meta name="description" content="VirGo reúne salones y proveedores para tu evento en un solo lugar. Encuentra salones cerca de ti y organiza tu fiesta sin hojas de cálculo.">
-  <meta name="theme-color" content="#7357F5">
-  <meta property="og:title" content="VirGo — Organiza tu evento">
-  <meta property="og:description" content="Salones y proveedores para tu evento, en un solo lugar.">
-  <meta property="og:image" content="https://virgorent.github.io/VirGO_Movil/assets/virgo-hero-poster.jpg">
+  <title>VirGo: salones de eventos y proveedores cerca de ti | App para organizar tu fiesta</title>
+  <meta name="description" content="Encuentra salones de eventos cerca de ti, compara opciones y organiza tu fiesta, boda o XV años desde tu celular. VirGo reúne salones y proveedores en una sola app.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://virgorent.github.io/VirGO_Movil/">
+  <meta name="theme-color" content="#7357F6">
+  <meta name="application-name" content="VirGo">
+  <!-- Vista previa al compartir (WhatsApp, Facebook, LinkedIn, X) -->
   <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_MX">
+  <meta property="og:site_name" content="VirGo">
+  <meta property="og:url" content="https://virgorent.github.io/VirGO_Movil/">
+  <meta property="og:title" content="VirGo: tu evento, sin hojas de cálculo">
+  <meta property="og:description" content="Salones y proveedores para tu evento, en una sola app. Solo dale GO.">
+  <meta property="og:image" content="https://virgorent.github.io/VirGO_Movil/assets/virgo-hero-poster.jpg">
+  <meta property="og:image:width" content="848">
+  <meta property="og:image:height" content="478">
+  <meta property="og:image:alt" content="Mujer sonriendo en una fiesta al aire libre organizada con VirGo">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="VirGo: tu evento, sin hojas de cálculo">
+  <meta name="twitter:description" content="Salones y proveedores para tu evento, en una sola app. Solo dale GO.">
+  <meta name="twitter:image" content="https://virgorent.github.io/VirGO_Movil/assets/virgo-hero-poster.jpg">
+  <!-- Datos estructurados para que Google entienda que es una app y quién la publica -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://virgorent.github.io/VirGO_Movil/#org",
+        "name": "KarasuDev",
+        "url": "https://virgorent.github.io/VirGO_Movil/",
+        "logo": "https://virgorent.github.io/VirGO_Movil/assets/virgo-icon.png",
+        "email": "virgorent6@gmail.com"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://virgorent.github.io/VirGO_Movil/#website",
+        "name": "VirGo",
+        "url": "https://virgorent.github.io/VirGO_Movil/",
+        "inLanguage": "es-MX",
+        "publisher": { "@id": "https://virgorent.github.io/VirGO_Movil/#org" }
+      },
+      {
+        "@type": "MobileApplication",
+        "name": "VirGo",
+        "operatingSystem": "Android 8.0 o superior",
+        "applicationCategory": "LifestyleApplication",
+        "description": "App para encontrar salones de eventos y proveedores cerca de ti y organizar tu fiesta en un solo lugar.",
+        "inLanguage": "es-MX",
+        "image": "https://virgorent.github.io/VirGO_Movil/assets/virgo-icon.png",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "MXN" },
+        "publisher": { "@id": "https://virgorent.github.io/VirGO_Movil/#org" }
+      }
+    ]
+  }
+  </script>
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -31,7 +80,7 @@
       font-display: swap;
     }
     :root {
-      --brand: #7357F5;
+      --brand: #7357F6;
       --brand-strong: #5B3FE0;
       --brand-soft: #F1EEFE;
       --ink: #0F172A;
@@ -151,7 +200,7 @@
     .trust p { color: var(--ink-soft); margin-top: 6px; font-size: 16px; }
 
     /* CTA final */
-    .cta { background: linear-gradient(135deg, #7357F5 0%, #4C33C9 100%); color: #fff; border-radius: 32px; padding: clamp(36px, 6vw, 64px); display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; }
+    .cta { background: linear-gradient(135deg, #7357F6 0%, #4C33C9 100%); color: #fff; border-radius: 32px; padding: clamp(36px, 6vw, 64px); display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; }
     .cta h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 800; }
     .cta p { margin-top: 10px; color: rgba(255,255,255,.88); max-width: 52ch; }
     .cta .btn-primary { background: #fff; color: #4C33C9; }
@@ -320,6 +369,7 @@
         <a href="legal/privacidad/">Aviso de privacidad</a>
         <a href="legal/terminos/">Términos de uso</a>
         <a href="legal/eliminar-cuenta/">Eliminar cuenta</a>
+        <a href="marca/">Guía de marca</a>
         <a href="mailto:virgorent6@gmail.com">Contacto</a>
       </nav>
     </div>
