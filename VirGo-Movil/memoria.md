@@ -599,7 +599,7 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Modulo / tareas:** `000-arquitectura-base` -> T024, T030, T035 -> (36/40)
 - **Que se hizo:**
   - Fusionados los PR #8 (docs T002/T039), #9 (fix AeadConfig + DevMenu) y #10 (Play: AAB, icono adaptativo, `allowBackup=false`, version 0.2.0); aprobados por EsauRamireZ/Karasu0001 con los 6 checks en verde cada uno.
-  - Lanzado `movil-release` con `version=0.2.0` (run `43544624048`, en verde): release `v0.2.0` con `app-release.aab` (5 661 199 B) y `app-release.apk` (2 530 468 B), `versionCode 2`.
+  - Lanzado `movil-release` con `version=0.2.0` (run vigente `43556489415`, en verde, commit `0676736`; re-ejecución del mismo día que subió los artefactos actuales, AAB 5 661 279 B): release `v0.2.0` con `app-release.aab` (5 661 279 B) y `app-release.apk` (2 530 468 B), `versionCode 2`.
   - **T024** CA-04/CA-05: login QA real contra produccion (`POST /api/v1/auth/login` -> 200) y Diagnostico con «API disponible» (227 ms); con modo avion, mensaje en espanol «No hay conexion con la API. Revisa tu internet e intentalo de nuevo.» sin cierre y «Reintentar» que recupera (1123 ms).
   - **T030**: arranque en frio 1791/1854/1885 ms (1935 tras reinicio) en debug y 698 ms con el APK de release; modo oscuro, icono de launcher y capturas del DevMenu/Diagnostico.
   - **T035**: APK del release descargado del GitHub Release, instalado en el emulador (uninstall + install, sin mezclar firmas) y prueba de humo: abre el inicio visitante y el login llega a «Inicio».

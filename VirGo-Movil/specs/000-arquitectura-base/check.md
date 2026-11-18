@@ -53,8 +53,8 @@ Lista de verificación del módulo (Art. I.4). Cada casilla lleva su evidencia. 
 
 ## 5. Release
 
-- [x] Ejecución de `movil-release.yml`: https://github.com/virgorent/VirGO_Movil/actions/runs/43544624048 (2026-11-14, en verde)
-- [x] Versión y commit: `v0.2.0` (`versionCode 2`) en `d9ac7e7`; release https://github.com/virgorent/VirGO_Movil/releases/tag/v0.2.0 con `app-release.aab` (5 661 199 B) y `app-release.apk` (2 530 468 B)
+- [x] Ejecución de `movil-release.yml`: https://github.com/virgorent/VirGO_Movil/actions/runs/43556489415 (2026-11-14, en verde; run vigente que subió los artefactos del release)
+- [x] Versión y commit: `v0.2.0` (`versionCode 2`) en `0676736`; release https://github.com/virgorent/VirGO_Movil/releases/tag/v0.2.0 con `app-release.aab` (5 661 279 B, subido 2026-11-14T04:27Z) y `app-release.apk` (2 530 468 B)
 - [x] `API_BASE_URL` de *release*: `https://rcof55a3c9.execute-api.us-east-1.amazonaws.com/` (variable `VIRGO_API_BASE_URL` del repositorio)
 - [ ] Arranque en frío medido: — s (RNF-03)
 
