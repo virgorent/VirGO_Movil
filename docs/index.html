@@ -12,10 +12,24 @@
   <meta property="og:type" content="website">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <style>
+    /* Fuentes alojadas en el sitio (SIL Open Font License) para no enviar la IP de los visitantes a terceros. */
+    @font-face {
+      font-family: "DM Sans";
+      src: url("assets/fonts/dm-sans-latin.woff2") format("woff2");
+      font-weight: 400 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Manrope";
+      src: url("assets/fonts/manrope-latin.woff2") format("woff2");
+      font-weight: 600 800;
+      font-style: normal;
+      font-display: swap;
+    }
     :root {
       --brand: #7357F5;
       --brand-strong: #5B3FE0;
@@ -116,7 +130,7 @@
     .card h3 { font-size: 20px; font-weight: 700; }
     .card p { color: var(--ink-soft); margin-top: 8px; }
     .tag { display: inline-block; margin-top: 16px; font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
-    .tag.now { color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+    .tag.now { color: var(--ok); background: rgba(22, 163, 74, .14); background: color-mix(in srgb, var(--ok) 14%, transparent); }
     .tag.soon { color: var(--brand); background: var(--brand-soft); }
 
     /* Cómo funciona */
