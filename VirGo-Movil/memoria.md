@@ -38,7 +38,7 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | ADR-12 | 2026-11-03 | **Pitest** (`gradle-pitest-plugin`) en módulos JVM puros | Mutación sin dispositivo; umbral tras medir |
 | ADR-13 | 2026-11-03 | MCP permitidos: `figma` (lectura del *canvas*) y `github` | Pantallas al vuelo desde la maqueta oficial |
 | ADR-14 | 2026-11-03 | Google Play como destino futuro, con enmienda | Tiene un pago único; por ahora GitHub Releases |
-| ADR-15 | 2026-11-15 | **Google Play** como canal de distribución con firma de apps de Play (enmienda v1.2.0) | La cuenta ya existe y su pago es único; el AAB sale del mismo workflow de release |
+| ADR-17 | 2026-11-15 | **Google Play** como canal de distribución con firma de apps de Play (enmienda v1.2.0) | La cuenta ya existe y su pago es único; el AAB sale del mismo workflow de release |
 | ADR-15 | 2026-11-03 | **Repositorio único** `virgorent/VirGO_Backend` con carpetas por proyecto | Decisión del equipo; **superseded** por ADR-16 (2026-11-12) |
 | ADR-16 | 2026-11-12 | Repositorio propio `virgorent/VirGO_Movil` para el móvil (fin del monorepo); el backend vive en `virgorent/VirGO_Backend` | Separa CI, permisos y despliegues por proyecto |
 
@@ -607,7 +607,7 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - `https://virgorent.github.io/VirGO_Movil/legal/{privacidad,terminos,eliminar-cuenta}/` → 200.
   - Login de la cuenta de revisión en producción → 200.
   - `DELETE /api/v1/users/me` probado en producción con una cuenta desechable: 204; token anterior 401; login 401; perfil público «Cuenta eliminada» sin correo ni teléfono.
-- **Decisiones:** ADR-15. Las declaraciones describen solo lo que hace v0.2.0. Chat, pagos y ubicación se declararán **antes** de subir la versión que los incluya. La eliminación de cuenta se atiende por correo hasta que exista el botón en la app.
+- **Decisiones:** ADR-17. Las declaraciones describen solo lo que hace v0.2.0. Chat, pagos y ubicación se declararán **antes** de subir la versión que los incluya. La eliminación de cuenta se atiende por correo hasta que exista el botón en la app.
 - **Costo:** $0 adicional (la cuenta de Play ya estaba pagada).
 - **Aprendizaje:**
   - El primer `movil-release` salió firmado con una llave de desarrollo (`CN=VirGo Local`) porque se ejecutó antes de configurar los secretos. Se borraron el release y la etiqueta y se regeneró con la llave oficial **antes** de subir nada a Play: la primera subida fija la llave de subida.
