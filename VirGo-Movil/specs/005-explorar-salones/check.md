@@ -10,10 +10,10 @@
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | Prueba o captura (pendiente captura en emulador) | 🔄 |
-| CA-02 | Prueba o captura (pendiente captura en emulador) | 🔄 |
-| CA-03 | Prueba o captura (pendiente captura en emulador) | 🔄 |
-| CA-04 | Prueba o captura (pendiente captura en emulador) | 🔄 |
+| CA-01 | Captura B8 en emulador `Pixel_10_Pro`: `docs/evidencia/CA-01-explorar-b8-mapa.png` | ✅ |
+| CA-02 | Captura C9 en emulador: `docs/evidencia/CA-02-explorar-c9-lista.png` | ✅ |
+| CA-03 | Captura C10 en emulador: `docs/evidencia/CA-03-explorar-c10-filtros.png` | ✅ |
+| CA-04 | Captura C11 en emulador: `docs/evidencia/CA-04-explorar-c11-recomendados.png` | ✅ |
 | CA-05 | `ExploreScreenTest.filtersWithNoMatchShowEmptyState` y `invalidGuestsKeepsFiltersPanelOpen` en verde | ✅ |
 | CA-06 | `ExploreScreenTest` (6 pruebas de UI) en verde | ✅ |
 

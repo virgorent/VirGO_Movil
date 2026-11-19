@@ -24,13 +24,13 @@
 
 **Evidencia:**
 
-> **T501** ✅ Pantalla B8 (mapa) con `ExploreMapContent`, tarjeta resumen del salón seleccionado, marcador de favorito y estados de carga/error/vacío. La cabecera (marca, campana de avisos con contador, buscador, categorías y conmutador mapa/lista) vive en `ExploreScreen`/`ExploreHeader`; el `ExploreViewModel` es único para B8/C9/C10/C11 (`e09071f`).
+> **T501** ✅ Pantalla B8 (mapa) con `ExploreMapContent`, tarjeta resumen del salón seleccionado, marcador de favorito y estados de carga/error/vacío. La cabecera (marca, campana de avisos con contador, buscador, categorías y conmutador mapa/lista) vive en `ExploreScreen`/`ExploreHeader`; el `ExploreViewModel` es único para B8/C9/C10/C11 (`e09071f`). Captura (CA-01): `docs/evidencia/CA-01-explorar-b8-mapa.png`.
 
-> **T502** ✅ Pantalla C9 (lista) con `ExploreListContent`: tarjetas con foto, calificación, capacidad, precio y distancia (`ExplorePriceDistanceRow` en `ExploreVenueParts.kt`), orden recomendado/precio/distancia y cambio a mapa al tocar un salón (`e09071f`).
+> **T502** ✅ Pantalla C9 (lista) con `ExploreListContent`: tarjetas con foto, calificación, capacidad, precio y distancia (`ExplorePriceDistanceRow` en `ExploreVenueParts.kt`), orden recomendado/precio/distancia y cambio a mapa al tocar un salón (`e09071f`). Captura (CA-02): `docs/evidencia/CA-02-explorar-c9-lista.png`.
 
-> **T503** ✅ Hoja C10 de filtros (`ExploreFiltersPanel` en `ExplorePanel.kt` + `ExploreFilters.kt`): zona, invitados, presupuesto, fecha, distancia y categorías; validación de campos (RF-13/RF-14/RF-16) que deja el panel abierto y marca el error; botones Aplicar/Limpiar (`e09071f`).
+> **T503** ✅ Hoja C10 de filtros (`ExploreFiltersPanel` en `ExplorePanel.kt` + `ExploreFilters.kt`): zona, invitados, presupuesto, fecha, distancia y categorías; validación de campos (RF-13/RF-14/RF-16) que deja el panel abierto y marca el error; botones Aplicar/Limpiar (`e09071f`). Captura (CA-03): `docs/evidencia/CA-03-explorar-c10-filtros.png`.
 
-> **T504** ✅ Hoja C11 recomendaciones (`ExploreRecommendedPanel`): score local 0..100, `ExploreReason`, badge «Estimación IA», máx. 5 sugerencias y filtro por tipo de evento (`e09071f`).
+> **T504** ✅ Hoja C11 recomendaciones (`ExploreRecommendedPanel`): score local 0..100, `ExploreReason`, badge «Estimación IA», máx. 5 sugerencias y filtro por tipo de evento (`e09071f`). Captura (CA-04): `docs/evidencia/CA-04-explorar-c11-recomendados.png`.
 
 > **T505** ✅ Contrato `VenueDto` ampliado aditivo (precio, categorías, fotos con defaults), endpoints `FavoritesApi`/`NoticesApi` con sus DTOs, `FavoritesRepositoryImpl`/`NoticesRepositoryImpl` y casos de uso `GetFavorites`, `GetNotices`, `ToggleFavorite` (`94f3a73`). Verificado con MockWebServer: 6 pruebas de favoritos (alta/baja/listado, 404/409/sin conexión) y 5 de avisos (leído/no leído, vacío, 404/500/sin conexión) en verde (`e77b50b`).
 

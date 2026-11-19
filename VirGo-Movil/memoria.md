@@ -755,4 +755,4 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - `pitest` NO ejecuta `:core:domain:test`: correrlo explícito para refrescar los XML antes de contar pruebas, o el conteo queda desfasado.
   - `Set-Content -Encoding UTF8` en PowerShell escribe BOM; al editar `.kt` hay que quitarlo con `[System.IO.File]::WriteAllBytes` o ktlint falla raro.
   - Actualizar la rama invalida las aprobaciones: terminar TODO el código y docs, pushear y solo entonces pedir revisión.
-- **Pendiente:** push y PR apilado de `feat/005-explorar-salones`; T507 (humo con URL real) bloqueado por endpoints (`notices`/`favorites` → 404 en producción); capturas CA-01–CA-04 en emulador; fusiones de la cadena `#20 → #15 → #11 → #17 → #18 → #19` y luego `#16`, `#22`, `#23`.
+- **Pendiente:** revisión del PR apilado de `feat/005-explorar-salones` (#27); T507 (humo con URL real) bloqueado por endpoints (`notices`/`favorites` → 404 en producción); capturas CA-01–CA-04 **hechas** (2026-11-19, `docs/evidencia/CA-0{1..4}-explorar-*.png`); fusiones de la cadena `#20 → #15 → #11 → #17 → #18 → #19` y luego `#16`, `#22`, `#23`.
