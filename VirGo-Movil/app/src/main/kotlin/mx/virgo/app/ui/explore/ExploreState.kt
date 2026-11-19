@@ -7,6 +7,9 @@ internal const val EXPLORE_NO_VENUE = -1
 internal const val EXPLORE_RECOMMENDATION_LIMIT = 5
 internal const val EXPLORE_DATE_PATTERN = "dd/MM/yyyy"
 
+/** Tag de prueba del campo de invitados del panel de filtros (RF-13). */
+const val EXPLORE_GUESTS_FIELD_TAG = "explore_filters_guests"
+
 /** Distancias que ofrece el filtro de distancia máxima (RF-15). */
 internal val ExploreRadiusOptions = listOf(2, 5, 10, 20)
 
