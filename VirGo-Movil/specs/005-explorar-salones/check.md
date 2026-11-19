@@ -10,22 +10,22 @@
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | Prueba o captura | ⏳ |
-| CA-02 | Prueba o captura | ⏳ |
-| CA-03 | Prueba o captura | ⏳ |
-| CA-04 | Prueba o captura | ⏳ |
-| CA-05 | Prueba o captura | ⏳ |
-| CA-06 | Prueba o captura | ⏳ |
+| CA-01 | Prueba o captura (pendiente captura en emulador) | 🔄 |
+| CA-02 | Prueba o captura (pendiente captura en emulador) | 🔄 |
+| CA-03 | Prueba o captura (pendiente captura en emulador) | 🔄 |
+| CA-04 | Prueba o captura (pendiente captura en emulador) | 🔄 |
+| CA-05 | `ExploreScreenTest.filtersWithNoMatchShowEmptyState` y `invalidGuestsKeepsFiltersPanelOpen` en verde | ✅ |
+| CA-06 | `ExploreScreenTest` (6 pruebas de UI) en verde | ✅ |
 
 ## 2. Pruebas
 
 | Tipo | Evidencia | Estado |
 |---|---|---|
-| Unitarias | Totales: — | ⏳ |
-| Integración | Totales: — | ⏳ |
-| UI | Totales: — | ⏳ |
-| Seguridad | — | ⏳ |
-| Mutación | Puntaje: — % | ⏳ |
+| Unitarias | Totales: 193 pruebas, 0 fallos (38 suites) | ✅ |
+| Integración | MockWebServer: `FavoritesRepositoryImplTest` (6) y `NoticesRepositoryImplTest` (5) | ✅ |
+| UI | `ExploreScreenTest` (6, Robolectric) | ✅ |
+| Seguridad | Sin secretos en código; `movil-build-test` + `gitleaks` en el PR | 🔄 |
+| Mutación | Puntaje: 59 % (`:core:domain` 60 % — 57/95, strength 93 %; `:core:common` 33 %) | ✅ |
 | Humo | APK contra producción | ⏳ |
 
 ## 3. PR y release
@@ -35,4 +35,4 @@
 
 ## 4. Memoria y aprendizaje
 
-- [ ] Entrada en `memoria.md`.
+- [x] Entrada en `memoria.md` (2026-11-18, implementación de `005`).

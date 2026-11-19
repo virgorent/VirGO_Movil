@@ -734,3 +734,25 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Una tarea bloqueada por una herramienta externa puede cerrarse como «no aplica» documentando el sustituto, en vez de quedarse ⛔ para siempre.
   - Al actualizar el estado de una tarea hay que mover el contador en todos los lugares que lo replican (`task.md`, `AGENTS.md` raíz y móvil) para evitar *stale references*.
 - **Pendiente:** aprobación del PR docs; T024, T033, T030, T035 y T036.
+
+### 2026-11-18 - T501-T506: explorar salones implementado (005-explorar-salones 6/7)
+
+- **Autor:** equipo + opencode (`dev-android` / `qa-movil`)
+- **Módulo / tareas:** `005-explorar-salones` → T501–T506 (6/7; T507 pendiente de humo)
+- **Qué se hizo:**
+  - **T501–T504:** pantalla principal del Cliente en `app/ui/explore/`: B8 con mapa y tarjeta resumen (`ExploreMap`), C9 con lista y orden (`ExploreList`), C10 con hoja de filtros (`ExploreFiltersPanel`) y C11 con recomendaciones (`ExploreRecommendedPanel`), sobre un único `ExploreViewModel` con `onFiltersChange(transform)`, `onSheetChange`, etc. Se eliminó `HomePlaceholder` y `ExploreScreen` entró por `VirGoNavHost.homeDestination()`; todos los textos viven en `strings.xml`.
+  - **T505:** contrato `VenueDto` ampliado **aditivo** (precio, categorías y fotos con defaults, sin romper `001`), `FavoritesApi`/`NoticesApi` + DTOs, `FavoritesRepositoryImpl`/`NoticesRepositoryImpl` y casos de uso `GetFavorites`, `GetNotices`, `ToggleFavorite`.
+  - **T506:** 25 pruebas nuevas de la pantalla (`ExploreViewModelTest` 19, `ExploreScreenTest` 6 de UI con Robolectric) y 18 de dominio/red (`FavoritesRepositoryImplTest` 6, `NoticesRepositoryImplTest` 5, `ToggleFavoriteUseCaseTest` 4, `VenueTest` 4, `GetFavoritesUseCaseTest` 3, `GetNoticesUseCaseTest` 3). Pipeline local completo en verde.
+- **Evidencia:** rama `feat/005-explorar-salones` con commits `94f3a73` (T505), `e09071f` (T501), `e77b50b` (T505 test) y `f298967` (T506 test); `task.md` T501–T506 ✅ con blockquotes; `check.md` con pruebas y mutación.
+- **Decisiones / hallazgos:**
+  1. **Favoritos optimistas:** actualización local + API; si falla se revierte y se emite `ExploreUiEvent.FavoriteError` → snackbar. Las muestras (`venueId` con prefijo `sample-`) NO viajan a la API.
+  2. **Fecha RF-16:** se valida y guarda pero no descarta salones (el contrato 007 aún no trae disponibilidad).
+  3. **Recomendaciones:** score local con `clamp 0..100` y badge «Estimación IA»; los proveedores y la campana muestran snackbar «próxima versión».
+  4. La mutación había bajado a 43 %: se subió a **59 %** agregando fakes locales en `core:domain` (que no depende de `core:testing`) y pruebas MockWebServer de los repos nuevos.
+  5. Límites de estilo que disparan con pantallas grandes: `LongMethod` 60 → extraer `ExploreSheetHost`, `ExploreContent`, `ExploreNoticesButton`, `ExplorePriceDistanceRow` y las filas de filtros; ktlint exige salto antes de `.` cuando hay 4+ encadenados (`chain-method-continuation`).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - `pitest` NO ejecuta `:core:domain:test`: correrlo explícito para refrescar los XML antes de contar pruebas, o el conteo queda desfasado.
+  - `Set-Content -Encoding UTF8` en PowerShell escribe BOM; al editar `.kt` hay que quitarlo con `[System.IO.File]::WriteAllBytes` o ktlint falla raro.
+  - Actualizar la rama invalida las aprobaciones: terminar TODO el código y docs, pushear y solo entonces pedir revisión.
+- **Pendiente:** push y PR apilado de `feat/005-explorar-salones`; T507 (humo con URL real) bloqueado por endpoints (`notices`/`favorites` → 404 en producción); capturas CA-01–CA-04 en emulador; fusiones de la cadena `#20 → #15 → #11 → #17 → #18 → #19` y luego `#16`, `#22`, `#23`.
