@@ -10,4 +10,8 @@ data class Venue(
     val ratingCount: Int,
     val latitude: Double?,
     val longitude: Double?,
+    val priceBaseAmount: Double? = null,
+    val priceUnit: String? = null,
+    val categories: List<String> = emptyList(),
+    val photos: List<String> = emptyList(),
 )

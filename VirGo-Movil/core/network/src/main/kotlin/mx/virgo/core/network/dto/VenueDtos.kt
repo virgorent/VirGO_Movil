@@ -14,8 +14,17 @@ data class VenueDto(
     val shortName: String? = null,
     val zone: String? = null,
     val capacity: Int? = null,
+    val price: VenuePriceDto? = null,
+    val categories: List<String> = emptyList(),
+    val photos: List<String> = emptyList(),
     val rating: VenueRatingDto? = null,
     val location: VenueLocationDto? = null,
+)
+
+@Serializable
+data class VenuePriceDto(
+    val baseAmount: Double? = null,
+    val unit: String? = null,
 )
 
 @Serializable
