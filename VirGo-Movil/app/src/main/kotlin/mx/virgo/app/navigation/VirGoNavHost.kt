@@ -7,8 +7,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import mx.virgo.app.ui.explore.ExploreScreen
 import mx.virgo.app.ui.guest.GuestHomeScreen
-import mx.virgo.app.ui.home.HomePlaceholder
 import mx.virgo.app.ui.login.LoginScreen
 import mx.virgo.app.ui.recover.RecoverScreen
 import mx.virgo.app.ui.register.RegisterScreen
@@ -119,6 +119,6 @@ private fun NavGraphBuilder.recoverDestination(
 
 private fun NavGraphBuilder.homeDestination() {
     composable<HomeRoute> {
-        HomePlaceholder()
+        ExploreScreen()
     }
 }
