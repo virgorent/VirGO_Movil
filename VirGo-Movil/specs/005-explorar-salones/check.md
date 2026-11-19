@@ -30,7 +30,7 @@
 
 ## 3. PR y release
 
-- [ ] PR: enlace —
+- [x] PR: [#27](https://github.com/virgorent/VirGO_Movil/pull/27) (apilado sobre #19)
 - [ ] Una revisión aprobada.
 
 ## 4. Memoria y aprendizaje
