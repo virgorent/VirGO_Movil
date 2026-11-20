@@ -97,7 +97,7 @@ data class ExploreRecommendation(
 data class ExploreUiState(
     val isLoading: Boolean = false,
     val hasError: Boolean = false,
-    val mode: ExploreMode = ExploreMode.MAP,
+    val mode: ExploreMode = ExploreMode.LIST,
     val sheet: ExploreSheet = ExploreSheet.NONE,
     val filters: ExploreFilters = ExploreFilters(),
     val fieldError: ExploreFieldError = ExploreFieldError.NONE,

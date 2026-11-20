@@ -1,5 +1,6 @@
 package mx.virgo.app.ui.explore
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -24,8 +24,8 @@ import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -42,10 +42,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.coroutines.launch
+import mx.virgo.app.LocalDevMenu
 import mx.virgo.app.LocalSnackbarHost
 import mx.virgo.app.R
 import mx.virgo.app.ui.guest.ExploreCategories
-import mx.virgo.core.designsystem.components.VirGoOutlinedButton
 import mx.virgo.core.designsystem.theme.ErrorRed
 import mx.virgo.core.designsystem.theme.Slate400
 import mx.virgo.core.designsystem.theme.Slate700
@@ -56,12 +56,9 @@ import mx.virgo.core.designsystem.theme.VirGoPurple
 private val ScreenHPadding = 16.dp
 private val ScreenVPadding = 10.dp
 private val RowGap = 8.dp
-private val PillShape = RoundedCornerShape(percent = 50)
 private val SearchShape = RoundedCornerShape(16.dp)
 private val BadgeSize = 18.dp
 private val BadgeOffset = 6.dp
-private val BrandHPadding = 14.dp
-private val BrandVPadding = 8.dp
 private val SearchPadding = 14.dp
 
 /**
@@ -86,6 +83,9 @@ fun ExploreScreen(
                 is ExploreUiEvent.FavoriteError -> snackbarHost.showSnackbar(favoriteError)
             }
         }
+    }
+    BackHandler(enabled = state.sheet != ExploreSheet.NONE) {
+        viewModel.onSheetChange(ExploreSheet.NONE)
     }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -198,7 +198,6 @@ private fun ExploreHeader(
         modifier =
             modifier
                 .fillMaxWidth()
-                .statusBarsPadding()
                 .padding(
                     horizontal = ScreenHPadding,
                     vertical = ScreenVPadding,
@@ -208,7 +207,6 @@ private fun ExploreHeader(
         ExploreTopRow(
             unreadNotices = state.unreadNotices,
             onNoticesClick = onNoticesClick,
-            onRecommendedClick = onRecommendedClick,
         )
         ExploreSearchBar(query = state.filters.query, onClick = onFiltersClick)
         ExploreCategoryRow(
@@ -219,6 +217,7 @@ private fun ExploreHeader(
             mode = state.mode,
             onModeChange = onModeChange,
             onProvidersClick = onProvidersClick,
+            onRecommendedClick = onRecommendedClick,
         )
     }
 }
@@ -228,7 +227,6 @@ private fun ExploreHeader(
 private fun ExploreTopRow(
     unreadNotices: Int,
     onNoticesClick: () -> Unit,
-    onRecommendedClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -236,38 +234,22 @@ private fun ExploreTopRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Surface(
-            shape = PillShape,
-            color = Color.White,
-            shadowElevation = 2.dp,
-        ) {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = stringResource(R.string.guest_brand),
-                style =
-                    MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                    ),
+                text = stringResource(R.string.explore_home_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
                 color = Slate900,
-                modifier =
-                    Modifier.padding(
-                        horizontal = BrandHPadding,
-                        vertical = BrandVPadding,
-                    ),
+                maxLines = 2,
+            )
+            Text(
+                text = stringResource(R.string.explore_home_subtitle),
+                style = MaterialTheme.typography.bodySmall,
+                color = Slate700,
             )
         }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(RowGap),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            ExploreNoticesButton(unreadNotices = unreadNotices, onClick = onNoticesClick)
-            VirGoOutlinedButton(onClick = onRecommendedClick) {
-                Text(
-                    text = stringResource(R.string.explore_for_you),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = VirGoPurple,
-                )
-            }
-        }
+        ExploreNoticesButton(unreadNotices = unreadNotices, onClick = onNoticesClick)
+        LocalDevMenu.current()
     }
 }
 
@@ -318,7 +300,7 @@ private fun ExploreSearchBar(
             modifier
                 .fillMaxWidth()
                 .clip(SearchShape)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .clickable(role = Role.Button, onClick = onClick)
                 .padding(
                     horizontal = SearchPadding,
@@ -383,16 +365,24 @@ private fun ExploreActionsRow(
     mode: ExploreMode,
     onModeChange: (ExploreMode) -> Unit,
     onProvidersClick: () -> Unit,
+    onRecommendedClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(RowGap),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        VirGoOutlinedButton(onClick = onProvidersClick) {
+        TextButton(onClick = onProvidersClick) {
             Text(
                 text = stringResource(R.string.explore_providers),
+                style = MaterialTheme.typography.labelLarge,
+                color = VirGoPurple,
+            )
+        }
+        TextButton(onClick = onRecommendedClick) {
+            Text(
+                text = stringResource(R.string.explore_for_you),
                 style = MaterialTheme.typography.labelLarge,
                 color = VirGoPurple,
             )

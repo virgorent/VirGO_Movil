@@ -2,6 +2,8 @@ package mx.virgo.app.ui.explore
 
 import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasScrollToIndexAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
@@ -9,9 +11,11 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
 import mx.virgo.app.R
+import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
 import mx.virgo.core.designsystem.theme.VirGoTheme
 import mx.virgo.core.domain.Favorite
@@ -23,6 +27,7 @@ import mx.virgo.core.domain.Notice
 import mx.virgo.core.domain.NoticesRepository
 import mx.virgo.core.domain.ToggleFavoriteUseCase
 import mx.virgo.core.testing.FakeVenueRepository
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,9 +45,9 @@ class ExploreScreenTest {
 
     private fun string(resId: Int): String = ApplicationProvider.getApplicationContext<Context>().getString(resId)
 
-    private fun exploreViewModel() =
+    private fun exploreViewModel(venues: FakeVenueRepository = FakeVenueRepository()) =
         ExploreViewModel(
-            getVenues = GetVenuesUseCase(FakeVenueRepository()),
+            getVenues = GetVenuesUseCase(venues),
             getFavorites = GetFavoritesUseCase(ScreenFakeFavoritesRepository()),
             toggleFavorite = ToggleFavoriteUseCase(ScreenFakeFavoritesRepository()),
             getNotices = GetNoticesUseCase(ScreenFakeNoticesRepository()),
@@ -57,9 +62,9 @@ class ExploreScreenTest {
     }
 
     @Test
-    fun mapModeShowsHeaderAndActions() {
+    fun initialListShowsHeaderAndActions() {
         setContent(exploreViewModel())
-        compose.onNodeWithText(string(R.string.guest_brand)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.explore_home_title)).assertIsDisplayed()
         compose.onNodeWithText(string(R.string.explore_search_hint)).assertIsDisplayed()
         compose.onNodeWithText(string(R.string.explore_category_all)).assertIsDisplayed()
         compose.onNodeWithText(string(R.string.explore_category_gardens)).assertIsDisplayed()
@@ -70,12 +75,71 @@ class ExploreScreenTest {
     }
 
     @Test
+    fun sampleCreditsAreAvailableInApp() {
+        setContent(exploreViewModel())
+        compose.onNodeWithText(string(R.string.explore_mode_map)).performClick()
+        compose.onNodeWithText(string(R.string.sample_photo_credits)).performClick()
+        compose.onNodeWithText(string(R.string.sample_photo_credits_title)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.action_close)).performClick()
+        compose.onNodeWithText(string(R.string.sample_photo_credits_title)).assertDoesNotExist()
+    }
+
+    @Test
+    fun initialListCanScrollToSampleCredits() {
+        setContent(exploreViewModel())
+        compose
+            .onNode(hasScrollToIndexAction())
+            .performScrollToNode(hasText(string(R.string.sample_photo_credits)))
+        compose.onNodeWithText(string(R.string.sample_photo_credits)).performClick()
+        compose.onNodeWithText(string(R.string.sample_photo_credits_title)).assertIsDisplayed()
+    }
+
+    @Test
     fun listModeShowsVenueCards() {
         setContent(exploreViewModel())
-        compose.onNodeWithText(string(R.string.explore_mode_list)).performClick()
         compose.waitForIdle()
         compose.onNodeWithText("Casa Oliva").assertIsDisplayed()
+        compose.onAllNodesWithText(string(R.string.explore_sample_image)).onFirst().assertIsDisplayed()
         compose.onNodeWithText(string(R.string.explore_sort_recommended)).assertIsDisplayed()
+    }
+
+    @Test
+    fun venueCardOpensMapAndCanReturnToList() {
+        val viewModel = exploreViewModel()
+        setContent(viewModel)
+        compose.onNodeWithText("Casa Oliva").performClick()
+        compose.onNodeWithText(string(R.string.explore_featured)).assertIsDisplayed()
+        compose.runOnIdle {
+            assertEquals(ExploreMode.MAP, viewModel.state.value.mode)
+            val selectedVenue = viewModel.state.value.selectedVenue
+            assertEquals("Casa Oliva", selectedVenue?.name)
+        }
+        compose.onNodeWithText(string(R.string.explore_mode_list)).performClick()
+        compose.onAllNodesWithText(string(R.string.explore_sample_image)).onFirst().assertIsDisplayed()
+        compose.runOnIdle { assertEquals(ExploreMode.LIST, viewModel.state.value.mode) }
+    }
+
+    @Test
+    fun apiFailureShowsSafeMessageAndRetry() {
+        val repository =
+            FakeVenueRepository().apply {
+                result = AppResult.Failure(AppError.Server("internal-trace-not-for-display"))
+            }
+        setContent(exploreViewModel(repository))
+        compose.onNodeWithText(string(R.string.guest_error_load)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.guest_retry)).assertIsDisplayed()
+        compose.onNodeWithText("internal-trace-not-for-display").assertDoesNotExist()
+    }
+
+    @Test
+    fun offlineErrorCanRetryAndShowCatalog() {
+        val repository = FakeVenueRepository().apply { result = AppResult.Failure(AppError.Network) }
+        setContent(exploreViewModel(repository))
+        compose.onNodeWithText(string(R.string.guest_error_load)).assertIsDisplayed()
+        compose.runOnIdle { repository.result = AppResult.Success(emptyList()) }
+        compose.onNodeWithText(string(R.string.guest_retry)).performClick()
+        compose.onNodeWithText("Casa Oliva").assertIsDisplayed()
+        compose.runOnIdle { assertEquals(2, repository.calls) }
     }
 
     @Test
@@ -99,6 +163,17 @@ class ExploreScreenTest {
             .onFirst()
             .assertIsDisplayed()
         compose.onNodeWithText(string(R.string.explore_event_wedding)).performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun recommendationsIdentifySamplePhotosAndExposeCredits() {
+        setContent(exploreViewModel())
+        compose.onNodeWithText(string(R.string.explore_for_you)).performClick()
+        compose.onNodeWithText(string(R.string.sample_photo_credits)).performScrollTo().performClick()
+        compose.onNodeWithText(string(R.string.sample_photo_credits_title)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.action_close)).performClick()
+        compose.onNodeWithText(string(R.string.sample_photo_credits_title)).assertDoesNotExist()
+        compose.onNodeWithText(string(R.string.explore_recommended_title)).assertExists()
     }
 
     /** RF-19: cuando ningún salón cumple todos los filtros se muestra el aviso. */

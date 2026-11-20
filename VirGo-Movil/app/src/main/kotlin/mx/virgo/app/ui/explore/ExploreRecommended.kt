@@ -21,6 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import mx.virgo.app.R
+import mx.virgo.app.ui.guest.SAMPLE_VENUE_ID_PREFIX
+import mx.virgo.app.ui.guest.SamplePhotoCredits
 import mx.virgo.app.ui.guest.kmText
 import mx.virgo.app.ui.guest.ratingText
 import mx.virgo.core.designsystem.components.VirGoBadge
@@ -52,6 +54,9 @@ internal fun ExploreRecommendedPanel(
         onClose = onClose,
         modifier = modifier,
     ) {
+        if (state.recommendations.any { it.venue.venueId.startsWith(SAMPLE_VENUE_ID_PREFIX) }) {
+            SamplePhotoCredits()
+        }
         val summary = summaryText(state.filters)
         if (summary != null) {
             Text(
@@ -124,7 +129,7 @@ private fun ExploreRecommendationCard(
             modifier = Modifier.padding(CardPadding),
             horizontalArrangement = Arrangement.spacedBy(ContentGap),
         ) {
-            ExploreVenuePhoto(size = PhotoSize)
+            ExploreVenuePhoto(venue = venue, size = PhotoSize)
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(

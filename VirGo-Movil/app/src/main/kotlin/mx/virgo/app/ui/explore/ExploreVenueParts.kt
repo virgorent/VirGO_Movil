@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Navigation
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import mx.virgo.app.R
+import mx.virgo.app.ui.guest.VenuePhotoContent
 import mx.virgo.app.ui.guest.VenueSample
 import mx.virgo.app.ui.guest.kmText
 import mx.virgo.app.ui.guest.ratingText
@@ -44,13 +44,11 @@ import mx.virgo.core.designsystem.theme.VirGoPurpleDark
 import mx.virgo.core.designsystem.theme.WarningYellow
 import java.util.Locale
 
-private const val PHOTO_ICON_ALPHA = 0.65f
 private const val BADGE_ALPHA = 0.92f
 private const val PRICE_DAY = "day"
 private const val PRICE_HOUR = "hour"
 
 private val PhotoSize = 72.dp
-private val PhotoIconSize = 34.dp
 private val StarSize = 14.dp
 private val DistanceIconSize = 12.dp
 private val BadgeHPadding = 6.dp
@@ -59,9 +57,10 @@ private val BadgeGap = 4.dp
 private val PhotoShape = RoundedCornerShape(16.dp)
 private val PillShape = RoundedCornerShape(percent = 50)
 
-/** Foto del salón: mientras la API no entregue imágenes se usa el mismo placeholder de la maqueta. */
+/** Foto ilustrativa para muestras y marcador neutro para salones reales sin foto. */
 @Composable
 internal fun ExploreVenuePhoto(
+    venue: VenueSample,
     modifier: Modifier = Modifier,
     size: Dp = PhotoSize,
 ) {
@@ -75,12 +74,7 @@ internal fun ExploreVenuePhoto(
                 ),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(
-            imageVector = Icons.Filled.Place,
-            contentDescription = null,
-            tint = Color.White.copy(alpha = PHOTO_ICON_ALPHA),
-            modifier = Modifier.size(PhotoIconSize),
-        )
+        VenuePhotoContent(venue = venue, modifier = Modifier.matchParentSize())
     }
 }
 

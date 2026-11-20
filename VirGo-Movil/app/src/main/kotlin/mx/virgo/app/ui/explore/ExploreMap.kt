@@ -26,6 +26,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import mx.virgo.app.R
 import mx.virgo.app.ui.guest.GuestMap
+import mx.virgo.app.ui.guest.SAMPLE_VENUE_ID_PREFIX
+import mx.virgo.app.ui.guest.SamplePhotoCredits
 import mx.virgo.app.ui.guest.VenueSample
 import mx.virgo.core.designsystem.components.VirGoCard
 import mx.virgo.core.designsystem.theme.Slate500
@@ -56,7 +58,7 @@ internal fun ExploreMapContent(
             onVenueClick = onVenueClick,
             onClearSelection = onClearSelection,
         )
-        val selected = state.selectedVenue
+        val selected = state.selectedVenue ?: state.results.firstOrNull()
         val bottomModifier = Modifier.align(Alignment.BottomCenter)
         when {
             state.hasError ->
@@ -70,6 +72,7 @@ internal fun ExploreMapContent(
                     isFavorite = selected.venueId in state.favoriteIds,
                     onFavoriteToggle = { onFavoriteToggle(selected) },
                     onClose = onClearSelection,
+                    isSelected = state.selectedVenue != null,
                     modifier = bottomModifier,
                 )
             state.results.isEmpty() && !state.isLoading ->
@@ -84,6 +87,7 @@ private fun ExploreVenueSummaryCard(
     isFavorite: Boolean,
     onFavoriteToggle: () -> Unit,
     onClose: () -> Unit,
+    isSelected: Boolean,
     modifier: Modifier = Modifier,
 ) {
     VirGoCard(
@@ -96,45 +100,59 @@ private fun ExploreVenueSummaryCard(
                     vertical = CardVPadding,
                 ),
     ) {
-        Row(
-            modifier = Modifier.padding(CardPadding),
-            horizontalArrangement = Arrangement.spacedBy(ContentGap),
-        ) {
-            ExploreVenuePhoto(size = SummaryPhotoSize)
-            Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = venue.name,
-                        style =
-                            MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                            ),
-                        color = Slate900,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f),
-                    )
-                    ExploreFavoriteButton(
-                        isFavorite = isFavorite,
-                        venueName = venue.name,
-                        onToggle = onFavoriteToggle,
-                    )
-                    IconButton(onClick = onClose) {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = stringResource(R.string.action_close),
-                            tint = Slate500,
+        Column(modifier = Modifier.padding(CardPadding)) {
+            Text(
+                text = stringResource(R.string.explore_featured),
+                style = MaterialTheme.typography.labelMedium,
+                color = Slate500,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(ContentGap)) {
+                ExploreVenuePhoto(venue = venue, size = SummaryPhotoSize)
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = venue.name,
+                            style =
+                                MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold,
+                                ),
+                            color = Slate900,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f),
                         )
+                        ExploreFavoriteButton(
+                            isFavorite = isFavorite,
+                            venueName = venue.name,
+                            onToggle = onFavoriteToggle,
+                        )
+                        if (isSelected) {
+                            ExploreCloseButton(onClose = onClose)
+                        }
                     }
+                    Text(
+                        text = venue.metaText(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Slate500,
+                    )
+                    Spacer(modifier = Modifier.height(MetaGap))
+                    ExplorePriceDistanceRow(venue = venue)
                 }
-                Text(
-                    text = venue.metaText(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Slate500,
-                )
-                Spacer(modifier = Modifier.height(MetaGap))
-                ExplorePriceDistanceRow(venue = venue)
+            }
+            if (venue.venueId.startsWith(SAMPLE_VENUE_ID_PREFIX)) {
+                SamplePhotoCredits()
             }
         }
+    }
+}
+
+@Composable
+private fun ExploreCloseButton(onClose: () -> Unit) {
+    IconButton(onClick = onClose) {
+        Icon(
+            imageVector = Icons.Filled.Close,
+            contentDescription = stringResource(R.string.action_close),
+            tint = Slate500,
+        )
     }
 }

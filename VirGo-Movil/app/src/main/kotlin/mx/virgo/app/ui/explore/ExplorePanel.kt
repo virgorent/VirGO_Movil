@@ -67,11 +67,12 @@ internal fun ExplorePanel(
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .fillMaxHeight(PANEL_MAX_HEIGHT)
+                    .imePadding()
                     .navigationBarsPadding()
                     .padding(
                         horizontal = PanelHPadding,
                         vertical = PanelVPadding,
-                    ).imePadding(),
+                    ),
         ) {
             Column(
                 modifier =

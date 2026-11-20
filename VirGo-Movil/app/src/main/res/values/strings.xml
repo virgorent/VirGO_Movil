@@ -9,6 +9,13 @@
     <string name="common_soon_google">El acceso con Google llegará en una próxima versión</string>
     <string name="common_soon_apple">El acceso con Apple llegará en una próxima versión</string>
     <string name="common_snackbar_ok">Entendido</string>
+    <string name="sample_photo_credits">Datos y fotos de ejemplo · Créditos</string>
+    <string name="sample_photo_credits_title">Créditos de las imágenes</string>
+    <string name="explore_home_title">Encuentra tu salón</string>
+    <string name="explore_home_subtitle">Espacios para celebrar a tu manera</string>
+    <string name="explore_featured">Descubre este salón</string>
+    <string name="explore_sample_image">Imagen de ejemplo</string>
+    <string name="sample_photo_credits_body">Estas imágenes ilustran salones ficticios. Todas fueron recortadas y redimensionadas.\n\nJardines: Nenad Stojković (metadatos); Shixart1985 (ficha de Commons), CC BY 2.0\nhttps://commons.wikimedia.org/wiki/File:Chairs_are_neatly_arranged_in_a_garden_for_an_outdoor_wedding_ceremony.jpg\nhttps://creativecommons.org/licenses/by/2.0/\n\nAlberca: Paikan06, CC BY-SA 3.0\nhttps://commons.wikimedia.org/wiki/File:Pool_and_sun_terrace.jpg\nhttps://creativecommons.org/licenses/by-sa/3.0/\n\nElegante: Robert Bejil, CC BY 2.0\nhttps://commons.wikimedia.org/wiki/File:Reception_table_setting.jpg\nhttps://creativecommons.org/licenses/by/2.0/\n\nHaciendas: AlejandroLinaresGarcia, CC BY-SA 4.0\nhttps://commons.wikimedia.org/wiki/File:CourtyardFountainChautla.JPG\nhttps://creativecommons.org/licenses/by-sa/4.0/\n\nInfantil: Sensenschmied, CC BY-SA 3.0\nhttps://commons.wikimedia.org/wiki/File:Geburtstagstisch_zur_Feier_gedeckt.jpg\nhttps://creativecommons.org/licenses/by-sa/3.0/</string>
 
     <!-- Inicio de sesión (A5) -->
     <string name="login_kicker">VIRGO</string>

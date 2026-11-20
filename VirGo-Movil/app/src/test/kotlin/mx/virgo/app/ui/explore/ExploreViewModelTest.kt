@@ -46,7 +46,7 @@ class ExploreViewModelTest {
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
         assertEquals(VenueSamples.size, state.results.size)
-        assertEquals(ExploreMode.MAP, state.mode)
+        assertEquals(ExploreMode.LIST, state.mode)
         assertEquals(ExploreSheet.NONE, state.sheet)
     }
 

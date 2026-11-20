@@ -1,5 +1,6 @@
 package mx.virgo.app.ui.explore
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,20 +36,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import mx.virgo.app.R
+import mx.virgo.app.ui.guest.SAMPLE_VENUE_ID_PREFIX
+import mx.virgo.app.ui.guest.SamplePhotoCredits
+import mx.virgo.app.ui.guest.VenuePhotoContent
 import mx.virgo.app.ui.guest.VenueSample
 import mx.virgo.core.designsystem.components.VirGoButton
 import mx.virgo.core.designsystem.components.VirGoCard
 import mx.virgo.core.designsystem.theme.Slate400
 import mx.virgo.core.designsystem.theme.Slate500
 import mx.virgo.core.designsystem.theme.Slate900
+import mx.virgo.core.designsystem.theme.VirGoPurpleLight
 
 private val ListHPadding = 16.dp
 private val ListVPadding = 8.dp
 private val CardGap = 12.dp
 private val CardPadding = 12.dp
-private val ContentGap = 10.dp
 private val InnerGap = 4.dp
-private val PhotoSize = 84.dp
+private val PhotoHeight = 164.dp
 private val StateIconSize = 48.dp
 private val StateGap = 12.dp
 private val RetryGap = 16.dp
@@ -90,6 +95,9 @@ internal fun ExploreListContent(
                             onClick = { onVenueClick(venue.id) },
                             onFavoriteToggle = { onFavoriteToggle(venue) },
                         )
+                    }
+                    if (state.results.any { it.venueId.startsWith(SAMPLE_VENUE_ID_PREFIX) }) {
+                        item { SamplePhotoCredits() }
                     }
                 }
         }
@@ -143,21 +151,9 @@ private fun ExploreVenueCard(
                 .clip(CardShape)
                 .clickable(onClick = onClick),
     ) {
-        Row(
-            modifier = Modifier.padding(CardPadding),
-            horizontalArrangement = Arrangement.spacedBy(ContentGap),
-        ) {
-            Box {
-                ExploreVenuePhoto(size = PhotoSize)
-                ExploreRatingPill(
-                    venue = venue,
-                    modifier =
-                        Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(InnerGap),
-                )
-            }
-            Column(modifier = Modifier.weight(1f)) {
+        Column {
+            ExploreCardPhoto(venue = venue)
+            Column(modifier = Modifier.padding(CardPadding)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = venue.name,
@@ -183,6 +179,37 @@ private fun ExploreVenueCard(
                 )
                 Spacer(modifier = Modifier.height(InnerGap))
                 ExplorePriceDistanceRow(venue = venue)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExploreCardPhoto(venue: VenueSample) {
+    Box(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(PhotoHeight)
+                .background(VirGoPurpleLight),
+    ) {
+        VenuePhotoContent(venue = venue, modifier = Modifier.matchParentSize())
+        ExploreRatingPill(
+            venue = venue,
+            modifier = Modifier.align(Alignment.BottomStart).padding(CardPadding),
+        )
+        if (venue.venueId.startsWith(SAMPLE_VENUE_ID_PREFIX)) {
+            Surface(
+                color = Color.White.copy(alpha = 0.94f),
+                shape = CardShape,
+                modifier = Modifier.align(Alignment.BottomEnd).padding(CardPadding),
+            ) {
+                Text(
+                    text = stringResource(R.string.explore_sample_image),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Slate900,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                )
             }
         }
     }
