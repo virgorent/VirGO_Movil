@@ -65,7 +65,7 @@ La redacción de un borrador no acredita ejecución de tareas ni aprobación.
 
 ## 5. PR e integración continua
 
-- [ ] PR de documentación: enlace pendiente.
+- [x] PR de documentación en borrador: [#28](https://github.com/virgorent/VirGO_Movil/pull/28), apilado sobre #27; no implica aprobación.
 - [ ] PR de implementación posterior a aprobaciones: no creado.
 - [ ] Checks del head definitivo en verde y una revisión.
 - [ ] Fusión coordinada con Karasu; no automática.
