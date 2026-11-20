@@ -21,6 +21,7 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | `001`–`004` pantallas | 🚧 Aprobados (retroactivo 2026-11-12) e implementados; recuperación pendiente de backend | PRs pendientes de integración; no se presume su fusión |
 | `005-explorar-salones` | 🚧 Implementación parcial y consolidación autorizada el 2026-11-19 | PR #27; integración completa y aceptación visual del último rediseño pendientes |
 | `006`–`029` | Borradores | Sin implementación autorizada por esta consolidación |
+| `030-restaurar-sesion` | Borrador 0.1.0; sin implementación autorizada | Restauración local sin refresh/logout; P-01–P-07 y aprobación por etapa pendientes |
 
 ## Decisiones (ADR)
 
@@ -43,6 +44,7 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | ADR-15 | 2026-11-15 | **Google Play** como canal de distribución con firma de apps de Play (enmienda v1.2.0) | La cuenta ya existe y su pago es único; el AAB sale del mismo workflow de release |
 | ADR-15 | 2026-11-03 | **Repositorio único** `virgorent/VirGO_Backend` con carpetas por proyecto | Decisión del equipo; **superseded** por ADR-16 (2026-11-12) |
 | ADR-16 | 2026-11-12 | Repositorio propio `virgorent/VirGO_Movil` para el móvil (fin del monorepo); el backend vive en `virgorent/VirGO_Backend` | Separa CI, permisos y despliegues por proyecto |
+| 030-P01 | 2026-11-19 | **Propuesta no ratificada:** separar restauración local, renovación y logout; registro atómico cifrado con vencimiento absoluto y sin persistir refresh en `030` | Mantener atomicidad SDD y no prometer acceso de días con un token de acceso de duración corta; decisiones finales sujetas a P-01–P-07 |
 
 ## Cambios de contrato (compartidos con Backend)
 
@@ -792,3 +794,15 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Aprendizaje:** los checks verdes de un head anterior no prueban cambios locales; cada CA debe referir pruebas que realmente ejerzan su comportamiento.
 - **Entrega:** código y documentación de consolidación en la rama de #27; su historial remoto acredita el push. El borrador `030` se entrega aparte desde `docs/030-restaurar-sesion`, sin mezclar implementación de sesión en este PR.
 - **Pendiente:** checks del nuevo head, aceptación visual T509, revisión/fusión por Karasu, humo completo T507 y revisión humana de `030`; no se ejecutó release.
+
+### 2026-11-19 · Borrador 030 de restauración local de sesión
+
+- **Autor:** OpenCode (revisión de arquitectura y trazabilidad; aprobación humana pendiente).
+- **Módulo / tareas:** `030-restaurar-sesion` · solo redacción; ninguna de las 19 tareas propuestas se ejecutó.
+- **Qué se hizo:** cuatro documentos basados en `.specify/templates/`, versión 0.1.0 en Borrador, con 12 criterios y 19 tareas; se separaron restauración, renovación y logout. El código actual descarta las credenciales obtenidas por login; `TokenStore` solo guarda token y la navegación siempre arranca en visitante.
+- **Evidencia:** verificación documental de cuatro archivos, 12 CA con fila en check, 19 IDs de tarea únicos y pendientes y enlaces locales válidos; revisión por trazabilidad, sin hallazgos restantes como borrador condicionado. Se corrigieron la garantía de invalidación durable ante fallo de escritura (CA-09/CA-12 y P-07), la verificación de rendimiento (T3018) y la compatibilidad real API 26/36 (T3019). No se ejecutaron suites de una implementación inexistente ni sondas productivas.
+- **Decisiones propuestas:** registro cifrado atómico y versionado con vencimiento absoluto; no persistir refresh sin un flujo aprobado que lo utilice; no introducir `/me`, renovación ni logout en `030`. Ver 030-P01 y ADR locales del plan; no son decisiones ratificadas.
+- **Entrega:** rama `docs/030-restaurar-sesion`, apilada sobre `feat/005-explorar-salones`; PR documental en borrador, separado de #27.
+- **Costo:** $0 / herramientas existentes.
+- **Aprendizaje:** restaurar localmente no valida revocación remota; si falla toda escritura no se puede garantizar que una invalidación sobreviva al proceso. Esa política requiere decisión explícita de seguridad/producto antes de implementar.
+- **Pendiente:** P-01–P-07, handoff login versionado, cierre pendiente de `000`, aprobación de spec → plan → tareas y futura implementación en una rama propia. No se cambiaron secretos, backend ni infraestructura AWS; no se publicó release.
