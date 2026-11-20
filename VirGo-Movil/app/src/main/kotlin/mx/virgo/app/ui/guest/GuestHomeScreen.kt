@@ -58,7 +58,6 @@ import mx.virgo.core.domain.GetVenuesUseCase
 import mx.virgo.core.domain.Venue
 import mx.virgo.core.domain.VenueRepository
 
-private const val PHOTO_ICON_ALPHA = 0.65f
 private const val PHOTO_BADGE_ALPHA = 0.92f
 private val RangeOptions = listOf(2, 5, 10)
 private val RangeOptionWidth = 50.dp
@@ -281,6 +280,9 @@ private fun GuestPreviewCard(
             Spacer(modifier = Modifier.height(12.dp))
 
             GuestPreviewLocked()
+            if (venue.venueId.startsWith(SAMPLE_VENUE_ID_PREFIX)) {
+                SamplePhotoCredits()
+            }
         }
     }
 }
@@ -381,12 +383,7 @@ private fun VenuePhoto(
                 ),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(
-            imageVector = Icons.Filled.Place,
-            contentDescription = null,
-            tint = Color.White.copy(alpha = PHOTO_ICON_ALPHA),
-            modifier = Modifier.size(36.dp),
-        )
+        VenuePhotoContent(venue = venue, modifier = Modifier.matchParentSize())
         Surface(
             shape = PillShape,
             color = Color.White.copy(alpha = PHOTO_BADGE_ALPHA),

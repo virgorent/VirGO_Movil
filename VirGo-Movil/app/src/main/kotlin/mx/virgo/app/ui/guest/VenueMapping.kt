@@ -19,6 +19,7 @@ internal fun List<Venue>.toSamples(): List<VenueSample> =
         val longitude = venue.longitude ?: return@mapIndexedNotNull null
         VenueSample(
             id = index,
+            venueId = venue.id,
             name = venue.name,
             short = venue.shortName ?: venue.name.take(SHORT_NAME_MAX),
             area = venue.zone.orEmpty(),
@@ -26,8 +27,30 @@ internal fun List<Venue>.toSamples(): List<VenueSample> =
             capacity = venue.capacity,
             distanceKm = haversineKm(GUEST_CENTER_LAT, GUEST_CENTER_LNG, latitude, longitude),
             bearing = bearingDegrees(GUEST_CENTER_LAT, GUEST_CENTER_LNG, latitude, longitude),
+            priceBaseAmount = venue.priceBaseAmount,
+            priceUnit = venue.priceUnit,
+            categories = venue.categories.map { normalizeCategory(it) },
         )
     }
+
+/**
+ * El catálogo de la API (`007-venues-catalog`) todavía no define el vocabulario de
+ * `categories`; se normaliza a las etiquetas de la maqueta para que los filtros del
+ * spec `005` coincidan sin importar el idioma en que llegue el dato.
+ */
+private val CategoryAliases =
+    mapOf(
+        "garden" to CATEGORY_GARDENS,
+        "gardens" to CATEGORY_GARDENS,
+        "pool" to CATEGORY_POOL,
+        "elegant" to CATEGORY_ELEGANT,
+        "hacienda" to CATEGORY_HACIENDAS,
+        "haciendas" to CATEGORY_HACIENDAS,
+        "kids" to CATEGORY_KIDS,
+        "child" to CATEGORY_KIDS,
+    )
+
+private fun normalizeCategory(raw: String): String = CategoryAliases[raw.lowercase()] ?: raw
 
 internal fun haversineKm(
     fromLat: Double,

@@ -11,14 +11,16 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | Tareas | 38 / 40 hechas (pendientes: T033 🔄, T036 ⏳) |
 | `API_BASE_URL` de *release* | Variable `VIRGO_API_BASE_URL` creada en `VirGO_Movil` con la URL de producción; falta el respaldo P-02 del keystore para cerrar T033 |
 | Última versión publicada | **v0.2.0** (versionCode 2): GitHub Release `v0.2.0` y Google Play, prueba interna activa; prueba cerrada en revisión desde el 2026-11-15 |
-| Siguiente paso | Aprobación de la prueba cerrada y 14 días con 12 *testers*; aprobación de los PRs verdes `001`–`004` (#17–#20); botón «Eliminar cuenta» (B5) y registro conectado a la API en v0.3.0 (versionCode 3); T033 (respaldo P-02) y T036 (cierre de `000`) |
+| Siguiente paso | Consolidar PR #27 (`005`), completar su aceptación visual y preparar por separado el borrador `030-restaurar-sesion`; no implementar sesión hasta aprobación. Siguen pendientes T033 (respaldo P-02), T036 (cierre de `000`) y coordinación de fusiones con Karasu. Sin nueva release autorizada. |
 
 ## Módulos
 
 | Módulo | Estado | Notas |
 |---|---|---|
 | `000-arquitectura-base` | 🚧 Aprobado; 38/40 tareas hechas | Base técnica sin pantallas del negocio |
-| `001-…` pantallas | 🚧 `001`–`004` aprobados (retroactivo 2026-11-12) e implementados; `005+` sin iniciar | Un spec atómico por pantalla o flujo, al vuelo; los siguientes usan el JSON de `VirGo-API` |
+| `001`–`004` pantallas | 🚧 Aprobados (retroactivo 2026-11-12) e implementados; recuperación pendiente de backend | PRs pendientes de integración; no se presume su fusión |
+| `005-explorar-salones` | 🚧 Implementación parcial y consolidación autorizada el 2026-11-19 | PR #27; integración completa y aceptación visual del último rediseño pendientes |
+| `006`–`029` | Borradores | Sin implementación autorizada por esta consolidación |
 
 ## Decisiones (ADR)
 
@@ -734,3 +736,59 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Una tarea bloqueada por una herramienta externa puede cerrarse como «no aplica» documentando el sustituto, en vez de quedarse ⛔ para siempre.
   - Al actualizar el estado de una tarea hay que mover el contador en todos los lugares que lo replican (`task.md`, `AGENTS.md` raíz y móvil) para evitar *stale references*.
 - **Pendiente:** aprobación del PR docs; T024, T033, T030, T035 y T036.
+
+### 2026-11-18 - T501-T506: explorar salones implementado (005-explorar-salones 6/7)
+
+- **Autor:** equipo + opencode (`dev-android` / `qa-movil`)
+- **Módulo / tareas:** `005-explorar-salones` → T501–T506 (6/7; T507 pendiente de humo)
+- **Qué se hizo:**
+  - **T501–T504:** pantalla principal del Cliente en `app/ui/explore/`: B8 con mapa y tarjeta resumen (`ExploreMap`), C9 con lista y orden (`ExploreList`), C10 con hoja de filtros (`ExploreFiltersPanel`) y C11 con recomendaciones (`ExploreRecommendedPanel`), sobre un único `ExploreViewModel` con `onFiltersChange(transform)`, `onSheetChange`, etc. Se eliminó `HomePlaceholder` y `ExploreScreen` entró por `VirGoNavHost.homeDestination()`; todos los textos viven en `strings.xml`.
+  - **T505:** contrato `VenueDto` ampliado **aditivo** (precio, categorías y fotos con defaults, sin romper `001`), `FavoritesApi`/`NoticesApi` + DTOs, `FavoritesRepositoryImpl`/`NoticesRepositoryImpl` y casos de uso `GetFavorites`, `GetNotices`, `ToggleFavorite`.
+  - **T506:** 25 pruebas nuevas de la pantalla (`ExploreViewModelTest` 19, `ExploreScreenTest` 6 de UI con Robolectric) y 18 de dominio/red (`FavoritesRepositoryImplTest` 6, `NoticesRepositoryImplTest` 5, `ToggleFavoriteUseCaseTest` 4, `VenueTest` 4, `GetFavoritesUseCaseTest` 3, `GetNoticesUseCaseTest` 3). Pipeline local completo en verde.
+- **Evidencia:** rama `feat/005-explorar-salones` con commits `94f3a73` (T505), `e09071f` (T501), `e77b50b` (T505 test) y `f298967` (T506 test); `task.md` T501–T506 ✅ con blockquotes; `check.md` con pruebas y mutación.
+- **Decisiones / hallazgos:**
+  1. **Favoritos optimistas:** actualización local + API; si falla se revierte y se emite `ExploreUiEvent.FavoriteError` → snackbar. Las muestras (`venueId` con prefijo `sample-`) NO viajan a la API.
+  2. **Fecha RF-16:** se valida y guarda pero no descarta salones (el contrato 007 aún no trae disponibilidad).
+  3. **Recomendaciones:** score local con `clamp 0..100` y badge «Estimación IA»; los proveedores y la campana muestran snackbar «próxima versión».
+  4. La mutación había bajado a 43 %: se subió a **59 %** agregando fakes locales en `core:domain` (que no depende de `core:testing`) y pruebas MockWebServer de los repos nuevos.
+  5. Límites de estilo que disparan con pantallas grandes: `LongMethod` 60 → extraer `ExploreSheetHost`, `ExploreContent`, `ExploreNoticesButton`, `ExplorePriceDistanceRow` y las filas de filtros; ktlint exige salto antes de `.` cuando hay 4+ encadenados (`chain-method-continuation`).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - `pitest` NO ejecuta `:core:domain:test`: correrlo explícito para refrescar los XML antes de contar pruebas, o el conteo queda desfasado.
+  - `Set-Content -Encoding UTF8` en PowerShell escribe BOM; al editar `.kt` hay que quitarlo con `[System.IO.File]::WriteAllBytes` o ktlint falla raro.
+  - Actualizar la rama invalida las aprobaciones: terminar TODO el código y docs, pushear y solo entonces pedir revisión.
+- **Pendiente:** revisión del PR apilado de `feat/005-explorar-salones` (#27); T507 (humo con URL real) bloqueado por endpoints (`notices`/`favorites` → 404 en producción); capturas CA-01–CA-04 **hechas** (2026-11-19, `docs/evidencia/CA-0{1..4}-explorar-*.png`); fusiones de la cadena `#20 → #15 → #11 → #17 → #18 → #19` y luego `#16`, `#22`, `#23`.
+
+### 2026-11-19 - Refinamiento visual en curso
+
+- **Módulos / tareas:** mejoras visuales de `001` y `005` (T101, T501–T504 y T506), a petición del equipo.
+- **Cambios en curso:** fotos ilustrativas locales para muestras, créditos accesibles en la app y documentados en `docs/CREDITOS-IMAGENES.md`, ajuste de insets y cierre de hojas con Atrás. Las imágenes no se atribuyen a salones reales.
+- **Verificación:** `ktlintCheck detekt lint testDebugUnitTest :core:domain:test :core:common:test pitest assembleDebug` → `BUILD SUCCESSFUL` (2026-11-19). Una ejecución previa detectó que los créditos del encabezado interferían con un marcador; se movieron a la tarjeta de visitante. El APK se instaló, pero la revisión visual quedó pendiente por un diálogo de Pixel Launcher sin respuesta en el emulador. Las capturas anteriores aún no evidencian estos cambios.
+- **Pendiente:** validar pantallas y tamaños, actualizar capturas y checks, y especificar y aprobar separadamente la bandeja de avisos y la persistencia de favoritos demo antes de implementarlas.
+
+### 2026-11-19 - Rediseño de explorar en curso
+
+- **Autor:** equipo + opencode.
+- **Módulo / tareas:** `005-explorar-salones` · T501–T504 y T506.
+- **Qué se hizo:** nueva cabecera, controles visuales más discretos, acceso de desarrollo integrado y catálogo inicial con fotos amplias y créditos; se conserva el mapa como vista alternativa y se eliminó la barra inferior con un único destino. Ajustes adicionales de login y registro tras revisar el emulador.
+- **Evidencia:** `ktlintCheck detekt :app:testDebugUnitTest :app:assembleDebug` en verde (2026-11-19, compilación en carpeta temporal para evitar bloqueo de `R.jar`). APK actualizado instalado en el emulador; captura del nuevo diseño autenticado pendiente.
+- **Decisiones:** las fotos son únicamente ilustrativas de los salones de muestra; mapa y ubicaciones siguen siendo demostrativos.
+- **Costo:** $0.
+- **Aprendizaje:** una interfaz puede superar las pruebas y aun así requerir revisión visual con el equipo.
+- **Pendiente:** volver a ejecutar el pipeline después del último cambio, revisar el diseño en emulador, actualizar evidencia y solicitar revisión del PR.
+
+### 2026-11-19 · Consolidación autorizada de Explorar y preparación de restauración de sesión
+
+- **Autor:** equipo + OpenCode (`dev-android`, `qa-movil` y revisión de arquitectura).
+- **Módulo / tareas:** `005-explorar-salones` · T508 verificada y T509 pendiente; `030-restaurar-sesion` solo preparación documental en rama separada, sin implementación.
+- **Qué se hizo:**
+  - El equipo aprobó continuar con la consolidación de #27 y la especificación del siguiente flujo; no se autorizó una release.
+  - Se alinearon los cuatro documentos de `005` con el código real: entrada en lista, fotos amplias con créditos, un ViewModel en `:app` y límites de demo, mapa, fecha, imágenes remotas y accesibilidad.
+  - Se añadieron regresiones explícitas de error seguro de API, reintento sin conexión, acceso a créditos desde lista y selección lista → mapa → lista. Se retiraron afirmaciones incorrectas de aceptación basada en pruebas de filtros.
+  - La revisión de seguridad detectó falta de identificación de muestras en «Para ti»: se añadió acceso a «Datos y fotos de ejemplo · Créditos» y una regresión de UI. Jardines conserva las atribuciones diferenciadas de la ficha (Shixart1985) y sus metadatos (Nenad Stojković), sin asumir que sean la misma persona.
+- **Evidencia:** código `5d14843`; pipeline completo aislado tras el ajuste final de «Para ti» → **BUILD SUCCESSFUL in 5m 26s**, **199 pruebas, 0 fallos/errores/omitidas, 38 suites** (12 de `ExploreScreenTest`); Pitest dominio 60 % (57/95), common 33 % (1/3). Reportes y SHA-256 del APK en `docs/evidencia/T508-consolidacion.md`. `git diff --check` y `git diff --cached --check` sin errores. #27 sigue abierto sobre `feat/004-recuperar-contrasena`; #19 sigue abierto. Al iniciar esta consolidación `adb devices -l` no mostró dispositivos.
+- **Decisiones:** no sustituir capturas históricas por evidencia no obtenida; la restauración local se especificará separada de renovación y logout. Sin refresh no se promete sesión durante días.
+- **Costo:** $0 / herramientas existentes.
+- **Aprendizaje:** los checks verdes de un head anterior no prueban cambios locales; cada CA debe referir pruebas que realmente ejerzan su comportamiento.
+- **Entrega:** código y documentación de consolidación en la rama de #27; su historial remoto acredita el push. El borrador `030` se entrega aparte desde `docs/030-restaurar-sesion`, sin mezclar implementación de sesión en este PR.
+- **Pendiente:** checks del nuevo head, aceptación visual T509, revisión/fusión por Karasu, humo completo T507 y revisión humana de `030`; no se ejecutó release.

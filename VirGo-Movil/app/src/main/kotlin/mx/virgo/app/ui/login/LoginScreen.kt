@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -61,7 +62,7 @@ import mx.virgo.core.domain.LoginUseCase
 import mx.virgo.core.domain.ValidateEmailUseCase
 import mx.virgo.core.domain.ValidateLoginFormUseCase
 
-private val HeaderHeight = 280.dp
+private val HeaderHeight = 220.dp
 private val CardCornerRadius = 26.dp
 private val SectionGap = 20.dp
 private val FieldGap = 14.dp
@@ -100,20 +101,25 @@ fun LoginScreen(
         modifier = modifier.fillMaxSize(),
         color = Slate900,
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .imePadding()
+                    .verticalScroll(rememberScrollState()),
+        ) {
             LoginHeader(onBackClick = onBackClick)
             Surface(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(topStart = CardCornerRadius, topEnd = CardCornerRadius),
                 color = Color.White,
             ) {
                 Column(
                     modifier =
                         Modifier
-                            .fillMaxSize()
-                            .padding(24.dp)
-                            .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.SpaceBetween,
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(SectionGap),
                 ) {
                     LoginContent(
                         email = state.email,

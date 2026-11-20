@@ -33,6 +33,7 @@ import mx.virgo.core.designsystem.theme.VirGoPurpleDark
 
 private val HeroHeight = 260.dp
 private val HeroPadding = 20.dp
+private val HeroTextBottomPadding = 52.dp
 private val HeroDecorSize = 160.dp
 private val BackButtonSize = 40.dp
 private const val HERO_DECOR_ALPHA = 0.10f
@@ -91,7 +92,7 @@ internal fun RegisterHero(
             modifier =
                 Modifier
                     .align(Alignment.BottomStart)
-                    .padding(start = HeroPadding, end = HeroPadding, bottom = HeroPadding),
+                    .padding(start = HeroPadding, end = HeroPadding, bottom = HeroTextBottomPadding),
         )
     }
 }

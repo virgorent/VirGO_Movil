@@ -39,6 +39,10 @@ internal fun VenueDto.toVenue(): Venue =
         ratingCount = rating?.count ?: 0,
         latitude = location?.coordinates?.getOrNull(LAT_INDEX),
         longitude = location?.coordinates?.getOrNull(LNG_INDEX),
+        priceBaseAmount = price?.baseAmount,
+        priceUnit = price?.unit,
+        categories = categories,
+        photos = photos,
     )
 
 private const val LNG_INDEX = 0

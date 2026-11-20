@@ -3,7 +3,9 @@ package mx.virgo.core.network
 import kotlinx.serialization.json.Json
 import mx.virgo.core.common.AuthTokenProvider
 import mx.virgo.core.network.api.AuthApi
+import mx.virgo.core.network.api.FavoritesApi
 import mx.virgo.core.network.api.HealthApi
+import mx.virgo.core.network.api.NoticesApi
 import mx.virgo.core.network.api.VenuesApi
 import mx.virgo.core.network.interceptor.AuthInterceptor
 import mx.virgo.core.network.interceptor.CorrelationIdInterceptor
@@ -32,6 +34,16 @@ fun createHealthApi(
     baseUrl: String,
     client: OkHttpClient = defaultOkHttpClient(),
 ): HealthApi = createRetrofit(baseUrl, client).create(HealthApi::class.java)
+
+fun createFavoritesApi(
+    baseUrl: String,
+    client: OkHttpClient = defaultOkHttpClient(),
+): FavoritesApi = createRetrofit(baseUrl, client).create(FavoritesApi::class.java)
+
+fun createNoticesApi(
+    baseUrl: String,
+    client: OkHttpClient = defaultOkHttpClient(),
+): NoticesApi = createRetrofit(baseUrl, client).create(NoticesApi::class.java)
 
 fun defaultOkHttpClient(): OkHttpClient =
     OkHttpClient

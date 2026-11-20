@@ -9,6 +9,13 @@
     <string name="common_soon_google">El acceso con Google llegará en una próxima versión</string>
     <string name="common_soon_apple">El acceso con Apple llegará en una próxima versión</string>
     <string name="common_snackbar_ok">Entendido</string>
+    <string name="sample_photo_credits">Datos y fotos de ejemplo · Créditos</string>
+    <string name="sample_photo_credits_title">Créditos de las imágenes</string>
+    <string name="explore_home_title">Encuentra tu salón</string>
+    <string name="explore_home_subtitle">Espacios para celebrar a tu manera</string>
+    <string name="explore_featured">Descubre este salón</string>
+    <string name="explore_sample_image">Imagen de ejemplo</string>
+    <string name="sample_photo_credits_body">Estas imágenes ilustran salones ficticios. Todas fueron recortadas y redimensionadas.\n\nJardines: Nenad Stojković (metadatos); Shixart1985 (ficha de Commons), CC BY 2.0\nhttps://commons.wikimedia.org/wiki/File:Chairs_are_neatly_arranged_in_a_garden_for_an_outdoor_wedding_ceremony.jpg\nhttps://creativecommons.org/licenses/by/2.0/\n\nAlberca: Paikan06, CC BY-SA 3.0\nhttps://commons.wikimedia.org/wiki/File:Pool_and_sun_terrace.jpg\nhttps://creativecommons.org/licenses/by-sa/3.0/\n\nElegante: Robert Bejil, CC BY 2.0\nhttps://commons.wikimedia.org/wiki/File:Reception_table_setting.jpg\nhttps://creativecommons.org/licenses/by/2.0/\n\nHaciendas: AlejandroLinaresGarcia, CC BY-SA 4.0\nhttps://commons.wikimedia.org/wiki/File:CourtyardFountainChautla.JPG\nhttps://creativecommons.org/licenses/by-sa/4.0/\n\nInfantil: Sensenschmied, CC BY-SA 3.0\nhttps://commons.wikimedia.org/wiki/File:Geburtstagstisch_zur_Feier_gedeckt.jpg\nhttps://creativecommons.org/licenses/by-sa/3.0/</string>
 
     <!-- Inicio de sesión (A5) -->
     <string name="login_kicker">VIRGO</string>
@@ -114,8 +121,70 @@
     <string name="recover_success_title">Contraseña actualizada</string>
     <string name="recover_success_body">Ya puedes iniciar sesión</string>
 
-    <!-- Inicio provisional -->
-    <string name="home_placeholder_title">Inicio</string>
-    <string name="home_placeholder_body">La pantalla principal de tu rol llegará junto con la funcionalidad de su módulo.</string>
+    <!-- Explorar salones (B8/C9/C10/C11) -->
+    <string name="explore_search_hint">Busca por zona o nombre</string>
+    <string name="explore_search_cd">Buscar salones</string>
+    <string name="explore_filters_cd">Abrir filtros</string>
+    <string name="explore_category_all">Todos</string>
+    <string name="explore_category_gardens">Jardines</string>
+    <string name="explore_category_pool">Alberca</string>
+    <string name="explore_category_elegant">Elegante</string>
+    <string name="explore_category_haciendas">Haciendas</string>
+    <string name="explore_category_kids">Infantil</string>
+    <string name="explore_category_cd">Categoría %1$s</string>
+    <string name="explore_for_you">Para ti</string>
+    <string name="explore_for_you_cd">Ver recomendaciones para ti</string>
+    <string name="explore_providers">Proveedores</string>
+    <string name="explore_providers_soon">Los proveedores llegarán en una próxima versión</string>
+    <string name="explore_notices_cd">Avisos sin leer: %1$d</string>
+    <string name="explore_notices_soon">Los avisos se leerán en una próxima versión</string>
+    <string name="explore_mode_map">Mapa</string>
+    <string name="explore_mode_list">Lista</string>
+    <string name="explore_mode_cd">Ver en %1$s</string>
+    <string name="explore_venue_meta">%1$s · hasta %2$d personas</string>
+    <string name="explore_capacity_only">Hasta %1$d personas</string>
+    <string name="explore_price_day">%1$s / día</string>
+    <string name="explore_price_hour">%1$s / hora</string>
+    <string name="explore_price">%1$s</string>
+    <string name="explore_favorite_add">Agregar %1$s a favoritos</string>
+    <string name="explore_favorite_remove">Quitar %1$s de favoritos</string>
+    <string name="explore_favorite_error">No se pudo guardar el favorito. Inténtalo de nuevo.</string>
+    <string name="explore_rating_cd">Calificación %1$s de 5</string>
+    <string name="explore_sort_recommended">Recomendado</string>
+    <string name="explore_sort_nearness">Cercanía</string>
+    <string name="explore_sort_price">Precio</string>
+    <string name="explore_sort_rating">Calificación</string>
+    <string name="explore_order_cd">Ordenar por</string>
+    <string name="explore_empty">Ningún salón cumple con todos tus filtros. Límpialos para ver más opciones.</string>
+    <string name="explore_filters_title">Filtros</string>
+    <string name="explore_filters_zone">Zona o nombre del salón</string>
+    <string name="explore_filters_guests">Invitados</string>
+    <string name="explore_filters_budget">Presupuesto</string>
+    <string name="explore_filters_date">Fecha disponible</string>
+    <string name="explore_filters_date_error">Usa el formato dd/mm/aaaa.</string>
+    <string name="explore_filters_guests_error">Invitados debe ser un número mayor a cero.</string>
+    <string name="explore_filters_budget_error">Presupuesto debe ser un número mayor a cero.</string>
+    <string name="explore_filters_error">Revisa los campos marcados.</string>
+    <string name="explore_filters_distance">Distancia máxima</string>
+    <string name="explore_filters_apply">Aplicar</string>
+    <string name="explore_filters_clean">Limpiar filtros</string>
+    <string name="explore_recommended_title">Recomendados para ti</string>
+    <string name="explore_recommended_empty">Ajusta tus filtros para ver recomendaciones.</string>
+    <string name="explore_recommended_fit">%1$d%% encaja</string>
+    <string name="explore_recommended_summary">%1$s · %2$s</string>
+    <string name="explore_summary_guests">%1$d invitados</string>
+    <string name="explore_summary_budget">Hasta %1$s</string>
+    <string name="explore_ai_badge">Estimación IA</string>
+    <string name="explore_event_wedding">Boda</string>
+    <string name="explore_event_birthday">Cumpleaños</string>
+    <string name="explore_event_corporate">Corporativo</string>
+    <string name="explore_event_family">Familiar</string>
+    <string name="explore_event_cd">Tipo de evento</string>
+    <string name="explore_reason_capacity">Cabe para tus %1$d invitados</string>
+    <string name="explore_reason_budget">Dentro de tu presupuesto</string>
+    <string name="explore_reason_close">A %1$s km de ti</string>
+    <string name="explore_reason_rating">Calificación %1$s de 5</string>
+    <string name="explore_selected_cd">Salón seleccionado: %1$s</string>
+
     <string name="home_tab">Inicio</string>
 </resources>
