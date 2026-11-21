@@ -49,16 +49,20 @@ Lista de verificación del módulo (Art. I.4). Cada casilla lleva su evidencia. 
 > (incremental, 383 tareas; 29 ejecutadas); 43 suites, 237 pruebas, 0 fallos/errores/omitidas;
 > Pitest dominio 60 % (57/95) y common 33 % (1/3). Reportes aislados en
 > `%TEMP%\opencode\virgo-foundation-build`. No sustituye la verificación de cierre
-> ni los checks remotos, que no se ejecutaron para estos cambios.
+> ni los checks remotos del PR #29, cuyos resultados deben verificarse por head.
 
 > Esta ejecución incluye las correcciones finales de acceso: `FontScaleTest` 4,
 > `CompactAccessTest` 10 y `AuthAccessibilityTest` 3. No acredita toda la app.
 
 ## 4. PR e integración continua
 
-- [ ] PRs del módulo: enlaces —
+- [x] Reparación T010–T014 publicada en el [PR #29](https://github.com/virgorent/VirGO_Movil/pull/29), **en borrador**, apilado sobre #27 (`feat/005-explorar-salones`); código `693da47`. No implica cierre ni aprobación de merge.
 - [ ] Ruleset exportado en `.github/rulesets/main-protection.json` (T039).
 - [ ] Todos con los checks requeridos en verde y una revisión.
+
+> El workflow de CodeQL solo admite PRs contra `main`; no se presume ejecución
+> sobre la base apilada de #29. Antes de integrar en `main`, resolver la base con
+> Karasu y exigir todos los gates, sin modificar ni relajar sus reglas.
 
 ## 5. Release
 

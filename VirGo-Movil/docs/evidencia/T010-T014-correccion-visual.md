@@ -8,6 +8,7 @@
 | Autorización | Usuario: «sí ya haz todo y aplica los cambios visuales» |
 | Alcance ejecutado | Reparación de tareas aprobadas de `000`, no ejecución de nuevos flujos |
 | Estado | T010–T013 cerradas técnicamente; T014 abierta; aceptación visual y cierre de `000` pendientes |
+| Entrega | Código `693da47`, rama remota `fix/000-fundamentos-visuales`; [PR #29 en borrador](https://github.com/virgorent/VirGO_Movil/pull/29), base #27 |
 
 ## Límites
 
@@ -210,7 +211,9 @@ Esta sección no declara aceptación visual ni cierre de T014/T036.
   y no adapta todas sus superficies al modo oscuro. También falta verificación
   manual completa de TalkBack, estados alternativos y teclado en ambos pasos.
 - Gitleaks no está disponible en PATH; no se acredita escaneo local de secretos.
-  Tampoco se ejecutaron checks remotos sobre estos cambios locales.
+  La publicación posterior en #29 habilita el seguimiento de CI por head;
+  no se atribuyen resultados remotos sin comprobarlos. CodeQL está filtrado a
+  PRs contra `main` y debe verificarse antes de integrar allí.
 
 ### Incidencias de la primera verificación
 
