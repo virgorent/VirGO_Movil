@@ -5,15 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,6 +36,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -52,9 +55,7 @@ import mx.virgo.app.ui.auth.SocialAuthRow
 import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
 import mx.virgo.core.designsystem.components.VirGoButton
-import mx.virgo.core.designsystem.theme.Slate500
 import mx.virgo.core.designsystem.theme.Slate900
-import mx.virgo.core.designsystem.theme.VirGoPurple
 import mx.virgo.core.designsystem.theme.VirGoPurpleDark
 import mx.virgo.core.designsystem.theme.VirGoTheme
 import mx.virgo.core.domain.AuthRepository
@@ -62,11 +63,11 @@ import mx.virgo.core.domain.LoginUseCase
 import mx.virgo.core.domain.ValidateEmailUseCase
 import mx.virgo.core.domain.ValidateLoginFormUseCase
 
-private val HeaderHeight = 220.dp
+private val HeaderMinHeight = 220.dp
 private val CardCornerRadius = 26.dp
 private val SectionGap = 20.dp
 private val FieldGap = 14.dp
-private val BackButtonSize = 40.dp
+private val BackButtonSize = 48.dp
 private const val BACK_BUTTON_ALPHA = 0.85f
 private const val KICKER_ALPHA = 0.9f
 
@@ -99,26 +100,27 @@ fun LoginScreen(
 
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = Slate900,
+        color = MaterialTheme.colorScheme.background,
     ) {
         Column(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .imePadding()
+                    .navigationBarsPadding()
                     .verticalScroll(rememberScrollState()),
         ) {
             LoginHeader(onBackClick = onBackClick)
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(topStart = CardCornerRadius, topEnd = CardCornerRadius),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surface,
             ) {
                 Column(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(24.dp),
+                            .padding(horizontal = 20.dp, vertical = 24.dp),
                     verticalArrangement = Arrangement.spacedBy(SectionGap),
                 ) {
                     LoginContent(
@@ -149,7 +151,7 @@ private fun LoginHeader(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(HeaderHeight)
+                .heightIn(min = HeaderMinHeight)
                 .background(
                     brush =
                         Brush.verticalGradient(
@@ -158,8 +160,8 @@ private fun LoginHeader(
                 ).padding(24.dp),
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             IconButton(
                 onClick = onBackClick,
@@ -216,7 +218,7 @@ private fun LoginContent(
         Text(
             text = stringResource(R.string.login_title),
             style = MaterialTheme.typography.headlineMedium,
-            color = Slate900,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(modifier = Modifier.height(SectionGap))
         SocialAuthRow()
@@ -244,18 +246,7 @@ private fun LoginContent(
             showError = passwordError,
             imeAction = ImeAction.Done,
         )
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.CenterEnd,
-        ) {
-            TextButton(onClick = onForgotPasswordClick) {
-                Text(
-                    text = stringResource(R.string.login_forgot),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = VirGoPurple,
-                )
-            }
-        }
+        ForgotPasswordAction(onClick = onForgotPasswordClick)
         if (error != null) {
             Spacer(modifier = Modifier.height(4.dp))
             LoginErrorText(error = error)
@@ -270,6 +261,28 @@ private fun LoginContent(
 }
 
 @Composable
+private fun ForgotPasswordAction(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.fillMaxWidth(),
+        contentAlignment = Alignment.CenterEnd,
+    ) {
+        TextButton(
+            onClick = onClick,
+            modifier = Modifier.heightIn(min = 48.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.login_forgot),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
+}
+
+@Composable
 private fun LoginErrorText(
     error: String,
     modifier: Modifier = Modifier,
@@ -279,7 +292,7 @@ private fun LoginErrorText(
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.error,
         textAlign = TextAlign.Center,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().semantics { liveRegion = LiveRegionMode.Polite },
     )
 }
 
@@ -288,22 +301,25 @@ private fun LoginFooter(
     onRegisterClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Column(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = stringResource(R.string.register_no_account),
+            modifier = Modifier.fillMaxWidth(),
             style = MaterialTheme.typography.bodyMedium,
-            color = Slate500,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
         )
-        Spacer(modifier = Modifier.width(4.dp))
-        TextButton(onClick = onRegisterClick) {
+        TextButton(
+            onClick = onRegisterClick,
+            modifier = Modifier.heightIn(min = 48.dp),
+        ) {
             Text(
                 text = stringResource(R.string.register_switch_register),
                 style = MaterialTheme.typography.labelLarge,
-                color = VirGoPurple,
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }

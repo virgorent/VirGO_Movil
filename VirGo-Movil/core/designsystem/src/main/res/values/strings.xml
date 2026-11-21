@@ -1,0 +1,27 @@
+<resources>
+    <string name="design_preview_title">Tu evento, a tu manera</string>
+    <string name="design_preview_body">Encuentra el espacio ideal y planea cada detalle.</string>
+    <string name="design_preview_primary">Continuar</string>
+    <string name="design_preview_secondary">Volver</string>
+    <string name="design_preview_disabled">No disponible</string>
+    <string name="design_preview_email">Correo electrónico</string>
+    <string name="design_preview_email_value">hola@virgo.mx</string>
+    <string name="design_preview_error">Revisa el correo electrónico</string>
+    <string name="design_preview_badge">Estimación IA</string>
+    <string name="design_preview_card_title">Un espacio para celebrar</string>
+    <string name="design_preview_card_body">Salón con jardín, capacidad para 120 personas.</string>
+    <string name="design_back">Regresar</string>
+    <string name="design_preview_topbar_title">Mi evento</string>
+    <string name="design_preview_topbar_kicker">PLANIFICACIÓN</string>
+    <string name="design_preview_tab_home">Inicio</string>
+    <string name="design_preview_tab_explore">Explorar</string>
+    <string name="design_preview_tab_favorites">Favoritos</string>
+    <string name="design_preview_tab_event">Mi evento</string>
+    <string name="design_preview_tab_profile">Perfil</string>
+    <string name="design_preview_empty_title">Aún no hay nada aquí</string>
+    <string name="design_preview_empty_text">Cuando agregues elementos, aparecerán en esta sección.</string>
+    <string name="design_preview_empty_action">Explorar salones</string>
+    <string name="design_preview_loading">Cargando…</string>
+    <string name="design_preview_error_banner">No pudimos completar la operación. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="design_preview_retry">Reintentar</string>
+</resources>

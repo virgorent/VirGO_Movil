@@ -16,23 +16,23 @@ Lista de verificación del módulo (Art. I.4). Cada casilla lleva su evidencia. 
 - [x] `README.md` en inglés y `.gitignore` DevSecOps en el primer commit (T001). Evidencia: `git ls-tree origin/main VirGo-Movil/.gitignore VirGo-Movil/README.md`; `git check-ignore -v VirGo-Movil/local.properties`.
 - [ ] `verificar-constitucion` sobre la gobernanza: «Alineado» (T004).
 - [x] MCP `figma` y `github`: resueltos como **no aplica** (T037). Evidencia: `task.md` T037 (decisión 2026-11-16; `figma` → `HTTP 405`, sustituido por maqueta + `core:designsystem`; `github` → `gh` CLI).
-- [ ] P-01 (ID de la app) y P-02 (custodia del keystore) respondidas.
+- [ ] P-01 (ID de la app): reconciliar evidencia de aprobación en cierre.
+- [x] P-02: el usuario confirma custodia y respaldo seguro el 2026-11-20; cuatro nombres de secretos de firma y variable de API presentes. No se prueba restauración ni se accede a los valores.
 
 ## 2. Criterios de aceptación
 
 | CA | Evidencia | Estado |
 |---|---|---|
 | CA-01 | Compilación de módulos y CI (T007, T031) | ⏳ |
-| CA-02 | Arranque e inicio provisional en el emulador (T015, T017, T030). Evidencia: `docs/evidencia/CA-02-01-splash.png` (splash) y `docs/evidencia/CA-02-02-inicio-visitante.png` (inicio visitante), Pixel_10_Pro 2026-11-07; `am start -W` → `TotalTime 2677 ms` (emulador, debug; RNF-03 pendiente de medición en release). T030 sigue ⏳ | ✅ |
-| CA-03 | Sistema de diseño y modo oscuro (T014, T030). Evidencia: `docs/evidencia/evidencia-mod-oscuro.png` (modo oscuro con `cmd uimode night yes`) | ✅ |
+| CA-02 | T010–T013 cerradas técnicamente; APK final instalado con `install -r`, hash instalado coincidente y capturas `T014-final-*.png`. Acredita estados de acceso, no paridad completa con la maqueta. Ver `docs/evidencia/T010-T014-correccion-visual.md` | 🔄 |
+| CA-03 | Acceso verificado por pruebas a 320 dp/fuente 2.0 en claro/oscuro y capturas reales, incluida recuperación con IME. El inicio visitante real se solapa y conserva superficies claras en oscuro (`T014-visitante-compacto-2x-oscuro-bloqueo.png`); T014 sigue abierta | 🔄 |
 | CA-04 | Diagnóstico contra la API (T024, T030). Evidencia: `docs/evidencia/CA-04-diagnostico-api-disponible.png` — v0.2.0, URL de producción, «API disponible», 227 ms (2026-11-14) | ✅ |
 | CA-05 | Diagnóstico en *debug* (T024). Evidencia: `docs/evidencia/CA-05-diagnostico-api-caida.png` — con modo avión: «API no disponible» + «No hay conexión con la API. Revisa tu internet e inténtalo de nuevo.» sin cierre; «Reintentar» recupera (1123 ms) | ✅ |
 | CA-06 | *Release* sin tráfico en claro (T026, T030). Evidencia: `aapt dump xmltree` sobre el APK de `v0.2.0` → `cleartextTrafficPermitted=0x0`, sin `domain-config` en claro; la variante *release* rechaza `http://` en compilación (T019) | ✅ |
-| CA-06 | *Release* sin tráfico en claro (T026, T030) | ⏳ |
 | CA-07 | Token cifrado (T022) | ⏳ |
 | CA-08 | CI bloquea la fusión (T031, T039) | ⏳ |
 | CA-09 | Release manual con APK firmado (T035). Evidencia: release `v0.2.0` con APK+AAB firmados, instalado y con login en verde (2026-11-14) | ✅ |
-| CA-10 | Accesibilidad y escala de fuente (T013, T029) | ⏳ |
+| CA-10 | Catálogo T013 completo: previews claro/oscuro por componente, paleta y escala tipográfica; 5 pruebas de estados y 23 nuevas de `:core:designsystem` en verde. T014 sigue abierta por cortes con fuente 2.0 en pantallas reales | 🔄 |
 
 ## 3. Pruebas
 
@@ -44,6 +44,15 @@ Lista de verificación del módulo (Art. I.4). Cada casilla lleva su evidencia. 
 | Seguridad | Token cifrado, sin tráfico en claro, Lint, CodeQL y Gitleaks sin hallazgos altos | ⏳ |
 | Mutación | `./gradlew pitest` (T038) · puntaje base: — % | ⏳ |
 | Humo | APK `v0.2.0` instalado en el emulador y login contra producción en verde (T035). Evidencia: `docs/evidencia/CA-09-release-v0.2.0-login.png` | ✅ |
+
+> **Ejecución local (2026-11-21):** pipeline completo `BUILD SUCCESSFUL in 2m 4s`
+> (incremental, 383 tareas; 29 ejecutadas); 43 suites, 237 pruebas, 0 fallos/errores/omitidas;
+> Pitest dominio 60 % (57/95) y common 33 % (1/3). Reportes aislados en
+> `%TEMP%\opencode\virgo-foundation-build`. No sustituye la verificación de cierre
+> ni los checks remotos, que no se ejecutaron para estos cambios.
+
+> Esta ejecución incluye las correcciones finales de acceso: `FontScaleTest` 4,
+> `CompactAccessTest` 10 y `AuthAccessibilityTest` 3. No acredita toda la app.
 
 ## 4. PR e integración continua
 
@@ -67,7 +76,12 @@ Lista de verificación del módulo (Art. I.4). Cada casilla lleva su evidencia. 
 
 | RNF | Evidencia | Estado |
 |---|---|---|
-| RNF-03 Ceros en claro | `network_security_config.xml` con `<base-config cleartextTrafficPermitted="false" />`; manifiesto de *release* sin `usesCleartextTraffic` y con `networkSecurityConfig` (verificado con `aapt dump xmltree` sobre el APK de *release*: `res/8G.xml` → `cleartextTrafficPermitted=(type 0x12)0x0`) | ✅ |
-| RNF-04 Keystore robusto | `KeystoreAead.create` pre-registra AeadConfig antes de crear el keyset (logcat `[I ConfigManager] Registered [config_id=1] for algorithm AESGCM with keysize 128`) y tiene fallback a clave estática si no existe keyset; fix en el PR #9 (`c1d4552`) | ✅ |
+| RNF-01 Compatibilidad API 26+ | Configuración SDK en los plugins de convención; carga de fuentes probada en API 26/36. No equivale a una prueba integral en todos los dispositivos | 🔄 |
+| RNF-02 Seguridad | Evidencia histórica de CA-06 sobre `v0.2.0`: `cleartextTrafficPermitted=0x0`; T022/T027 documentan el almacenamiento cifrado. Los gates remotos del árbol corregido siguen pendientes | 🔄 |
+| RNF-03 Arranque < 2 s | T030 registra 1791/1854/1885 ms en debug y 698 ms en `v0.2.0`. Son mediciones históricas, no del APK corregido actual | 🔄 |
+| RNF-04 Accesibilidad | T014: contraste, 48 dp, semántica y texto ampliado; ver evidencia de reparación y sus límites | 🔄 |
+| RNF-05 Calidad | Análisis y pruebas locales documentados en §3; checks remotos de estos cambios pendientes | 🔄 |
+| RNF-06 Costo | Herramientas locales, fuentes OFL y servicios existentes; sin nuevos servicios de pago | ✅ |
+| RNF-07 Trazabilidad | Release histórico `v0.2.0` con commit en §5; la reparación actual sigue local, sin commit/publicación | 🔄 |
 
 > **Causa del incidente de arranque:** el emulador arrancando por *snapshot* corrompía el registro del keystore; el fix es pre-registrar AeadConfig y evitar el arranque por snapshot. Detalle en `memoria.md` (entrada 2026-11-12).

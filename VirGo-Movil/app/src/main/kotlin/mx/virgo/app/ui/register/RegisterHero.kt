@@ -1,11 +1,13 @@
 package mx.virgo.app.ui.register
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -31,11 +33,11 @@ import mx.virgo.app.ui.guest.ratingText
 import mx.virgo.core.designsystem.theme.Slate900
 import mx.virgo.core.designsystem.theme.VirGoPurpleDark
 
-private val HeroHeight = 260.dp
+private val HeroMinHeight = 260.dp
 private val HeroPadding = 20.dp
 private val HeroTextBottomPadding = 52.dp
 private val HeroDecorSize = 160.dp
-private val BackButtonSize = 40.dp
+private val BackButtonSize = 48.dp
 private const val HERO_DECOR_ALPHA = 0.10f
 private const val BACK_BUTTON_ALPHA = 0.85f
 private val HeroKickerColor = Color(0xFFC9CAFF)
@@ -50,7 +52,7 @@ internal fun RegisterHero(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(HeroHeight)
+                .heightIn(min = HeroMinHeight)
                 .background(
                     brush =
                         Brush.verticalGradient(
@@ -69,30 +71,38 @@ internal fun RegisterHero(
                         shape = CircleShape,
                     ),
         )
-        IconButton(
-            onClick = onBackClick,
+        Column(
             modifier =
                 Modifier
-                    .align(Alignment.TopStart)
-                    .padding(start = HeroPadding, top = HeroPadding)
-                    .size(BackButtonSize)
-                    .background(
-                        color = Color.White.copy(alpha = BACK_BUTTON_ALPHA),
-                        shape = CircleShape,
+                    .fillMaxWidth()
+                    .padding(
+                        start = HeroPadding,
+                        end = HeroPadding,
+                        top = HeroPadding,
+                        bottom = HeroTextBottomPadding,
                     ),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.action_back),
-                tint = Slate900,
-            )
+            RegisterBackButton(onBackClick)
+            RegisterHeroCopy(venue = venue)
         }
-        RegisterHeroCopy(
-            venue = venue,
-            modifier =
-                Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(start = HeroPadding, end = HeroPadding, bottom = HeroTextBottomPadding),
+    }
+}
+
+@Composable
+private fun RegisterBackButton(onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        modifier =
+            Modifier.size(BackButtonSize).background(
+                color = Color.White.copy(alpha = BACK_BUTTON_ALPHA),
+                shape = CircleShape,
+            ),
+    ) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = stringResource(R.string.action_back),
+            tint = Slate900,
         )
     }
 }

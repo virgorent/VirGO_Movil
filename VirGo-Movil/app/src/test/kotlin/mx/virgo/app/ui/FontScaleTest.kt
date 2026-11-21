@@ -15,11 +15,19 @@ import mx.virgo.app.ui.guest.GuestHomeScreen
 import mx.virgo.app.ui.guest.GuestHomeViewModel
 import mx.virgo.app.ui.login.LoginScreen
 import mx.virgo.app.ui.login.LoginViewModel
+import mx.virgo.app.ui.recover.RecoverScreen
+import mx.virgo.app.ui.recover.RecoverViewModel
+import mx.virgo.app.ui.register.RegisterScreen
+import mx.virgo.app.ui.register.RegisterViewModel
 import mx.virgo.core.designsystem.theme.VirGoTheme
+import mx.virgo.core.domain.GenerateRecoveryCodeUseCase
 import mx.virgo.core.domain.GetVenuesUseCase
 import mx.virgo.core.domain.LoginUseCase
+import mx.virgo.core.domain.RegisterUseCase
 import mx.virgo.core.domain.ValidateEmailUseCase
 import mx.virgo.core.domain.ValidateLoginFormUseCase
+import mx.virgo.core.domain.ValidateRecoveryUseCase
+import mx.virgo.core.domain.ValidateRegisterFormUseCase
 import mx.virgo.core.testing.FakeAuthRepository
 import mx.virgo.core.testing.FakeVenueRepository
 import org.junit.Rule
@@ -85,7 +93,69 @@ class FontScaleTest {
         }
 
         compose.onNodeWithText(string(R.string.login_title)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.social_google)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.social_apple)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.login_forgot)).performScrollTo().assertIsDisplayed()
         compose.onNodeWithText(string(R.string.login_submit)).performScrollTo().assertIsDisplayed()
-        compose.onNodeWithText(string(R.string.login_submit)).performClick()
+        compose.onNodeWithText(string(R.string.register_no_account)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.register_switch_register)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.login_submit)).performScrollTo().performClick()
+    }
+
+    @Test
+    fun registerKeepsFormAndFooterVisibleAtDoubleFontScale() {
+        val viewModel =
+            RegisterViewModel(
+                ValidateRegisterFormUseCase(ValidateEmailUseCase()),
+                RegisterUseCase(FakeAuthRepository()),
+            )
+        compose.setContent {
+            val density = LocalDensity.current
+            CompositionLocalProvider(
+                LocalDensity provides Density(density.density, fontScale = DOUBLE_FONT_SCALE),
+            ) {
+                VirGoTheme {
+                    RegisterScreen(
+                        venueId = null,
+                        onRegisterSuccess = {},
+                        viewModel = viewModel,
+                    )
+                }
+            }
+        }
+
+        compose.onNodeWithText(string(R.string.register_title)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.register_benefit_prices)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.register_role_client)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.register_submit)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.register_have_account)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.register_terms)).performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun recoverKeepsLeadAndActionVisibleAtDoubleFontScale() {
+        val viewModel =
+            RecoverViewModel(
+                ValidateEmailUseCase(),
+                GenerateRecoveryCodeUseCase(),
+                ValidateRecoveryUseCase(),
+            )
+        compose.setContent {
+            val density = LocalDensity.current
+            CompositionLocalProvider(
+                LocalDensity provides Density(density.density, fontScale = DOUBLE_FONT_SCALE),
+            ) {
+                VirGoTheme {
+                    RecoverScreen(
+                        onDone = {},
+                        viewModel = viewModel,
+                    )
+                }
+            }
+        }
+
+        compose.onNodeWithText(string(R.string.recover_title)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.recover_lead)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.recover_send)).assertIsDisplayed()
     }
 }

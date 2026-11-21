@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `000-arquitectura-base` |
 | Versión | 1.1.0 |
-| Estado | Aprobado. 38/40 tareas hechas. |
+| Estado | Aprobado. 38/40 tareas hechas; T014 y T036 pendientes. |
 | Fecha | 2026-10-29 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 | Constitución | v1.1.1 |
@@ -47,11 +47,33 @@
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T010 | Tokens de color claro y oscuro según el plan (sección 6.1), en `Color.kt` y `ColorScheme` | T007 | `ui-designsystem` | Los *previews* muestran la paleta en los dos temas | ✅ |
-| T011 | [P] Tipografía: Manrope y DM Sans en `res/font` con su licencia OFL y `VirGoTypography` con la escala de Material 3 | T007 | `ui-designsystem` | Los *previews* de la escala tipográfica usan las fuentes correctas | ✅ |
-| T012 | Formas, espaciado y `VirGoTheme` (claro, oscuro y el color dinámico desactivado para respetar la marca) | T010, T011 | `ui-designsystem` | `VirGoTheme` se aplica en `MainActivity` | ✅ |
-| T013 | Componentes base: `VirGoButton`, `VirGoTextField`, `VirGoCard`, `VirGoBadge` (incluye «Estimación IA»), `VirGoTopBar`, `VirGoBottomBar`, `EmptyState`, `LoadingState` y `ErrorBanner`, cada uno con `@Preview` en claro y oscuro | T012 | `ui-designsystem` | Catálogo de *previews* completo (CA-10) | ✅ |
-| T014 | Revisión de accesibilidad: contraste AA en los dos temas, objetivos táctiles de 48 dp o más, `contentDescription` y escala de fuente 2.0 | T013 | `ui-designsystem` + `qa-movil` | Tabla de contrastes en `memoria.md`; sin cortes con letra grande (CA-03) | ✅ |
+| T010 | Tokens de color claro y oscuro según el plan (sección 6.1), en `Color.kt` y `ColorScheme` | T007 | `ui-designsystem` | Los *previews* muestran la paleta en los dos temas | ✅ Paleta clara/oscura y preview en ambos temas; 22 pares sólidos dentro de AA |
+| T011 | [P] Tipografía: Manrope y DM Sans en `res/font` con su licencia OFL y `VirGoTypography` con la escala de Material 3 | T007 | `ui-designsystem` | Los *previews* de la escala tipográfica usan las fuentes correctas | ✅ Manrope/DM Sans locales con OFL, 15 estilos y preview de escala en claro/oscuro |
+| T012 | Formas, espaciado y `VirGoTheme` (claro, oscuro y el color dinámico desactivado para respetar la marca) | T010, T011 | `ui-designsystem` | `VirGoTheme` se aplica en `MainActivity` | ✅ Formas, espaciado y tema aplicados; pruebas de tema en verde |
+| T013 | Componentes base: `VirGoButton`, `VirGoTextField`, `VirGoCard`, `VirGoBadge` (incluye «Estimación IA»), `VirGoTopBar`, `VirGoBottomBar`, `EmptyState`, `LoadingState` y `ErrorBanner`, cada uno con `@Preview` en claro y oscuro | T012 | `ui-designsystem` | Catálogo de *previews* completo (CA-10) | ✅ Catálogo completo con previews claro/oscuro y 5 pruebas de estados |
+| T014 | Revisión de accesibilidad: contraste AA en los dos temas, objetivos táctiles de 48 dp o más, `contentDescription` y escala de fuente 2.0 | T013 | `ui-designsystem` + `qa-movil` | Tabla de contrastes en `memoria.md`; sin cortes con letra grande (CA-03) | 🔄 Acceso corregido y 17 pruebas focalizadas en verde; captura del APK final revela solapamientos y superficies no adaptadas en visitante a 320 dp/2.0/oscuro; falta revisión integral |
+
+> **Corrección autorizada el 2026-11-20:** tras pedir «haz todo y aplica los cambios
+> visuales», se comienza por reparar las tareas **ya aprobadas de la base**:
+> paleta, fuentes, formas y controles compartidos. No es ejecución del módulo
+> separado `031` ni excepción al gate de `000` para flujos nuevos. Se reabren
+> T010–T014 porque el checkout actual no acredita los resultados históricos
+> (otras tonalidades, `SansSerif` y catálogo incompleto). No se borra su historia
+> ni se cierran T033/T036 por esta autorización.
+>
+> **Cierre técnico T010–T013 (2026-11-20):** paleta y escala tipográfica tienen
+> preview propio en claro/oscuro; los nueve componentes cuentan con preview y
+> los cinco nuevos con pruebas de estado, navegación y área táctil. Pipeline
+> completo en verde (41 suites, 222 pruebas, 0 fallos). T014 permanece abierta:
+> las capturas reales con fuente 2.0 aún muestran cortes y la migración visual de
+> pantallas no está hecha. Evidencia en
+> [`docs/evidencia/T010-T014-correccion-visual.md`](../../docs/evidencia/T010-T014-correccion-visual.md).
+
+> **Seguimiento T014 (2026-11-21):** pipeline completo del árbol corregido en
+> verde (43 suites, 237 pruebas, 0 fallos/errores/omitidas). APK final instalado
+> con hash coincidente; capturas de acceso compacto oscuro y recuperación con
+> teclado. La captura de visitante compacto evidencia un bloqueo restante:
+> T014 y T036 permanecen abiertas, base 38/40. No hubo merge, push ni release.
 
 ## F3 · Arranque y navegación
 
@@ -120,7 +142,7 @@
 |---|---|---|---|---|---|
 | T031 | `.github/workflows/movil-ci.yml`: JDK 17, `setup-gradle`, jobs `changes` y `movil-build-test` con `ktlintCheck detekt lint testDebugUnitTest pitest assembleDebug`, artefactos (APK de *debug* y reporte de Pitest) y `concurrency` | T028, T029, T038 | `seguridad-ci` | PR de prueba con todos los checks en verde (CA-08) | ✅ |
 | T032 | [P] `.github/workflows/movil-codeql.yml` (`java-kotlin`) | T031 | `seguridad-ci` | Check de CodeQL en el PR sin alertas altas | ✅ |
-| T033 | 🧑 Generar el keystore de *release* y guardarlo en GitHub Secrets (`SIGNING_*`); crear la variable `VIRGO_API_BASE_URL` con la URL HTTPS que entrega T210 del backend | T026 | `seguridad-ci` | Secretos y variable visibles en GitHub; respaldo del keystore confirmado (P-02) | 🔄 |
+| T033 | 🧑 Generar el keystore de *release* y guardarlo en GitHub Secrets (`SIGNING_*`); crear la variable `VIRGO_API_BASE_URL` con la URL HTTPS que entrega T210 del backend | T026 | `seguridad-ci` | Secretos y variable visibles en GitHub; respaldo del keystore confirmado (P-02) | ✅ Custodia y respaldo confirmados por el usuario el 2026-11-20 |
 | T034 | `.github/workflows/movil-release.yml`: **solo `workflow_dispatch`** desde `main` con la versión como entrada → `assembleRelease`, `apksigner verify` y `gh release create vX.Y.Z` con el APK | T031, T033 | `seguridad-ci` | YAML válido; sin secretos impresos en los logs | ✅ |
 | T035 | 🧑 Primer release con *Run workflow*: descargar, instalar y hacer la prueba de humo (la app abre y llega a la API de producción por HTTPS) | T034 | `seguridad-ci` + `qa-movil` | Release publicado con el APK firmado, la versión y el commit (CA-09) | ✅ |
 
@@ -129,6 +151,16 @@
 > T032 hecha: `.github/workflows/movil-codeql.yml` commiteado en este mismo PR #4 (commit `5a31fdd`) de `virgorent/VirGO_Movil`. Disparadores `pull_request` y `push` sobre `main` más cron semanal; lenguaje `java-kotlin` con `github/codeql-action` pinneado en `33d7b85da1a04171e211befe2c739303b9a4c066` (v4.39.3), build explícito `./gradlew assembleDebug` con `working-directory: VirGo-Movil`, permisos `security-events: write` solo en el job y `concurrency` que cancela corridas previas del mismo PR. Evidencia: checks `analyze` (workflow `movil-codeql`, run `43239028981`) y `CodeQL` en verde en el PR #4, y 0 alertas de code scanning (`gh api /repos/virgorent/VirGO_Movil/code-scanning/alerts` → `0`), es decir, sin alertas altas.
 
 > T033 en curso: keystore de release `virgo-release.jks` (alias `virgo-release`, certificado `CN=VirGo Local, O=VirGo`) y sus 4 secretos en `virgorent/VirGO_Movil` — `SIGNING_KEYSTORE_BASE64`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`, `SIGNING_STORE_PASSWORD` — visibles con `gh secret list` (2026-11-12). Firma probada en local con el keystore real: `SIGNING_*=… ./gradlew assembleRelease` → `BUILD SUCCESSFUL` (1m31s) y `apksigner verify` → exit 0. **Falta:** la variable `VIRGO_API_BASE_URL` (T210 del backend sigue sin desplegar: «AWS … todavía sin desplegar con URL HTTPS», `VirGO_Backend/docs/ESTADO-PROYECTO.md`) y el respaldo del keystore (P-02): el archivo vive en `Temp\opencode\` y requiere custodia humana.
+
+> **T033 cerrada con evidencia complementaria (2026-11-20):** el usuario confirma
+> «Yo, con respaldo seguro», fuera de las carpetas temporales. Consulta de solo
+> nombres: `gh secret list --repo virgorent/VirGO_Movil --json name` confirma los
+> cuatro secretos `SIGNING_*` anteriores; `gh variable list --json name` confirma
+> `VIRGO_API_BASE_URL` (su URL HTTPS ya estaba documentada). No se leyeron valores
+> de secretos, no se copió el keystore, no se cambiaron llaves y no se ejecutó
+> release. La verificación del respaldo es declaración de custodia humana,
+> no una prueba automatizada de restauración. T036 y correcciones visuales
+> permanecen pendientes.
 
 > T034 hecha: `.github/workflows/movil-release.yml` en la raíz del repositorio (commit `c7793ed`): solo `workflow_dispatch` con entrada `version` validada (`^[0-9]+\.[0-9]+\.[0-9]+$`), job condicionado a `refs/heads/main`, SHA pinneados de `checkout`, `setup-java` y `setup-gradle` (los mismos de `movil-ci.yml`), keystore decodificado desde `SIGNING_KEYSTORE_BASE64` hacia `$RUNNER_TEMP`, `assembleRelease` con `SIGNING_*` y `vars.VIRGO_API_BASE_URL`, `apksigner verify --print-certs` y `gh release create vX.Y.Z` con `GH_TOKEN` (`permissions: contents: write` solo en el job). Los secretos se pasan por `env:` en cada paso, nunca interpolados dentro del `run`, por lo que no se imprimen en los logs. Evidencia: `actionlint` v1.7.12 → exit 0 y `yaml.safe_load` → YAML OK; el workflow no aparece en `gh workflow list` desde una rama distinta de la predeterminada (GitHub solo registra `workflow_dispatch` desde `main`), su ejecución real es T035.
 

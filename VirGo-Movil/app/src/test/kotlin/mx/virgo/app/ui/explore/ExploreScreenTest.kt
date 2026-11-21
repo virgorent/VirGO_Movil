@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onParent
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
@@ -183,8 +184,19 @@ class ExploreScreenTest {
         compose.onNodeWithText(string(R.string.explore_category_elegant)).performClick()
         compose.onNodeWithText(string(R.string.explore_search_hint)).performClick()
         compose.waitForIdle()
-        compose.onNodeWithText("2 km").performClick()
-        compose.onNodeWithText(string(R.string.explore_filters_apply)).performClick()
+        // Bring the horizontal distance row into the vertically scrolling panel first.
+        compose.onNodeWithText("2 km").onParent().performScrollTo()
+        compose
+            .onNodeWithText("2 km")
+            .performScrollTo()
+            .assertIsDisplayed()
+            .performClick()
+        compose.onNodeWithText(string(R.string.explore_filters_title)).assertExists()
+        compose
+            .onNodeWithText(string(R.string.explore_filters_apply))
+            .performScrollTo()
+            .assertIsDisplayed()
+            .performClick()
         compose.waitForIdle()
         compose.onNodeWithText(string(R.string.explore_empty)).assertIsDisplayed()
     }

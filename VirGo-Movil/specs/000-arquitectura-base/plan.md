@@ -125,6 +125,19 @@ VirGo-Movil/
 - **Tema oscuro:** derivado con contraste AA verificado en T014.
 - **Componentes base:** `VirGoButton` (primario, secundario y texto), `VirGoTextField`, `VirGoCard`, `VirGoBadge` (incluye la variante «Estimación IA»), `VirGoTopBar`, `VirGoBottomBar`, `EmptyState`, `LoadingState` y `ErrorBanner`.
 
+> **Reparación autorizada (2026-11-20, T010–T014):** aplicar estos requisitos
+> ya aprobados al checkout actual. La paleta de marca conserva los valores
+> originales; los roles semánticos accesibles pueden usar variantes derivadas
+> (violeta oscuro/blanco para acción y gris más oscuro para texto pequeño) cuando
+> el par literal no alcanza AA. Las parejas se verifican con pruebas de contraste.
+> Los cinco controles existentes usan los roles del tema y alturas mínimas,
+> no alturas que corten texto ampliado. Se empaquetan los TTF variables originales
+> de Manrope/DM Sans con OFL y hash de una revisión fija; no hay proveedor de
+> fuentes remoto. Se completa el catálogo ya aprobado de T013 y se reparan
+> defectos de accesibilidad en controles/pantallas existentes, sin agregar
+> flujos del negocio ni habilitar el módulo `031`. Evidencia y límites en
+> [`T010-T014-correccion-visual.md`](../../docs/evidencia/T010-T014-correccion-visual.md).
+
 ### 6.2 Navegación
 
 - `VirGoNavHost` registra los destinos con extensiones `NavGraphBuilder.xxxScreen()`. Cada módulo futuro aporta las suyas.

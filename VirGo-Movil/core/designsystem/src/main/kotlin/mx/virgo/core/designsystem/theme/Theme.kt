@@ -7,46 +7,56 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 
-private val LightColorScheme =
+internal val LightColorScheme =
     lightColorScheme(
-        primary = VirGoPurple,
+        primary = VirGoPurpleDark,
         onPrimary = CardBackground,
         primaryContainer = VirGoPurpleContainer,
         onPrimaryContainer = VirGoPurpleDark,
-        secondary = Slate700,
+        secondary = AccessibleMuted,
         onSecondary = CardBackground,
-        tertiary = VirGoPurpleDark,
+        tertiary = VirGoCoral,
+        onTertiary = VirGoInk,
+        tertiaryContainer = VirGoCoralContainer,
+        onTertiaryContainer = VirGoInk,
         background = CardBackground,
         onBackground = Slate900,
         surface = CardBackground,
         onSurface = Slate900,
         surfaceVariant = InputBackground,
         onSurfaceVariant = Slate500,
-        outline = Slate200,
-        outlineVariant = Slate400,
-        error = ErrorRed,
+        outline = AccessibleOutline,
+        outlineVariant = VirGoLine,
+        error = AccessibleError,
         onError = CardBackground,
+        errorContainer = VirGoCoralContainer,
+        onErrorContainer = AccessibleError,
     )
 
-private val DarkColorScheme =
+internal val DarkColorScheme =
     darkColorScheme(
-        primary = VirGoPurple,
-        onPrimary = CardBackground,
+        primary = DarkPrimary,
+        onPrimary = DarkOnPrimary,
         primaryContainer = Slate800,
         onPrimaryContainer = VirGoPurpleLight,
         secondary = Slate200,
         onSecondary = Slate900,
         tertiary = VirGoPurpleLight,
+        onTertiary = DarkOnPrimary,
+        tertiaryContainer = Slate700,
+        onTertiaryContainer = Slate50,
         background = Slate900,
         onBackground = Slate50,
         surface = Slate800,
         onSurface = Slate50,
         surfaceVariant = Slate700,
-        onSurfaceVariant = Slate400,
-        outline = Slate700,
-        outlineVariant = Slate500,
-        error = ErrorRed,
-        onError = CardBackground,
+        onSurfaceVariant = DarkMuted,
+        outline = DarkOutline,
+        outlineVariant = Slate700,
+        error = DarkError,
+        onError = DarkOnError,
+        errorContainer = AccessibleError,
+        onErrorContainer = VirGoCoralContainer,
     )
 
 @Composable

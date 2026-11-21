@@ -6,7 +6,7 @@
 ## 1. Forma de trabajo
 
 - **Metodología**: Spec-Driven Development (SDD).
-- **Fase actual**: gobernanza global cerrada (`nv-00`, `nv-01` y `nv-02` cumplidos; pendiente operativo: aplicar el ruleset de `main`). `VirGo-API` está en fase de especificación; `VirGo-Movil` tiene su spec `000` aprobado e **implementado en curso** (38/40 tareas, código en `main`); los specs de pantallas `001`–`004` están implementados con PRs verdes pendientes de aprobación.
+- **Fase actual**: gobernanza global cerrada (`nv-00`, `nv-01` y `nv-02` cumplidos; pendiente operativo: aplicar el ruleset de `main`). `VirGo-API` está en fase de especificación; `VirGo-Movil` tiene su spec `000` aprobado e **implementado en curso** (38/40 tareas; T010–T013 cerradas y T014/T036 pendientes); los specs de pantallas `001`–`004` están implementados con PRs #17–#20 aprobados, pendientes de fusión (consulta 2026-11-21).
 - **Principio**: `spec → plan → task → check`. No ejecutar tareas sin aprobación explícita.
 - **DevSecOps**: ningún cambio se fusiona sin escaneo de secretos, revisión de dependencias y, cuando el proyecto ya tenga su workflow, análisis estático en verde.
 - **Todo debe alinearse** a `constitution.md`.
@@ -38,7 +38,7 @@ Este repositorio es el **frontend**. El backend vive en [`virgorent/VirGO_Backen
 | **nv-00** | Constitución SDD y reglas globales | Cumplido (2026-11-04) |
 | **nv-01** | Arquitectura base SDD | Cumplido (2026-11-04) |
 | **nv-02** | Gobernanza global de proyectos | Cumplido con pendiente operativo (aplicar ruleset) |
-| **VirGo-Movil** | App Android (specs `000`–`004`) | Implementación (`000` 38/40; `001-inicio-visitante` 5/5; `002-registro` 5/5; `003-iniciar-sesion` 4/4; `004-recuperar-contrasena` 4/5) |
+| **VirGo-Movil** | App Android (specs `000`–`004`) | Implementación (`000` 38/40, T014 y T036 pendientes; `001-inicio-visitante` 5/5; `002-registro` 5/5; `003-iniciar-sesion` 4/4; `004-recuperar-contrasena` 4/5) |
 
 ## 4. Convenciones
 

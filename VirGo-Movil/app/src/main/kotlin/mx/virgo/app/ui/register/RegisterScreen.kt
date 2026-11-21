@@ -5,16 +5,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,9 +36,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -59,12 +62,6 @@ import mx.virgo.app.ui.guest.VenueSamples
 import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
 import mx.virgo.core.designsystem.components.VirGoButton
-import mx.virgo.core.designsystem.theme.ErrorRed
-import mx.virgo.core.designsystem.theme.Slate100
-import mx.virgo.core.designsystem.theme.Slate400
-import mx.virgo.core.designsystem.theme.Slate500
-import mx.virgo.core.designsystem.theme.Slate900
-import mx.virgo.core.designsystem.theme.VirGoPurple
 import mx.virgo.core.designsystem.theme.VirGoTheme
 import mx.virgo.core.domain.AuthRepository
 import mx.virgo.core.domain.RegisterUseCase
@@ -77,7 +74,7 @@ private val SectionGap = 14.dp
 private val FieldGap = 10.dp
 private val BenefitsPill = RoundedCornerShape(20.dp)
 private val ErrorPillShape = RoundedCornerShape(10.dp)
-private val ErrorPillBg = Color(0xFFFDECEC)
+private const val LARGE_FONT_SCALE = 1.5f
 
 @Composable
 fun RegisterScreen(
@@ -163,8 +160,9 @@ private fun RegisterFlow(
         modifier =
             modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.background)
                 .imePadding()
+                .navigationBarsPadding()
                 .verticalScroll(rememberScrollState()),
     ) {
         RegisterHero(venue = venue, onBackClick = onBackClick)
@@ -216,7 +214,7 @@ private fun RegisterCard(
                 .offset(y = -CardOverlap)
                 .fillMaxWidth(),
         shape = RoundedCornerShape(topStart = CardCornerRadius, topEnd = CardCornerRadius),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 8.dp,
     ) {
         Column(
@@ -228,7 +226,7 @@ private fun RegisterCard(
             Text(
                 text = stringResource(R.string.register_title),
                 style = MaterialTheme.typography.headlineMedium,
-                color = Slate900,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(modifier = Modifier.height(SectionGap))
             RegisterBenefits()
@@ -264,36 +262,62 @@ private fun RegisterCard(
 
 @Composable
 private fun RegisterBenefits(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        BenefitChip(
-            icon = Icons.Default.Tag,
-            text = stringResource(R.string.register_benefit_prices),
-        )
-        BenefitChip(
-            icon = Icons.Default.AutoAwesome,
-            text = stringResource(R.string.register_benefit_ai),
-        )
-        BenefitChip(
-            icon = Icons.Default.CalendarMonth,
-            text = stringResource(R.string.register_benefit_event),
-        )
+    if (LocalDensity.current.fontScale >= LARGE_FONT_SCALE) {
+        Column(
+            modifier = modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            BenefitChip(
+                icon = Icons.Default.Tag,
+                text = stringResource(R.string.register_benefit_prices),
+                modifier = Modifier.fillMaxWidth(),
+            )
+            BenefitChip(
+                icon = Icons.Default.AutoAwesome,
+                text = stringResource(R.string.register_benefit_ai),
+                modifier = Modifier.fillMaxWidth(),
+            )
+            BenefitChip(
+                icon = Icons.Default.CalendarMonth,
+                text = stringResource(R.string.register_benefit_event),
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+    } else {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            BenefitChip(
+                icon = Icons.Default.Tag,
+                text = stringResource(R.string.register_benefit_prices),
+                modifier = Modifier.weight(1f),
+            )
+            BenefitChip(
+                icon = Icons.Default.AutoAwesome,
+                text = stringResource(R.string.register_benefit_ai),
+                modifier = Modifier.weight(1f),
+            )
+            BenefitChip(
+                icon = Icons.Default.CalendarMonth,
+                text = stringResource(R.string.register_benefit_event),
+                modifier = Modifier.weight(1f),
+            )
+        }
     }
 }
 
 @Composable
-private fun RowScope.BenefitChip(
+private fun BenefitChip(
     icon: ImageVector,
     text: String,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier =
-            Modifier
-                .weight(1f)
+            modifier
                 .clip(BenefitsPill)
-                .background(Slate100)
+                .background(MaterialTheme.colorScheme.primaryContainer)
                 .padding(horizontal = 9.dp, vertical = 6.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -301,15 +325,14 @@ private fun RowScope.BenefitChip(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = VirGoPurple,
+            tint = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.size(13.dp),
         )
         Text(
             text = text,
             style = MaterialTheme.typography.labelSmall,
-            color = VirGoPurple,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             fontWeight = FontWeight.Bold,
-            maxLines = 1,
         )
     }
 }
@@ -360,10 +383,11 @@ private fun RegisterForm(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .background(ErrorPillBg, ErrorPillShape)
+                        .semantics { liveRegion = LiveRegionMode.Polite }
+                        .background(MaterialTheme.colorScheme.errorContainer, ErrorPillShape)
                         .padding(horizontal = 11.dp, vertical = 9.dp),
                 style = MaterialTheme.typography.labelMedium,
-                color = ErrorRed,
+                color = MaterialTheme.colorScheme.onErrorContainer,
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -430,7 +454,7 @@ private fun RegisterContactFields(
                 Text(
                     text = stringResource(R.string.field_phone_prefix),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Slate500,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             },
         )
@@ -442,22 +466,25 @@ private fun RegisterFooter(
     onLoginClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Column(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = stringResource(R.string.register_have_account),
+            modifier = Modifier.fillMaxWidth(),
             style = MaterialTheme.typography.bodyMedium,
-            color = Slate500,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
         )
-        Spacer(modifier = Modifier.width(4.dp))
-        TextButton(onClick = onLoginClick) {
+        TextButton(
+            onClick = onLoginClick,
+            modifier = Modifier.heightIn(min = 48.dp),
+        ) {
             Text(
                 text = stringResource(R.string.register_switch_login),
                 style = MaterialTheme.typography.labelLarge,
-                color = VirGoPurple,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
             )
         }
@@ -466,7 +493,7 @@ private fun RegisterFooter(
         text = stringResource(R.string.register_terms),
         modifier = Modifier.fillMaxWidth(),
         style = MaterialTheme.typography.labelSmall,
-        color = Slate400,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
     )
 }

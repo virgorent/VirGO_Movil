@@ -7,17 +7,17 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | Campo | Valor |
 |---|---|
 | Constitución | v1.2.0 propuesta (Google Play, 2026-11-15); vigente v1.1.1 |
-| Módulo en curso | `000-arquitectura-base`: 38/40 tareas hechas (detalle y estados en `task.md`) |
-| Tareas | 38 / 40 hechas (pendientes: T033 🔄, T036 ⏳) |
-| `API_BASE_URL` de *release* | Variable `VIRGO_API_BASE_URL` creada en `VirGO_Movil` con la URL de producción; falta el respaldo P-02 del keystore para cerrar T033 |
+| Módulo en curso | `000-arquitectura-base`: 38/40 tareas hechas; T014 y T036 pendientes |
+| Tareas | 38 / 40 hechas; T014 🔄, T036 ⏳; T010–T013 cerradas el 2026-11-20 con pruebas y previews |
+| `API_BASE_URL` de *release* | Variable `VIRGO_API_BASE_URL` presente; cuatro secretos de firma presentes; usuario confirma custodia y respaldo seguro (P-02, 2026-11-20), sin compartir sus valores |
 | Última versión publicada | **v0.2.0** (versionCode 2): GitHub Release `v0.2.0` y Google Play, prueba interna activa; prueba cerrada en revisión desde el 2026-11-15 |
-| Siguiente paso | Consolidar PR #27 (`005`), completar su aceptación visual y preparar por separado el borrador `030-restaurar-sesion`; no implementar sesión hasta aprobación. Siguen pendientes T033 (respaldo P-02), T036 (cierre de `000`) y coordinación de fusiones con Karasu. Sin nueva release autorizada. |
+| Siguiente paso | Cerrar T014 (fuente 2.0 y migración de pantallas) y T036 antes de nuevos módulos. Prioridad: acceso → cliente → propietario → proveedor fieles al prototipo local entregado como supuesto equivalente de Figma, sin cotejo directo. `030` y los documentos `031` permanecen separados; aceptación visual de #27 pendiente. Sin nueva release autorizada. |
 
 ## Módulos
 
 | Módulo | Estado | Notas |
 |---|---|---|
-| `000-arquitectura-base` | 🚧 Aprobado; 38/40 tareas hechas | Base técnica sin pantallas del negocio |
+| `000-arquitectura-base` | 🚧 Aprobado; 38/40 tareas hechas | T010–T013 cerradas; T014 (fuente 2.0/pantallas) y T036 pendientes |
 | `001`–`004` pantallas | 🚧 Aprobados (retroactivo 2026-11-12) e implementados; recuperación pendiente de backend | PRs pendientes de integración; no se presume su fusión |
 | `005-explorar-salones` | 🚧 Implementación parcial y consolidación autorizada el 2026-11-19 | PR #27; integración completa y aceptación visual del último rediseño pendientes |
 | `006`–`029` | Borradores | Sin implementación autorizada por esta consolidación |
@@ -792,3 +792,40 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Aprendizaje:** los checks verdes de un head anterior no prueban cambios locales; cada CA debe referir pruebas que realmente ejerzan su comportamiento.
 - **Entrega:** código y documentación de consolidación en la rama de #27; su historial remoto acredita el push. El borrador `030` se entrega aparte desde `docs/030-restaurar-sesion`, sin mezclar implementación de sesión en este PR.
 - **Pendiente:** checks del nuevo head, aceptación visual T509, revisión/fusión por Karasu, humo completo T507 y revisión humana de `030`; no se ejecutó release.
+
+### 2026-11-20 · Reparación visual de las tareas aprobadas de la base
+
+- **Autor:** usuario + OpenCode (`ui-designsystem`, QA y revisión de seguridad).
+- **Módulo / tareas:** `000-arquitectura-base` · T010–T014 reabiertas; no se ejecutan módulos nuevos ni `031`. Solicitud explícita: «sí ya haz todo y aplica los cambios visuales».
+- **Qué se hizo:** se comienza por reparar requisitos que el spec/plan de `000` ya aprobaban: paleta constitucional, Manrope/DM Sans locales, tema y controles compartidos con alturas mínimas. La reapertura reduce el conteo a 33/40 porque el código actual no acredita el resultado previo de esas cinco tareas; no se borra su evidencia histórica ni se declara cierre del módulo.
+- **Evidencia:** rama `fix/000-fundamentos-visuales` desde `73ed69b`; trabajo aislado del inventario/spec `031` no versionados en `virgo-visual-reference`. Recursos de fuente originales obtenidos de revisión fija de `google/fonts`, con licencia y SHA-256 en `docs/FUENTES.md`; 22 pares sólidos calculados dentro de AA. La revisión estática independiente quedó sin hallazgos abiertos tras corregir ayuda sobre fondo suave y contenido de error oscuro. Pipeline completo: **BUILD SUCCESSFUL in 1m 14s**, **40 suites/217 pruebas, 0 fallos/errores/omitidas** (incremental: 9 tareas ejecutadas; la suite de `app` se reejecutó completa); Pitest dominio 60 % (57/95) y common 33 % (1/3). APK nuevo de 23 320 455 bytes, SHA-256 `7e201a8a32bc91b042f2489e1416ecd1eb997e601c985a52efedb1cebbe0a04e`, instalado con `adb install -r` sin borrar datos. Capturas clara y compacta/oscura/fuente 2.0 revisadas: confirman fuentes y controles, pero muestran layout antiguo, «Google» partido y enlace final fuera de viewport; no son aceptación. Emulador restaurado a 1280×2856, 480 dpi, fuente 1.0 y modo claro.
+- **Decisiones:** reparar la base existente no equivale a exceptuar el cierre de `000` para flujos nuevos; se conservan T033/T036 pendientes. Mantener APIs, navegación, sesión, fotografías y DevSecOps sin cambios. El cierre visual completo de las pantallas no se acredita con esta reparación.
+- **Costo:** $0 / fuentes OFL y herramientas locales.
+- **Aprendizaje:** distinguir colores de marca y roles semánticos accesibles evita copiar pares con contraste insuficiente.
+- **Pendiente:** completar `VirGoTopBar`, `VirGoBottomBar`, `EmptyState`, `LoadingState` y `ErrorBanner` (T013/CA-10); migrar las pantallas y obtener aceptación humana por bloque; cerrar T036 y `000`. No se publica release ni se hace merge.
+
+### 2026-11-20 · Custodia confirmada y procedencia de la maqueta aclarada
+
+- **Autor:** usuario + OpenCode.
+- **Módulo / tareas:** `000` · T033/P-02; aclaración de referencia para la entrega visual.
+- **Qué se hizo:** el usuario confirmó «Yo, con respaldo seguro». Indicó que el proyecto local supuestamente corresponde a la misma maqueta porque no pudieron entregarle el Figma original. Se usa como referencia de trabajo autorizada, sin inventar cotejo ni equivalencia demostrada.
+- **Evidencia:** consulta de nombres en GitHub: presentes `SIGNING_KEYSTORE_BASE64`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`, `SIGNING_STORE_PASSWORD` y variable `VIRGO_API_BASE_URL`. No se solicitaron ni leyeron valores de secretos. La custodia/respaldo se acredita por declaración humana, no por prueba de restauración.
+- **Decisiones:** T033 completa con esta evidencia y su firma histórica; base 34/40 al mantener T010–T014 reabiertas. No hay autorización de release ni cierre automático de T036.
+- **Costo:** $0.
+- **Pendiente:** resultado del pipeline y revisión real del APK; resto de evidencias de base y etapas SDD. La relación exacta con Figma permanece no verificada.
+
+### 2026-11-21 · Acceso compacto verificado y bloqueo de visitante reproducido
+
+- **Autor:** usuario + OpenCode; revisión independiente de QA en modo lectura.
+- **Módulo / tareas:** `000-arquitectura-base` · seguimiento T014/T029, preparación de evidencia T036. T010–T013 cerradas técnicamente; base **38/40**, T014/T036 abiertas.
+- **Qué se hizo:**
+  - Se completaron ajustes de accesibilidad en acceso existente: acciones sociales y roles apilados con fuente grande; roles y visibilidad de contraseña de 48×48 dp; colores semánticos, nombres de campo persistentes en semántica, errores concretos y regiones vivas. Cabecera de registro con separación real entre regreso y texto, beneficios multilínea, pies adaptables y recuperación con `imePadding`. Sin cambios de API, sesión, navegación, fotografías o permisos.
+  - Se añadieron `CompactAccessTest` (10) y `AuthAccessibilityTest` (3); `FontScaleTest` conserva 4. Cubren ambos temas a 320×640/fuente 2.0, ancho efectivo, límites de líneas/truncado, separación de cabecera con/sin salón, paso 2/error de recuperación con datos ficticios, semántica exacta y selección exclusiva de roles.
+  - Se corrigió la duplicidad contradictoria de CA-06 y los IDs RNF del `check.md`, conservando las evidencias históricas como tales. Evidencia completa en [`docs/evidencia/T010-T014-correccion-visual.md`](docs/evidencia/T010-T014-correccion-visual.md).
+- **Evidencia:** pipeline final `ktlintCheck detekt lint testDebugUnitTest :core:domain:test :core:common:test pitest assembleDebug` → **BUILD SUCCESSFUL in 2m 4s**, incremental (383 tareas, 29 ejecutadas); **43 suites, 237 pruebas, 0 fallos/errores/omitidas** (`app` 95, `core` 142); lint 0 errores/35 avisos. Pitest dominio 60 % (57/95), common 33 % (1/3), reutilizados sin cambios JVM.
+- **APK y dispositivo:** 23 889 777 bytes, SHA-256 `ccb9c4b5b02e51ef1583d0946902eb928a989aaf260667231a12d465f4df4fb1`; firma debug verificada y `install -r` exitoso, sin borrar datos. El hash de `base.apk` instalado coincide. Capturas `T014-final-*.png` del artefacto final: acceso oscuro a 320 dp/2.0, pies alcanzables y recuperación con teclado abierto; recuperación clara con aviso completo tras desplazar. Sin credenciales ni envío real. Emulador restaurado a 1280×2856, 480 dpi, fuente 1.0 y modo claro.
+- **Decisiones:** reparar la accesibilidad existente no habilita nuevos módulos ni implementación de `031`. La consulta de GitHub confirma #17–#20 aprobados pero abiertos; #27/#28 abiertos sin decisión de revisión. La aprobación no se interpreta como fusión ni aceptación visual. No hubo commit, push, merge ni release.
+- **Costo:** $0 / herramientas locales existentes.
+- **Aprendizaje:** `hasVisualOverflow` puede señalar ancho sobrante de un párrafo reutilizado (Google: texto 91×34 px, párrafo 232×34 px); se verifican límites de líneas, elipsis, altura y truncado en vez de confundir esa asignación con un recorte. Los qualifiers no sustituyen una aserción del viewport efectivo. Las pruebas de visibilidad anteriores no detectaron los solapamientos del inicio visitante.
+- **Contraste:** se mantiene la tabla de 22 pares de tokens del reporte; los accesos migrados consumen esos roles. La nota ámbar de rol usa `#7A520F` sobre `#FFF8E9` (≈6,529:1). Esto no certifica imágenes, gradientes ni todas las pantallas.
+- **Pendiente:** **T014 sigue abierta** por el inicio visitante compacto oscuro: solapamientos y superficies claras, reproducidos en `T014-visitante-compacto-2x-oscuro-bloqueo.png`. Falta revisión manual completa de TalkBack/estados alternativos/teclado del paso 2 y aceptación por bloques. Gitleaks no está en PATH y no se acreditan checks remotos de cambios locales. T036 exige reconciliar todas las evidencias y aprobaciones; no se cierra `000`.
