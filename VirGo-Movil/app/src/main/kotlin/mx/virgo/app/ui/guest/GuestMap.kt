@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -28,33 +30,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import mx.virgo.app.R
-import mx.virgo.core.designsystem.theme.Slate200
-import mx.virgo.core.designsystem.theme.Slate50
-import mx.virgo.core.designsystem.theme.Slate500
-import mx.virgo.core.designsystem.theme.Slate900
-import mx.virgo.core.designsystem.theme.VirGoPurple
-import mx.virgo.core.designsystem.theme.VirGoPurpleDark
-import mx.virgo.core.designsystem.theme.VirGoPurpleLight
 import kotlin.math.cos
 import kotlin.math.sin
 
-private const val LABEL_CHAR_WIDTH = 3
-private const val LABEL_SIDE_PADDING = 20
 private const val MIN_TARGET_DP = 48
 private const val CENTER_FRACTION = 0.5f
 private const val RANGE_FILL_ALPHA = 0.10f
-private const val RANGE_STROKE_ALPHA = 0.55f
 private const val DIAGONAL_START = 0.85f
 private const val DIAGONAL_END = 0.15f
 
@@ -62,15 +60,11 @@ private val RangeRadius = 150.dp
 private val RangeStrokeWidth = 3.dp
 private val RangeLabelGap = 20.dp
 private val DashPattern = floatArrayOf(16f, 12f)
-private val RoadColor = Slate200
 private val RoadWidth = 14.dp
 private val HorizontalRoadFractions = listOf(0.28f, 0.55f, 0.78f)
 private val VerticalRoadFractions = listOf(0.22f, 0.5f, 0.82f)
-private val MapBackgroundTop = VirGoPurpleLight
-private val MapBackgroundBottom = Slate50
 private val UserMarkerSize = 40.dp
 private val UserMarkerRadius = 20.dp
-private val LabelHalfHeight = 20.dp
 private val PinTargetSize = MIN_TARGET_DP.dp
 
 private data class LabelBox(
@@ -99,26 +93,40 @@ internal fun GuestMap(
     onClearSelection: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
+    val colors = MaterialTheme.colorScheme
+    val labelSizes = measurePinLabels(nearby)
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+        val rangeRadius = minOf(RangeRadius, (maxWidth - PinTargetSize) / 2)
         Canvas(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .pointerInput(radiusKm) { detectTapGestures { onClearSelection() } },
         ) {
-            drawMap(center = Offset(x = size.width * CENTER_FRACTION, y = size.height * CENTER_FRACTION))
+            drawMap(
+                center = Offset(x = size.width * CENTER_FRACTION, y = size.height * CENTER_FRACTION),
+                colors = colors,
+                rangeRadius = rangeRadius,
+            )
         }
 
-        val pins = computePins(nearby = nearby, selectedId = selectedId, pxPerKm = RangeRadius / radiusKm)
+        val pins =
+            computePins(
+                nearby = nearby,
+                selectedId = selectedId,
+                pxPerKm = rangeRadius / radiusKm,
+                labelSizes = labelSizes,
+                mapSize = DpSize(maxWidth, maxHeight),
+            )
 
         Text(
             text = stringResource(R.string.guest_range_option, radiusKm),
             style = MaterialTheme.typography.labelMedium,
-            color = VirGoPurpleDark,
+            color = colors.primary,
             modifier =
                 Modifier
                     .align(Alignment.Center)
-                    .offset(y = -(RangeRadius + RangeLabelGap)),
+                    .offset(y = -(rangeRadius + RangeLabelGap)),
         )
 
         UserLocationMarker(
@@ -139,16 +147,20 @@ internal fun GuestMap(
     }
 }
 
-private fun DrawScope.drawMap(center: Offset) {
+private fun DrawScope.drawMap(
+    center: Offset,
+    colors: ColorScheme,
+    rangeRadius: Dp,
+) {
     drawRect(
         brush =
             Brush.verticalGradient(
-                colors = listOf(MapBackgroundTop, MapBackgroundBottom),
+                colors = listOf(colors.primaryContainer, colors.background),
             ),
     )
     HorizontalRoadFractions.forEach { fraction ->
         drawLine(
-            color = RoadColor,
+            color = colors.outlineVariant,
             start = Offset(x = 0f, y = size.height * fraction),
             end = Offset(x = size.width, y = size.height * fraction),
             strokeWidth = RoadWidth.toPx(),
@@ -157,7 +169,7 @@ private fun DrawScope.drawMap(center: Offset) {
     }
     VerticalRoadFractions.forEach { fraction ->
         drawLine(
-            color = RoadColor,
+            color = colors.outlineVariant,
             start = Offset(x = size.width * fraction, y = 0f),
             end = Offset(x = size.width * fraction, y = size.height),
             strokeWidth = RoadWidth.toPx(),
@@ -165,20 +177,20 @@ private fun DrawScope.drawMap(center: Offset) {
         )
     }
     drawLine(
-        color = RoadColor,
+        color = colors.outlineVariant,
         start = Offset(x = 0f, y = size.height * DIAGONAL_START),
         end = Offset(x = size.width, y = size.height * DIAGONAL_END),
         strokeWidth = RoadWidth.toPx(),
         cap = StrokeCap.Round,
     )
     drawCircle(
-        color = VirGoPurple.copy(alpha = RANGE_FILL_ALPHA),
-        radius = RangeRadius.toPx(),
+        color = colors.primary.copy(alpha = RANGE_FILL_ALPHA),
+        radius = rangeRadius.toPx(),
         center = center,
     )
     drawCircle(
-        color = VirGoPurple.copy(alpha = RANGE_STROKE_ALPHA),
-        radius = RangeRadius.toPx(),
+        color = colors.primary,
+        radius = rangeRadius.toPx(),
         center = center,
         style =
             Stroke(
@@ -188,10 +200,36 @@ private fun DrawScope.drawMap(center: Offset) {
     )
 }
 
+@Composable
+private fun measurePinLabels(nearby: List<VenueSample>): Map<Int, DpSize> {
+    val measurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+    val nameStyle = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
+    val distanceStyle = MaterialTheme.typography.labelSmall
+    return nearby.associate { venue ->
+        val name = measurer.measure(AnnotatedString(venue.short), style = nameStyle).size
+        val distance =
+            measurer
+                .measure(
+                    AnnotatedString(stringResource(R.string.guest_distance_format, venue.kmText())),
+                    style = distanceStyle,
+                ).size
+        venue.id to
+            with(density) {
+                DpSize(
+                    width = maxOf(PinTargetSize, maxOf(name.width, distance.width).toDp() + 20.dp),
+                    height = maxOf(PinTargetSize, (name.height + distance.height).toDp() + 16.dp),
+                )
+            }
+    }
+}
+
 private fun computePins(
     nearby: List<VenueSample>,
     selectedId: Int,
     pxPerKm: Dp,
+    labelSizes: Map<Int, DpSize>,
+    mapSize: DpSize,
 ): List<PinPlacement> {
     val placed =
         mutableListOf(
@@ -206,19 +244,44 @@ private fun computePins(
         .sortedByDescending { it.id == selectedId }
         .map { venue ->
             val angle = Math.toRadians(venue.bearing)
-            val x = (pxPerKm.value * venue.distanceKm * sin(angle)).toFloat().dp
-            val y = (-pxPerKm.value * venue.distanceKm * cos(angle)).toFloat().dp
-            val half = ((venue.short.length * LABEL_CHAR_WIDTH) + LABEL_SIDE_PADDING).dp
+            val size = labelSizes.getValue(venue.id)
+            val half = size.width / 2
+            val halfHeight = size.height / 2
+            val xLimit = ((mapSize.width - size.width) / 2).coerceAtLeast(0.dp)
+            val yLimit = ((mapSize.height - size.height) / 2).coerceAtLeast(0.dp)
+            val originalX = (pxPerKm.value * venue.distanceKm * sin(angle)).toFloat().dp
+            val originalY = (-pxPerKm.value * venue.distanceKm * cos(angle)).toFloat().dp
+            val x = originalX.coerceIn(-xLimit, xLimit)
+            val y = originalY.coerceIn(-yLimit, yLimit)
             val box =
                 LabelBox(
                     left = x - half,
-                    top = y - LabelHalfHeight,
+                    top = y - halfHeight,
                     right = x + half,
-                    bottom = y + LabelHalfHeight,
+                    bottom = y + halfHeight,
                 )
-            val labelled = venue.id == selectedId || placed.none { it.overlaps(box) }
-            if (labelled) placed += box
-            PinPlacement(venue = venue, x = x, y = y, compact = !labelled)
+            val labelled =
+                size.width <= mapSize.width &&
+                    size.height <= mapSize.height &&
+                    placed.none { it.overlaps(box) }
+            if (labelled) {
+                placed += box
+                PinPlacement(venue = venue, x = x, y = y, compact = false)
+            } else {
+                val compactXLimit = ((mapSize.width - PinTargetSize) / 2).coerceAtLeast(0.dp)
+                val compactYLimit = ((mapSize.height - PinTargetSize) / 2).coerceAtLeast(0.dp)
+                val compactX = originalX.coerceIn(-compactXLimit, compactXLimit)
+                val compactY = originalY.coerceIn(-compactYLimit, compactYLimit)
+                val halfTarget = PinTargetSize / 2
+                placed +=
+                    LabelBox(
+                        left = compactX - halfTarget,
+                        top = compactY - halfTarget,
+                        right = compactX + halfTarget,
+                        bottom = compactY + halfTarget,
+                    )
+                PinPlacement(venue = venue, x = compactX, y = compactY, compact = true)
+            }
         }
 }
 
@@ -248,18 +311,18 @@ private fun CompactPin(
             modifier
                 .size(PinTargetSize)
                 .clip(CircleShape)
-                .background(if (selected) VirGoPurple else Color.White)
+                .background(if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface)
                 .border(
                     width = 1.dp,
-                    color = if (selected) VirGoPurple else Slate200,
+                    color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                     shape = CircleShape,
-                ).clickable(onClick = onClick),
+                ).clickable(role = Role.Button, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Icon(
             imageVector = Icons.Filled.Place,
             contentDescription = stringResource(R.string.guest_pin_cd, pin.venue.name, pin.venue.kmText()),
-            tint = if (selected) Color.White else VirGoPurple,
+            tint = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(PinTargetSize / 2),
         )
     }
@@ -272,17 +335,19 @@ private fun LabelledPin(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val description = stringResource(R.string.guest_pin_cd, pin.venue.name, pin.venue.kmText())
     Surface(
         modifier =
             modifier
                 .defaultMinSize(minWidth = PinTargetSize, minHeight = PinTargetSize)
-                .clickable(onClick = onClick),
+                .semantics { contentDescription = description }
+                .clickable(role = Role.Button, onClick = onClick),
         shape = RoundedCornerShape(PinCorner),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         border =
             BorderStroke(
                 width = if (selected) 2.dp else 1.dp,
-                color = if (selected) VirGoPurple else Slate200,
+                color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
             ),
         shadowElevation = 2.dp,
     ) {
@@ -293,14 +358,12 @@ private fun LabelledPin(
             Text(
                 text = pin.venue.short,
                 style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                color = Slate900,
-                maxLines = 1,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
                 text = stringResource(R.string.guest_distance_format, pin.venue.kmText()),
                 style = MaterialTheme.typography.labelSmall,
-                color = Slate500,
-                maxLines = 1,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
@@ -313,14 +376,14 @@ private fun UserLocationMarker(modifier: Modifier = Modifier) {
             modifier
                 .size(UserMarkerSize)
                 .clip(CircleShape)
-                .background(VirGoPurple)
-                .border(width = 3.dp, color = Color.White, shape = CircleShape),
+                .background(MaterialTheme.colorScheme.primary)
+                .border(width = 3.dp, color = MaterialTheme.colorScheme.onPrimary, shape = CircleShape),
         contentAlignment = Alignment.Center,
     ) {
         Icon(
             imageVector = Icons.Filled.Person,
             contentDescription = stringResource(R.string.guest_you_here),
-            tint = Color.White,
+            tint = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.size(22.dp),
         )
     }

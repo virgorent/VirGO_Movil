@@ -8,6 +8,13 @@
 
 ## 1. Criterios de aceptación
 
+> Seguimiento de accesibilidad (2026-11-22, PR #29): layout adaptativo,
+> temas y objetivos táctiles reparados; 13 casos de `GuestAccessibilityTest`
+> y navegación en verde dentro del pipeline de 250 pruebas. APK instalado con
+> hash coincidente. La evidencia histórica de abajo no se sustituye por una
+> aceptación visual nueva: capturas actuales bloqueadas por el emulador.
+> Detalles: `docs/evidencia/T014-visitante-adaptativo.md`; T014 continúa abierta.
+
 | CA | Evidencia | Estado |
 |---|---|---|
 | CA-01 | Pantalla A1 en el emulador `Pixel_10_Pro` con los 5 pines y el selector de rango: `docs/evidencia/CA-01-inicio-visitante-a1.png` | ✅ |

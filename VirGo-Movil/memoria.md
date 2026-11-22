@@ -840,3 +840,14 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Costo:** herramientas existentes; CI del repositorio según su configuración.
 - **Aprendizaje:** el workflow de CodeQL filtra PRs a `main`; un PR apilado puede ejecutar build y seguridad sin ejecutar CodeQL. No se debe declarar que todos los gates están verdes ni quitar filtros para aparentarlo.
 - **Pendiente:** comprobar checks del head final de #29, revisión humana y resolver la base antes de integrar en `main` con todos los gates. T014/T036 siguen abiertas (38/40). Sin release ni ejecución de `movil-release`.
+
+### 2026-11-22 · Visitante adaptativo y regresiones verificadas
+
+- **Autor:** usuario + OpenCode; revisión independiente de solo lectura.
+- **Módulo / tareas:** `000` T014/T029 y seguimiento T036; reparación existente de `001` T101/T102/T104.
+- **Qué se hizo:** cabecera, resumen, mapa y pie separados en flujo desplazable compacto; preview apilada, colores semánticos y controles de 48 dp. Se corrigió el clamp del pin compacto usando coordenadas originales y tamaño renderizado; su caja cuenta para el etiquetado posterior. Región viva en el texto de error y reintento independiente. Sin cambios de API, sesión, fotografías ni nuevas funciones.
+- **Evidencia:** pipeline completo **BUILD SUCCESSFUL in 2m 20s**, 44 suites/250 pruebas, 0 fallos/errores/omitidas; 13 escenarios de visitante, con toque físico de pines este/oeste y comprobación de LiveRegion. APK debug de 23 889 777 bytes, SHA-256 `ce2ed276394de05e61ae9ee5db9ed789a0df9ef6a42b0e94fedb3b7cc709e473`; firma debug verificada, instalado con `install -r` y hash instalado coincidente. Detalle en [`docs/evidencia/T014-visitante-adaptativo.md`](docs/evidencia/T014-visitante-adaptativo.md).
+- **Decisiones:** conservar límites explícitos del mapa demo (sin prometer separar coordenadas idénticas). T014/T036 siguen abiertas, base 38/40. Continuación sobre PR #29 en borrador, sin merge ni release.
+- **Costo:** $0 / herramientas locales existentes.
+- **Aprendizaje:** las primeras verificaciones detectaron un import faltante y su orden; corregidos antes del pipeline verde. El emulador mostró ANR de System UI; jerarquía con controles pero capturas vacías, incluso tras reiniciar la app. No se presentan como evidencia visual. Emulador restaurado a 1280×2856, 480 dpi, fuente 1.0/claro.
+- **Pendiente:** repetir capturas reales de visitante y TalkBack en entorno estable; aceptación por bloques y revisión integral. Verificar CI del nuevo head tras publicar; CodeQL de la base apilada sigue sin acreditarse. Sin nuevas integraciones ni implementación de `031`.

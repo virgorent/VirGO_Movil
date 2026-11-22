@@ -25,7 +25,7 @@ Lista de verificación del módulo (Art. I.4). Cada casilla lleva su evidencia. 
 |---|---|---|
 | CA-01 | Compilación de módulos y CI (T007, T031) | ⏳ |
 | CA-02 | T010–T013 cerradas técnicamente; APK final instalado con `install -r`, hash instalado coincidente y capturas `T014-final-*.png`. Acredita estados de acceso, no paridad completa con la maqueta. Ver `docs/evidencia/T010-T014-correccion-visual.md` | 🔄 |
-| CA-03 | Acceso verificado por pruebas a 320 dp/fuente 2.0 en claro/oscuro y capturas reales, incluida recuperación con IME. El inicio visitante real se solapa y conserva superficies claras en oscuro (`T014-visitante-compacto-2x-oscuro-bloqueo.png`); T014 sigue abierta | 🔄 |
+| CA-03 | Acceso verificado por pruebas y capturas, incluida recuperación con IME. Visitante reparado tras el fallo histórico de `T014-visitante-compacto-2x-oscuro-bloqueo.png`; 13 pruebas nuevas, APK instalado con hash coincidente. Capturas nuevas bloqueadas por el emulador; TalkBack/revisión integral pendientes. Ver `docs/evidencia/T014-visitante-adaptativo.md`; T014 sigue abierta | 🔄 |
 | CA-04 | Diagnóstico contra la API (T024, T030). Evidencia: `docs/evidencia/CA-04-diagnostico-api-disponible.png` — v0.2.0, URL de producción, «API disponible», 227 ms (2026-11-14) | ✅ |
 | CA-05 | Diagnóstico en *debug* (T024). Evidencia: `docs/evidencia/CA-05-diagnostico-api-caida.png` — con modo avión: «API no disponible» + «No hay conexión con la API. Revisa tu internet e inténtalo de nuevo.» sin cierre; «Reintentar» recupera (1123 ms) | ✅ |
 | CA-06 | *Release* sin tráfico en claro (T026, T030). Evidencia: `aapt dump xmltree` sobre el APK de `v0.2.0` → `cleartextTrafficPermitted=0x0`, sin `domain-config` en claro; la variante *release* rechaza `http://` en compilación (T019) | ✅ |
@@ -53,6 +53,12 @@ Lista de verificación del módulo (Art. I.4). Cada casilla lleva su evidencia. 
 
 > Esta ejecución incluye las correcciones finales de acceso: `FontScaleTest` 4,
 > `CompactAccessTest` 10 y `AuthAccessibilityTest` 3. No acredita toda la app.
+
+> **Seguimiento local (2026-11-22):** pipeline completo verde en 2m 20s,
+> 44 suites / 250 pruebas, sin fallos/errores/omitidas. Incluye 13 pruebas de
+> visitante y regresiones de pines compactos y región viva. APK instalado y hash
+> coincidente; capturas bloqueadas por ANR del sistema/fondo vacío del emulador.
+> No se acredita aceptación visual, TalkBack ni cierre de T014/T036.
 
 ## 4. PR e integración continua
 

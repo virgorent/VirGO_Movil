@@ -2,18 +2,20 @@ package mx.virgo.app.ui.guest
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -32,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -45,12 +46,6 @@ import mx.virgo.app.R
 import mx.virgo.core.common.AppResult
 import mx.virgo.core.designsystem.components.VirGoCard
 import mx.virgo.core.designsystem.components.VirGoOutlinedButton
-import mx.virgo.core.designsystem.theme.Slate100
-import mx.virgo.core.designsystem.theme.Slate400
-import mx.virgo.core.designsystem.theme.Slate500
-import mx.virgo.core.designsystem.theme.Slate700
-import mx.virgo.core.designsystem.theme.Slate800
-import mx.virgo.core.designsystem.theme.Slate900
 import mx.virgo.core.designsystem.theme.VirGoPurple
 import mx.virgo.core.designsystem.theme.VirGoPurpleDark
 import mx.virgo.core.designsystem.theme.VirGoTheme
@@ -60,8 +55,6 @@ import mx.virgo.core.domain.VenueRepository
 
 private const val PHOTO_BADGE_ALPHA = 0.92f
 private val RangeOptions = listOf(2, 5, 10)
-private val RangeOptionWidth = 50.dp
-private val RangeOptionHeight = 48.dp
 private val PhotoSize = 96.dp
 private val PillShape = RoundedCornerShape(percent = 50)
 internal val PinCorner = 12.dp
@@ -75,41 +68,42 @@ fun GuestHomeScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    Box(modifier = modifier.fillMaxSize()) {
-        GuestMap(
-            nearby = state.nearby,
-            radiusKm = state.radiusKm,
-            selectedId = state.selectedVenueId,
-            onVenueClick = viewModel::selectVenue,
-            onClearSelection = viewModel::clearVenue,
-        )
-        GuestHeader(
-            count = state.nearby.size,
-            radiusKm = state.radiusKm,
-            onRadiusChange = viewModel::selectRadius,
-            onLoginClick = onLoginClick,
-            modifier = Modifier.align(Alignment.TopStart),
-        )
-        val selected = state.selectedVenue
-        if (selected != null) {
-            GuestPreviewCard(
-                venue = selected,
-                onClose = viewModel::clearVenue,
-                onSeeMore = { onRegisterClick(selected.id) },
-                modifier = Modifier.align(Alignment.BottomCenter),
+    GuestHomeLayout(
+        modifier = modifier,
+        header = { compact ->
+            GuestHeader(
+                count = state.nearby.size,
+                radiusKm = state.radiusKm,
+                onRadiusChange = viewModel::selectRadius,
+                onLoginClick = onLoginClick,
+                compact = compact,
             )
-        } else if (state.hasError) {
-            GuestError(
-                onRetry = viewModel::refresh,
-                modifier = Modifier.align(Alignment.BottomCenter),
+        },
+        map = { mapModifier ->
+            GuestMap(
+                nearby = state.nearby,
+                radiusKm = state.radiusKm,
+                selectedId = state.selectedVenueId,
+                onVenueClick = viewModel::selectVenue,
+                onClearSelection = viewModel::clearVenue,
+                modifier = mapModifier,
             )
-        } else {
-            GuestHint(
-                hasVenues = state.nearby.isNotEmpty(),
-                modifier = Modifier.align(Alignment.BottomCenter),
-            )
-        }
-    }
+        },
+        footer = { compact ->
+            val selected = state.selectedVenue
+            when {
+                selected != null ->
+                    GuestPreviewCard(
+                        venue = selected,
+                        onClose = viewModel::clearVenue,
+                        onSeeMore = { onRegisterClick(selected.id) },
+                        compact = compact,
+                    )
+                state.hasError -> GuestError(onRetry = viewModel::refresh)
+                else -> GuestHint(hasVenues = state.nearby.isNotEmpty())
+            }
+        },
+    )
 }
 
 @Composable
@@ -118,6 +112,7 @@ private fun GuestHeader(
     radiusKm: Int,
     onRadiusChange: (Int) -> Unit,
     onLoginClick: () -> Unit,
+    compact: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -126,32 +121,19 @@ private fun GuestHeader(
                 .fillMaxWidth()
                 .padding(16.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Surface(
-                shape = PillShape,
-                color = Color.White,
-                shadowElevation = 2.dp,
-            ) {
-                Text(
-                    text = stringResource(R.string.guest_brand),
-                    style =
-                        MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                        ),
-                    color = Slate900,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                )
+        if (compact) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                GuestBrand()
+                GuestLogin(onClick = onLoginClick, modifier = Modifier.fillMaxWidth())
             }
-            VirGoOutlinedButton(onClick = onLoginClick) {
-                Text(
-                    text = stringResource(R.string.guest_login),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = VirGoPurple,
-                )
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                GuestBrand()
+                GuestLogin(onClick = onLoginClick)
             }
         }
 
@@ -168,15 +150,14 @@ private fun GuestCard(
     onRadiusChange: (Int) -> Unit,
 ) {
     VirGoCard(
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Row(
+        Column(
             modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Column(modifier = Modifier.weight(1f)) {
+            Column {
                 Text(
                     text = stringResource(R.string.guest_section_label),
                     style =
@@ -184,7 +165,7 @@ private fun GuestCard(
                             letterSpacing = 1.sp,
                             fontWeight = FontWeight.Bold,
                         ),
-                    color = Slate500,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
                     text =
@@ -197,25 +178,25 @@ private fun GuestCard(
                         MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                         ),
-                    color = Slate900,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Filled.Place,
                         contentDescription = null,
-                        tint = Slate400,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(14.dp),
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = stringResource(R.string.guest_location),
                         style = MaterialTheme.typography.bodySmall,
-                        color = Slate500,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
 
-            RangePicker(radiusKm = radiusKm, onRadiusChange = onRadiusChange)
+            RangePicker(radiusKm = radiusKm, onRadiusChange = onRadiusChange, modifier = Modifier.fillMaxWidth())
         }
     }
 }
@@ -227,7 +208,7 @@ private fun RangePicker(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         RangeOptions.forEach { km ->
@@ -235,17 +216,20 @@ private fun RangePicker(
             Box(
                 modifier =
                     Modifier
-                        .width(RangeOptionWidth)
-                        .height(RangeOptionHeight)
+                        .weight(1f)
+                        .heightIn(min = 48.dp)
                         .clip(RoundedCornerShape(PinCorner))
-                        .background(if (active) VirGoPurple else Slate100)
-                        .clickable(role = Role.RadioButton) { onRadiusChange(km) },
+                        .background(
+                            if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+                        ).selectable(selected = active, role = Role.RadioButton) { onRadiusChange(km) }
+                        .padding(horizontal = 4.dp, vertical = 8.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = stringResource(R.string.guest_range_option, km),
                     style = MaterialTheme.typography.labelMedium,
-                    color = if (active) Color.White else Slate700,
+                    color =
+                        if (active) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -257,24 +241,35 @@ private fun GuestPreviewCard(
     venue: VenueSample,
     onClose: () -> Unit,
     onSeeMore: () -> Unit,
+    compact: Boolean,
     modifier: Modifier = Modifier,
 ) {
     VirGoCard(
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         modifier =
             modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                VenuePhoto(venue = venue)
+            if (compact) {
+                VenuePhoto(venue = venue, compact = true)
+                Spacer(modifier = Modifier.height(12.dp))
                 GuestPreviewDetails(
                     venue = venue,
                     onClose = onClose,
                     onSeeMore = onSeeMore,
-                    modifier = Modifier.weight(1f),
                 )
+            } else {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    VenuePhoto(venue = venue)
+                    GuestPreviewDetails(
+                        venue = venue,
+                        onClose = onClose,
+                        onSeeMore = onSeeMore,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -302,17 +297,18 @@ private fun GuestPreviewDetails(
         ) {
             Text(
                 text = venue.name,
+                modifier = Modifier.weight(1f),
                 style =
                     MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                     ),
-                color = Slate900,
+                color = MaterialTheme.colorScheme.onSurface,
             )
-            IconButton(onClick = onClose) {
+            IconButton(onClick = onClose, modifier = Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp)) {
                 Icon(
                     imageVector = Icons.Filled.Close,
                     contentDescription = stringResource(R.string.guest_preview_close),
-                    tint = Slate500,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -326,7 +322,7 @@ private fun GuestPreviewDetails(
                     venue.capacity,
                 ),
             style = MaterialTheme.typography.bodySmall,
-            color = Slate500,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -338,7 +334,7 @@ private fun GuestPreviewDetails(
             Text(
                 text = stringResource(R.string.guest_preview_see_more),
                 style = MaterialTheme.typography.labelLarge,
-                color = VirGoPurple,
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }
@@ -354,13 +350,13 @@ private fun GuestPreviewLocked(modifier: Modifier = Modifier) {
         Icon(
             imageVector = Icons.Filled.Lock,
             contentDescription = null,
-            tint = Slate400,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(12.dp),
         )
         Text(
             text = stringResource(R.string.guest_preview_locked),
             style = MaterialTheme.typography.labelSmall,
-            color = Slate500,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -369,46 +365,63 @@ private fun GuestPreviewLocked(modifier: Modifier = Modifier) {
 private fun VenuePhoto(
     venue: VenueSample,
     modifier: Modifier = Modifier,
+    compact: Boolean = false,
 ) {
-    Box(
-        modifier =
-            modifier
-                .size(PhotoSize)
-                .clip(RoundedCornerShape(PinCorner))
-                .background(
-                    brush =
-                        Brush.linearGradient(
-                            colors = listOf(VirGoPurple, VirGoPurpleDark),
-                        ),
-                ),
-        contentAlignment = Alignment.Center,
-    ) {
-        VenuePhotoContent(venue = venue, modifier = Modifier.matchParentSize())
-        Surface(
-            shape = PillShape,
-            color = Color.White.copy(alpha = PHOTO_BADGE_ALPHA),
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Box(
             modifier =
                 Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(6.dp),
+                    .size(PhotoSize)
+                    .clip(RoundedCornerShape(PinCorner))
+                    .background(
+                        brush = Brush.linearGradient(colors = listOf(VirGoPurple, VirGoPurpleDark)),
+                    ),
+            contentAlignment = Alignment.Center,
         ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Navigation,
-                    contentDescription = null,
-                    tint = VirGoPurple,
-                    modifier = Modifier.size(11.dp),
-                )
-                Text(
-                    text = stringResource(R.string.guest_distance_format, venue.kmText()),
-                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                    color = Slate800,
+            VenuePhotoContent(venue = venue, modifier = Modifier.matchParentSize())
+            if (!compact) {
+                VenueDistanceBadge(
+                    venue = venue,
+                    modifier = Modifier.align(Alignment.BottomStart).padding(6.dp),
                 )
             }
+        }
+        if (compact) {
+            Text(
+                text = stringResource(R.string.guest_distance_format, venue.kmText()),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun VenueDistanceBadge(
+    venue: VenueSample,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        shape = PillShape,
+        color = MaterialTheme.colorScheme.surface.copy(alpha = PHOTO_BADGE_ALPHA),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Navigation,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(11.dp),
+            )
+            Text(
+                text = stringResource(R.string.guest_distance_format, venue.kmText()),
+                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
         }
     }
 }
