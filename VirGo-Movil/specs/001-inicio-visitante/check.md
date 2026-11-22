@@ -11,8 +11,9 @@
 > Seguimiento de accesibilidad (2026-11-22, PR #29): layout adaptativo,
 > temas y objetivos táctiles reparados; 13 casos de `GuestAccessibilityTest`
 > y navegación en verde dentro del pipeline de 250 pruebas. APK instalado con
-> hash coincidente. La evidencia histórica de abajo no se sustituye por una
-> aceptación visual nueva: capturas actuales bloqueadas por el emulador.
+> hash coincidente y capturas nuevas a 320/393 dp en ambos temas. La evidencia
+> histórica de abajo se conserva; capturas y pruebas no equivalen a aceptación
+> visual ni a revisión manual de TalkBack.
 > Detalles: `docs/evidencia/T014-visitante-adaptativo.md`; T014 continúa abierta.
 
 | CA | Evidencia | Estado |

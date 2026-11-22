@@ -43,7 +43,8 @@ no del resultado corregido.
 `FontScaleTest`, `SmokeTest`: **BUILD SUCCESSFUL in 33s**, 22 pruebas,
 sin fallos en la ejecución focalizada.
 
-`GuestAccessibilityTest` aporta 12 casos:
+`GuestAccessibilityTest` aporta 13 casos (12 de tamaños/temas más la regresión
+de pines este/oeste con etiquetas mayores que el mapa):
 
 | Configuración | Temas | Estados |
 |---|---|---|
@@ -101,12 +102,34 @@ el pipeline; no se eliminaron aserciones.
 - Instalado con `adb install -r` sin borrar datos. `sha256sum` de `base.apk`
   instalado coincide con el hash anterior. Paquete real: `mx.virgo.app`;
   un primer intento de arranque con sufijo `.debug` falló y se corrigió.
-- Capturas **bloqueadas**: el emulador mostró «System UI isn't responding».
-  Después, `uiautomator` expuso cabecera, rangos, pines y mensaje de error,
-  pero `screencap` devolvió solo fondo y barras del sistema. Reiniciar únicamente
-  la app no permitió acreditar el dibujo. `gfxinfo` registró frames de hasta
-  4950 ms; no se atribuye este rendimiento al producto sin aislar el entorno.
-  Las imágenes vacías se excluyeron de la evidencia versionada.
+- Capturas resueltas: la primera tanda salió vacía porque PowerShell
+  redirigía el PNG como UTF-16. Se sustituyó por `cmd /c "adb exec-out
+  screencap -p > archivo"` y se obtuvo imagen real. El ANR de System UI
+  desapareció tras esperar/confirmar; no se borraron datos ni se usó
+  `wipe-data`. Las capturas vacías se descartaron y no se versionaron.
 - Emulador restaurado a tamaño físico 1280×2856, 480 dpi, fuente 1.0 y claro.
-- Pendiente: capturas reales a 320/393 dp y fuente 1.0/2.0 en ambos temas,
-  preview/error/reintento, TalkBack, aceptación humana y CI del nuevo head.
+- CI del head `dda6fdb`: `gitleaks`, `dependency review` y `changes` en verde.
+  `movil-build-test` falló por `IOException` de Robolectric al descargar su
+  artefacto (`MavenArtifactFetcher`), no por una prueba de la app; se relanzó
+  el job fallido y queda pendiente su resultado.
+
+## Capturas del APK actual
+
+Todas son del APK `ce2ed2…` instalado en `Pixel_10_Pro`, con datos de ejemplo
+y error de catálogo por la API local ausente. No son aceptación humana.
+
+| Archivo | Configuración | Estado |
+|---|---|---|
+| [`T014-visitante-320-2x-oscuro-inicio.png`](T014-visitante-320-2x-oscuro-inicio.png) | 320×640 dp, fuente 2.0, oscuro | Cabecera apilada, resumen y selector sin superposición |
+| [`T014-visitante-320-2x-oscuro-mapa.png`](T014-visitante-320-2x-oscuro-mapa.png) | ídem | Mapa a ancho completo, pines compactos separados, superficies oscuras |
+| [`T014-visitante-320-2x-oscuro-error.png`](T014-visitante-320-2x-oscuro-error.png) | ídem | Mensaje completo y «Reintentar» alcanzable |
+| [`T014-visitante-320-2x-oscuro-preview.png`](T014-visitante-320-2x-oscuro-preview.png) | ídem | Foto apilada, cierre, «Ver más…», aviso y créditos legibles |
+| [`T014-visitante-320-2x-claro-inicio.png`](T014-visitante-320-2x-claro-inicio.png) | 320×640 dp, fuente 2.0, claro | Equivalente en tema claro |
+| [`T014-visitante-320-2x-claro-error.png`](T014-visitante-320-2x-claro-error.png) | ídem | Error y reintento completos |
+| [`T014-visitante-320-2x-claro-preview.png`](T014-visitante-320-2x-claro-preview.png) | ídem | Vista previa completa |
+| [`T014-visitante-393-1x-claro-inicio.png`](T014-visitante-393-1x-claro-inicio.png) | 393×800 dp, fuente 1.0, claro | Composición superpuesta normal con etiquetas |
+| [`T014-visitante-393-1x-oscuro-inicio.png`](T014-visitante-393-1x-oscuro-inicio.png) | 393×800 dp, fuente 1.0, oscuro | Equivalente oscuro |
+| [`T014-visitante-393-1x-oscuro-preview.png`](T014-visitante-393-1x-oscuro-preview.png) | ídem | Vista previa inferior sobre el mapa |
+
+Pendiente para el cierre de T014: TalkBack manual, escala intermedia 1.3,
+revisión de estados alternativos y aceptación visual humana por bloques.
