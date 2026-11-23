@@ -4,9 +4,9 @@ title: Aviso de privacidad — VirGo
 
 # Aviso de privacidad de VirGo
 
-**Última actualización:** 15 de noviembre de 2026
+**Última actualización:** 23 de noviembre de 2026
 
-Este aviso explica qué datos personales trata la aplicación **VirGo** para Android, publicada en Google Play por **KarasuDev**, para qué los usa y cómo puedes ejercer tus derechos. Se emite conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP).
+Este aviso explica qué datos personales trata la aplicación **VirGo** para Android, publicada en Google Play por **KarasuDev**, para qué los usa y cómo puedes ejercer tus derechos. También cubre el sitio web de VirGo ([sección 11](#sitio-web)). Se emite conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP).
 
 ## 1. Responsable
 
@@ -28,7 +28,7 @@ VirGo es una plataforma para buscar y contratar salones y proveedores de eventos
 | Contraseña | Al crear tu cuenta. Se guarda solo como *hash* (no se puede leer ni recuperar) | Sí |
 | Datos de la sesión (fecha de inicio y de vencimiento) | Al iniciar sesión, para mantenerte conectado y poder cerrar la sesión | Sí |
 
-VirGo **no** solicita permisos de ubicación, cámara, contactos, micrófono ni archivos, **no** muestra anuncios y **no** usa herramientas de analítica o publicidad de terceros. No tratamos datos personales sensibles.
+La app VirGo **no** solicita permisos de ubicación, cámara, contactos, micrófono ni archivos, **no** muestra anuncios y **no** usa herramientas de analítica o publicidad de terceros. No tratamos datos personales sensibles. El sitio web usa Google Analytics solo si lo aceptas ([sección 11](#sitio-web)).
 
 ## 3. Finalidades
 
@@ -87,6 +87,29 @@ Si cambia lo que la app recopila (por ejemplo, al agregar pagos, mensajes o list
 ## 10. Autoridad
 
 Si consideras que tu derecho a la protección de datos fue vulnerado, puedes acudir a la autoridad competente en materia de protección de datos personales en México.
+
+## 11. Sitio web {#sitio-web}
+
+Esta sección aplica a la página de presentación de VirGo ([d2vzpj6yeszxa2.cloudfront.net](https://d2vzpj6yeszxa2.cloudfront.net/)), no a la app.
+
+**Sin tu permiso no se recopila nada.** Al entrar verás un aviso de cookies. Google Analytics solo se activa si pulsas **Aceptar**; si pulsas **Rechazar** o ignoras el aviso, no se carga y no se envía ningún dato a Google.
+
+**Si aceptas**, Google Analytics 4 registra:
+
+| Dato | Para qué |
+|---|---|
+| Páginas que visitas y cuánto tiempo | Saber si la página se entiende y se usa |
+| Si pulsas «Probar la app» | Medir cuántas personas van a Google Play |
+| De dónde llegas (Google, WhatsApp, un enlace directo) | Saber qué canales funcionan |
+| País, tipo de dispositivo, sistema operativo y navegador | Revisar que la página se vea bien en todos los equipos |
+
+- **Cookies:** `_ga` y `_ga_R0MK02EG56`, que distinguen visitas sin identificarte por nombre.
+- **No** se activan Google Signals ni la personalización de anuncios, **no** se guarda la ubicación precisa y **no** se cruzan tus datos con tu cuenta de Google. Google Analytics 4 no guarda tu dirección IP.
+- **Quién los trata:** Google LLC (Estados Unidos), como encargado, conforme a sus [condiciones de tratamiento de datos](https://business.safety.google/adsprocessorterms/).
+- **Cuánto tiempo:** 2 meses; después se borran solos.
+- **Cambiar de opinión:** pulsa **Cookies** al pie de la página y elige **Rechazar**. Se borran las cookies de Analytics de tu navegador y ya no se registran más visitas.
+
+Las fuentes de letra, el video y las imágenes se sirven desde el propio sitio, sin enviar tu IP a otros servicios.
 
 ---
 
