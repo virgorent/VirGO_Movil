@@ -2,6 +2,7 @@
 
 Fecha: 2026-11-23. Rama `feat/032-demo-visual-roles`, basada en
 `fix/000-fundamentos-visuales` (`42490ec`); sin fusión ni release.
+Código/evidencia: `9e96bf4`; [PR #31 en borrador](https://github.com/virgorent/VirGO_Movil/pull/31).
 
 ## Alcance
 
