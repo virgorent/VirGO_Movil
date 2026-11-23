@@ -851,3 +851,40 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Costo:** $0 / herramientas locales existentes.
 - **Aprendizaje:** la primera captura salió vacía por redirección UTF-16 de PowerShell; `cmd /c` con `exec-out` produjo PNG válido. Un ANR de System UI y una descarga de Robolectric fallida en CI fueron incidentes de entorno, no del código; el job se relanzó. No se presentan fallos de infraestructura como resultados del producto.
 - **Pendiente:** revisión manual de TalkBack, escala intermedia 1.3 y aceptación visual por bloques. Verificar CI del head `dda6fdb` tras el relanzamiento; CodeQL de la base apilada sigue sin acreditarse. Sin nuevas integraciones ni implementación de `031`.
+
+### 2026-11-22 · Continuación autorizada: visitante a escala 1.3
+
+- **Autor:** usuario + OpenCode.
+- **Módulo / tareas:** `000` T014, seguimiento T036.
+- **Qué se hizo:** tras la indicación «dale», se revisó visitante a 393×800 dp y fuente 1.3 en ambos temas; cuatro capturas de inicio/error. No hubo cambios de código ni nuevas pantallas.
+- **Evidencia:** `docs/evidencia/T014-visitante-adaptativo.md`, capturas `T014-visitante-393-1.3x-*.png`; error completo y reintento alcanzables por desplazamiento. CI de `42490ec`: cuatro checks en verde, run `45044830978`, build de 3m42s; resultado comunicado en PR #29.
+- **Decisiones:** la autorización para continuar no equivale a aceptación visual. T014/T036 abiertas; sin fusión ni release.
+- **Costo:** $0 / herramientas existentes.
+- **Aprendizaje:** capturar tras estabilizar la pantalla y revisar cada PNG; una captura coincidió con splash y fue reemplazada. El fallo de descarga no se reprodujo, pero su causa raíz no quedó identificada.
+- **Pendiente:** TalkBack manual, acceso y estados restantes a escala 1.3, aceptación visual humana. Capturas nuevas y esta actualización permanecen locales hasta su publicación.
+
+### 2026-11-22 · Regresiones de acceso a escala intermedia
+
+- **Autor:** usuario + OpenCode.
+- **Módulo / tareas:** `000` T014/T029, seguimiento T036.
+- **Qué se hizo:** seis casos de login, registro y recuperación a 320 dp/fuente 1.3, claro y oscuro, en `CompactAccessTest`. Sin cambios de pantallas ni de lógica de producción.
+- **Evidencia:** suite focalizada de 16 casos, ktlint/detekt en verde (32s); pipeline completo en verde (30s, 383 tareas), XML de 44 suites/256 pruebas sin fallos/errores/omitidas. Detalle en `docs/evidencia/T014-visitante-adaptativo.md`.
+- **Decisiones:** no extender `031` a demo ni pantallas de negocio; se delegó al arquitecto la redacción anticipada de su plan técnico en el espacio separado `virgo-visual-reference`, sujeto a revisión humana. No implica implementación aprobada ni cierre de base.
+- **Costo:** $0 / herramientas existentes.
+- **Aprendizaje:** reutilizar aserciones con escala parametrizable conserva la cobertura 2.0 y añade 1.3 sin duplicar fixtures; pruebas JVM no acreditan anuncio audible.
+- **Pendiente:** TalkBack manual, capturas de acceso/estados restantes, aceptación visual, publicación y CI de cambios locales. T014/T036 abiertas.
+
+### 2026-11-23 · Demo visual urgente de tres roles
+
+- **Autor:** usuario + OpenCode, con implementación delegada por rol y revisión técnica automatizada de solo lectura.
+- **Módulo / tareas:** paquetes provisionales DV-01–DV-06 de `docs/diseno/excepcion-demo-urgente.md`; no son cierre ni ejecución acreditada de `031`.
+- **Autorización:** el usuario aprobó la excepción temporal propuesta para adelantar la demo visual y regularizar los specs después, conservando seguridad y pruebas. Posteriormente pidió PR en borrador con aceptación visual únicamente suya y subir los cambios al terminar, no antes.
+- **Qué se hizo:** launcher debug separado «VirGo Demo», selector de tres roles, 55 destinos autenticados de muestra y 15 hojas locales; navegación, regreso, índice por rol y formularios con máximo de 500 caracteres. Reutiliza tema, tipografía y mapa existentes. Se añadieron ilustraciones geométricas locales identificadas, sin fotografías nuevas de licencia incierta. No se alteraron flujos reales, sesión, endpoints ni secretos.
+- **Evidencia inicial:** compilación `:app:compileDebugKotlin` correcta (7m52s); formato de fuentes debug/testDebug correcto (16s). Los nuevos tests y el pipeline completo aún requieren resultado final. Se amplió explícitamente la fuente de detekt del módulo app para cubrir también debug y testDebug, sin quitar las fuentes previas. No se atribuye esa ampliación a release.
+- **Decisiones:** rama local `feat/032-demo-visual-roles` apilada sobre `fix/000-fundamentos-visuales`, sin modificar el PR #29. Aceptación visual exclusiva del usuario; no solicitar otros revisores humanos para esa decisión, sin debilitar checks ni ruleset. GitHub no permite pedir revisión formal al propio autor: identificar responsabilidad en cuerpo y asignación.
+- **Límites:** datos/fechas ficticios; hojas con estado local que no actualizan pantallas de fondo; algunos detalles comparten muestra. `rememberSaveable` puede restaurar estado mediante Android; no es persistencia backend. No hay pagos, mensajes, IA, reservas, notificaciones ni subidas reales.
+- **Costo:** $0 / herramientas existentes, sin dependencias de servicios nuevas.
+- **Aprendizaje:** la integración encontró recursos duplicados entre descripción de rol y formulario; se separaron sus nombres. Un análisis que omita las fuentes debug no acredita esta demo: se reforzó su cobertura. La revisión estática no detectó bloqueantes de seguridad en lo inspeccionado, pero no sustituye Gitleaks ni ejecución.
+- **Resultado final local:** pipeline completo en verde (2m29s, 383 tareas), XML de 49 suites/274 pruebas sin fallos/errores/omitidas. Detekt incluye debug/testDebug; lint app sin errores, 42 avisos/11 sugerencias. Corregidos cierre de hojas largas y recurso con porcentajes literales, sin retirar aserciones ni reglas.
+- **APK y capturas:** debug de 24 595 173 bytes, SHA-256 `e66c6e7abcb8644fb51e0c5a3ca0bd99d5f86739a4fed251d242aa3d3302f2df`, firma debug verificada. Instalado en emulador con hash coincidente; recorrido de tres roles, detalle claro/oscuro y hojas de búsqueda/preferencias. Nueve capturas finales en `docs/evidencia/demo-visual/`, informe `verificacion.md`. ANR de Launcher/System UI resueltos sin borrar datos; capturas de splash/diálogo reemplazadas. No se actuó sobre teléfonos conectados.
+- **Pendiente:** publicación autorizada y CI remoto; aceptación visual exclusiva del usuario y regularización SDD. T014/T036 siguen abiertas; no hay aceptación visual, merge ni release.

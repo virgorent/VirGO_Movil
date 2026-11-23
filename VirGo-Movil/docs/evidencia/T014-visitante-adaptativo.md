@@ -131,5 +131,47 @@ y error de catálogo por la API local ausente. No son aceptación humana.
 | [`T014-visitante-393-1x-oscuro-inicio.png`](T014-visitante-393-1x-oscuro-inicio.png) | 393×800 dp, fuente 1.0, oscuro | Equivalente oscuro |
 | [`T014-visitante-393-1x-oscuro-preview.png`](T014-visitante-393-1x-oscuro-preview.png) | ídem | Vista previa inferior sobre el mapa |
 
-Pendiente para el cierre de T014: TalkBack manual, escala intermedia 1.3,
-revisión de estados alternativos y aceptación visual humana por bloques.
+## Seguimiento: escala intermedia y CI (2026-11-22)
+
+- El head `42490ec` pasó `changes`, `gitleaks`, `dependency review` y
+  `movil-build-test` (3m42s), run
+  [45044830978](https://github.com/virgorent/VirGO_Movil/actions/runs/45044830978).
+  El fallo de descarga de Robolectric no se reprodujo; no se aplicó una
+  mitigación ni se considera identificada su causa raíz.
+- Revisión adicional en el emulador: 393×800 dp, fuente 1.3, claro y oscuro.
+  Las cuatro capturas siguientes muestran el inicio adaptativo y el error
+  completo con «Reintentar» alcanzable por desplazamiento, sin superposición:
+  - [Inicio claro](T014-visitante-393-1.3x-claro-inicio.png).
+  - [Error claro](T014-visitante-393-1.3x-claro-error.png).
+  - [Inicio oscuro](T014-visitante-393-1.3x-oscuro-inicio.png).
+  - [Error oscuro](T014-visitante-393-1.3x-oscuro-error.png).
+- La jerarquía de UI confirmó flujo desplazable, rango 5 km seleccionado
+  y botón de reintento de 48 dp de alto. No se probó TalkBack ni el anuncio
+  audible, ni todos los estados de acceso a escala 1.3.
+- Se reemplazó una captura tomada durante el splash y otra tomada antes
+  de terminar el desplazamiento; no se usan como evidencia del resultado.
+- Emulador restaurado a 1280×2856, 480 dpi, fuente 1.0 y tema claro.
+
+Pendiente para el cierre de T014: TalkBack manual, revisión de estados
+alternativos, resto del acceso a escala 1.3 y aceptación visual humana por
+bloques. T014/T036 permanecen abiertas.
+
+## Regresión adicional: acceso a escala 1.3 (2026-11-22)
+
+`CompactAccessTest` incorpora seis escenarios nuevos: login, registro y primer
+paso de recuperación, cada uno en claro y oscuro, a 320 dp y fuente 1.3.
+Conservan las comprobaciones de desplazamiento, visibilidad, límites de línea,
+altura y elipsis usadas a escala 2.0; no sustituyen capturas ni TalkBack.
+
+- Suite focalizada: 16 pruebas, sin fallos; ktlint y detekt en verde (32s).
+- Pipeline completo: `ktlintCheck detekt lint testDebugUnitTest
+  :core:domain:test :core:common:test pitest assembleDebug`,
+  **BUILD SUCCESSFUL in 30s**, 383 tareas (8 ejecutadas, 375 actualizadas).
+- XML: **44 suites / 256 pruebas**, 0 fallos, errores u omitidas.
+- Solo se modificó código de pruebas; APK y lógica de producción sin cambios.
+- Este resultado es local; los checks de `42490ec` no acreditan estas nuevas
+  pruebas hasta publicarlas y volver a ejecutar CI.
+
+Siguen pendientes TalkBack manual, revisión integral de estados alternativos
+(incluido paso 2 de recuperación a 1.3), capturas de acceso a esa escala y
+aceptación visual humana. No se cierra `000`.

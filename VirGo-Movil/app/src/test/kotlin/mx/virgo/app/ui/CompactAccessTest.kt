@@ -93,6 +93,24 @@ class CompactAccessTest {
     fun recoverFitsAtDoubleScaleInDarkTheme() = assertRecoverFits(darkTheme = true)
 
     @Test
+    fun loginFitsAtIntermediateScaleInLightTheme() = assertLoginFits(darkTheme = false, fontScale = 1.3f)
+
+    @Test
+    fun loginFitsAtIntermediateScaleInDarkTheme() = assertLoginFits(darkTheme = true, fontScale = 1.3f)
+
+    @Test
+    fun registerFitsAtIntermediateScaleInLightTheme() = assertRegisterFits(darkTheme = false, fontScale = 1.3f)
+
+    @Test
+    fun registerFitsAtIntermediateScaleInDarkTheme() = assertRegisterFits(darkTheme = true, fontScale = 1.3f)
+
+    @Test
+    fun recoverFitsAtIntermediateScaleInLightTheme() = assertRecoverFits(darkTheme = false, fontScale = 1.3f)
+
+    @Test
+    fun recoverFitsAtIntermediateScaleInDarkTheme() = assertRecoverFits(darkTheme = true, fontScale = 1.3f)
+
+    @Test
     fun registerHeroSeparatesBackAndCopyAtDoubleScale() = assertHeroSeparated(venue = null)
 
     @Test
@@ -156,14 +174,17 @@ class CompactAccessTest {
         compose.runOnIdle { assertEquals(RegisterRole.PROVIDER, chosen) }
     }
 
-    private fun assertLoginFits(darkTheme: Boolean) {
+    private fun assertLoginFits(
+        darkTheme: Boolean,
+        fontScale: Float = 2f,
+    ) {
         val viewModel =
             LoginViewModel(
                 ValidateLoginFormUseCase(ValidateEmailUseCase()),
                 LoginUseCase(FakeAuthRepository()),
             )
         compose.setContent {
-            LargeTextTheme(darkTheme) { LoginScreen(viewModel = viewModel) }
+            LargeTextTheme(darkTheme, fontScale) { LoginScreen(viewModel = viewModel) }
         }
         compose.onRoot().assertWidthIsEqualTo(320.dp)
         listOf(
@@ -179,14 +200,17 @@ class CompactAccessTest {
         ).forEach(::assertTextFitsAfterScroll)
     }
 
-    private fun assertRegisterFits(darkTheme: Boolean) {
+    private fun assertRegisterFits(
+        darkTheme: Boolean,
+        fontScale: Float = 2f,
+    ) {
         val viewModel =
             RegisterViewModel(
                 ValidateRegisterFormUseCase(ValidateEmailUseCase()),
                 RegisterUseCase(FakeAuthRepository()),
             )
         compose.setContent {
-            LargeTextTheme(darkTheme) { RegisterScreen(venueId = null, viewModel = viewModel) }
+            LargeTextTheme(darkTheme, fontScale) { RegisterScreen(venueId = null, viewModel = viewModel) }
         }
         compose.onRoot().assertWidthIsEqualTo(320.dp)
         listOf(
@@ -207,7 +231,10 @@ class CompactAccessTest {
         ).forEach(::assertTextFitsAfterScroll)
     }
 
-    private fun assertRecoverFits(darkTheme: Boolean) {
+    private fun assertRecoverFits(
+        darkTheme: Boolean,
+        fontScale: Float = 2f,
+    ) {
         val viewModel =
             RecoverViewModel(
                 ValidateEmailUseCase(),
@@ -215,7 +242,7 @@ class CompactAccessTest {
                 ValidateRecoveryUseCase(),
             )
         compose.setContent {
-            LargeTextTheme(darkTheme) { RecoverScreen(viewModel = viewModel) }
+            LargeTextTheme(darkTheme, fontScale) { RecoverScreen(viewModel = viewModel) }
         }
         compose.onRoot().assertWidthIsEqualTo(320.dp)
         assertTextFitsAfterScroll(R.string.recover_title)
@@ -258,7 +285,7 @@ class CompactAccessTest {
         }
         assertEquals(1, layouts.size)
         val layout = layouts.single()
-        val message = "Text must fit at 320 dp and font scale 2.0: ${string(resId)}"
+        val message = "Text must fit at 320 dp and the configured font scale: ${string(resId)}"
         assertFalse(message, layout.didOverflowHeight)
         assertFalse(message, layout.multiParagraph.didExceedMaxLines)
         // A cached paragraph can retain a wider allocation than the measured text.
@@ -275,10 +302,11 @@ class CompactAccessTest {
     @Composable
     private fun LargeTextTheme(
         darkTheme: Boolean,
+        fontScale: Float = 2f,
         content: @Composable () -> Unit,
     ) {
         val density = LocalDensity.current
-        CompositionLocalProvider(LocalDensity provides Density(density.density, fontScale = 2f)) {
+        CompositionLocalProvider(LocalDensity provides Density(density.density, fontScale = fontScale)) {
             VirGoTheme(darkTheme = darkTheme, content = content)
         }
     }
