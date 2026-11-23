@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VirGo: salones de eventos y proveedores cerca de ti | App para organizar tu fiesta</title>
+  <meta name="description" content="Encuentra salones de eventos cerca de ti, compara opciones y organiza tu fiesta, boda o XV años desde tu celular. VirGo reúne salones y proveedores en una sola app.">
+  <meta name="robots" content="index, follow">
+  <meta name="google-site-verification" content="Co_2rnWy6aTMOm8_E3r4XFQEW688vDfVPaPeJ7lq5Vo">
+  <link rel="canonical" href="https://d2vzpj6yeszxa2.cloudfront.net/">
+  <meta name="theme-color" content="#7357F6">
+  <meta name="application-name" content="VirGo">
+  <!-- Vista previa al compartir (WhatsApp, Facebook, LinkedIn, X) -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_MX">
+  <meta property="og:site_name" content="VirGo">
+  <meta property="og:url" content="https://d2vzpj6yeszxa2.cloudfront.net/">
+  <meta property="og:title" content="VirGo: tu evento, sin hojas de cálculo">
+  <meta property="og:description" content="Salones y proveedores para tu evento, en una sola app. Solo dale GO.">
+  <meta property="og:image" content="https://d2vzpj6yeszxa2.cloudfront.net/assets/virgo-hero-poster.jpg">
+  <meta property="og:image:width" content="848">
+  <meta property="og:image:height" content="478">
+  <meta property="og:image:alt" content="Mujer sonriendo en una fiesta al aire libre organizada con VirGo">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="VirGo: tu evento, sin hojas de cálculo">
+  <meta name="twitter:description" content="Salones y proveedores para tu evento, en una sola app. Solo dale GO.">
+  <meta name="twitter:image" content="https://d2vzpj6yeszxa2.cloudfront.net/assets/virgo-hero-poster.jpg">
+  <!-- Datos estructurados para que Google entienda que es una app y quién la publica -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://d2vzpj6yeszxa2.cloudfront.net/#org",
+        "name": "KarasuDev",
+        "url": "https://d2vzpj6yeszxa2.cloudfront.net/",
+        "logo": "https://d2vzpj6yeszxa2.cloudfront.net/assets/virgo-icon.png",
+        "email": "virgorent6@gmail.com"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://d2vzpj6yeszxa2.cloudfront.net/#website",
+        "name": "VirGo",
+        "url": "https://d2vzpj6yeszxa2.cloudfront.net/",
+        "inLanguage": "es-MX",
+        "publisher": { "@id": "https://d2vzpj6yeszxa2.cloudfront.net/#org" }
+      },
+      {
+        "@type": "MobileApplication",
+        "name": "VirGo",
+        "operatingSystem": "Android 8.0 o superior",
+        "applicationCategory": "LifestyleApplication",
+        "description": "App para encontrar salones de eventos y proveedores cerca de ti y organizar tu fiesta en un solo lugar.",
+        "inLanguage": "es-MX",
+        "image": "https://d2vzpj6yeszxa2.cloudfront.net/assets/virgo-icon.png",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "MXN" },
+        "installUrl": "https://play.google.com/store/apps/details?id=mx.virgo.app",
+        "publisher": { "@id": "https://d2vzpj6yeszxa2.cloudfront.net/#org" }
+      }
+    ]
+  }
+  </script>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    /* Fuentes alojadas en el sitio (SIL Open Font License) para no enviar la IP de los visitantes a terceros. */
+    @font-face {
+      font-family: "DM Sans";
+      src: url("assets/fonts/dm-sans-latin.woff2") format("woff2");
+      font-weight: 400 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Manrope";
+      src: url("assets/fonts/manrope-latin.woff2") format("woff2");
+      font-weight: 600 800;
+      font-style: normal;
+      font-display: swap;
+    }
+    :root {
+      --brand: #7357F6;
+      --brand-strong: #6244EA;
+      --ink: #0F172A;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    /* Una sola pantalla: sin scroll en ningún tamaño. */
+    html, body { height: 100%; margin: 0; overflow: hidden; }
+    body {
+      font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: #fff;
+      background: var(--ink);
+    }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid #C9BEFF; outline-offset: 3px; border-radius: 8px; }
+
+    .stage {
+      position: relative;
+      height: 100vh;
+      height: 100svh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .stage video, .stage .poster {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15,23,42,.55) 0%, rgba(15,23,42,.15) 38%, rgba(15,23,42,.88) 100%);
+    }
+    .wrap {
+      position: relative;
+      z-index: 2;
+      width: min(1120px, 100% - 32px);
+      margin-inline: auto;
+    }
+
+    header { padding-block: clamp(16px, 3vh, 28px); }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+    }
+    .logo img { width: 36px; height: 36px; border-radius: 10px; }
+
+    main { flex: 1; display: flex; align-items: flex-end; padding-bottom: clamp(28px, 7vh, 72px); }
+    h1 {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      font-size: clamp(34px, min(6.2vw, 8.5vh), 76px);
+      max-width: 14ch;
+    }
+    h1 em { font-style: normal; color: #C9BEFF; }
+    .lead {
+      margin: clamp(12px, 2vh, 20px) 0 0;
+      max-width: 44ch;
+      font-size: clamp(16px, min(2.2vw, 2.6vh), 21px);
+      line-height: 1.5;
+      color: rgba(255,255,255,.9);
+    }
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: clamp(20px, 4vh, 36px);
+      min-height: 52px;
+      padding: 14px 30px;
+      border-radius: 999px;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 700;
+      font-size: 17px;
+      text-decoration: none;
+      box-shadow: 0 10px 30px rgba(115, 87, 246, .45);
+      transition: transform .15s ease, background .15s ease;
+    }
+    .cta:hover { background: var(--brand-strong); transform: translateY(-1px); }
+    .cta svg { width: 20px; height: 20px; }
+
+    footer {
+      padding-bottom: clamp(12px, 2.5vh, 20px);
+      font-size: 13px;
+      color: rgba(255,255,255,.7);
+    }
+    footer a { text-decoration: none; }
+    footer a:hover { color: #fff; text-decoration: underline; }
+
+    .video-toggle {
+      position: absolute;
+      z-index: 3;
+      right: 16px;
+      bottom: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 0;
+      background: rgba(15,23,42,.55);
+      color: #fff;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      opacity: .75;
+    }
+    .video-toggle:hover, .video-toggle:focus-visible { opacity: 1; }
+    .video-toggle svg { width: 14px; height: 14px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cta { transition: none; }
+      .cta:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <img class="poster" src="assets/virgo-hero-poster.jpg" alt="" aria-hidden="true">
+    <video id="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/virgo-hero-poster.jpg" aria-hidden="true">
+      <source src="assets/virgo-hero.mp4" type="video/mp4">
+    </video>
+
+    <header class="wrap">
+      <a class="logo" href="./" aria-label="VirGo, inicio">
+        <img src="assets/virgo-icon.png" alt="" width="36" height="36">
+        VirGo
+      </a>
+    </header>
+
+    <main class="wrap">
+      <div>
+        <h1>Tu evento, sin hojas de cálculo. <em>Solo dale GO.</em></h1>
+        <p class="lead">VirGo reúne salones y proveedores en un solo lugar para que organices tu fiesta, boda o evento desde tu teléfono.</p>
+        <a class="cta" href="https://play.google.com/store/apps/details?id=mx.virgo.app" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+          Probar la app
+        </a>
+      </div>
+    </main>
+
+    <footer class="wrap">
+      © 2026 KarasuDev ·
+      <a href="https://virgorent.github.io/VirGO_Movil/legal/privacidad/">Privacidad</a> ·
+      <a href="https://virgorent.github.io/VirGO_Movil/legal/terminos/">Términos</a>
+    </footer>
+
+    <button class="video-toggle" id="video-toggle" type="button" aria-label="Pausar video" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path id="video-icon" d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>
+    </button>
+  </div>
+
+  <script>
+    (function () {
+      var video = document.getElementById('hero-video');
+      var button = document.getElementById('video-toggle');
+      var icon = document.getElementById('video-icon');
+      var PAUSE = 'M7 5h3v14H7zM14 5h3v14h-3z';
+      var PLAY = 'M8 5v14l11-7z';
+      function sync() {
+        var paused = video.paused;
+        icon.setAttribute('d', paused ? PLAY : PAUSE);
+        button.setAttribute('aria-label', paused ? 'Reproducir video' : 'Pausar video');
+        button.setAttribute('aria-pressed', String(paused));
+      }
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        video.removeAttribute('autoplay');
+        video.pause();
+      }
+      button.addEventListener('click', function () {
+        if (video.paused) { video.play(); } else { video.pause(); }
+      });
+      video.addEventListener('play', sync);
+      video.addEventListener('pause', sync);
+      sync();
+    })();
+  </script>
+</body>
+</html>
