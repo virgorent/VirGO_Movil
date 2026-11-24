@@ -902,3 +902,4 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Costo:** herramientas locales existentes; CI según configuración del repositorio.
 - **Aprendizaje:** distinguir pruebas con contrato simulado de humo de producción; documentar el error de catálogo inicial y ANR de System UI sin presentarlos como éxito funcional.
 - **Pendiente:** CI del head publicado, revisión visual del usuario, login real por rol, revocación/renovación cuando exista contrato, endpoints ausentes, TalkBack y T014/T036, regularización SDD. No se fusiona ni publica release.
+- **Publicación:** código y evidencia subidos en `a5a6739`; [PR #32](https://github.com/virgorent/VirGO_Movil/pull/32) confirmado en borrador contra `main`, asignado solo a `ccabrera-dev8`, sin solicitudes de revisión. GitHub informa `MERGEABLE` (sin conflictos, no aprobación). CI inicial en curso: `movil-ci`, `movil-codeql`, Gitleaks y dependency review; consultar el head final antes de integrar.

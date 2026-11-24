@@ -2,6 +2,7 @@
 
 Fecha: 2026-11-23. Rama `feat/033-app-unificada`, contra `main`.
 Autorización y alcance: [integración](../../diseno/integracion-app-unificada.md).
+Código/evidencia: `a5a6739`, [PR #32 en borrador](https://github.com/virgorent/VirGO_Movil/pull/32).
 
 ## Resultado local
 
