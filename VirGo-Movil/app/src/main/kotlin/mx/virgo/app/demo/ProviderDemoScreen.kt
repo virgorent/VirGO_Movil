@@ -73,7 +73,7 @@ private fun ProviderHome(
             stringResource(if (quoted) R.string.demo_provider_replied else R.string.demo_provider_new),
             onClick = { onNavigate("providerRequest") },
         )
-        DemoAction(stringResource(R.string.demo_provider_all_requests)) { onNavigate("providerRequests") }
+        DemoNavigationLink(stringResource(R.string.demo_provider_all_requests)) { onNavigate("providerRequests") }
         DemoSection(stringResource(R.string.demo_provider_agenda))
         DemoCard(
             stringResource(R.string.demo_provider_existing_event),
@@ -87,7 +87,7 @@ private fun ProviderHome(
             R.string.demo_provider_zones to "providerZones",
             R.string.demo_provider_reviews to "providerReviews",
             R.string.demo_provider_stats to "providerStats",
-        ).forEach { (label, route) -> DemoAction(stringResource(label)) { onNavigate(route) } }
+        ).forEach { (label, route) -> DemoNavigationLink(stringResource(label)) { onNavigate(route) } }
     }
 }
 
@@ -125,8 +125,8 @@ private fun ProviderProfile(
                     (price.toIntOrNull() ?: 0) > 0
             onNotice(if (valid) saved else invalid)
         }
-        DemoAction(stringResource(R.string.demo_provider_gallery)) { onNavigate("providerGallery") }
-        DemoAction(stringResource(R.string.demo_provider_zones)) { onNavigate("providerZones") }
+        DemoNavigationLink(stringResource(R.string.demo_provider_gallery)) { onNavigate("providerGallery") }
+        DemoNavigationLink(stringResource(R.string.demo_provider_zones)) { onNavigate("providerZones") }
     }
 }
 

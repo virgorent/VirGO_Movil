@@ -1,12 +1,15 @@
 package mx.virgo.app.demo
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -113,7 +116,14 @@ private fun WorkspaceToolbar(
                 style = MaterialTheme.typography.labelMedium,
             )
         }
-        Row(Modifier.fillMaxWidth()) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .horizontalScroll(
+                    rememberScrollState(),
+                ).padding(horizontal = DemoMetrics.rowSpacing),
+            horizontalArrangement = Arrangement.spacedBy(DemoMetrics.compactSpacing),
+        ) {
             TextButton(onClick = onBack, modifier = Modifier.heightIn(min = DemoMetrics.touchTarget)) {
                 Text(stringResource(R.string.demo_back))
             }

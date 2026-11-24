@@ -35,8 +35,11 @@ fun DemoSheetActions(
     val notice = stringResource(R.string.demo_sheet_scope)
     val modalState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     Row(
-        Modifier.horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(DemoMetrics.compactSpacing),
+        Modifier.horizontalScroll(rememberScrollState()).padding(
+            horizontal = DemoMetrics.pagePadding,
+            vertical = DemoMetrics.compactSpacing,
+        ),
+        horizontalArrangement = Arrangement.spacedBy(DemoMetrics.rowSpacing),
     ) {
         definitions.forEach { sheet ->
             InputChip(

@@ -131,7 +131,7 @@
     <string name="demo_client_style_modern">Contemporáneo violeta</string>
     <string name="demo_client_style_garden">Jardín romántico</string>
     <string name="demo_client_style_description">Concepto textual de ejemplo: follaje, luz cálida y mantelería neutra. No se genera ni modifica una fotografía.</string>
-    <string name="demo_client_change_style">Alternar concepto de ejemplo</string>
+    <string name="demo_client_change_style">Concepto de ejemplo</string>
     <string name="demo_client_layout">Distribución ilustrativa · No a escala</string>
     <string name="demo_client_table_diagram">○  ○  ○  ○  ○\n\n      PISTA\n\n○  ○  ○  ○  ○</string>
     <string name="demo_client_table_plan">10 mesas de 10 personas · 100 lugares. Revisar accesos, evacuación y medidas con el salón.</string>

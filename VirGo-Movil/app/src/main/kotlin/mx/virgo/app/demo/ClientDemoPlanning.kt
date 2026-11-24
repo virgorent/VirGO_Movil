@@ -77,59 +77,6 @@ private fun ClientDemoEvent(onNavigate: (String) -> Unit) {
 }
 
 @Composable
-private fun ClientDemoStudio(
-    onNavigate: (String) -> Unit,
-    onNotice: (String) -> Unit,
-) {
-    var tab by rememberSaveable { mutableStateOf(0) }
-    var alternate by rememberSaveable { mutableStateOf(false) }
-    val saved = clientText(R.string.demo_client_design_saved)
-    val tabs =
-        listOf(
-            R.string.demo_client_style,
-            R.string.demo_client_tables,
-            R.string.demo_client_staff,
-            R.string.demo_client_ideas,
-        )
-    DemoPage(clientText(R.string.demo_client_studio), clientText(R.string.demo_client_ai_example)) {
-        ClientDemoDisclaimer()
-        WorkspaceSummary("studio")
-        tabs.forEachIndexed { index, title ->
-            DemoAction(clientText(title)) { tab = index }
-        }
-        when (tab) {
-            0 -> {
-                DemoCard(
-                    clientText(if (alternate) R.string.demo_client_style_modern else R.string.demo_client_style_garden),
-                    clientText(R.string.demo_client_style_description),
-                )
-                DemoAction(clientText(R.string.demo_client_change_style)) { alternate = !alternate }
-            }
-            1 -> ClientDemoTablePlan()
-            2 ->
-                DemoStats(
-                    listOf(
-                        clientText(R.string.demo_client_waiters) to clientText(R.string.demo_client_four),
-                        clientText(R.string.demo_client_security) to clientText(R.string.demo_client_one),
-                        clientText(R.string.demo_client_cleaning) to clientText(R.string.demo_client_two),
-                    ),
-                )
-            CLIENT_DEMO_IDEAS_TAB -> DemoNotice(clientText(R.string.demo_client_decor_ideas))
-        }
-        DemoNotice(clientText(R.string.demo_client_studio_assumptions))
-        DemoAction(clientText(R.string.demo_client_save_design)) { onNotice(saved) }
-        ClientDemoLink(R.string.demo_client_event, "event", onNavigate)
-    }
-}
-
-@Composable
-private fun ClientDemoTablePlan() {
-    DemoSection(clientText(R.string.demo_client_layout))
-    Text(clientText(R.string.demo_client_table_diagram))
-    DemoNotice(clientText(R.string.demo_client_table_plan))
-}
-
-@Composable
 private fun ClientDemoBudget(onNavigate: (String) -> Unit) {
     val event = workspaceRecord(WorkspaceSection.EVENT)
     DemoPage(clientText(R.string.demo_client_budget), event?.name ?: clientText(R.string.demo_client_event_name)) {
@@ -279,6 +226,5 @@ private fun ClientDemoTimeline(onNavigate: (String) -> Unit) {
     }
 }
 
-private const val CLIENT_DEMO_IDEAS_TAB = 3
 private const val CLIENT_DEMO_BUDGET_PROGRESS = 0.85f
 private const val CLIENT_DEMO_TIMELINE_PROGRESS = 0.25f

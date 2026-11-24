@@ -22,6 +22,12 @@ checks, modificar el ruleset ni fusionar/publicar automáticamente.
 | UI-04 | Estado compartido de formularios y hojas, aislado por cuenta | Cambios visibles al cerrar hoja, limpieza al cerrar sesión |
 | UI-05 | Conservar catálogo/autenticación reales | Sin reemplazo por repositorios ficticios ni contratos inventados |
 | UI-06 | PR de consolidación contra main | Pipeline, seguridad, evidencia y revisión humana pendientes de decisión |
+| UI-07 | Pulido visual solicitado: pestañas/selector de IA Studio, jerarquía de enlaces, separación e iconos delineados | Selección exclusiva, opciones, navegación y accesibilidad compacta |
+
+UI-07 fue solicitado explícitamente por el usuario tras señalar botones
+confundidos con selectores y controles pegados, aportando una captura de
+IA Studio y autorizando continuar con iconos más actuales. No añade APIs
+ni modifica permisos o reglas de sesión; conserva los avisos de simulación.
 
 ## Separación de funciones reales y locales
 

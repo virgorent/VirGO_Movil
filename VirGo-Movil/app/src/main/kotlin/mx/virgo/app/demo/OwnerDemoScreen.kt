@@ -80,7 +80,7 @@ private fun OwnerHome(go: (String) -> Unit) {
             S.demo_owner_payments to "ownerPayments",
             S.demo_owner_stats to "ownerStats",
             S.demo_owner_reviews to "ownerReviews",
-        ).forEach { (label, route) -> DemoAction(stringResource(label)) { go(route) } }
+        ).forEach { (label, route) -> DemoNavigationLink(stringResource(label)) { go(route) } }
     }
 }
 
@@ -106,7 +106,7 @@ private fun OwnerVenues(go: (String) -> Unit) {
             S.demo_owner_pricing to "ownerPricing",
             S.demo_owner_setups to "ownerSetups",
             S.demo_owner_allies to "ownerAllies",
-        ).forEach { (label, route) -> DemoAction(stringResource(label)) { go(route) } }
+        ).forEach { (label, route) -> DemoNavigationLink(stringResource(label)) { go(route) } }
     }
 }
 

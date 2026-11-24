@@ -11,4 +11,5 @@ internal object DemoMetrics {
     val touchTarget = 48.dp
     val toolbarSpacing = 4.dp
     val barElevation = 3.dp
+    val controlBorder = 1.dp
 }

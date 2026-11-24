@@ -11,14 +11,14 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Chat
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.RequestQuote
+import androidx.compose.material.icons.automirrored.outlined.Chat
+import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.Explore
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.RequestQuote
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -96,14 +96,14 @@ private fun DemoAdaptiveTabs(
 
 private fun demoTabIcon(route: String): ImageVector =
     when (route) {
-        "explore" -> Icons.Default.Place
-        "favorites" -> Icons.Default.FavoriteBorder
-        "studio" -> Icons.Default.AutoAwesome
-        "event", "ownerCalendar", "providerAgenda" -> Icons.Default.CalendarMonth
-        "ownerRequests", "providerRequests" -> Icons.Default.RequestQuote
-        "messages" -> Icons.AutoMirrored.Filled.Chat
-        "profile" -> Icons.Default.AccountCircle
-        else -> Icons.Default.Home
+        "explore" -> Icons.Outlined.Explore
+        "favorites" -> Icons.Outlined.FavoriteBorder
+        "studio" -> Icons.Outlined.AutoAwesome
+        "event", "ownerCalendar", "providerAgenda" -> Icons.Outlined.CalendarMonth
+        "ownerRequests", "providerRequests" -> Icons.Outlined.RequestQuote
+        "messages" -> Icons.AutoMirrored.Outlined.Chat
+        "profile" -> Icons.Outlined.Person
+        else -> Icons.Outlined.Home
     }
 
 private const val ADAPTIVE_NAV_SCALE = 1.3f

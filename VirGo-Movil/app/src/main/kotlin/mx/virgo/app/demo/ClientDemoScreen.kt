@@ -96,5 +96,5 @@ internal fun ClientDemoLink(
     route: String,
     onNavigate: (String) -> Unit,
 ) {
-    DemoAction(clientText(label)) { onNavigate(route) }
+    DemoNavigationLink(clientText(label)) { onNavigate(route) }
 }

@@ -903,3 +903,14 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Aprendizaje:** distinguir pruebas con contrato simulado de humo de producción; documentar el error de catálogo inicial y ANR de System UI sin presentarlos como éxito funcional.
 - **Pendiente:** CI del head publicado, revisión visual del usuario, login real por rol, revocación/renovación cuando exista contrato, endpoints ausentes, TalkBack y T014/T036, regularización SDD. No se fusiona ni publica release.
 - **Publicación:** código y evidencia subidos en `a5a6739`; [PR #32](https://github.com/virgorent/VirGO_Movil/pull/32) confirmado en borrador contra `main`, asignado solo a `ccabrera-dev8`, sin solicitudes de revisión. GitHub informa `MERGEABLE` (sin conflictos, no aprobación). CI inicial en curso: `movil-ci`, `movil-codeql`, Gitleaks y dependency review; consultar el head final antes de integrar.
+
+### 2026-11-23 · UI-07: selectores, jerarquía e iconos
+
+- **Autor:** usuario + OpenCode.
+- **Módulo / tareas:** UI-07, reparación visual explícitamente solicitada con captura de IA Studio; sin nuevas APIs ni cierre de specs.
+- **Qué se hizo:** pestañas exclusivas en IA Studio en vez de cuatro botones primarios; selector de concepto con opciones y estado seleccionado accesible. Enlaces neutros con flecha en cliente y grupos principales de gestión de propietario/proveedor. Márgenes de las acciones de hojas, separación de toolbar e iconos Material delineados en navegación y Studio.
+- **Evidencia:** pipeline completo final verde en 1m22s, incremental; 58 suites/322 pruebas sin fallos/errores/omitidas. Cuatro pruebas nuevas cubren selección, menú, compacto oscuro con fuente 2.0 y separación/navegación. APK debug de 25 217 319 bytes, SHA-256 `10ace40cbf1a7141f332375ee0ac908b583ceccfc77285e7509dccad8628e49c`, instalado en emulador; cuatro capturas claras/oscuras en `docs/evidencia/unificacion-app/09-*` a `12-*`. Informe actualizado.
+- **Decisiones:** mantener funciones, avisos de simulación y APIs; el cambio afecta la presentación, no habilita IA real. Continúa el PR #32 en borrador y revisión visual exclusiva del usuario. CI del head anterior `4ce9a05` consultado: todos los checks verdes; no se atribuye ese resultado al nuevo head.
+- **Costo:** herramientas locales existentes; sin servicios ni dependencias nuevas.
+- **Aprendizaje:** diferenciar acciones, navegación y selección reduce competencia visual. Recompilar sin incremental resolvió los símbolos duplicados tras mover fuentes. Un fallo aislado de `NavigationTest` no se reprodujo al repetir la suite completa; causa no determinada.
+- **Pendiente:** aceptación visual del usuario y CI del nuevo head. No se declara pulido exhaustivo de todas las pantallas, TalkBack ni cierre de T014/T036. Sin fusión ni release.
