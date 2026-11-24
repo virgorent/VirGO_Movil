@@ -600,3 +600,19 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Una tarea bloqueada por una herramienta externa puede cerrarse como «no aplica» documentando el sustituto, en vez de quedarse ⛔ para siempre.
   - Al actualizar el estado de una tarea hay que mover el contador en todos los lugares que lo replican (`task.md`, `AGENTS.md` raíz y móvil) para evitar *stale references*.
 - **Pendiente:** aprobación del PR docs; T024, T033, T030, T035 y T036.
+
+### 2026-11-24 · Traspaso documental a Karasu
+
+- **Autor:** opencode, por autorización del usuario.
+- **Módulo / tareas:** propuesta `030-cuenta-sesion`; ninguna tarea funcional ejecutada.
+- **Qué se hizo:** paquete separado con auditoría móvil–backend, cuatro archivos
+  SDD en borrador y [nota de traspaso](docs/diseno/traspaso-karasu.md).
+- **Evidencia:** PR #32 consultado: abierto, revisión requerida, checks verdes,
+  head `4ab3131`; sondeo de OpenAPI: 11 rutas y 12 operaciones; catálogo vacío.
+- **Decisiones:** rama documental desde `main`, sin modificar #32; `030` no se
+  aprueba ni implementa por publicar esta documentación.
+- **Costo:** sin servicios nuevos; CI del repositorio.
+- **Aprendizaje:** distinguir estado de `main` del de la rama auditada; el
+  traspaso enumera preguntas pendientes antes de aprobar el diseño.
+- **Pendiente:** revisión de Karasu, integración de #32 y revisión humana del
+  spec/plan; reconciliar la base y la constitución tras las fusiones. Sin release.
