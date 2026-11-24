@@ -77,6 +77,8 @@ class FontScaleTest {
             LoginViewModel(
                 ValidateLoginFormUseCase(ValidateEmailUseCase()),
                 LoginUseCase(FakeAuthRepository()),
+                mx.virgo.app.session
+                    .fakeSessionRepository(),
             )
         compose.setContent {
             val density = LocalDensity.current

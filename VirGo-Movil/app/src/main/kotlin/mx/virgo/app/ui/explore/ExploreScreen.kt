@@ -69,6 +69,7 @@ private val SearchPadding = 14.dp
 fun ExploreScreen(
     modifier: Modifier = Modifier,
     viewModel: ExploreViewModel = hiltViewModel(),
+    onNavigate: ((String) -> Unit)? = null,
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHost = LocalSnackbarHost.current
@@ -92,8 +93,24 @@ fun ExploreScreen(
         ExploreContent(
             state = state,
             viewModel = viewModel,
-            onNoticesClick = { scope.launch { snackbarHost.showSnackbar(noticesSoon) } },
-            onProvidersClick = { scope.launch { snackbarHost.showSnackbar(providersSoon) } },
+            onNoticesClick = {
+                if (onNavigate !=
+                    null
+                ) {
+                    onNavigate("notifications")
+                } else {
+                    scope.launch { snackbarHost.showSnackbar(noticesSoon) }
+                }
+            },
+            onProvidersClick = {
+                if (onNavigate !=
+                    null
+                ) {
+                    onNavigate("providers")
+                } else {
+                    scope.launch { snackbarHost.showSnackbar(providersSoon) }
+                }
+            },
         )
 
         ExploreSheetHost(

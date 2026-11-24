@@ -72,6 +72,8 @@ class SmokeTest {
             LoginViewModel(
                 ValidateLoginFormUseCase(ValidateEmailUseCase()),
                 LoginUseCase(FakeAuthRepository()),
+                mx.virgo.app.session
+                    .fakeSessionRepository(),
             )
         compose.setContent {
             VirGoTheme {
@@ -91,7 +93,7 @@ class SmokeTest {
         compose.onNodeWithText(string(R.string.login_submit)).performScrollTo().performClick()
         compose.waitForIdle()
         assertTrue(vm.state.value.loggedIn)
-        assertEquals("ana@mail.com" to "secret1", result)
+        assertEquals("ana@mail.com" to "", result)
     }
 
     @Test

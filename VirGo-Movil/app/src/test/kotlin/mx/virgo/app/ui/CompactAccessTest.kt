@@ -182,6 +182,8 @@ class CompactAccessTest {
             LoginViewModel(
                 ValidateLoginFormUseCase(ValidateEmailUseCase()),
                 LoginUseCase(FakeAuthRepository()),
+                mx.virgo.app.session
+                    .fakeSessionRepository(),
             )
         compose.setContent {
             LargeTextTheme(darkTheme, fontScale) { LoginScreen(viewModel = viewModel) }

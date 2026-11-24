@@ -1,5 +1,7 @@
 package mx.virgo.app.ui.login
 
+import mx.virgo.app.session.FakeSessionTokenStore
+import mx.virgo.app.session.fakeSessionRepository
 import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
 import mx.virgo.core.domain.LoginUseCase
@@ -19,11 +21,13 @@ class LoginViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val fakeRepository = FakeAuthRepository()
+    private val tokenStore = FakeSessionTokenStore()
 
     private fun viewModel() =
         LoginViewModel(
             ValidateLoginFormUseCase(ValidateEmailUseCase()),
             LoginUseCase(fakeRepository),
+            fakeSessionRepository(tokenStore),
         )
 
     @Test
@@ -52,7 +56,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun submitWithValidCredentialsLogsInAndKeepsFields() {
+    fun submitWithValidCredentialsPersistsSessionAndClearsPassword() {
         val viewModel = viewModel()
         viewModel.onEmailChange("ana@mail.com")
         viewModel.onPasswordChange("secret1")
@@ -63,7 +67,26 @@ class LoginViewModelTest {
         assertFalse(state.isLoading)
         assertEquals(1, fakeRepository.calls)
         assertEquals("ana@mail.com", state.email)
-        assertEquals("secret1", state.password)
+        assertEquals("", state.password)
+        assertEquals(1, tokenStore.saveCalls)
+        assertEquals(
+            "client",
+            tokenStore.stored.value
+                ?.account
+                ?.role,
+        )
+    }
+
+    @Test
+    fun storageFailureNeverReportsLoggedIn() {
+        tokenStore.failSave = true
+        val viewModel = viewModel()
+        viewModel.onEmailChange("ana@mail.com")
+        viewModel.onPasswordChange("secret1")
+        viewModel.submit()
+        assertFalse(viewModel.state.value.loggedIn)
+        assertEquals(AppError.Unauthorized, viewModel.state.value.error)
+        assertNull(tokenStore.stored.value)
     }
 
     @Test

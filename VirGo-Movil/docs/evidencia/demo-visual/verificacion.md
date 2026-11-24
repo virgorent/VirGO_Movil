@@ -1,5 +1,10 @@
 # Verificación · demo visual de roles
 
+> Informe histórico de la entrega #31. La consolidación posterior retira
+> `VisualDemoActivity` y mueve las pantallas al acceso normal de VirGo.
+> Ver [integración vigente](../../diseno/integracion-app-unificada.md) y
+> [verificación de la unificación](../unificacion-app/verificacion.md).
+
 Fecha: 2026-11-23. Rama `feat/032-demo-visual-roles`, basada en
 `fix/000-fundamentos-visuales` (`42490ec`); sin fusión ni release.
 Código/evidencia: `9e96bf4`; [PR #31 en borrador](https://github.com/virgorent/VirGO_Movil/pull/31).

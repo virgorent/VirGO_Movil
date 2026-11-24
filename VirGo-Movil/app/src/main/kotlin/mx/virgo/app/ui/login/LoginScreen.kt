@@ -47,13 +47,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import mx.virgo.app.R
+import mx.virgo.app.session.SessionRepository
 import mx.virgo.app.ui.auth.AuthDivider
 import mx.virgo.app.ui.auth.AuthTextField
 import mx.virgo.app.ui.auth.PasswordField
 import mx.virgo.app.ui.auth.SocialAuthRow
 import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
+import mx.virgo.core.datastore.StoredSession
+import mx.virgo.core.datastore.TokenStore
 import mx.virgo.core.designsystem.components.VirGoButton
 import mx.virgo.core.designsystem.theme.Slate900
 import mx.virgo.core.designsystem.theme.VirGoPurpleDark
@@ -350,7 +355,20 @@ fun LoginScreenPreview() {
                             ) = AppResult.Failure(AppError.Unknown)
                         },
                     ),
+                    SessionRepository(PreviewTokenStore()),
                 ),
         )
     }
+}
+
+/** Preview explícitamente incapaz de persistir o autorizar una sesión. */
+private class PreviewTokenStore : TokenStore {
+    override val session: Flow<StoredSession?> = flowOf(null)
+    override val token: Flow<String?> = flowOf(null)
+
+    override suspend fun saveSession(session: StoredSession) = error("Preview storage unavailable")
+
+    override suspend fun save(token: String) = error("Preview storage unavailable")
+
+    override suspend fun clear() = error("Preview storage unavailable")
 }

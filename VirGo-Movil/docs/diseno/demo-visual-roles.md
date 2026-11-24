@@ -7,8 +7,8 @@ Una revisión técnica automatizada no sustituye su decisión.
 ## Cómo recorrerla
 
 1. Instalar el APK **debug**, no un APK de producción.
-2. Abrir el acceso **VirGo Demo** del launcher. El acceso **VirGo** conserva
-   la aplicación y sus integraciones existentes.
+2. Abrir **VirGo**, la única entrada del launcher. En debug, pulsar
+   «Recorrer pantallas de muestra · sin iniciar sesión» desde visitante.
 3. Elegir Cliente, Propietario de salón o Proveedor.
 4. Recorrer las pestañas inferiores y las acciones de cada pantalla.
    «Todas las pantallas de este rol» permite revisar el inventario sin
@@ -39,7 +39,9 @@ bloqueo de fechas y evento de agenda. No suman destinos.
 
 ## Límites explícitos
 
-- Es una demo offline, no la implementación integrada de los módulos `006`–`029`.
+- La muestra sin cuenta es offline. Las pantallas también forman parte del
+  espacio autenticado de la app, según el rol de sesión, sin selector de
+  privilegios. Esto no completa las integraciones de los módulos `006`–`029`.
 - La referencia es el prototipo React local autorizado; no se afirma paridad
   demostrada con Figma ni aceptación visual.
 - No se incorporaron fotografías nuevas de derechos desconocidos. Las
@@ -47,10 +49,10 @@ bloqueo de fechas y evento de agenda. No suman destinos.
 - Calendarios y actividad contienen fechas/datos fijos de ejemplo, no
   disponibilidad o estadísticas reales.
 - Algunos registros comparten un detalle de muestra; no son catálogos reales.
-- Los formularios y hojas mantienen estado local de vista. Las hojas no
-  actualizan el contenido de las pantallas de fondo; su confirmación lo explica.
-  `rememberSaveable` puede restaurar estado mediante Android al recrear la
-  actividad; no es una sesión autenticada ni persistencia backend.
+- Las hojas actualizan el estado compartido y los resúmenes de sus pantallas.
+  Los cambios son locales, en memoria, sin sincronización; se descartan al
+  salir del espacio o cerrar sesión. No constituyen persistencia backend.
+  El historial de navegación puede restaurarse mediante Android.
 - Los campos de texto compartidos aceptan como máximo 500 caracteres.
 - No hay subida de archivos, envío, motor IA, pasarela bancaria ni
   programación real de notificaciones.
@@ -68,7 +70,8 @@ Si quien creó el PR es también el usuario revisor, GitHub no permite
 solicitarse una revisión formal a sí mismo. En ese caso se identifica
 la responsabilidad visual en el cuerpo y la asignación del PR.
 
-Resultados técnicos y capturas: ver el
-[informe de evidencia](../evidencia/demo-visual/verificacion.md);
+Resultados técnicos y capturas anteriores: ver el
+[informe histórico de demo](../evidencia/demo-visual/verificacion.md).
+La integración vigente se describe en [app unificada](integracion-app-unificada.md);
 la presencia de una ruta en el inventario no acredita por sí sola sus
 acciones, su fidelidad o su integración.

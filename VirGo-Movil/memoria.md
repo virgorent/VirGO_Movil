@@ -43,6 +43,7 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | ADR-15 | 2026-11-15 | **Google Play** como canal de distribución con firma de apps de Play (enmienda v1.2.0) | La cuenta ya existe y su pago es único; el AAB sale del mismo workflow de release |
 | ADR-15 | 2026-11-03 | **Repositorio único** `virgorent/VirGO_Backend` con carpetas por proyecto | Decisión del equipo; **superseded** por ADR-16 (2026-11-12) |
 | ADR-16 | 2026-11-12 | Repositorio propio `virgorent/VirGO_Movil` para el móvil (fin del monorepo); el backend vive en `virgorent/VirGO_Backend` | Separa CI, permisos y despliegues por proyecto |
+| ADR-17 | 2026-11-23 | Una entrada de app; rol desde sesión cifrada, estado local aislado por cuenta/rol; sin refresh automático | Consolidación autorizada; evitar privilegios ficticios y contratos inventados |
 
 ## Cambios de contrato (compartidos con Backend)
 
@@ -890,3 +891,14 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Publicación autorizada:** código/evidencia publicados en `9e96bf4a285c57706dc9e3db3482edbd76304d43`, rama `feat/032-demo-visual-roles`, [PR #31](https://github.com/virgorent/VirGO_Movil/pull/31) en borrador y apilado sobre #29. Asignado únicamente a `ccabrera-dev8`, sin solicitudes de otros revisores; el cuerpo reserva expresamente la aceptación visual al usuario. Checkout limpio tras el push de esa entrega.
 - **CI inicial:** `gitleaks`, `dependency review` y `changes` verdes para `9e96bf4`; build/test remoto en curso al registrar esta entrada. El resultado final por head se consulta en el PR; no se presume verde por la ejecución local.
 - **Pendiente:** CI remoto del head final, aceptación visual exclusiva del usuario y regularización SDD. T014/T036 siguen abiertas; no hay aceptación visual, merge ni release.
+
+### 2026-11-23 · Consolidación de la app y sesión por rol
+
+- **Autor:** usuario + OpenCode, con revisión técnica automatizada de seguridad.
+- **Módulo / tareas:** UI-01–UI-06 provisionales en `docs/diseno/integracion-app-unificada.md`, bajo la excepción temporal autorizada; sin cierre de specs.
+- **Qué se hizo:** 55 destinos y 15 hojas pasan al source set principal; se retira launcher separado. Sesión cifrada con identidad/rol validado, expiración y rechazo por defecto; registro sin sesión vuelve al login. Workspace compartido en memoria por cuenta/rol, limpiado al salir; muestra sin cuenta únicamente desde debug.
+- **Evidencia:** pipeline final completo verde (1m46s, incremental), 57 suites/318 pruebas sin fallos/errores/omitidas. APK debug SHA-256 `24f896168cb4b67c31917bfe9249ef181fda393bd02427955e959e4d36c931f0`, instalado en `emulator-5554`. Una actividad MAIN/LAUNCHER. Login de los tres roles contra servidor local simulado, restauración tras force-stop y logout comprobados; no acredita login de producción. Ocho capturas e informe en `docs/evidencia/unificacion-app/`.
+- **Decisiones:** ADR-17; no almacenar refresh token ni inventar renovación. Logout local no revoca token remoto. Consolidación contra `main`, sin modificar #27/#29/#31 ni desactivar protecciones; aceptación visual exclusiva de `ccabrera-dev8`, asignación sin autoaprobación formal.
+- **Costo:** herramientas locales existentes; CI según configuración del repositorio.
+- **Aprendizaje:** distinguir pruebas con contrato simulado de humo de producción; documentar el error de catálogo inicial y ANR de System UI sin presentarlos como éxito funcional.
+- **Pendiente:** CI del head publicado, revisión visual del usuario, login real por rol, revocación/renovación cuando exista contrato, endpoints ausentes, TalkBack y T014/T036, regularización SDD. No se fusiona ni publica release.
