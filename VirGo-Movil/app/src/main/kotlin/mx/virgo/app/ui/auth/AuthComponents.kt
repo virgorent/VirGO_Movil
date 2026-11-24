@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -22,7 +23,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -33,10 +40,9 @@ import mx.virgo.app.LocalSnackbarHost
 import mx.virgo.app.R
 import mx.virgo.core.designsystem.components.VirGoOutlinedButton
 import mx.virgo.core.designsystem.components.VirGoTextField
-import mx.virgo.core.designsystem.theme.ErrorRed
-import mx.virgo.core.designsystem.theme.Slate400
 
 private val FieldErrorTopPadding = 6.dp
+private const val LARGE_FONT_SCALE = 1.5f
 
 @Composable
 internal fun AuthTextField(
@@ -61,14 +67,19 @@ internal fun AuthTextField(
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
             visualTransformation = visualTransformation,
+            modifier =
+                Modifier.semantics {
+                    contentDescription = label
+                    if (showError && error.isNotEmpty()) error(error)
+                },
         )
         if (showError && error.isNotEmpty()) {
             Text(
                 text = error,
                 style = MaterialTheme.typography.labelMedium,
-                color = ErrorRed,
+                color = MaterialTheme.colorScheme.error,
                 modifier =
-                    Modifier.padding(
+                    Modifier.semantics { liveRegion = LiveRegionMode.Polite }.padding(
                         top = FieldErrorTopPadding,
                         start = 16.dp,
                     ),
@@ -108,7 +119,10 @@ internal fun PasswordField(
                 PasswordVisualTransformation()
             },
         trailingIcon = {
-            IconButton(onClick = { visible = !visible }) {
+            IconButton(
+                onClick = { visible = !visible },
+                modifier = Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp),
+            ) {
                 Icon(
                     imageVector =
                         if (visible) {
@@ -124,7 +138,7 @@ internal fun PasswordField(
                                 R.string.field_show_password
                             },
                         ),
-                    tint = Slate400,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         },
@@ -144,7 +158,7 @@ internal fun AuthDivider(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.auth_divider),
             style = MaterialTheme.typography.bodyMedium,
-            color = Slate400,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 12.dp),
         )
         HorizontalDivider(
@@ -163,29 +177,38 @@ internal fun SocialAuthRow(modifier: Modifier = Modifier) {
     val appleMessage =
         stringResource(R.string.common_soon_title) + ": " + stringResource(R.string.common_soon_apple)
 
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        VirGoOutlinedButton(
-            onClick = { scope.launch { snackbarHost.showSnackbar(googleMessage) } },
-            modifier = Modifier.weight(1f),
+    val onGoogleClick: () -> Unit = { scope.launch { snackbarHost.showSnackbar(googleMessage) } }
+    val onAppleClick: () -> Unit = { scope.launch { snackbarHost.showSnackbar(appleMessage) } }
+    if (LocalDensity.current.fontScale >= LARGE_FONT_SCALE) {
+        Column(
+            modifier = modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(
-                text = stringResource(R.string.social_google),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+            SocialAuthButton(R.string.social_google, onGoogleClick, Modifier.fillMaxWidth())
+            SocialAuthButton(R.string.social_apple, onAppleClick, Modifier.fillMaxWidth())
         }
-        VirGoOutlinedButton(
-            onClick = { scope.launch { snackbarHost.showSnackbar(appleMessage) } },
-            modifier = Modifier.weight(1f),
+    } else {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(
-                text = stringResource(R.string.social_apple),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+            SocialAuthButton(R.string.social_google, onGoogleClick, Modifier.weight(1f))
+            SocialAuthButton(R.string.social_apple, onAppleClick, Modifier.weight(1f))
         }
+    }
+}
+
+@Composable
+private fun SocialAuthButton(
+    labelRes: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    VirGoOutlinedButton(onClick = onClick, modifier = modifier) {
+        Text(
+            text = stringResource(labelRes),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
     }
 }

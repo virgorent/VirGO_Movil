@@ -1,6 +1,6 @@
 # Constitution — VirGo Móvil (Android)
 
-**Versión:** 1.1.1 · **Ratificada:** 2026-10-29 · **Última enmienda:** 2026-11-12
+**Versión:** 1.2.0 · **Ratificada:** 2026-10-29 · **Última enmienda:** 2026-11-15
 
 Este documento norma el proyecto Móvil de VirGo. Todos los demás archivos (`AGENTS.md`, `memoria.md`, subagentes, skills y specs) deben estar alineados con él. Si un archivo lo contradice, prevalece este documento y el otro archivo se corrige.
 
@@ -99,8 +99,11 @@ Se subordina a la constitución global de la raíz (`../constitution.md`): esta 
 
 1. **GitHub** aloja el código. La rama `main` está protegida con un **ruleset** de GitHub: PR obligatorio con una revisión, *status checks* del CI requeridos, sin `push --force` y sin borrar la rama.
 2. **CI** en cada PR: ktlint, detekt, Lint, pruebas unitarias, de integración, de UI, de seguridad y de mutación, CodeQL, Gitleaks y `assembleDebug`. Si el CI falla, se corrige en la misma rama y sobre el mismo spec antes de fusionar.
-3. **CD manual:** el release se lanza a mano desde GitHub con el botón *Run workflow* (`workflow_dispatch`), solo desde `main` y con el CI en verde. Compila el APK *release* firmado y lo publica como **GitHub Release** con el número de versión y el commit.
-4. Solo se usan herramientas gratuitas: GitHub Actions y GitHub Releases. Una tienda o servicio de pago requiere enmendar este documento. **Google Play** es el destino final del curso; su cuenta de desarrollador tiene un pago único, por lo que se agregará con una enmienda cuando el equipo la tenga.
+3. **CD manual:** el release se lanza a mano desde GitHub con el botón *Run workflow* (`workflow_dispatch`), solo desde `main` y con el CI en verde. Compila el APK y el AAB *release* firmados con la llave de subida, verifica sus firmas y los publica como **GitHub Release** con el número de versión y el commit. El AAB de ese release es el que se sube a Google Play; nunca se compila otro a mano.
+4. Solo se usan herramientas gratuitas (GitHub Actions y GitHub Releases) y **Google Play**, cuya cuenta de desarrollador ya está pagada (pago único) y no genera costos recurrentes. Cualquier otro servicio o tienda de pago requiere enmendar este documento. En Play:
+   - La subida es manual, la hace la titular de la cuenta y usa la **firma de apps de Google Play**: la llave de subida vive solo en GitHub Secrets y en el respaldo privado de la titular.
+   - Cada versión pasa por **prueba interna → prueba cerrada → producción**; producción exige la prueba cerrada que pida Google.
+   - Antes de subir una versión que trate datos nuevos (chat, pagos, ubicación, etc.), se actualizan las declaraciones del panel y el aviso de privacidad de `docs/legal/`.
 5. `API_BASE_URL` de *release* es la URL HTTPS publicada por el despliegue del backend y se inyecta desde una variable de GitHub.
 6. Antes de integrar un endpoint, el backend entrega su URL HTTPS y el JSON probado (petición y respuesta). Sin esa entrega, la pantalla se prueba solo contra MockWebServer.
 7. **Archivos compartidos con el backend:** los workflows comunes (`security.yml`, `dependabot.yml`) y las reglas del ruleset se mantienen idénticos en este repositorio y en `VirGO_Backend`; los workflows exclusivos de este proyecto viven en `.github/` de la raíz y llevan el prefijo `movil-`. Ningún workflow requerido usa filtros `paths`: cada uno decide con un job `changes`.
@@ -145,3 +148,4 @@ Se subordina a la constitución global de la raíz (`../constitution.md`): esta 
 | 1.0.0 | 2026-10-29 | Versión inicial |
 | 1.1.0 | 2026-11-03 | **Aprobada por el equipo el 2026-11-05.** Lineamientos de la clase del 28 y 29 de octubre: `check.md` y specs atómicos por pantalla (I.4–I.7), redacción anticipada (II.2), `.gitignore` y Gitleaks (V.6, V.8), cinco tipos de prueba con mutación y humo (VI.6–VI.7), ruleset, CD manual, Google Play como destino futuro, entrega de URL y JSON por el backend, repositorio único y aprendizaje tras el release (VIII), servidores MCP (XI.6) y README en inglés (XII.1). |
 | 1.1.1 | 2026-11-12 | Corrección factual sin cambios normativos: el proyecto vive en `virgorent/VirGO_Movil` (cabecera) y VIII.7 ya no asume repositorio único con el backend tras la separación del monorepo. |
+| 1.2.0 | 2026-11-15 | **Propuesta.** Agrega Google Play como canal de distribución (VIII.3–VIII.4), como preveía VIII.4: la cuenta ya existe y su pago es único. **Motivo:** v0.2.0 ya está en prueba interna y la prueba cerrada se envió a revisión. **Impacto:** el release también produce el AAB; las declaraciones de Play y `docs/legal/` se mantienen al día; se ajustan `AGENTS.md`, la skill `compilar-publicar-apk`, la skill `verificar-constitucion` y el subagente `seguridad-ci`. |

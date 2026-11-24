@@ -1,6 +1,6 @@
 ---
 name: compilar-publicar-apk
-description: Compila, verifica, firma y publica el APK de la app VirGo en GitHub Releases a costo cero. Úsala para preparar o revisar un release; publicar requiere confirmación humana.
+description: Compila, verifica, firma y publica el APK y el AAB de la app VirGo en GitHub Releases y sube el AAB a Google Play. Úsala para preparar o revisar un release; publicar requiere confirmación humana.
 ---
 
 # Compilar y publicar el APK
@@ -24,7 +24,8 @@ description: Compila, verifica, firma y publica el APK de la app VirGo en GitHub
 ## 3. Publicación (camino normal)
 
 1. En *Actions → Release → Run workflow*, elige la rama `main` y escribe la versión `X.Y.Z` (Art. VIII.3). Una fusión a `main` **no** publica nada.
-2. El workflow decodifica el keystore, ejecuta `assembleRelease`, verifica la firma con `apksigner verify`, crea la etiqueta `vX.Y.Z` y publica `virgo-vX.Y.Z.apk` en **GitHub Releases** con las notas y el commit.
+2. El workflow decodifica el keystore, ejecuta `assembleRelease bundleRelease`, verifica las firmas (`apksigner verify` y `keytool -printcert -jarfile`), crea la etiqueta `vX.Y.Z` y publica `app-release.apk` y `app-release.aab` en **GitHub Releases** con las notas y el commit.
+3. La titular de la cuenta de Play sube ese `app-release.aab` a la pista que corresponda. Los pasos están en [`docs/PUBLICAR-PLAY.md`](../../../docs/PUBLICAR-PLAY.md).
 
 ## 4. Verificación
 
@@ -33,7 +34,7 @@ description: Compila, verifica, firma y publica el APK de la app VirGo en GitHub
 3. **Prueba de humo:** la app abre sin errores y el diagnóstico llega a la API de producción por HTTPS.
 4. Registra en `memoria.md` la versión, el commit, el enlace al release, el resultado y lo aprendido; llena la sección «Release» del `check.md`.
 
-> **Google Play** es el destino final del curso. Requiere una enmienda (Art. VIII.4) por el pago único de la cuenta de desarrollador; mientras tanto, solo GitHub Releases.
+> **Google Play** (Art. VIII.4, v1.2.0): antes de subir, confirma que el certificado del AAB sea el de la llave de subida (SHA-256 en `memoria.md`) y que las declaraciones del panel y `docs/legal/` describan lo que hace la versión.
 
 ## 5. Reversión
 

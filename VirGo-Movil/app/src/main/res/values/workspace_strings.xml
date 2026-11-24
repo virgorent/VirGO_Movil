@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_local_changes">Cambios locales sin sincronizar. Solo en memoria; sin backend ni operaciones reales.</string>
+    <string name="workspace_day">Día %1$d del mes de ejemplo</string>
+    <string name="workspace_guests">%1$d personas (local)</string>
+    <string name="workspace_amount">MXN %1$.2f (local)</string>
+    <string name="workspace_account_profile">Perfil de tu cuenta. Las ediciones de esta pantalla son locales sin sincronizar y no modifican tu cuenta en el servidor.</string>
+</resources>
