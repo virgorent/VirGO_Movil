@@ -1,100 +1,80 @@
 package mx.virgo.app
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import mx.virgo.app.dev.DevMenu
-import mx.virgo.app.navigation.HomeRoute
 import mx.virgo.app.navigation.VirGoNavHost
-import mx.virgo.app.navigation.topLevelDestinations
+import mx.virgo.app.session.SessionViewModel
 import mx.virgo.core.designsystem.theme.VirGoTheme
 
 val LocalSnackbarHost = staticCompositionLocalOf { SnackbarHostState() }
+val LocalDevMenu = staticCompositionLocalOf<@Composable () -> Unit> { {} }
 
 @Composable
 fun VirGoApp() {
     VirGoTheme {
         val navController = rememberNavController()
         val snackbarHostState = remember { SnackbarHostState() }
-        val backStackEntry by navController.currentBackStackEntryAsState()
-        val onHomeDestination = backStackEntry?.destination?.hasRoute<HomeRoute>() == true
-
-        CompositionLocalProvider(LocalSnackbarHost provides snackbarHostState) {
+        val sessionViewModel: SessionViewModel = hiltViewModel()
+        val sessionState by sessionViewModel.state.collectAsState()
+        val sessionError = stringResource(R.string.session_error)
+        LaunchedEffect(sessionState.error, sessionState.loading) {
+            if (!sessionState.loading && sessionState.error) {
+                snackbarHostState.showSnackbar(sessionError)
+            }
+        }
+        CompositionLocalProvider(
+            LocalSnackbarHost provides snackbarHostState,
+            LocalDevMenu provides { DevMenu(navController = navController) },
+        ) {
             Scaffold(
                 snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-                topBar = {
-                    if (onHomeDestination) {
-                        Row(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .statusBarsPadding()
-                                    .padding(horizontal = 8.dp),
-                            horizontalArrangement = Arrangement.End,
-                        ) {
-                            DevMenu(navController = navController)
-                        }
-                    }
-                },
-                bottomBar = {
-                    if (onHomeDestination) {
-                        VirGoBottomBar(
-                            onHomeClick = {
-                                navController.navigate(route = HomeRoute) { launchSingleTop = true }
-                            },
-                        )
-                    }
-                },
             ) { innerPadding ->
-                VirGoNavHost(
-                    navController = navController,
-                    modifier = Modifier.padding(innerPadding),
-                )
+                if (sessionState.loading) {
+                    SessionLoading(Modifier.fillMaxSize().padding(innerPadding))
+                } else {
+                    VirGoNavHost(
+                        navController = navController,
+                        modifier = Modifier.padding(innerPadding),
+                        session = sessionState.session,
+                        onSessionRefresh = sessionViewModel::refresh,
+                        onLogout = sessionViewModel::logout,
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun VirGoBottomBar(
-    onHomeClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    NavigationBar(modifier = modifier) {
-        topLevelDestinations.forEach { destination ->
-            NavigationBarItem(
-                selected = true,
-                onClick = onHomeClick,
-                icon = {
-                    Icon(
-                        imageVector = destination.icon,
-                        contentDescription = null,
-                    )
-                },
-                label = {
-                    Text(text = stringResource(destination.labelRes))
-                },
-            )
-        }
+private fun SessionLoading(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        CircularProgressIndicator()
+        Text(stringResource(R.string.session_loading), style = MaterialTheme.typography.bodyLarge)
     }
 }

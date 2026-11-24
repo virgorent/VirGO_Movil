@@ -9,6 +9,8 @@ sealed interface AppError {
 
     data object NotFound : AppError
 
+    data object Conflict : AppError
+
     data class Validation(
         val fields: Map<String, List<String>>,
     ) : AppError

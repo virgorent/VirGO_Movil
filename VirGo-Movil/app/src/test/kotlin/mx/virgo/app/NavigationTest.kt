@@ -8,6 +8,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Rule
 import org.junit.Test
@@ -42,17 +43,29 @@ class NavigationTest {
             .onNode(
                 hasContentDescription(value = "Fiestas", substring = true) or
                     hasText(text = "Fiestas", substring = true),
-            ).performClick()
+            ).performScrollTo()
+            .assertIsDisplayed()
+            .performClick()
         compose.waitForIdle()
-        compose.onNodeWithText(string(R.string.guest_preview_see_more)).performClick()
+        compose
+            .onNodeWithText(
+                string(R.string.guest_preview_see_more),
+            ).performScrollTo()
+            .assertIsDisplayed()
+            .performClick()
         compose.waitForIdle()
 
-        compose.onNodeWithText(string(R.string.register_title)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.register_title)).performScrollTo().assertIsDisplayed()
 
-        compose.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        compose
+            .onNodeWithContentDescription(
+                string(R.string.action_back),
+            ).performScrollTo()
+            .assertIsDisplayed()
+            .performClick()
         compose.waitForIdle()
 
-        compose.onNodeWithText(string(R.string.guest_brand)).assertIsDisplayed()
-        compose.onNodeWithText(string(R.string.guest_login)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.guest_brand)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.guest_login)).performScrollTo().assertIsDisplayed()
     }
 }

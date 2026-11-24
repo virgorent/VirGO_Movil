@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `003-iniciar-sesion` |
 | Versión | 1.0.0 |
-| Estado | Aprobado (2026-11-12, aprobación retroactiva; ver `memoria.md`) |
+| Estado | Aprobado (2026-11-12, aprobación retroactiva; ver `memoria.md`). 4/4 tareas hechas. |
 | Fecha | 2026-11-05 |
 | Rol | Visitante |
 | Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
@@ -17,6 +17,8 @@
 | T301 | Pantalla A5 Iniciar sesión y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ✅ |
 | T302 | Repositorio y casos de uso | T301 | `dev-android` | Pruebas con MockWebServer en verde | ✅ |
 | T303 | Pruebas unitarias, de UI y de seguridad | T301 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ✅ |
-| T304 | Integrar con la URL real y hacer la prueba de humo | Specs de API | `qa-movil` | `check.md` completo | ⏳ |
+| T304 | Integrar con la URL real y hacer la prueba de humo | Specs de API | `qa-movil` | `check.md` completo | ✅ |
 
 **Evidencia:** T301 en commits `ec2882c` (refactor MVVM con UiState) y `32e6eec` (`LoginViewModel` consume `LoginUseCase`; errores `AppError` → textos de `strings.xml`; `FakeAuthRepository` y `MainDispatcherRule` en `:core:testing`). T302 en commit `c76d17a`: contrato `POST /api/v1/auth/login` de `VirGo-API/specs/003-auth-login`; `AppError` (7 variantes) y `AppResult` en `:core:common`, `AuthApi` + DTOs + `createAuthApi` (OkHttp 10/20 s) en `:core:network`, `AuthRepository` y `LoginUseCase` en `:core:domain`, `AuthRepositoryImpl` con mapeo a `AppError` en `:core:data`; `AuthRepositoryImplTest` con 8 pruebas MockWebServer (200 con aserción de path/body, 401, 400 con `errors`, 500 con `traceId`, 404, sin conexión, timeout y 200 malformado) que cubren las 7 variantes de `AppError`, 0 fallos; `ktlintCheck detekt testDebugUnitTest assembleDebug` → BUILD SUCCESSFUL (2026-11-09 UTC). T303: `ktlintCheck detekt testDebugUnitTest assembleDebug` → BUILD SUCCESSFUL (2026-11-09); `:core:domain:test` 30 pruebas y `:app:testDebugUnitTest` 29 pruebas, 0 fallos.
+
+> **T304** ✅ humo contra producción (2026-11-16) en el emulador `Pixel_10_Pro` con el APK *debug* y la cuenta QA `qa-health@virgo.mx`: **CA-01** pantalla A5 completa (formularios, «¿Olvidaste tu contraseña?» y «Entrar») en `docs/evidencia/CA-01-iniciar-sesion-a5.png`; **CA-02** credenciales inexistentes → `401` real → «Correo o contraseña incorrectos» (mensaje genérico, no revela cuál falló, RF-02) en `docs/evidencia/CA-02-iniciar-sesion-error.png`; **CA-03** modo avión → «Sin conexión. Revisa tu internet e inténtalo de nuevo.» con «Entrar» habilitado para reintentar, y reintento tras restaurar la red → login exitoso en `docs/evidencia/CA-03-iniciar-sesion-sin-conexion.png`. **RF-03** verificado con el mismo reintento: la app navega a la pantalla principal del rol («Inicio») en `docs/evidencia/RF-03-iniciar-sesion-inicio-rol.png`. `check.md` completo.

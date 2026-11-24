@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="session_loading">Validando sesión…</string>
+    <string name="session_error">No pudimos validar tu sesión. Inicia sesión de nuevo.</string>
+    <string name="session_logout">Cerrar sesión</string>
+</resources>

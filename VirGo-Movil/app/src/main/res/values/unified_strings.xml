@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="unified_preview">Recorrer pantallas de muestra · sin iniciar sesión</string>
+    <string name="unified_logout">Cerrar sesión</string>
+    <string name="unified_workspace_notice">Cuenta autenticada · Las funciones sin servicio usan datos de muestra y cambios locales sin sincronizar</string>
+    <string name="unified_sample_detail">Ver un detalle de muestra · no corresponde al catálogo real</string>
+    <string name="unified_loading">Comprobando sesión…</string>
+    <string name="unified_session_error">No pudimos recuperar una sesión válida. Inicia sesión para continuar.</string>
+</resources>
