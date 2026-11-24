@@ -1,22 +1,26 @@
 package mx.virgo.core.designsystem.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import mx.virgo.core.designsystem.theme.Slate200
-import mx.virgo.core.designsystem.theme.Slate700
-import mx.virgo.core.designsystem.theme.VirGoPurple
+import mx.virgo.core.designsystem.R
+import mx.virgo.core.designsystem.theme.VirGoTheme
 
 @Composable
 fun VirGoButton(
@@ -28,16 +32,16 @@ fun VirGoButton(
     Button(
         onClick = onClick,
         enabled = enabled,
-        shape = RoundedCornerShape(16.dp),
+        shape = MaterialTheme.shapes.small,
         colors =
             ButtonDefaults.buttonColors(
-                containerColor = VirGoPurple,
-                contentColor = Color.White,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
             ),
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(52.dp),
+                .heightIn(min = 48.dp),
     ) {
         Text(
             text = text,
@@ -56,17 +60,39 @@ fun VirGoOutlinedButton(
     OutlinedButton(
         onClick = onClick,
         enabled = enabled,
-        shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, Slate200),
+        shape = MaterialTheme.shapes.small,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         colors =
             ButtonDefaults.outlinedButtonColors(
-                containerColor = Color.White,
-                contentColor = Slate700,
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
             ),
         modifier =
             modifier
-                .height(48.dp),
+                .heightIn(min = 48.dp),
     ) {
         content()
+    }
+}
+
+@Preview(name = "Claro", widthDp = 393)
+@Preview(name = "Oscuro", widthDp = 393, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+internal fun VirGoButtonPreview() {
+    VirGoTheme {
+        Surface {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                VirGoButton(
+                    onClick = {},
+                    text = stringResource(R.string.design_preview_primary),
+                )
+                VirGoOutlinedButton(onClick = {}) {
+                    Text(stringResource(R.string.design_preview_secondary))
+                }
+            }
+        }
     }
 }

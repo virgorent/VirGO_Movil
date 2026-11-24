@@ -38,7 +38,7 @@ class DiagnosticsViewModelTest {
                 val success = awaitItem()
                 assertFalse(success.loading)
                 assertTrue(success.apiAvailable)
-                assertEquals(12L, success.latencyMs)
+                assertEquals(EXPECTED_FAKE_LATENCY_MS, success.latencyMs)
                 assertEquals(BuildConfig.VERSION_NAME, success.versionName)
                 assertEquals(NetworkBuildConfig.API_BASE_URL, success.apiBaseUrl)
                 expectNoEvents()
@@ -72,7 +72,8 @@ class DiagnosticsViewModelTest {
                 awaitItem()
                 advanceUntilIdle()
                 assertEquals(AppError.Network, awaitItem().error)
-                fakeRepository.result = AppResult.Success(ApiHealth(status = "Healthy", latencyMs = 12))
+                fakeRepository.result =
+                    AppResult.Success(ApiHealth(status = "Healthy", latencyMs = EXPECTED_FAKE_LATENCY_MS))
                 viewModel.refresh()
                 assertTrue(awaitItem().loading)
                 advanceUntilIdle()
@@ -82,3 +83,5 @@ class DiagnosticsViewModelTest {
             }
         }
 }
+
+private const val EXPECTED_FAKE_LATENCY_MS = 12L

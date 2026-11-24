@@ -6,19 +6,21 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 
 | Campo | Valor |
 |---|---|
-| Constitución | v1.1.1 (enmienda 2026-11-12; v1.1.0 aprobada el 2026-11-05) |
-| Módulo en curso | `000-arquitectura-base`: 35/40 tareas hechas (detalle y estados en `task.md`) |
-| Tareas | 35 / 40 hechas (pendientes: T024 🔄, T033 🔄, T030 ⏳, T035 ⏳, T036 ⏳) |
-| `API_BASE_URL` de *release* | Variable `VIRGO_API_BASE_URL` creada en `VirGO_Movil` con la URL de producción; falta el respaldo P-02 del keystore para cerrar T033 |
-| Última versión publicada | Ninguna |
-| Siguiente paso | Aprobar los PRs verdes de `001`–`004` (#17–#20); después T033 (respaldo P-02), T035, T030, T036 y T024 |
+| Constitución | v1.2.0 propuesta (Google Play, 2026-11-15); vigente v1.1.1 |
+| Módulo en curso | `000-arquitectura-base`: 38/40 tareas hechas; T014 y T036 pendientes |
+| Tareas | 38 / 40 hechas; T014 🔄, T036 ⏳; T010–T013 cerradas el 2026-11-20 con pruebas y previews |
+| `API_BASE_URL` de *release* | Variable `VIRGO_API_BASE_URL` presente; cuatro secretos de firma presentes; usuario confirma custodia y respaldo seguro (P-02, 2026-11-20), sin compartir sus valores |
+| Última versión publicada | **v0.2.0** (versionCode 2): GitHub Release `v0.2.0` y Google Play, prueba interna activa; prueba cerrada en revisión desde el 2026-11-15 |
+| Siguiente paso | Cerrar T014 (fuente 2.0 y migración de pantallas) y T036 antes de nuevos módulos. Prioridad: acceso → cliente → propietario → proveedor fieles al prototipo local entregado como supuesto equivalente de Figma, sin cotejo directo. `030` y los documentos `031` permanecen separados; aceptación visual de #27 pendiente. Sin nueva release autorizada. |
 
 ## Módulos
 
 | Módulo | Estado | Notas |
 |---|---|---|
-| `000-arquitectura-base` | 🚧 Aprobado; 35/40 tareas hechas | Base técnica sin pantallas del negocio |
-| `001-…` pantallas | 🚧 `001`–`004` aprobados (retroactivo 2026-11-12) e implementados; `005+` sin iniciar | Un spec atómico por pantalla o flujo, al vuelo; los siguientes usan el JSON de `VirGo-API` |
+| `000-arquitectura-base` | 🚧 Aprobado; 38/40 tareas hechas | T010–T013 cerradas; T014 (fuente 2.0/pantallas) y T036 pendientes |
+| `001`–`004` pantallas | 🚧 Aprobados (retroactivo 2026-11-12) e implementados; recuperación pendiente de backend | PRs pendientes de integración; no se presume su fusión |
+| `005-explorar-salones` | 🚧 Implementación parcial y consolidación autorizada el 2026-11-19 | PR #27; integración completa y aceptación visual del último rediseño pendientes |
+| `006`–`029` | Borradores | Sin implementación autorizada por esta consolidación |
 
 ## Decisiones (ADR)
 
@@ -38,8 +40,10 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 | ADR-12 | 2026-11-03 | **Pitest** (`gradle-pitest-plugin`) en módulos JVM puros | Mutación sin dispositivo; umbral tras medir |
 | ADR-13 | 2026-11-03 | MCP permitidos: `figma` (lectura del *canvas*) y `github` | Pantallas al vuelo desde la maqueta oficial |
 | ADR-14 | 2026-11-03 | Google Play como destino futuro, con enmienda | Tiene un pago único; por ahora GitHub Releases |
+| ADR-15 | 2026-11-15 | **Google Play** como canal de distribución con firma de apps de Play (enmienda v1.2.0) | La cuenta ya existe y su pago es único; el AAB sale del mismo workflow de release |
 | ADR-15 | 2026-11-03 | **Repositorio único** `virgorent/VirGO_Backend` con carpetas por proyecto | Decisión del equipo; **superseded** por ADR-16 (2026-11-12) |
 | ADR-16 | 2026-11-12 | Repositorio propio `virgorent/VirGO_Movil` para el móvil (fin del monorepo); el backend vive en `virgorent/VirGO_Backend` | Separa CI, permisos y despliegues por proyecto |
+| ADR-17 | 2026-11-23 | Una entrada de app; rol desde sesión cifrada, estado local aislado por cuenta/rol; sin refresh automático | Consolidación autorizada; evitar privilegios ficticios y contratos inventados |
 
 ## Cambios de contrato (compartidos con Backend)
 
@@ -47,6 +51,9 @@ Bitácora oficial del proyecto (Art. X de [`constitution.md`](constitution.md)).
 |---|---|---|
 | 2026-10-29 | Contrato base acordado: `/api/v1`, Problem Details, `camelCase`, fechas UTC, JWT Bearer, `GET /health`, `GET /openapi/v1.json`, `X-Correlation-Id` | ✅ |
 | 2026-11-03 | **Propuesto:** `POST /api/v1/auth/login` (devuelve `accessToken` de 15 min, `refreshToken` de 30 días y `user` con `role`) y `POST /api/v1/auth/logout` (204; ante 204 o 401 la app borra sus tokens). JSON en `VirGo-API/specs/003-auth-login` y `004-auth-logout` | ✅ |
+| 2026-11-16 | **Borrador:** `POST /api/v1/auth/password/forgot` (202; errores 400/429/500; la respuesta no revela si el correo existe) y `POST /api/v1/auth/password/reset` (200; código incorrecto o vencido → 400 con mensaje genérico) — specs `011` y `012` del backend en Borrador con sus tareas `T1101`–`T1103` ⏳. Producción responde **404** (2026-11-16, igual que una ruta inexistente de control), así que Móvil implementa contra MockWebServer con los cuerpos asumidos `{email}` y `{code,password}` (`API-HANDOFF.md` §9.2 no define los de recuperación) | ⏳ (specs `011`/`012` en Borrador) |
+| 2026-11-16 | **Consumado:** `GET /api/v1/venues?zone=&category=` del backend (`VirGo-API/specs/007-venues-catalog/plan.md`) — `200 {"data":[…]}` con `location` GeoJSON `{type:"Point",coordinates:[lng,lat]}` y `rating:{average,count}`; probado contra producción (200 con catálogo vacío). `GET /api/v1/venues/:id` (spec `024`) sigue en borrador y queda fuera del alcance de T103 | ✅ (spec `007-venues-catalog` del backend) |
+| 2026-11-16 | **Consumado:** `POST /api/v1/auth/register` (`VirGo-API/specs/005-auth-register/plan.md`) — `{"name","email","password","phone"}` → `201 {"id","name","email","phone","role","isVerified"}`, duplicado → `409`, inválido → `400` Problem Details; el rol inicial siempre es `client` y el cliente no puede enviar `role`. Probado contra producción (201 y 409) | ✅ (spec `005-auth-register` del backend) |
 
 ## Versiones de librerías
 
@@ -570,7 +577,10 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Evidencia:** pipeline local completo en verde — `ktlintCheck detekt lint` (7m06s) y `testDebugUnitTest` + `assembleDebug` + `assembleRelease` + `:core:domain:test` + `:core:common:test` + `pitest` → **BUILD SUCCESSFUL** (7m06s); grep sobre `*.kt`: 0 ocurrencias de `Log.[vdiew](`, `println(` o `System.out.print` (revisión T027) y `Timber.` una sola vez (`VirGoApplication.kt`). CI: PR #6 con los 6 checks en verde (`movil-build-test` 4m34s, `analyze` 5m45s, `CodeQL`, `gitleaks`, `dependency review`, `changes`).
 - **Decisiones:** dependencia `implementation` (no `debugImplementation`) con el guardia `BuildConfig.DEBUG` en `onCreate`, porque `VirGoApplication` vive en el source set `main` y debe compilar también en *release*; sin el guardia, en *release* se plantaría un árbol (violaría Art. IX).
 - **Costo:** $0 / solo tiempo de CI.
-- **Aprendizaje:**
+- **RNF (retos no funcionales):**  
+  ✅ RNF-03: ceros en claro (`network_security_config.xml` con `cleartextTrafficPermitted="false"`; manifiesto release sin `usesCleartextTraffic`).  
+  ✅ RNF-04: AeadConfig pre-registrado (logcat `[I ConfigManager] Registered [config_id=1] for algorithm AESGCM with keysize 128` antes de crear el keyset).
+- **Aprendizaje:**  
   - «Solo debug» en una clase de `main` se resuelve con `BuildConfig.DEBUG` + R8, no con `debugImplementation`: esta última rompería la compilación de *release* al no existir la clase en ese classpath.
   - El guardia hace que R8 pueda eliminar Timber completo del APK de *release* (sin árbol plantado no hay código alcanzable), lo que convierte el criterio del Art. IX en verificable con el `mapping.txt`.
 - **Pendiente:** aprobación con permiso `write` y fusión del PR #6; T033 (variable `VIRGO_API_BASE_URL` + respaldo P-02), T002/T039, T030, T037, T035 y T036.
@@ -588,6 +598,133 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Los 4 checks requeridos viven en `movil-ci.yml` (`movil-build-test`) y `movil-codeql.yml` (`analyze`); `gitleaks` y `dependency review` vienen de los workflows globales.
 - **Pendiente:** PR de Play (AAB, icono, respaldo, versión 0.2.0) pedido por el equipo; T033 (respaldo P-02), T035, T030, T036, T024 y T037.
 
+### 2026-11-16 - T403: repositorio y casos de uso de recuperacion (004-recuperar-contrasena 4/5)
+
+- **Autor:** equipo + opencode (`dev-android` + `qa-movil`)
+- **Módulo / tareas:** `004-recuperar-contrasena` → T403 → (4/5)
+- **Qué se hizo:**
+  - **T403:** capa de recuperación contra los specs `011-post-auth-password-forgot` y `012-post-auth-password-reset` del backend (ambos en **Borrador**), aplicando el riesgo del plan «MockWebServer con el contrato del spec de API». En `:core:network`, `AuthApi.forgotPassword`/`resetPassword` + `ForgotPasswordRequestDto` (`{"email"}`) y `ResetPasswordRequestDto` (`{"code","password"}`); en `:core:domain`, `RecoveryRepository`, `ForgotPasswordUseCase` y `ResetPasswordUseCase`; en `:core:data`, `RecoveryRepositoryImpl` (reutiliza `Throwable.toAppError()`) y `RecoveryModule` (`@Binds`); en `:core:testing`, `FakeRecoveryRepository`.
+  - **Humo de pantallas (CA-01, CA-02 y RF-04):** APK *debug* de la rama en el emulador `Pixel_10_Pro`: A6 → correo → «Enviar código» → A7 con código, contraseña y confirmación, y rechazo local de código incorrecto («El código no es correcto.»).
+  - Documentación: `task.md` 4/5 con blockquotes, `check.md` (2/4 CA y 6 filas) y esta bitácora.
+- **Evidencia:** `docs/evidencia/CA-01-recuperar-a6.png`, `docs/evidencia/CA-02-recuperar-a7.png` y `docs/evidencia/RF-04-recuperar-codigo-incorrecto.png`; pipeline local `ktlintCheck detekt lint testDebugUnitTest` + `:core:domain:test` + `:core:common:test` + `pitest` + `assembleDebug` → BUILD SUCCESSFUL con **119 pruebas, 0 fallos** y mutación **72 %** (38/53); `RecoveryRepositoryImplTest` 8 con MockWebServer (202 con ruta y cuerpo, 400 con `errors`, 429, 500, sin conexión, 200 con cuerpo, 400 genérico y sin conexión en reset).
+- **Decisiones:**
+  1. `POST /api/v1/auth/password/forgot` responde **404** en producción (2026-11-16, idéntico al de una ruta inexistente de control): T405 queda ⛔ hasta que el backend entregue `011`/`012` (`T1101`–`T1103` ⏳); la pantalla se prueba con MockWebServer, como manda el Art. VIII.6 del spec.
+  2. `RecoverViewModel` **no** se conecta en T403: RF-02 (aprobado) dice que la app genera el código de 6 dígitos y la maqueta lo muestra en pantalla, y sin mecanismo de correo aprobado (P-01) la app no podría recibir el código real; la conexión se hará en T405 con el JSON probado.
+  3. Cuerpos asumidos porque §9.2 de `API-HANDOFF.md` no define los de recuperación: `{"email"}` en forgot y `{"code","password"}` en reset; quedan como asunción para confirmar con el backend.
+  4. `429` cae en `AppError.Server` (el `when` compartido no tiene variante de rate limit): el mensaje de UI sigue genérico y sin texto técnico (CA-03).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - En el emulador, revisar `dumpsys input_method` (`mInputShown=true`) antes de tocar coordenadas: con el teclado abierto los toques en la zona baja caen en el teclado (aquí, la barra espaciadora, que añadía un espacio al correo y dejaba «Enviar código» deshabilitado). `input keyevent 4` solo si el IME está visible y releer coordenadas después.
+  - `adb shell input text` no decodifica `%40`: escribir `@` directo; `input tap` rechaza coordenadas con decimales (redondear a enteros).
+  - Comparar textos con acentos desde PowerShell falla por codificación (`-ceq`): usar subcadenas ASCII con `-like`.
+  - Un `POST` a una ruta inexistente en producción devuelve Problem Details 404 con `instance` de la ruta: sirve como sondeo barato para saber si un endpoint ya está desplegado.
+- **Pendiente:** T405 (humo contra producción) a la espera de `011`/`012` y de P-01 (correo); PR #19 de esta rama; PR #18 (`001-inicio-visitante`, verde 6/6) y PR #17 (`002-registro`, verde) esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
+
+### 2026-11-16 - T103 + T105: catalogo de salones conectado (001-inicio-visitante 5/5)
+
+- **Autor:** equipo + opencode (`dev-android` + `qa-movil`)
+- **Módulo / tareas:** `001-inicio-visitante` -> T103, T105 -> (5/5)
+- **Qué se hizo:**
+  - **T103:** consumo del contrato `VirGo-API/specs/007-venues-catalog/plan.md` (`GET /api/v1/venues?zone=&category=` → `200 {"data":[…]}`). En `:core:network` `VenuesApi` + `VenueDtos` (respuesta envuelta en `data`, `location` GeoJSON `{type:"Point",coordinates:[lng,lat]}` y `rating:{average,count}`), `createVenuesApi` y `provideVenuesApi`; en `:core:domain` `Venue`, `VenueRepository` y `GetVenuesUseCase`; en `:core:data` `VenueRepositoryImpl` (reutiliza `toAppError()`: 404 → `NotFound`, 500 → `Server`, sin conexión → `Network`) y `VenueModule` (`@Binds`); en `:app`, `GuestHomeViewModel` con carga en `init`, `refresh()`, estados `isLoading`/`hasError`, y mapeo `Venue` → `VenueSample` con haversine y rumbo desde el centro fijo de Juriquilla (`VenueMapping.kt`); UI de error con «Reintentar» en `GuestBottom.kt` (se extrajo de `GuestHomeScreen.kt` para no pasar el umbral de `TooManyFunctions`).
+  - **T105:** humo contra producción en el emulador `Pixel_10_Pro` (2026-11-16): arranque limpio → `GET /api/v1/venues` **200** en 8738 ms con `{"data":[]}` → catálogo vacío, la app cae en la muestra local («5 salones a 5 km»); toque en el pin → vista previa A3 («Jardín Magnolia · El Refugio · ★ 4.8 · hasta 160»); con modo avión y arranque en frío → «No pudimos cargar los salones. Revisa tu conexión e inténtalo de nuevo.» con «Reintentar», y el reintento con la conexión restaurada recarga y limpia el error.
+  - Documentación: `task.md` 5/5 con blockquotes, `check.md` 4/4 CA y 6/6 filas de pruebas, `AGENTS.md` del móvil.
+- **Evidencia:** `docs/evidencia/CA-01-inicio-visitante-a1.png`, `docs/evidencia/CA-02-inicio-visitante-a3-preview.png` y `docs/evidencia/CA-04-inicio-visitante-sin-conexion.png`; logcat `GET …/api/v1/venues <-- 200 (8738ms, 11-byte body)`; pipeline local `ktlintCheck detekt lint testDebugUnitTest` + `:core:domain:test` + `:core:common:test` + `pitest` + `assembleDebug` → BUILD SUCCESSFUL con **123 pruebas, 0 fallos** y mutación **61 %** (37/61).
+- **Decisiones:**
+  1. Catálogo vacío (estado real de producción) → fallback a `VenueSamples`, para que A1 no quede en blanco mientras el backend no cargue salones; la falla sí muestra error con reintento (CA-04).
+  2. `GET /api/v1/venues/:id` (spec `024`) queda fuera de T103: su cuerpo sigue en borrador («PROPUESTO» en `API-HANDOFF.md` §9.5) y la vista previa A3 se renderiza con los campos del catálogo; se consumirá con el JSON probado.
+  3. El `id` del pin se asigna por posición del catálogo (los ids de la API son UUID y `VenueSample.id` es `Int`).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - Cambiar de rama con el mismo directorio `build/` mezcla artefactos: `:app:hiltJavaCompileDebug` falló con «Could not find class file for `RegisterUseCase`» (clase de la rama `feat/002-registro`); un `gradlew clean` lo resolvió. Limpiar al cambiar de rama evita diagnósticos falsos.
+  - `detekt TooManyFunctions` cuenta funciones por archivo (umbral 11): extraer `GuestHint`/`GuestError` a `GuestBottom.kt` devolvió el archivo a 10 sin tocar la lógica.
+  - Las aserciones deben leer el dato real: `VenueSamples` tiene 7 entradas pero solo 5 dentro de 5 km; comparar con `VenueSamples.count { it.distanceKm <= DEFAULT_RANGE_KM }` es más robusto que `VenueSamples.size`.
+  - En el emulador, tocar la **etiqueta** del pin (no el icono) es lo que dispara la vista previa: el `detectTapGestures` del mapa hitanea toda la caja del pin.
+- **Pendiente:** PR #18 de `001-inicio-visitante` (aprobación + fusión); `003` T304 (humo de login) y `004` T403/T405 (recuperar contraseña); PR #17 (`002-registro`) en verde esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
+
+### 2026-11-14 - T024, T030 y T035: diagnostico, verificacion manual y release v0.2.0
+
+- **Autor:** equipo + opencode (`qa-movil`)
+- **Modulo / tareas:** `000-arquitectura-base` -> T024, T030, T035 -> (36/40)
+- **Que se hizo:**
+  - Fusionados los PR #8 (docs T002/T039), #9 (fix AeadConfig + DevMenu) y #10 (Play: AAB, icono adaptativo, `allowBackup=false`, version 0.2.0); aprobados por EsauRamireZ/Karasu0001 con los 6 checks en verde cada uno.
+  - Lanzado `movil-release` con `version=0.2.0` (run `43544624048`, en verde): release `v0.2.0` con `app-release.aab` (5 661 199 B) y `app-release.apk` (2 530 468 B), `versionCode 2`.
+  - **T024** CA-04/CA-05: login QA real contra produccion (`POST /api/v1/auth/login` -> 200) y Diagnostico con «API disponible» (227 ms); con modo avion, mensaje en espanol «No hay conexion con la API. Revisa tu internet e intentalo de nuevo.» sin cierre y «Reintentar» que recupera (1123 ms).
+  - **T030**: arranque en frio 1791/1854/1885 ms (1935 tras reinicio) en debug y 698 ms con el APK de release; modo oscuro, icono de launcher y capturas del DevMenu/Diagnostico.
+  - **T035**: APK del release descargado del GitHub Release, instalado en el emulador (uninstall + install, sin mezclar firmas) y prueba de humo: abre el inicio visitante y el login llega a «Inicio».
+- **Evidencia:** `docs/evidencia/` con CA-04, CA-05, CA-09, T030-devmenu-diagnostico, evidencia-mod-oscuro e icono-launcher; PR #11 con la evidencia RNF-03/RNF-04.
+- **Decisiones:** la «API apagada» de CA-05 se simulo con modo avion porque la API real es la de produccion; el diagnostico local (T210) ya no aplica; se publico `v0.2.0` en lugar de `v0.1.0` porque el alcance crecio con el PR #10.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - El teclado del emulador cubre la mitad inferior: un `input tap` sobre un boton debajo del IME termina presionando una tecla del teclado (chars fantasma); hay que cerrar el IME con `keyevent 4` antes de tocar y releer coordenadas.
+  - El `screenrecord --size 720x1280` + ffmpeg (frame 0, sin `-ss`) da capturas confiables cuando `screencap` sale negro por el glitch de gfxstream.
+  - Los snapshots del emulador corrompen el keystore: arrancar siempre con `-no-snapshot`.
+- **Pendiente:** T033 (respaldo P-02 del keystore, custodia humana), T036 (cierre), T037 (MCP figma/github), subir el AAB a prueba interna de Play (equipo) y B4/B5 (aviso de privacidad y borrado de cuenta, Equipo/API).
+
+
+### 2026-11-16 - T203 + T205: registro conectado a produccion (002-registro 5/5)
+
+- **Autor:** equipo + opencode (`dev-android` + `qa-movil`)
+- **Modulo / tareas:** `002-registro` -> T203, T205 -> (5/5, primer modulo de pantallas completo)
+- **Que se hizo:**
+  - **T203:** se consumio el contrato `005-auth-register` que el backend dejo en `VirGo-API/specs/005-auth-register/plan.md`. En `:core:common` `AppError.Conflict` (409); en `:core:network` `RegisterRequestDto`/`RegisterResponseDto` y `AuthApi.register`; en `:core:data` `AuthRepositoryImpl.register` (409 -> `Conflict`, 400 -> `Validation`, 201 -> `RegisteredUser`); en `:core:domain` `AuthRepository.register`, `RegisterUseCase` (trim, correo en minusculas y prefijo `+52`) y `RegisteredEmailStore.contains()` para el fast-path de duplicado sin mutar el almacen.
+  - **T205:** humo contra produccion en el emulador `Pixel_10_Pro` (2026-11-14): registro valido -> `POST /api/v1/auth/register` **201** (7524 ms) y navegacion a «Inicio» (RF-09); con `force-stop` y el mismo correo -> **409** (6394 ms) y píldora «Ya existe una cuenta con este correo. Inicia sesión.» sin cierre (RF-08, CA-03).
+  - Evidencia nueva de criterios: `CA-01-registro-a2-formulario.png` (pantalla A2 limpia) y `CA-04-registro-sin-conexion.png` (modo avion: `UnknownHostException` -> «No pudimos crear tu cuenta. Revisa tu conexión e inténtalo de nuevo.» con el boton «Crear cuenta» habilitado para reintentar).
+  - Documentacion cerrada: `task.md` (5/5 con blockquotes de evidencia), `check.md` (4/4 CA y 6/6 filas de pruebas), `AGENTS.md` (raiz y movil).
+- **Evidencia:** `docs/evidencia/` con T205-registro-201-exitoso.png, T205-registro-409-duplicado.png, CA-01-registro-a2-formulario.png y CA-04-registro-sin-conexion.png; pipeline local `ktlintCheck detekt lint testDebugUnitTest assembleDebug` + `:core:domain:test` + `:core:common:test` + `pitest` -> BUILD SUCCESSFUL con **115 pruebas, 0 fallos** y mutacion **63 %** (39/62).
+- **Decisiones:** el correo QA `qa-register-1794636322@virgo.mx` quedo dado de alta en produccion como evidencia del 201; la "API apagada" de CA-04 se simulo con modo avion porque la API real es la de produccion; los tests de `:core:domain` usan fakes locales porque ese modulo no puede depender de `:core:testing` (dependencia circular).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - El IME del emulador se dibuja **encima** de los campos inferiores sin redimensionar la ventana: un `input tap` a una coordenada tapada por el teclado teclea en el campo enfocado (o en una tecla). Flujo fiable: tocar campo -> escribir -> `keyevent 4` solo si `mIsImeShowing=true` -> releer coordenadas; nunca `keyevent 4` a ciegas, porque con el IME ya cerrado BACK sale de la pantalla o de la app.
+  - En PowerShell, `-like '*Correo*'` es insensible a mayusculas y coincide con «o con tu correo» (un `Text` estatico, no enfocable): usar `-ceq` para coincidir con el placeholder exacto del campo.
+  - El emulador se cayo dos veces durante la automatizacion; relanzarlo con `-gpu swiftshader_indirect` estabilizo la sesion.
+  - `RegisterUseCaseTest` no compila si se importa `core:testing` desde `:core:domain`: el fake vive en la propia suite.
+- **Pendiente:** PR de `002-registro` (aprobacion + fusion), PR #11 y #13 en espera, T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
+
+### 2026-11-15 - Publicación de v0.2.0 en Google Play y enmienda v1.2.0
+
+- **Autor:** Angélica (`Karasu0001`), con Claude Code
+- **Módulo / tareas:** `000-arquitectura-base` -> T033, T035 (release) · bloqueos B4–B6 de `docs/PUBLICAR-PLAY.md`
+- **Qué se hizo:**
+  - Llave de subida nueva (`upload`, RSA 2048) generada por la titular de la cuenta de Play. El keystore y sus contraseñas están solo en GitHub Secrets y en su respaldo privado.
+  - `movil-release` publicó la GitHub Release `v0.2.0` con `app-release.aab` y `app-release.apk`.
+  - App `mx.virgo.app` creada en Play Console. El AAB 2 (0.2.0) quedó activo en **prueba interna** y se envió a revisión en la **prueba cerrada** (Alpha, México y El Salvador, 12 *testers*).
+  - Panel completado: detalles de acceso, anuncios (No), clasificación de contenido (Todos; «los usuarios interactúan»), público objetivo 18+, seguridad de los datos (nombre, correo, ID de usuario y teléfono; recopilados y no compartidos; cifrados en tránsito), ID de publicidad (No), categoría Eventos, ficha de Play Store y declaración de recursos con IA.
+  - Avisos legales (B4) publicados con GitHub Pages (PR #14): privacidad, términos y eliminación de cuenta. Responsable KarasuDev, contacto `virgorent6@gmail.com`.
+  - Cuenta de revisión `revisor.play@virgo.mx` creada en la base `virgo` (B6). **No se borra.**
+  - Propuesta la enmienda **v1.2.0** de `constitution.md` (Art. VIII.3–VIII.4), con `AGENTS.md`, las skills y el subagente alineados.
+- **Evidencia:**
+  - Certificado del AAB: `CN=Angélica Viridiana Arguelles Méndez, OU=Desarrollo, O=VirGO`. SHA-256 de la llave de subida: `B4:22:BE:19:FC:23:2C:4D:4D:2D:C3:40:88:31:DF:8D:D4:08:50:03:7D:9C:0A:57:C1:97:0C:E0:FE:A8:59:E1`.
+  - El manifiesto del AAB solo declara `INTERNET` (y `DUMP` de AndroidX *profileinstaller*); no hay `AD_ID` ni SDK de anuncios o analítica.
+  - `https://virgorent.github.io/VirGO_Movil/legal/{privacidad,terminos,eliminar-cuenta}/` → 200.
+  - Login de la cuenta de revisión en producción → 200.
+  - `DELETE /api/v1/users/me` probado en producción con una cuenta desechable: 204; token anterior 401; login 401; perfil público «Cuenta eliminada» sin correo ni teléfono.
+- **Decisiones:** ADR-15. Las declaraciones describen solo lo que hace v0.2.0. Chat, pagos y ubicación se declararán **antes** de subir la versión que los incluya. La eliminación de cuenta se atiende por correo hasta que exista el botón en la app.
+- **Costo:** $0 adicional (la cuenta de Play ya estaba pagada).
+- **Aprendizaje:**
+  - El primer `movil-release` salió firmado con una llave de desarrollo (`CN=VirGo Local`) porque se ejecutó antes de configurar los secretos. Se borraron el release y la etiqueta y se regeneró con la llave oficial **antes** de subir nada a Play: la primera subida fija la llave de subida.
+  - `vars.X` y `secrets.X` son espacios distintos: `VIRGO_API_BASE_URL` creada como *secret* llegó vacía y la guarda `https://` de ADR-08 detuvo el build, que es lo esperado.
+  - «keystore password was incorrect» aparece al **empaquetar** (unos 2 minutos), no al configurar. El fallo rápido (unos 59 s) era el secreto o la variable faltante.
+  - Con SDK de destino 33 o mayor, Play exige la declaración de ID de publicidad aunque no aparezca en la lista de «Contenido de la app».
+  - Las capturas de 1280×2856 superan la proporción 2:1 que acepta Play; se montaron en un lienzo de 1440×2880.
+- **Pendiente:** aprobación de la prueba cerrada y 14 días con 12 *testers*; B5 (botón en Perfil); registro conectado a `POST /api/v1/auth/register`; datos de ejemplo en `virgo`; aprobación de la enmienda v1.2.0 en este PR.
+
+### 2026-11-16 - T304: humo de login contra produccion (003-iniciar-sesion 4/4)
+
+- **Autor:** equipo + opencode (`qa-movil`)
+- **Módulo / tareas:** `003-iniciar-sesion` → T304 → (4/4)
+- **Qué se hizo:**
+  - **T304:** prueba de humo del login contra producción (`POST /api/v1/auth/login`) con el APK *debug* en el emulador `Pixel_10_Pro` y la cuenta QA `qa-health@virgo.mx`: **CA-01** pantalla A5 completa (formularios, enlace «¿Olvidaste tu contraseña?» y «Entrar»); **CA-02** credenciales inexistentes → `401` real → «Correo o contraseña incorrectos» (genérico, RF-02); **CA-03** modo avión → «Sin conexión. Revisa tu internet e inténtalo de nuevo.» con «Entrar» habilitado y reintento exitoso tras restaurar la red; **RF-03** el reintento navega a la pantalla principal del rol («Inicio»).
+  - Documentación: `task.md` 4/4 con blockquote, `check.md` completo y esta bitácora.
+- **Evidencia:** `docs/evidencia/CA-01-iniciar-sesion-a5.png`, `docs/evidencia/CA-02-iniciar-sesion-error.png`, `docs/evidencia/CA-03-iniciar-sesion-sin-conexion.png` y `docs/evidencia/RF-03-iniciar-sesion-inicio-rol.png`.
+- **Decisiones / hallazgos:**
+  1. **La sesión no persiste entre reinicios:** el login exitoso solo pone `loggedIn = true` en el `UiState`; nadie llama a `TokenStore.save()` (el `TokenStore` está implementado y probado en `:core:datastore`, pero sin conectar), así que al volver a abrir la app se arranca en modo visitante. No rompe ningún CA de `003` (el spec no pide persistencia), pero va contra el espíritu de RNF-03 («tokens solo en `TokenStore`») y del endpoint `013-post-auth-refresh` listado en las dependencias: candidato a un spec `005-sesiones` (guardar token en el login, restaurar al arrancar, refresh y logout) antes de las pantallas de rol.
+  2. El reintento de CA-03 es re-pulsar «Entrar» (no hay botón «Reintentar» separado en A5); funciona y completa el flujo hasta la home del rol.
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - En el emulador, `adb shell cmd connectivity airplane-mode enable/disable` es la vía rápida para simular «sin conexión» y restaurarla sin tocar la UI; verificar con `settings get global airplane_mode_on`.
+  - El error de red llega en ~10 s (connect timeout de OkHttp): esperar al menos 12–15 s antes de capturar o el mensaje aún no aparece.
+- **Pendiente:** PR #20 de esta rama; PR #19 (`004-recuperar-contrasena` 4/5, verde 6/6), PR #18 (`001-inicio-visitante`, verde 6/6) y PR #17 (`002-registro`, verde) esperando aprobación; PR #11 y #13; T033 (respaldo P-02), T036 (cierre de `000`), T037 (PR sin Figma) y B4/B5 de Play (Equipo/API).
+
 ### 2026-11-16 - T037: MCP figma y github, resuelta como no aplica
 
 - **Autor:** equipo + opencode (`arquitecto-movil`)
@@ -600,3 +737,180 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Una tarea bloqueada por una herramienta externa puede cerrarse como «no aplica» documentando el sustituto, en vez de quedarse ⛔ para siempre.
   - Al actualizar el estado de una tarea hay que mover el contador en todos los lugares que lo replican (`task.md`, `AGENTS.md` raíz y móvil) para evitar *stale references*.
 - **Pendiente:** aprobación del PR docs; T024, T033, T030, T035 y T036.
+
+### 2026-11-18 - T501-T506: explorar salones implementado (005-explorar-salones 6/7)
+
+- **Autor:** equipo + opencode (`dev-android` / `qa-movil`)
+- **Módulo / tareas:** `005-explorar-salones` → T501–T506 (6/7; T507 pendiente de humo)
+- **Qué se hizo:**
+  - **T501–T504:** pantalla principal del Cliente en `app/ui/explore/`: B8 con mapa y tarjeta resumen (`ExploreMap`), C9 con lista y orden (`ExploreList`), C10 con hoja de filtros (`ExploreFiltersPanel`) y C11 con recomendaciones (`ExploreRecommendedPanel`), sobre un único `ExploreViewModel` con `onFiltersChange(transform)`, `onSheetChange`, etc. Se eliminó `HomePlaceholder` y `ExploreScreen` entró por `VirGoNavHost.homeDestination()`; todos los textos viven en `strings.xml`.
+  - **T505:** contrato `VenueDto` ampliado **aditivo** (precio, categorías y fotos con defaults, sin romper `001`), `FavoritesApi`/`NoticesApi` + DTOs, `FavoritesRepositoryImpl`/`NoticesRepositoryImpl` y casos de uso `GetFavorites`, `GetNotices`, `ToggleFavorite`.
+  - **T506:** 25 pruebas nuevas de la pantalla (`ExploreViewModelTest` 19, `ExploreScreenTest` 6 de UI con Robolectric) y 18 de dominio/red (`FavoritesRepositoryImplTest` 6, `NoticesRepositoryImplTest` 5, `ToggleFavoriteUseCaseTest` 4, `VenueTest` 4, `GetFavoritesUseCaseTest` 3, `GetNoticesUseCaseTest` 3). Pipeline local completo en verde.
+- **Evidencia:** rama `feat/005-explorar-salones` con commits `94f3a73` (T505), `e09071f` (T501), `e77b50b` (T505 test) y `f298967` (T506 test); `task.md` T501–T506 ✅ con blockquotes; `check.md` con pruebas y mutación.
+- **Decisiones / hallazgos:**
+  1. **Favoritos optimistas:** actualización local + API; si falla se revierte y se emite `ExploreUiEvent.FavoriteError` → snackbar. Las muestras (`venueId` con prefijo `sample-`) NO viajan a la API.
+  2. **Fecha RF-16:** se valida y guarda pero no descarta salones (el contrato 007 aún no trae disponibilidad).
+  3. **Recomendaciones:** score local con `clamp 0..100` y badge «Estimación IA»; los proveedores y la campana muestran snackbar «próxima versión».
+  4. La mutación había bajado a 43 %: se subió a **59 %** agregando fakes locales en `core:domain` (que no depende de `core:testing`) y pruebas MockWebServer de los repos nuevos.
+  5. Límites de estilo que disparan con pantallas grandes: `LongMethod` 60 → extraer `ExploreSheetHost`, `ExploreContent`, `ExploreNoticesButton`, `ExplorePriceDistanceRow` y las filas de filtros; ktlint exige salto antes de `.` cuando hay 4+ encadenados (`chain-method-continuation`).
+- **Costo:** $0 / solo tiempo de CI.
+- **Aprendizaje:**
+  - `pitest` NO ejecuta `:core:domain:test`: correrlo explícito para refrescar los XML antes de contar pruebas, o el conteo queda desfasado.
+  - `Set-Content -Encoding UTF8` en PowerShell escribe BOM; al editar `.kt` hay que quitarlo con `[System.IO.File]::WriteAllBytes` o ktlint falla raro.
+  - Actualizar la rama invalida las aprobaciones: terminar TODO el código y docs, pushear y solo entonces pedir revisión.
+- **Pendiente:** revisión del PR apilado de `feat/005-explorar-salones` (#27); T507 (humo con URL real) bloqueado por endpoints (`notices`/`favorites` → 404 en producción); capturas CA-01–CA-04 **hechas** (2026-11-19, `docs/evidencia/CA-0{1..4}-explorar-*.png`); fusiones de la cadena `#20 → #15 → #11 → #17 → #18 → #19` y luego `#16`, `#22`, `#23`.
+
+### 2026-11-19 - Refinamiento visual en curso
+
+- **Módulos / tareas:** mejoras visuales de `001` y `005` (T101, T501–T504 y T506), a petición del equipo.
+- **Cambios en curso:** fotos ilustrativas locales para muestras, créditos accesibles en la app y documentados en `docs/CREDITOS-IMAGENES.md`, ajuste de insets y cierre de hojas con Atrás. Las imágenes no se atribuyen a salones reales.
+- **Verificación:** `ktlintCheck detekt lint testDebugUnitTest :core:domain:test :core:common:test pitest assembleDebug` → `BUILD SUCCESSFUL` (2026-11-19). Una ejecución previa detectó que los créditos del encabezado interferían con un marcador; se movieron a la tarjeta de visitante. El APK se instaló, pero la revisión visual quedó pendiente por un diálogo de Pixel Launcher sin respuesta en el emulador. Las capturas anteriores aún no evidencian estos cambios.
+- **Pendiente:** validar pantallas y tamaños, actualizar capturas y checks, y especificar y aprobar separadamente la bandeja de avisos y la persistencia de favoritos demo antes de implementarlas.
+
+### 2026-11-19 - Rediseño de explorar en curso
+
+- **Autor:** equipo + opencode.
+- **Módulo / tareas:** `005-explorar-salones` · T501–T504 y T506.
+- **Qué se hizo:** nueva cabecera, controles visuales más discretos, acceso de desarrollo integrado y catálogo inicial con fotos amplias y créditos; se conserva el mapa como vista alternativa y se eliminó la barra inferior con un único destino. Ajustes adicionales de login y registro tras revisar el emulador.
+- **Evidencia:** `ktlintCheck detekt :app:testDebugUnitTest :app:assembleDebug` en verde (2026-11-19, compilación en carpeta temporal para evitar bloqueo de `R.jar`). APK actualizado instalado en el emulador; captura del nuevo diseño autenticado pendiente.
+- **Decisiones:** las fotos son únicamente ilustrativas de los salones de muestra; mapa y ubicaciones siguen siendo demostrativos.
+- **Costo:** $0.
+- **Aprendizaje:** una interfaz puede superar las pruebas y aun así requerir revisión visual con el equipo.
+- **Pendiente:** volver a ejecutar el pipeline después del último cambio, revisar el diseño en emulador, actualizar evidencia y solicitar revisión del PR.
+
+### 2026-11-19 · Consolidación autorizada de Explorar y preparación de restauración de sesión
+
+- **Autor:** equipo + OpenCode (`dev-android`, `qa-movil` y revisión de arquitectura).
+- **Módulo / tareas:** `005-explorar-salones` · T508 verificada y T509 pendiente; `030-restaurar-sesion` solo preparación documental en rama separada, sin implementación.
+- **Qué se hizo:**
+  - El equipo aprobó continuar con la consolidación de #27 y la especificación del siguiente flujo; no se autorizó una release.
+  - Se alinearon los cuatro documentos de `005` con el código real: entrada en lista, fotos amplias con créditos, un ViewModel en `:app` y límites de demo, mapa, fecha, imágenes remotas y accesibilidad.
+  - Se añadieron regresiones explícitas de error seguro de API, reintento sin conexión, acceso a créditos desde lista y selección lista → mapa → lista. Se retiraron afirmaciones incorrectas de aceptación basada en pruebas de filtros.
+  - La revisión de seguridad detectó falta de identificación de muestras en «Para ti»: se añadió acceso a «Datos y fotos de ejemplo · Créditos» y una regresión de UI. Jardines conserva las atribuciones diferenciadas de la ficha (Shixart1985) y sus metadatos (Nenad Stojković), sin asumir que sean la misma persona.
+- **Evidencia:** código `5d14843`; pipeline completo aislado tras el ajuste final de «Para ti» → **BUILD SUCCESSFUL in 5m 26s**, **199 pruebas, 0 fallos/errores/omitidas, 38 suites** (12 de `ExploreScreenTest`); Pitest dominio 60 % (57/95), common 33 % (1/3). Reportes y SHA-256 del APK en `docs/evidencia/T508-consolidacion.md`. `git diff --check` y `git diff --cached --check` sin errores. #27 sigue abierto sobre `feat/004-recuperar-contrasena`; #19 sigue abierto. Al iniciar esta consolidación `adb devices -l` no mostró dispositivos.
+- **Decisiones:** no sustituir capturas históricas por evidencia no obtenida; la restauración local se especificará separada de renovación y logout. Sin refresh no se promete sesión durante días.
+- **Costo:** $0 / herramientas existentes.
+- **Aprendizaje:** los checks verdes de un head anterior no prueban cambios locales; cada CA debe referir pruebas que realmente ejerzan su comportamiento.
+- **Entrega:** código y documentación de consolidación en la rama de #27; su historial remoto acredita el push. El borrador `030` se entrega aparte desde `docs/030-restaurar-sesion`, sin mezclar implementación de sesión en este PR.
+- **Pendiente:** checks del nuevo head, aceptación visual T509, revisión/fusión por Karasu, humo completo T507 y revisión humana de `030`; no se ejecutó release.
+
+### 2026-11-20 · Reparación visual de las tareas aprobadas de la base
+
+- **Autor:** usuario + OpenCode (`ui-designsystem`, QA y revisión de seguridad).
+- **Módulo / tareas:** `000-arquitectura-base` · T010–T014 reabiertas; no se ejecutan módulos nuevos ni `031`. Solicitud explícita: «sí ya haz todo y aplica los cambios visuales».
+- **Qué se hizo:** se comienza por reparar requisitos que el spec/plan de `000` ya aprobaban: paleta constitucional, Manrope/DM Sans locales, tema y controles compartidos con alturas mínimas. La reapertura reduce el conteo a 33/40 porque el código actual no acredita el resultado previo de esas cinco tareas; no se borra su evidencia histórica ni se declara cierre del módulo.
+- **Evidencia:** rama `fix/000-fundamentos-visuales` desde `73ed69b`; trabajo aislado del inventario/spec `031` no versionados en `virgo-visual-reference`. Recursos de fuente originales obtenidos de revisión fija de `google/fonts`, con licencia y SHA-256 en `docs/FUENTES.md`; 22 pares sólidos calculados dentro de AA. La revisión estática independiente quedó sin hallazgos abiertos tras corregir ayuda sobre fondo suave y contenido de error oscuro. Pipeline completo: **BUILD SUCCESSFUL in 1m 14s**, **40 suites/217 pruebas, 0 fallos/errores/omitidas** (incremental: 9 tareas ejecutadas; la suite de `app` se reejecutó completa); Pitest dominio 60 % (57/95) y common 33 % (1/3). APK nuevo de 23 320 455 bytes, SHA-256 `7e201a8a32bc91b042f2489e1416ecd1eb997e601c985a52efedb1cebbe0a04e`, instalado con `adb install -r` sin borrar datos. Capturas clara y compacta/oscura/fuente 2.0 revisadas: confirman fuentes y controles, pero muestran layout antiguo, «Google» partido y enlace final fuera de viewport; no son aceptación. Emulador restaurado a 1280×2856, 480 dpi, fuente 1.0 y modo claro.
+- **Decisiones:** reparar la base existente no equivale a exceptuar el cierre de `000` para flujos nuevos; se conservan T033/T036 pendientes. Mantener APIs, navegación, sesión, fotografías y DevSecOps sin cambios. El cierre visual completo de las pantallas no se acredita con esta reparación.
+- **Costo:** $0 / fuentes OFL y herramientas locales.
+- **Aprendizaje:** distinguir colores de marca y roles semánticos accesibles evita copiar pares con contraste insuficiente.
+- **Pendiente:** completar `VirGoTopBar`, `VirGoBottomBar`, `EmptyState`, `LoadingState` y `ErrorBanner` (T013/CA-10); migrar las pantallas y obtener aceptación humana por bloque; cerrar T036 y `000`. No se publica release ni se hace merge.
+
+### 2026-11-20 · Custodia confirmada y procedencia de la maqueta aclarada
+
+- **Autor:** usuario + OpenCode.
+- **Módulo / tareas:** `000` · T033/P-02; aclaración de referencia para la entrega visual.
+- **Qué se hizo:** el usuario confirmó «Yo, con respaldo seguro». Indicó que el proyecto local supuestamente corresponde a la misma maqueta porque no pudieron entregarle el Figma original. Se usa como referencia de trabajo autorizada, sin inventar cotejo ni equivalencia demostrada.
+- **Evidencia:** consulta de nombres en GitHub: presentes `SIGNING_KEYSTORE_BASE64`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`, `SIGNING_STORE_PASSWORD` y variable `VIRGO_API_BASE_URL`. No se solicitaron ni leyeron valores de secretos. La custodia/respaldo se acredita por declaración humana, no por prueba de restauración.
+- **Decisiones:** T033 completa con esta evidencia y su firma histórica; base 34/40 al mantener T010–T014 reabiertas. No hay autorización de release ni cierre automático de T036.
+- **Costo:** $0.
+- **Pendiente:** resultado del pipeline y revisión real del APK; resto de evidencias de base y etapas SDD. La relación exacta con Figma permanece no verificada.
+
+### 2026-11-21 · Acceso compacto verificado y bloqueo de visitante reproducido
+
+- **Autor:** usuario + OpenCode; revisión independiente de QA en modo lectura.
+- **Módulo / tareas:** `000-arquitectura-base` · seguimiento T014/T029, preparación de evidencia T036. T010–T013 cerradas técnicamente; base **38/40**, T014/T036 abiertas.
+- **Qué se hizo:**
+  - Se completaron ajustes de accesibilidad en acceso existente: acciones sociales y roles apilados con fuente grande; roles y visibilidad de contraseña de 48×48 dp; colores semánticos, nombres de campo persistentes en semántica, errores concretos y regiones vivas. Cabecera de registro con separación real entre regreso y texto, beneficios multilínea, pies adaptables y recuperación con `imePadding`. Sin cambios de API, sesión, navegación, fotografías o permisos.
+  - Se añadieron `CompactAccessTest` (10) y `AuthAccessibilityTest` (3); `FontScaleTest` conserva 4. Cubren ambos temas a 320×640/fuente 2.0, ancho efectivo, límites de líneas/truncado, separación de cabecera con/sin salón, paso 2/error de recuperación con datos ficticios, semántica exacta y selección exclusiva de roles.
+  - Se corrigió la duplicidad contradictoria de CA-06 y los IDs RNF del `check.md`, conservando las evidencias históricas como tales. Evidencia completa en [`docs/evidencia/T010-T014-correccion-visual.md`](docs/evidencia/T010-T014-correccion-visual.md).
+- **Evidencia:** pipeline final `ktlintCheck detekt lint testDebugUnitTest :core:domain:test :core:common:test pitest assembleDebug` → **BUILD SUCCESSFUL in 2m 4s**, incremental (383 tareas, 29 ejecutadas); **43 suites, 237 pruebas, 0 fallos/errores/omitidas** (`app` 95, `core` 142); lint 0 errores/35 avisos. Pitest dominio 60 % (57/95), common 33 % (1/3), reutilizados sin cambios JVM.
+- **APK y dispositivo:** 23 889 777 bytes, SHA-256 `ccb9c4b5b02e51ef1583d0946902eb928a989aaf260667231a12d465f4df4fb1`; firma debug verificada y `install -r` exitoso, sin borrar datos. El hash de `base.apk` instalado coincide. Capturas `T014-final-*.png` del artefacto final: acceso oscuro a 320 dp/2.0, pies alcanzables y recuperación con teclado abierto; recuperación clara con aviso completo tras desplazar. Sin credenciales ni envío real. Emulador restaurado a 1280×2856, 480 dpi, fuente 1.0 y modo claro.
+- **Decisiones:** reparar la accesibilidad existente no habilita nuevos módulos ni implementación de `031`. La consulta de GitHub confirma #17–#20 aprobados pero abiertos; #27/#28 abiertos sin decisión de revisión. La aprobación no se interpreta como fusión ni aceptación visual. No hubo commit, push, merge ni release.
+- **Costo:** $0 / herramientas locales existentes.
+- **Aprendizaje:** `hasVisualOverflow` puede señalar ancho sobrante de un párrafo reutilizado (Google: texto 91×34 px, párrafo 232×34 px); se verifican límites de líneas, elipsis, altura y truncado en vez de confundir esa asignación con un recorte. Los qualifiers no sustituyen una aserción del viewport efectivo. Las pruebas de visibilidad anteriores no detectaron los solapamientos del inicio visitante.
+- **Contraste:** se mantiene la tabla de 22 pares de tokens del reporte; los accesos migrados consumen esos roles. La nota ámbar de rol usa `#7A520F` sobre `#FFF8E9` (≈6,529:1). Esto no certifica imágenes, gradientes ni todas las pantallas.
+- **Pendiente:** **T014 sigue abierta** por el inicio visitante compacto oscuro: solapamientos y superficies claras, reproducidos en `T014-visitante-compacto-2x-oscuro-bloqueo.png`. Falta revisión manual completa de TalkBack/estados alternativos/teclado del paso 2 y aceptación por bloques. Gitleaks no está en PATH y no se acreditan checks remotos de cambios locales. T036 exige reconciliar todas las evidencias y aprobaciones; no se cierra `000`.
+
+### 2026-11-21 · Publicación autorizada del avance visual
+
+- **Autor:** usuario + OpenCode; revisión estática previa de seguridad.
+- **Módulo / tareas:** `000-arquitectura-base` · T010–T014/T029, entrega de evidencia sin cerrar T036.
+- **Qué se hizo:** tras la autorización de continuar con commit, push y PR en borrador, se publicó `fix/000-fundamentos-visuales` y se abrió el [PR #29](https://github.com/virgorent/VirGO_Movil/pull/29) con capturas reales, resultados locales y pendientes explícitos.
+- **Evidencia:** código `693da474a442547379f595c5b42274a739c5ce67`; primer push con upstream exitoso; GitHub confirma PR `OPEN`, `isDraft=true`, base `feat/005-explorar-salones` y head `fix/000-fundamentos-visuales`. Inventario staged revisado: 58 archivos, sin rutas fuera de alcance ni APK/AAB/keystores/configuración local sensible; `git diff --cached --check` sin errores. La revisión independiente no detectó bloqueadores altos en los archivos inspeccionados; no sustituye Gitleaks. El pipeline local de 237 pruebas está documentado en la entrada anterior.
+- **Decisiones:** PR apilado sobre el head `73ed69b` de #27 para mostrar solo la reparación visual, sin reincorporar el diff de toda la cadena funcional respecto a `main`. No se modificó #27 ni se fusionó nada; Karasu coordina la integración.
+- **Costo:** herramientas existentes; CI del repositorio según su configuración.
+- **Aprendizaje:** el workflow de CodeQL filtra PRs a `main`; un PR apilado puede ejecutar build y seguridad sin ejecutar CodeQL. No se debe declarar que todos los gates están verdes ni quitar filtros para aparentarlo.
+- **Pendiente:** comprobar checks del head final de #29, revisión humana y resolver la base antes de integrar en `main` con todos los gates. T014/T036 siguen abiertas (38/40). Sin release ni ejecución de `movil-release`.
+
+### 2026-11-22 · Visitante adaptativo y regresiones verificadas
+
+- **Autor:** usuario + OpenCode; revisión independiente de solo lectura.
+- **Módulo / tareas:** `000` T014/T029 y seguimiento T036; reparación existente de `001` T101/T102/T104.
+- **Qué se hizo:** cabecera, resumen, mapa y pie separados en flujo desplazable compacto; preview apilada, colores semánticos y controles de 48 dp. Se corrigió el clamp del pin compacto usando coordenadas originales y tamaño renderizado; su caja cuenta para el etiquetado posterior. Región viva en el texto de error y reintento independiente. Sin cambios de API, sesión, fotografías ni nuevas funciones.
+- **Evidencia:** pipeline completo **BUILD SUCCESSFUL in 2m 20s**, 44 suites/250 pruebas, 0 fallos/errores/omitidas; 13 escenarios de visitante, con toque físico de pines este/oeste y comprobación de LiveRegion. APK debug de 23 889 777 bytes, SHA-256 `ce2ed276394de05e61ae9ee5db9ed789a0df9ef6a42b0e94fedb3b7cc709e473`; firma debug verificada, instalado con `install -r` y hash instalado coincidente. Diez capturas reales en [`docs/evidencia/`](docs/evidencia/): 320×640 dp/fuente 2.0 y 393×800 dp/fuente 1.0, ambos temas, inicio/mapa/error/preview; sustituyen las imágenes vacías descartadas. Detalle en [`docs/evidencia/T014-visitante-adaptativo.md`](docs/evidencia/T014-visitante-adaptativo.md).
+- **Decisiones:** conservar límites explícitos del mapa demo (sin prometer separar coordenadas idénticas). T014/T036 siguen abiertas, base 38/40. Continuación sobre PR #29 en borrador, sin merge ni release.
+- **Costo:** $0 / herramientas locales existentes.
+- **Aprendizaje:** la primera captura salió vacía por redirección UTF-16 de PowerShell; `cmd /c` con `exec-out` produjo PNG válido. Un ANR de System UI y una descarga de Robolectric fallida en CI fueron incidentes de entorno, no del código; el job se relanzó. No se presentan fallos de infraestructura como resultados del producto.
+- **Pendiente:** revisión manual de TalkBack, escala intermedia 1.3 y aceptación visual por bloques. Verificar CI del head `dda6fdb` tras el relanzamiento; CodeQL de la base apilada sigue sin acreditarse. Sin nuevas integraciones ni implementación de `031`.
+
+### 2026-11-22 · Continuación autorizada: visitante a escala 1.3
+
+- **Autor:** usuario + OpenCode.
+- **Módulo / tareas:** `000` T014, seguimiento T036.
+- **Qué se hizo:** tras la indicación «dale», se revisó visitante a 393×800 dp y fuente 1.3 en ambos temas; cuatro capturas de inicio/error. No hubo cambios de código ni nuevas pantallas.
+- **Evidencia:** `docs/evidencia/T014-visitante-adaptativo.md`, capturas `T014-visitante-393-1.3x-*.png`; error completo y reintento alcanzables por desplazamiento. CI de `42490ec`: cuatro checks en verde, run `45044830978`, build de 3m42s; resultado comunicado en PR #29.
+- **Decisiones:** la autorización para continuar no equivale a aceptación visual. T014/T036 abiertas; sin fusión ni release.
+- **Costo:** $0 / herramientas existentes.
+- **Aprendizaje:** capturar tras estabilizar la pantalla y revisar cada PNG; una captura coincidió con splash y fue reemplazada. El fallo de descarga no se reprodujo, pero su causa raíz no quedó identificada.
+- **Pendiente:** TalkBack manual, acceso y estados restantes a escala 1.3, aceptación visual humana. Capturas nuevas y esta actualización permanecen locales hasta su publicación.
+
+### 2026-11-22 · Regresiones de acceso a escala intermedia
+
+- **Autor:** usuario + OpenCode.
+- **Módulo / tareas:** `000` T014/T029, seguimiento T036.
+- **Qué se hizo:** seis casos de login, registro y recuperación a 320 dp/fuente 1.3, claro y oscuro, en `CompactAccessTest`. Sin cambios de pantallas ni de lógica de producción.
+- **Evidencia:** suite focalizada de 16 casos, ktlint/detekt en verde (32s); pipeline completo en verde (30s, 383 tareas), XML de 44 suites/256 pruebas sin fallos/errores/omitidas. Detalle en `docs/evidencia/T014-visitante-adaptativo.md`.
+- **Decisiones:** no extender `031` a demo ni pantallas de negocio; se delegó al arquitecto la redacción anticipada de su plan técnico en el espacio separado `virgo-visual-reference`, sujeto a revisión humana. No implica implementación aprobada ni cierre de base.
+- **Costo:** $0 / herramientas existentes.
+- **Aprendizaje:** reutilizar aserciones con escala parametrizable conserva la cobertura 2.0 y añade 1.3 sin duplicar fixtures; pruebas JVM no acreditan anuncio audible.
+- **Pendiente:** TalkBack manual, capturas de acceso/estados restantes, aceptación visual, publicación y CI de cambios locales. T014/T036 abiertas.
+
+### 2026-11-23 · Demo visual urgente de tres roles
+
+- **Autor:** usuario + OpenCode, con implementación delegada por rol y revisión técnica automatizada de solo lectura.
+- **Módulo / tareas:** paquetes provisionales DV-01–DV-06 de `docs/diseno/excepcion-demo-urgente.md`; no son cierre ni ejecución acreditada de `031`.
+- **Autorización:** el usuario aprobó la excepción temporal propuesta para adelantar la demo visual y regularizar los specs después, conservando seguridad y pruebas. Posteriormente pidió PR en borrador con aceptación visual únicamente suya y subir los cambios al terminar, no antes.
+- **Qué se hizo:** launcher debug separado «VirGo Demo», selector de tres roles, 55 destinos autenticados de muestra y 15 hojas locales; navegación, regreso, índice por rol y formularios con máximo de 500 caracteres. Reutiliza tema, tipografía y mapa existentes. Se añadieron ilustraciones geométricas locales identificadas, sin fotografías nuevas de licencia incierta. No se alteraron flujos reales, sesión, endpoints ni secretos.
+- **Evidencia inicial:** compilación `:app:compileDebugKotlin` correcta (7m52s); formato de fuentes debug/testDebug correcto (16s). Los nuevos tests y el pipeline completo aún requieren resultado final. Se amplió explícitamente la fuente de detekt del módulo app para cubrir también debug y testDebug, sin quitar las fuentes previas. No se atribuye esa ampliación a release.
+- **Decisiones:** rama local `feat/032-demo-visual-roles` apilada sobre `fix/000-fundamentos-visuales`, sin modificar el PR #29. Aceptación visual exclusiva del usuario; no solicitar otros revisores humanos para esa decisión, sin debilitar checks ni ruleset. GitHub no permite pedir revisión formal al propio autor: identificar responsabilidad en cuerpo y asignación.
+- **Límites:** datos/fechas ficticios; hojas con estado local que no actualizan pantallas de fondo; algunos detalles comparten muestra. `rememberSaveable` puede restaurar estado mediante Android; no es persistencia backend. No hay pagos, mensajes, IA, reservas, notificaciones ni subidas reales.
+- **Costo:** $0 / herramientas existentes, sin dependencias de servicios nuevas.
+- **Aprendizaje:** la integración encontró recursos duplicados entre descripción de rol y formulario; se separaron sus nombres. Un análisis que omita las fuentes debug no acredita esta demo: se reforzó su cobertura. La revisión estática no detectó bloqueantes de seguridad en lo inspeccionado, pero no sustituye Gitleaks ni ejecución.
+- **Resultado final local:** pipeline completo en verde (2m29s, 383 tareas), XML de 49 suites/274 pruebas sin fallos/errores/omitidas. Detekt incluye debug/testDebug; lint app sin errores, 42 avisos/11 sugerencias. Corregidos cierre de hojas largas y recurso con porcentajes literales, sin retirar aserciones ni reglas.
+- **APK y capturas:** debug de 24 595 173 bytes, SHA-256 `e66c6e7abcb8644fb51e0c5a3ca0bd99d5f86739a4fed251d242aa3d3302f2df`, firma debug verificada. Instalado en emulador con hash coincidente; recorrido de tres roles, detalle claro/oscuro y hojas de búsqueda/preferencias. Nueve capturas finales en `docs/evidencia/demo-visual/`, informe `verificacion.md`. ANR de Launcher/System UI resueltos sin borrar datos; capturas de splash/diálogo reemplazadas. No se actuó sobre teléfonos conectados.
+- **Publicación autorizada:** código/evidencia publicados en `9e96bf4a285c57706dc9e3db3482edbd76304d43`, rama `feat/032-demo-visual-roles`, [PR #31](https://github.com/virgorent/VirGO_Movil/pull/31) en borrador y apilado sobre #29. Asignado únicamente a `ccabrera-dev8`, sin solicitudes de otros revisores; el cuerpo reserva expresamente la aceptación visual al usuario. Checkout limpio tras el push de esa entrega.
+- **CI inicial:** `gitleaks`, `dependency review` y `changes` verdes para `9e96bf4`; build/test remoto en curso al registrar esta entrada. El resultado final por head se consulta en el PR; no se presume verde por la ejecución local.
+- **Pendiente:** CI remoto del head final, aceptación visual exclusiva del usuario y regularización SDD. T014/T036 siguen abiertas; no hay aceptación visual, merge ni release.
+
+### 2026-11-23 · Consolidación de la app y sesión por rol
+
+- **Autor:** usuario + OpenCode, con revisión técnica automatizada de seguridad.
+- **Módulo / tareas:** UI-01–UI-06 provisionales en `docs/diseno/integracion-app-unificada.md`, bajo la excepción temporal autorizada; sin cierre de specs.
+- **Qué se hizo:** 55 destinos y 15 hojas pasan al source set principal; se retira launcher separado. Sesión cifrada con identidad/rol validado, expiración y rechazo por defecto; registro sin sesión vuelve al login. Workspace compartido en memoria por cuenta/rol, limpiado al salir; muestra sin cuenta únicamente desde debug.
+- **Evidencia:** pipeline final completo verde (1m46s, incremental), 57 suites/318 pruebas sin fallos/errores/omitidas. APK debug SHA-256 `24f896168cb4b67c31917bfe9249ef181fda393bd02427955e959e4d36c931f0`, instalado en `emulator-5554`. Una actividad MAIN/LAUNCHER. Login de los tres roles contra servidor local simulado, restauración tras force-stop y logout comprobados; no acredita login de producción. Ocho capturas e informe en `docs/evidencia/unificacion-app/`.
+- **Decisiones:** ADR-17; no almacenar refresh token ni inventar renovación. Logout local no revoca token remoto. Consolidación contra `main`, sin modificar #27/#29/#31 ni desactivar protecciones; aceptación visual exclusiva de `ccabrera-dev8`, asignación sin autoaprobación formal.
+- **Costo:** herramientas locales existentes; CI según configuración del repositorio.
+- **Aprendizaje:** distinguir pruebas con contrato simulado de humo de producción; documentar el error de catálogo inicial y ANR de System UI sin presentarlos como éxito funcional.
+- **Pendiente:** CI del head publicado, revisión visual del usuario, login real por rol, revocación/renovación cuando exista contrato, endpoints ausentes, TalkBack y T014/T036, regularización SDD. No se fusiona ni publica release.
+- **Publicación:** código y evidencia subidos en `a5a6739`; [PR #32](https://github.com/virgorent/VirGO_Movil/pull/32) confirmado en borrador contra `main`, asignado solo a `ccabrera-dev8`, sin solicitudes de revisión. GitHub informa `MERGEABLE` (sin conflictos, no aprobación). CI inicial en curso: `movil-ci`, `movil-codeql`, Gitleaks y dependency review; consultar el head final antes de integrar.
+
+### 2026-11-23 · UI-07: selectores, jerarquía e iconos
+
+- **Autor:** usuario + OpenCode.
+- **Módulo / tareas:** UI-07, reparación visual explícitamente solicitada con captura de IA Studio; sin nuevas APIs ni cierre de specs.
+- **Qué se hizo:** pestañas exclusivas en IA Studio en vez de cuatro botones primarios; selector de concepto con opciones y estado seleccionado accesible. Enlaces neutros con flecha en cliente y grupos principales de gestión de propietario/proveedor. Márgenes de las acciones de hojas, separación de toolbar e iconos Material delineados en navegación y Studio.
+- **Evidencia:** pipeline completo final verde en 1m22s, incremental; 58 suites/322 pruebas sin fallos/errores/omitidas. Cuatro pruebas nuevas cubren selección, menú, compacto oscuro con fuente 2.0 y separación/navegación. APK debug de 25 217 319 bytes, SHA-256 `10ace40cbf1a7141f332375ee0ac908b583ceccfc77285e7509dccad8628e49c`, instalado en emulador; cuatro capturas claras/oscuras en `docs/evidencia/unificacion-app/09-*` a `12-*`. Informe actualizado.
+- **Decisiones:** mantener funciones, avisos de simulación y APIs; el cambio afecta la presentación, no habilita IA real. Continúa el PR #32 en borrador y revisión visual exclusiva del usuario. CI del head anterior `4ce9a05` consultado: todos los checks verdes; no se atribuye ese resultado al nuevo head.
+- **Costo:** herramientas locales existentes; sin servicios ni dependencias nuevas.
+- **Aprendizaje:** diferenciar acciones, navegación y selección reduce competencia visual. Recompilar sin incremental resolvió los símbolos duplicados tras mover fuentes. Un fallo aislado de `NavigationTest` no se reprodujo al repetir la suite completa; causa no determinada.
+- **Pendiente:** aceptación visual del usuario y CI del nuevo head. No se declara pulido exhaustivo de todas las pantallas, TalkBack ni cierre de T014/T036. Sin fusión ni release.

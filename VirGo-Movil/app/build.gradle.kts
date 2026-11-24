@@ -70,6 +70,20 @@ tasks.withType<Test>().configureEach {
     )
 }
 
+configure<io.gitlab.arturbosch.detekt.extensions.DetektExtension> {
+    // The offline showcase must pass the same static gate as the production UI.
+    source.setFrom(
+        files(
+            "src/main/java",
+            "src/main/kotlin",
+            "src/debug/kotlin",
+            "src/test/java",
+            "src/test/kotlin",
+            "src/testDebug/kotlin",
+        ),
+    )
+}
+
 dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.navigation.compose)

@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -26,8 +29,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -41,11 +46,6 @@ import mx.virgo.app.R
 import mx.virgo.app.ui.auth.AuthTextField
 import mx.virgo.app.ui.auth.PasswordField
 import mx.virgo.core.designsystem.components.VirGoButton
-import mx.virgo.core.designsystem.theme.ErrorRed
-import mx.virgo.core.designsystem.theme.Slate400
-import mx.virgo.core.designsystem.theme.Slate500
-import mx.virgo.core.designsystem.theme.Slate900
-import mx.virgo.core.designsystem.theme.VirGoPurple
 import mx.virgo.core.designsystem.theme.VirGoTheme
 import mx.virgo.core.domain.CODE_MINUTES
 import mx.virgo.core.domain.GenerateRecoveryCodeUseCase
@@ -53,9 +53,7 @@ import mx.virgo.core.domain.RecoveryError
 import mx.virgo.core.domain.ValidateEmailUseCase
 import mx.virgo.core.domain.ValidateRecoveryUseCase
 
-private val KickerColor = VirGoPurple
-private val BackButtonSize = 40.dp
-private const val BACK_BUTTON_ALPHA = 0.85f
+private val BackButtonSize = 48.dp
 private val SectionGap = 20.dp
 private val FieldGap = 14.dp
 private val HeaderGap = 12.dp
@@ -97,7 +95,9 @@ fun RecoverScreen(
         modifier =
             modifier
                 .fillMaxSize()
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background)
+                .imePadding()
+                .navigationBarsPadding(),
     ) {
         RecoverBackButton(onClick = onBackClick)
         if (!state.codeSent) {
@@ -136,14 +136,14 @@ private fun RecoverBackButton(
                 .padding(start = 20.dp, top = 16.dp)
                 .size(BackButtonSize)
                 .background(
-                    color = Color.White.copy(alpha = BACK_BUTTON_ALPHA),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     shape = CircleShape,
                 ),
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = stringResource(R.string.action_back),
-            tint = Slate900,
+            tint = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
@@ -157,34 +157,41 @@ private fun RecoverEmailStep(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize().padding(horizontal = 20.dp)) {
-        RecoverHeader(
-            kicker = stringResource(R.string.recover_kicker),
-            title = stringResource(R.string.recover_title),
-        )
-        Spacer(modifier = Modifier.height(SectionGap))
-        Text(
-            text = stringResource(R.string.recover_lead),
-            style = MaterialTheme.typography.bodyMedium,
-            color = Slate500,
-        )
-        Spacer(modifier = Modifier.height(SectionGap))
-        AuthTextField(
-            value = email,
-            onValueChange = onEmailChange,
-            label = stringResource(R.string.field_email),
-            keyboardOptions =
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Done,
-                ),
-        )
+        Column(
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState()),
+        ) {
+            RecoverHeader(
+                kicker = stringResource(R.string.recover_kicker),
+                title = stringResource(R.string.recover_title),
+            )
+            Spacer(modifier = Modifier.height(SectionGap))
+            Text(
+                text = stringResource(R.string.recover_lead),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(modifier = Modifier.height(SectionGap))
+            AuthTextField(
+                value = email,
+                onValueChange = onEmailChange,
+                label = stringResource(R.string.field_email),
+                keyboardOptions =
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Done,
+                    ),
+            )
+            Spacer(modifier = Modifier.height(HintGap))
+            Text(
+                text = stringResource(R.string.recover_code_hint, CODE_MINUTES),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
         Spacer(modifier = Modifier.height(HintGap))
-        Text(
-            text = stringResource(R.string.recover_code_hint, CODE_MINUTES),
-            style = MaterialTheme.typography.labelSmall,
-            color = Slate400,
-        )
-        Spacer(modifier = Modifier.weight(1f))
         VirGoButton(
             onClick = onSend,
             enabled = emailValid,
@@ -208,13 +215,13 @@ private fun RecoverHeader(
                     letterSpacing = 2.sp,
                     fontWeight = FontWeight.Bold,
                 ),
-            color = KickerColor,
+            color = MaterialTheme.colorScheme.primary,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = title,
             style = MaterialTheme.typography.headlineMedium,
-            color = Slate900,
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
@@ -268,16 +275,20 @@ private fun RecoverCodeStep(
                 Spacer(modifier = Modifier.height(FieldGap))
                 Text(
                     text = errorText,
+                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                     style = MaterialTheme.typography.labelMedium,
-                    color = ErrorRed,
+                    color = MaterialTheme.colorScheme.error,
                 )
             }
             Spacer(modifier = Modifier.height(HintGap))
-            TextButton(onClick = onResend) {
+            TextButton(
+                onClick = onResend,
+                modifier = Modifier.heightIn(min = 48.dp),
+            ) {
                 Text(
                     text = stringResource(R.string.recover_resend),
                     style = MaterialTheme.typography.labelLarge,
-                    color = VirGoPurple,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
         }
