@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `035-pulido-visual-beta` |
 | Versión | 0.1.0 |
-| Estado | Propuesto para aprobación (2026-11-25) |
+| Estado | Aprobado por el usuario (2026-11-25) |
 | Fecha | 2026-11-25 |
 | Constitución | v1.2.0 |
 | Rol | Cliente, Propietario y Proveedor (y visitante) |
@@ -102,5 +102,5 @@ Sin cambios: no se tocan red, sesión, almacenamiento ni permisos.
 
 | ID | Pregunta | Quién | Propuesta |
 |---|---|---|---|
-| P-01 | ¿Se cubre con la excepción vigente de `030` o con una nueva? | Usuario | Ampliar la excepción temporal a `035` (visual, sin red ni datos), con los mismos límites. |
-| P-02 | ¿Íconos por destino? | Usuario | Íconos de Material equivalentes a los de `lucide` del prototipo; lista en `plan.md`. |
+| P-01 | ¿Se cubre con la excepción vigente de `030` o con una nueva? | Usuario | **Resuelta 2026-11-25:** el usuario amplió la excepción temporal a `035` («Apruebo y amplío»). |
+| P-02 | ¿Íconos por destino? | Usuario | **Aprobada con el spec:** íconos de Material equivalentes; lista en `plan.md` §6.2. |

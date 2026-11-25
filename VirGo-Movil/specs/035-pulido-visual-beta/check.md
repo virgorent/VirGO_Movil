@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `035-pulido-visual-beta` |
-| Estado del spec | Propuesto para aprobación |
+| Estado del spec | Aprobado por el usuario (2026-11-25) |
 | Revisó | — |
 | Fecha | 2026-11-25 |
 
@@ -11,8 +11,8 @@ Sin evidencia todavía: el módulo no se ha implementado.
 
 ## 1. Especificación y gobernanza
 
-- [ ] Spec, plan y tareas aprobados por el usuario.
-- [ ] P-01: `000` cerrado o excepción ampliada y registrada.
+- [x] Spec, plan y tareas aprobados por el usuario el 2026-11-25 («Apruebo y amplío»).
+- [x] P-01: excepción ampliada y registrada (`docs/diseno/excepcion-030-sin-cierre-000.md`).
 
 ## 2. Criterios de aceptación
 

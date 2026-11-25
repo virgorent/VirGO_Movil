@@ -33,6 +33,16 @@ Tareas autorizadas: **T3001–T3008** de [`specs/030-cuenta-sesion/task.md`](../
 - El humo contra producción (T3008) usa una cuenta desechable que crea el usuario;
   el agente no crea cuentas ni escribe contraseñas.
 
+## Ampliación a `035-pulido-visual-beta` (2026-11-25)
+
+El usuario aprobó el spec `035` y amplió esta excepción: «Apruebo y amplío».
+Se registra antes de implementar. Alcance: tareas **T3501–T3509** de
+[`specs/035-pulido-visual-beta/task.md`](../../specs/035-pulido-visual-beta/task.md).
+`035` es solo visual: no consume endpoints, así que la segunda condición del
+Art. II.2 no aplica. Rigen los mismos límites: sin relajar gates, sin
+dependencias, permisos ni secretos nuevos, sin release, revisión obligatoria
+del usuario y sin datos de muestra.
+
 ## Regularización
 
 - Cerrar `000` (T014 TalkBack, T036) y registrar en su `check.md` que `030` se

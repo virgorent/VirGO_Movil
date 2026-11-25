@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `035-pulido-visual-beta` |
 | Versión | 0.1.0 |
-| Estado | Propuesto para aprobación (2026-11-25) |
+| Estado | Aprobado por el usuario (2026-11-25) |
 | Fecha | 2026-11-25 |
 | Constitución | v1.2.0 |
 | Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |

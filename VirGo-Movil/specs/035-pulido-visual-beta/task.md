@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `035-pulido-visual-beta` |
 | Versión | 0.1.0 |
-| Estado | Propuesto para aprobación. **Las tareas no se ejecutan hasta aprobar este archivo y resolver P-01 (cierre de `000` o excepción).** |
+| Estado | Aprobado por el usuario (2026-11-25). Tareas autorizadas por la excepción temporal ampliada ([`excepcion-030-sin-cierre-000.md`](../../docs/diseno/excepcion-030-sin-cierre-000.md)). |
 | Fecha | 2026-11-25 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 
