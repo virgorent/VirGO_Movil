@@ -1004,3 +1004,14 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Hallazgo para backend:** `GET /bookings` y `/bookings/:id` exponen `idempotencyKey`, `clientId` y `payments`; conviene no devolverlos.
 - **Pendiente:** T908 (humo en producción); `008` para el camino con cotización.
 - **Costo:** $0.
+
+### 2026-11-25 · `008-cotizaciones-cliente` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** «hazlos todos de una vez»; ampliación registrada en la excepción.
+- **Qué se hizo:** T801–T807. «Solicitar cotización» desde el detalle (tipo de evento, fecha, invitados con aviso de capacidad y mensaje opcional); «Mis cotizaciones» con estados reales, vacío, error y tirar para actualizar; detalle con la respuesta del salón y «Reservar» hacia `009` con `quoteId` y fecha. El selector de fecha se extrajo a `EventDateField` y lo comparten `008` y `009`.
+- **Evidencia:** 86 suites / 510 pruebas sin fallos (+36).
+- **Aprendizaje:** el backend usa `answered`, no `responded`. Cotizaciones no tienen `Idempotency-Key`: tras un envío sin respuesta, el reintento busca una solicitud idéntica «Enviada» antes de reenviar.
+- **Hallazgos para backend:** reservar con `quoteId` no usa el total cotizado (cobra precio de lista) ni marca la cotización como `accepted`.
+- **Pendiente:** T808 (humo en producción); `024` para que el propietario responda desde la app.
+- **Costo:** $0.

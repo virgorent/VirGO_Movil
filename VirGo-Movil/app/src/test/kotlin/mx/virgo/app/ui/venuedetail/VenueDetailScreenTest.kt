@@ -141,17 +141,19 @@ class VenueDetailScreenTest {
     }
 
     @Test
-    fun clientExploreGoesFromCatalogToDetailToBookingAndBack() {
+    fun clientExploreGoesFromCatalogToDetailToQuoteOrBookingAndBack() {
         compose.setContent {
             VirGoTheme {
                 ClientExplore(
                     catalog = { open -> TextButton(onClick = { open("v7") }) { Text("Catálogo") } },
-                    detail = { id, back, book ->
+                    detail = { id, back, step ->
                         Column {
                             TextButton(onClick = back) { Text("Detalle $id") }
-                            TextButton(onClick = { book(id) }) { Text("Reservar $id") }
+                            TextButton(onClick = step.quote) { Text("Cotizar $id") }
+                            TextButton(onClick = step.book) { Text("Reservar $id") }
                         }
                     },
+                    quote = { id, back -> TextButton(onClick = back) { Text("Solicitud $id") } },
                     booking = { id, back, toCatalog ->
                         Column {
                             TextButton(onClick = back) { Text("Confirmar $id") }
@@ -162,6 +164,8 @@ class VenueDetailScreenTest {
             }
         }
         compose.onNodeWithText("Catálogo").performClick()
+        compose.onNodeWithText("Cotizar v7").performClick()
+        compose.onNodeWithText("Solicitud v7").assertIsDisplayed().performClick()
         compose.onNodeWithText("Reservar v7").performClick()
         compose.onNodeWithText("Confirmar v7").assertIsDisplayed().performClick()
         compose.onNodeWithText("Detalle v7").assertIsDisplayed().performClick()

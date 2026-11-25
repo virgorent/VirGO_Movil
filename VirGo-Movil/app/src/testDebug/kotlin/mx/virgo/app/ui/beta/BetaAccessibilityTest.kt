@@ -38,6 +38,15 @@ import mx.virgo.app.ui.ownervenues.VenueWizardContent
 import mx.virgo.app.ui.ownervenues.VenueWizardOutcome
 import mx.virgo.app.ui.ownervenues.VenueWizardUiState
 import mx.virgo.app.ui.ownervenues.WizardError
+import mx.virgo.app.ui.quotes.QuoteDetailState
+import mx.virgo.app.ui.quotes.QuoteDraft
+import mx.virgo.app.ui.quotes.QuoteError
+import mx.virgo.app.ui.quotes.QuoteRequestActions
+import mx.virgo.app.ui.quotes.QuoteRequestContent
+import mx.virgo.app.ui.quotes.QuoteRequestUiState
+import mx.virgo.app.ui.quotes.QuotesActions
+import mx.virgo.app.ui.quotes.QuotesContent
+import mx.virgo.app.ui.quotes.QuotesUiState
 import mx.virgo.app.ui.venuedetail.DetailViewer
 import mx.virgo.app.ui.venuedetail.VenueDetailActions
 import mx.virgo.app.ui.venuedetail.VenueDetailContent
@@ -47,12 +56,17 @@ import mx.virgo.core.designsystem.theme.VirGoTheme
 import mx.virgo.core.domain.BookingField
 import mx.virgo.core.domain.BookingProblem
 import mx.virgo.core.domain.OwnerVenue
+import mx.virgo.core.domain.QuoteField
+import mx.virgo.core.domain.QuoteProblem
+import mx.virgo.core.domain.QuoteStatus
 import mx.virgo.core.domain.Venue
 import mx.virgo.core.domain.VenueDraft
 import mx.virgo.core.domain.VenueDraftValidator
 import mx.virgo.core.domain.VenueStatus
 import mx.virgo.core.domain.VenueStep
+import mx.virgo.core.testing.sampleAnsweredQuote
 import mx.virgo.core.testing.sampleBooking
+import mx.virgo.core.testing.sampleQuote
 import mx.virgo.core.testing.sampleUserProfile
 import mx.virgo.core.testing.sampleVenueDetail
 import org.junit.Assert.assertEquals
@@ -191,13 +205,51 @@ class BetaAccessibilityTest {
         }
     }
 
+    /** 008 CA-09: solicitar (errores y aviso de capacidad), enviada, lista, vacío y detalle. */
     @Test
-    fun unavailableRecoveryIsAccessibleInBothThemes() {
+    fun quotesAreAccessibleInBothThemes() {
+        val venue = sampleVenueDetail().copy(name = "Salón Jardín de las Bugambilias con un nombre muy largo")
+        val request =
+            QuoteRequestUiState(
+                draft = QuoteDraft(venueId = venue.id, date = "2027-05-15", guests = "900", message = "Hola"),
+                venue = venue,
+                loadingVenue = false,
+                fieldErrors = mapOf(QuoteField.EVENT_TYPE to QuoteProblem.REQUIRED),
+                serverErrors = mapOf(QuoteField.DATE to "La fecha del evento no puede estar en el pasado."),
+                error = QuoteError.NETWORK,
+            )
+        val long = sampleQuote().copy(venueName = venue.name, message = "Somos 120 personas y queremos la terraza.")
+        val answered = sampleAnsweredQuote().copy(venueName = venue.name)
+        val screens =
+            mapOf<String, @Composable () -> Unit>(
+                "quote request" to { QuoteRequestContent(request, QuoteRequestActions()) },
+                "quote sent" to { QuoteRequestContent(request.copy(sent = long), QuoteRequestActions()) },
+                "quotes" to {
+                    QuotesContent(
+                        QuotesUiState(
+                            loading = false,
+                            quotes = listOf(long, answered, long.copy(id = "u", status = QuoteStatus.UNKNOWN)),
+                        ),
+                        QuotesActions(),
+                    )
+                },
+                "quotes empty" to { QuotesContent(QuotesUiState(loading = false), QuotesActions()) },
+                "quote waiting" to {
+                    QuotesContent(QuotesUiState(detail = QuoteDetailState(long.id, false, long)), QuotesActions())
+                },
+                "quote answered" to {
+                    QuotesContent(
+                        QuotesUiState(detail = QuoteDetailState(answered.id, false, answered)),
+                        QuotesActions(),
+                    )
+                },
+            )
         listOf(false, true).forEach { dark ->
-            sweep("recover dark=$dark", dark) { BetaUnavailableScreen(R.string.beta_recovery, onBack = {}) }
+            screens.forEach { (name, screen) -> sweep("$name dark=$dark", dark, screen) }
         }
     }
 
+    /** Perfil de la cuenta en sus estados y la pantalla de recuperación no disponible. */
     @Test
     fun accountIsAccessibleInBothThemesAndStates() {
         val identity = SessionIdentity(SESSION_NAME, SESSION_EMAIL, R.string.demo_role_client)
@@ -211,6 +263,7 @@ class BetaAccessibilityTest {
             states.forEach { (name, state) ->
                 sweep("account $name dark=$dark", dark) { AccountProfileContent(state, identity, onRetry = {}) }
             }
+            sweep("recover dark=$dark", dark) { BetaUnavailableScreen(R.string.beta_recovery, onBack = {}) }
         }
     }
 

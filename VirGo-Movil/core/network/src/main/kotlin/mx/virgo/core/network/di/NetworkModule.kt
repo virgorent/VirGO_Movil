@@ -12,6 +12,7 @@ import mx.virgo.core.network.api.FavoritesApi
 import mx.virgo.core.network.api.HealthApi
 import mx.virgo.core.network.api.NoticesApi
 import mx.virgo.core.network.api.OwnerVenuesApi
+import mx.virgo.core.network.api.QuotesApi
 import mx.virgo.core.network.api.UsersApi
 import mx.virgo.core.network.api.VenuesApi
 import mx.virgo.core.network.createAuthApi
@@ -21,6 +22,7 @@ import mx.virgo.core.network.createHealthApi
 import mx.virgo.core.network.createNoticesApi
 import mx.virgo.core.network.createOkHttpClient
 import mx.virgo.core.network.createOwnerVenuesApi
+import mx.virgo.core.network.createQuotesApi
 import mx.virgo.core.network.createUsersApi
 import mx.virgo.core.network.createVenuesApi
 import okhttp3.OkHttpClient
@@ -66,4 +68,8 @@ object NetworkModule {
     @Singleton
     fun provideOwnerVenuesApi(client: OkHttpClient): OwnerVenuesApi =
         createOwnerVenuesApi(BuildConfig.API_BASE_URL, client)
+
+    @Provides
+    @Singleton
+    fun provideQuotesApi(client: OkHttpClient): QuotesApi = createQuotesApi(BuildConfig.API_BASE_URL, client)
 }

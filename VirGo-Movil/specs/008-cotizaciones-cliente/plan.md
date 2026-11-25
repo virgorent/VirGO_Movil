@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `008-cotizaciones-cliente` |
-| Versión | 2.0.0 |
+| Versión | 2.1.0 |
 | Estado | Aprobado por el usuario (lote MVP, 2026-11-25) |
 | Fecha | 2026-11-25 |
 | Constitución | v1.2.0 |
@@ -16,8 +16,8 @@
   `ValidateQuoteRequestUseCase` (fecha no pasada, invitados ≥ 1, mensaje ≤ 500),
   `CreateQuoteUseCase`, `GetQuotesUseCase`, `GetQuoteUseCase`.
 - `:core:data`: `QuotesRepositoryImpl`; Problem Details con errores de campo → `AppError.Validation(fields)`.
-- `:app`: `ui/quotes/` con `QuoteRequestScreen`, `QuotesScreen`, `QuoteDetailScreen` y un `ViewModel` por pantalla.
-  Rutas `QuoteRequestRoute(venueId)`, `QuotesRoute`, `QuoteDetailRoute(quoteId)`.
+- `:app`: `ui/quotes/` con `QuoteRequestScreen` (+`ViewModel`) y `ClientQuotes` (lista y detalle con `QuotesViewModel`).
+  *v2.1.0:* como `006`/`009`, la navegación vive dentro del espacio del cliente (`ClientExplore` y la sección «quotes»), sin rutas nuevas en el `NavHost`.
   La sección «quotes» del espacio del cliente abre `QuotesScreen` en lugar de la tarjeta «Próximamente».
 
 ## 2. Contexto técnico
@@ -65,6 +65,8 @@ app/src/main/res/values/quotes_strings.xml
 | ADR-02 | Sin `eventId` en el cuerpo mientras P-01 siga abierta | `007` no está en el MVP. |
 | ADR-03 | Los montos se muestran solo si el servidor los envía | No inventar precios. |
 | ADR-04 | Errores de campo de Problem Details mapeados por nombre de campo | Mensajes junto al campo (RNF-02). |
+| ADR-05 | Sin `Idempotency-Key` en el servidor: tras un envío sin respuesta, el reintento busca una solicitud idéntica «Enviada» antes de reenviar (v2.1.0) | CA-04 sin depender de un cambio de backend. |
+| ADR-06 | Reservar desde la cotización reutiliza la pantalla de `009` con `quoteId` y la fecha (v2.1.0) | Un solo flujo de reserva; el total lo calcula el servidor. |
 
 ## 6. Diseño
 
