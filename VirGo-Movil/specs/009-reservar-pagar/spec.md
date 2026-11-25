@@ -96,7 +96,7 @@ el pago con tarjeta o transferencia queda para un spec posterior (§7).
 
 | ID | Pregunta | Quién | Propuesta |
 |---|---|---|---|
-| P-01 | El contrato incluye `eventId` y `quoteId`. | Backend | Ambos **opcionales** en el MVP; reserva directa desde `006` sin cotización. |
+| P-01 | El contrato incluye `eventId` y `quoteId`. | Backend | **Resuelta en el PR backend #37**: ambos opcionales. |
 | P-02 | ¿Cómo paga el cliente el anticipo en el MVP? | Usuario + propietario | Fuera de la app (el salón lo indica); el pago en la app es un spec posterior. |
 | P-03 | ¿El servidor devuelve horas mínimas en `GET /venues/:id`? | Backend | Sí (`price.minHours`); si no llega, la app solo exige ≥ 1. |
 | P-04 | Forma del JSON de `GET /bookings` y `/bookings/:id` y nombres de estado. | Backend | Folio, venue `{id,name}`, `date`, `hours`, `total`, `deposit`, `status`; la app tolera estados nuevos. |

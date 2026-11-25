@@ -97,8 +97,8 @@ simulada.
 
 | ID | Pregunta | Quién | Propuesta |
 |---|---|---|---|
-| P-01 | ¿Quién aprueba la publicación? No hay rol de administrador (backend `028`/`029` P-01). | Usuario + backend | MVP: **publicación directa** por el propietario (`publish`); la revisión se agrega después. |
-| P-02 | El esquema exige `location` (GeoJSON), pero la app no tiene mapa ni selector de ubicación. | Backend | `location` opcional en el MVP o geocodificación de `address` en el servidor. |
-| P-03 | El esquema exige `photos`. | Backend | Aceptar lista vacía en el MVP. |
-| P-04 | Forma de `price` (`{base, unit, minHours}`) y valores de `unit`. | Backend | `unit`: `hour` o `event`, coherente con el cálculo de `POST /bookings`. |
+| P-01 | ¿Quién aprueba la publicación? No hay rol de administrador (backend `028`/`029` P-01). **`publish` (029) no está en el PR backend #37: es pendiente de producto.** | Usuario + backend | MVP: **publicación directa** por el propietario (`publish`); la revisión se agrega después. |
+| P-02 | El esquema exige `location` (GeoJSON), pero la app no tiene mapa ni selector de ubicación. **El PR backend #37 lo sigue exigiendo en `POST /venues`.** | Backend | `location` opcional en el MVP o geocodificación de `address` en el servidor. |
+| P-03 | El esquema exige `photos`. **El PR backend #37 lo sigue exigiendo en `POST /venues`.** | Backend | Aceptar lista vacía en el MVP. |
+| P-04 | Forma de `price` (`{base, unit, minHours}`) y valores de `unit`. | Backend | **Confirmada en el PR backend #37**: `price {base, unit, minHours}`; `services {name, included, price}`. Falta confirmar los valores de `unit`. |
 | P-05 | Listas de categorías y amenidades. | Usuario | Lista inicial fija en la app; el servidor las guarda como texto. |

@@ -41,10 +41,10 @@ estado lo decide el servidor y nada se simula.
 | RF-05 | **[C21]** «Enviar solicitud» valida en el cliente, envía `POST /api/v1/quotes` con `target {type:"venue", id}` y, ante `201`, muestra «Solicitud enviada» y abre «Mis cotizaciones». El botón se desactiva mientras envía (sin envíos dobles). |
 | RF-06 | **[C21]** Errores: `400` muestra los mensajes de campo de Problem Details en español; `404` «Este salón ya no está disponible»; `401` cierra sesión (`030`); red/5xx «No pudimos enviar tu solicitud» con reintento, conservando lo capturado. |
 | RF-07 | **[C22]** «Mis cotizaciones» lista `GET /api/v1/quotes`: salón, fecha del evento, invitados y estado. Orden: más reciente primero. |
-| RF-08 | **[C22]** Estados mostrados tal como los envía el servidor: `sent` → «Enviada», `responded` → «Respondida», `accepted` → «Aceptada», `rejected` → «Rechazada», `expired` → «Vencida». Un estado desconocido se muestra como «En revisión» sin fallar. |
+| RF-08 | **[C22]** Estados mostrados tal como los envía el servidor: `sent` → «Enviada», `answered` → «Respondida», `accepted` → «Aceptada», `rejected` → «Rechazada», `expired` → «Vencida». Un estado desconocido se muestra como «En revisión» sin fallar. |
 | RF-09 | **[C22]** Estado vacío: «Aún no has pedido cotizaciones» con botón al catálogo. Estados de carga y error con reintento. Se puede actualizar tirando hacia abajo. |
 | RF-10 | **[C7]** El detalle (`GET /api/v1/quotes/:id`) muestra los datos de la solicitud. Si el servidor envía conceptos, subtotal, IVA, total o vigencia, se muestran tal cual; si no los envía, se lee «El salón aún no responde». |
-| RF-11 | **[C7]** Con estado `responded`, el botón «Reservar» abre `009` con `venueId`, `quoteId` y la fecha. En otros estados no hay acción. |
+| RF-11 | **[C7]** Con estado `answered`, el botón «Reservar» abre `009` con `venueId`, `quoteId` y la fecha. En otros estados no hay acción. |
 | RF-12 | El acceso a «Mis cotizaciones» sustituye la sección «Cotizaciones» de muestra del espacio del cliente (beta `034`). |
 | RF-13 | Textos en `strings.xml`; fechas en formato local y montos en MXN. |
 
@@ -67,7 +67,7 @@ estado lo decide el servidor y nada se simula.
 | CA-04 | **Dado** un fallo de red, **cuando** reintenta, **entonces** conserva lo capturado y no se duplica la solicitud. |
 | CA-05 | **Dado** cotizaciones en varios estados, **cuando** abre la lista, **entonces** cada una muestra su estado real; uno desconocido se lee «En revisión». |
 | CA-06 | **Dado** que no tiene cotizaciones, **cuando** abre la lista, **entonces** ve el estado vacío con acceso al catálogo. |
-| CA-07 | **Dado** una cotización `responded` con total, **cuando** abre el detalle, **entonces** ve los montos del servidor y «Reservar» abre `009`. |
+| CA-07 | **Dado** una cotización `answered` con total, **cuando** abre el detalle, **entonces** ve los montos del servidor y «Reservar» abre `009`. |
 | CA-08 | **Dado** una cotización `sent`, **cuando** abre el detalle, **entonces** lee «El salón aún no responde» y no hay botón «Reservar». |
 | CA-09 | **Dado** las tres pantallas a 320 dp/fuente 2.0 en ambos temas, **cuando** se revisan, **entonces** no hay cortes ni controles < 48 dp. |
 
@@ -97,7 +97,7 @@ estado lo decide el servidor y nada se simula.
 
 | ID | Pregunta | Quién | Propuesta |
 |---|---|---|---|
-| P-01 | El contrato exige `eventId`, pero «Crear evento» (`007`) no está en el MVP. | Backend | `eventId` **opcional** en el MVP; la app no lo envía. |
-| P-02 | Sin la respuesta del propietario (`POST /quotes/:id/response`, `062`) ninguna cotización pasa a «Respondida». | Usuario + backend | Añadir al lote un spec mínimo «propietario responde cotización» (lista de solicitudes + monto total), o aceptar que en el MVP la reserva directa (`009`) no requiere cotización. |
+| P-01 | El contrato exige `eventId`, pero «Crear evento» (`007`) no está en el MVP. | Backend | **Resuelta en el PR backend #37**: `eventId` es opcional. |
+| P-02 | Sin la respuesta del propietario (`POST /quotes/:id/response`, `062`) ninguna cotización pasa a «Respondida». | Usuario | El endpoint ya existe en el PR backend #37 (`{total, deposit, message}`); falta la pantalla del propietario (spec aparte). En el MVP la reserva directa (`009`) no depende de esto. |
 | P-03 | ¿Reservar desde una cotización la marca `accepted` en el servidor? | Backend | Sí, dentro de `POST /bookings` con `quoteId`. |
-| P-04 | Forma del JSON de lista/detalle y nombres de estado. | Backend | Los de RF-08; la app tolera estados nuevos. |
+| P-04 | Forma del JSON de lista/detalle y nombres de estado. | Backend | **Resuelta en el PR backend #37** (2026-11-25): estados `sent`, `answered`, `accepted`, `rejected`, `expired`; la app tolera estados nuevos. |
