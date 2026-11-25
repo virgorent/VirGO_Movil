@@ -34,7 +34,7 @@ class UnifiedWorkspaceTest {
             }
         }
         compose.onNodeWithText("Cambiar rol").assertDoesNotExist()
-        compose.onNodeWithText("Cerrar sesión en este dispositivo").assertIsDisplayed().performClick()
+        compose.onNodeWithText("Cerrar sesión").assertIsDisplayed().performClick()
         compose.runOnIdle { assertTrue(loggedOut) }
     }
 

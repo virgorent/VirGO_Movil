@@ -952,3 +952,12 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Bloqueo constitucional:** el Art. II.2 impide ejecutar tareas hasta que `000` esté cerrado **y** backend entregue la URL y el JSON de cada endpoint. Esto prevalece sobre la autorización previa de implementar contra MockWebServer; requiere cerrar `000` o una excepción temporal aprobada y registrada (precedente: `docs/diseno/excepcion-demo-urgente.md`). `030` ya cumple la segunda condición (endpoints desplegados).
 - **Pendiente:** respuestas de backend a las preguntas P-xx de cada spec; cierre de `000` (T014 TalkBack y T036) antes de implementar.
 - **Costo:** $0.
+
+### 2026-11-25 · `030-cuenta-sesion` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** excepción temporal aprobada por el usuario («Sí, registra excepción»), registrada antes de implementar en [`docs/diseno/excepcion-030-sin-cierre-000.md`](docs/diseno/excepcion-030-sin-cierre-000.md).
+- **Qué se hizo:** T3001–T3007. Perfil real desde `GET /users/me` (solo lectura, sin inventar teléfono ni verificación); logout remoto con `POST /auth/logout` (acepta 200/204; 401 = ya revocada; red/5xx/10 s → cierre local con aviso); motivos de cierre (`EXPIRED`, `REVOKED`, `ROLE_MISMATCH`, `ACCOUNT_UNAVAILABLE`, `LOGOUT_UNCONFIRMED`) mostrados una vez; rol del servidor validado contra la sesión.
+- **Evidencia:** pipeline completo **BUILD SUCCESSFUL in 4m 2s**, 63 suites / 362 pruebas sin fallos (+28). Nuevas: `AccountRepositoryImplTest` 8, `SessionViewModelTest` +8, `AccountProfileViewModelTest` 7, `AccountProfileScreenTest` 5.
+- **Aprendizaje:** consumir el motivo dentro de un `LaunchedEffect` con ese motivo como clave cancela el `showSnackbar`; el aviso se lanza en un scope independiente.
+- **Pendiente:** T3008 (humo con cuenta desechable creada por el usuario: login → perfil → logout → token anterior 401), capturas y aceptación visual; regularizar la excepción al cerrar `000`.

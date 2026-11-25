@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,8 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
 import mx.virgo.app.dev.DevMenu
 import mx.virgo.app.navigation.VirGoNavHost
+import mx.virgo.app.session.SessionEndReason
 import mx.virgo.app.session.SessionViewModel
 import mx.virgo.core.designsystem.theme.VirGoTheme
 
@@ -42,6 +45,16 @@ fun VirGoApp() {
         LaunchedEffect(sessionState.error, sessionState.loading) {
             if (!sessionState.loading && sessionState.error) {
                 snackbarHostState.showSnackbar(sessionError)
+            }
+        }
+        val endMessage = sessionState.endReason?.let { stringResource(it.messageRes()) }
+        val noticeScope = rememberCoroutineScope()
+        LaunchedEffect(sessionState.endReason) {
+            if (endMessage != null) {
+                // Se consume antes de mostrarse para que no reaparezca al rotar. El aviso corre en
+                // otro scope: consumir cambia la clave y cancelaría este efecto.
+                sessionViewModel.consumeEndReason()
+                noticeScope.launch { snackbarHostState.showSnackbar(endMessage) }
             }
         }
         CompositionLocalProvider(
@@ -78,3 +91,11 @@ private fun SessionLoading(modifier: Modifier = Modifier) {
         Text(stringResource(R.string.session_loading), style = MaterialTheme.typography.bodyLarge)
     }
 }
+
+private fun SessionEndReason.messageRes(): Int =
+    when (this) {
+        SessionEndReason.EXPIRED, SessionEndReason.REVOKED -> R.string.session_end_expired
+        SessionEndReason.ROLE_MISMATCH -> R.string.session_end_role
+        SessionEndReason.ACCOUNT_UNAVAILABLE -> R.string.session_end_unavailable
+        SessionEndReason.LOGOUT_UNCONFIRMED -> R.string.session_end_unconfirmed
+    }

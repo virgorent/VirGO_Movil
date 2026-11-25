@@ -8,31 +8,31 @@
 | Fecha | 2026-11-24 |
 | Constitución | v1.2.0 |
 
-Este `check.md` no contiene evidencia todavía: el módulo no se ha implementado.
-No se marca ningún criterio como cumplido sin una ejecución real.
+Implementado el 2026-11-25 bajo la excepción [`excepcion-030-sin-cierre-000.md`](../../docs/diseno/excepcion-030-sin-cierre-000.md).
+Los criterios que exigen producción (CA-06, CA-10) siguen pendientes del humo con cuenta desechable.
 
 ## 1. Criterios de aceptación
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | Captura o prueba del perfil con `name`, `email`, `phone`, `role` e `isVerified` del servidor | ⏳ |
-| CA-02 | Prueba de UI: campos de solo lectura y H06 ausente en el perfil autenticado | ⏳ |
-| CA-03 | Captura o prueba sin red: identidad de la sesión, aviso y Reintentar; sin teléfono ni verificación inventados | ⏳ |
-| CA-04 | Prueba de 401: token borrado y aviso en el inicio de visitante o login | ⏳ |
-| CA-05 | Prueba de 404 y de rol distinto: sesión cerrada y workspace no abierto | ⏳ |
+| CA-01 | `AccountProfileViewModelTest.matchingRolePublishesServerProfile` + `AccountProfileScreenTest.serverProfileShowsPhoneAndVerification` | ✅ |
+| CA-02 | `AccountProfileScreenTest.profileIsReadOnly` (sin `SetText`, «Guardar» ni «Editar») | ✅ |
+| CA-03 | `networkFailureKeepsSessionAndMarksDataOutdatedThenRetryRecovers` + `outdatedDataOffersRetry` + `loadingShowsSessionIdentityWithoutInventingPhoneOrVerification` | ✅ |
+| CA-04 | `unauthorizedRevokesSession`: token borrado y motivo `REVOKED` | ✅ |
+| CA-05 | `notFoundMeansAccountUnavailable`, `differentRoleClosesSessionWithoutPublishingProfile`, `unknownRoleIsRejected` | ✅ |
 | CA-06 | Humo: logout 204/200 y token anterior 401 | ⏳ |
-| CA-07 | Prueba de logout sin red/5xx: cierre local y aviso de revocación no confirmada | ⏳ |
-| CA-08 | Prueba de logout 401: cierre local sin error de revocación | ⏳ |
-| CA-09 | Prueba de expiración a los 15 minutos: cierre y aviso | ⏳ |
+| CA-07 | `failedLogoutStillClearsTokenAndReportsUnconfirmed`, `slowLogoutTimesOutAndClearsLocally` | ✅ |
+| CA-08 | `unauthorizedLogoutMeansAlreadyRevokedAndShowsNoError` | ✅ |
+| CA-09 | `expiryShowsSessionExpiredNoticeOnceAndCanBeConsumed` | ✅ |
 | CA-10 | Humo con cuenta desechable: login → perfil → logout → token anterior 401 | ⏳ |
 | CA-11 | Revisión de logs y pruebas de seguridad: sin tokens, correos ni teléfonos | ⏳ |
-| CA-12 | Capturas claro/oscuro y prueba de accesibilidad; textos en `strings.xml` | ⏳ |
+| CA-12 | `AccountProfileScreenTest` a 320 dp/fuente 2.0 en claro y oscuro; textos en `account_strings.xml` | 🔄 capturas y aceptación visual pendientes |
 
 ## 2. Pruebas
 
 | Tipo | Evidencia | Estado |
 |---|---|---|
-| Unitarias | Totales: — | ⏳ |
+| Unitarias | Totales del pipeline: 63 suites / 362 pruebas, 0 fallos (2026-11-25) | ✅ |
 | Integración | Totales: —; MockWebServer con 200/204/401/404/500/timeout | ⏳ |
 | UI | Totales: —; perfil, solo lectura, sin red, aviso único | ⏳ |
 | Seguridad | Token solo en `Authorization`; sin datos personales en logs; borrado local aun con fallo | ⏳ |

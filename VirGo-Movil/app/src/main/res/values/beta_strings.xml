@@ -17,9 +17,9 @@
     <string name="beta_login">Iniciar sesión</string>
     <string name="beta_register">Crear cuenta</string>
     <string name="beta_account">Tu cuenta</string>
-    <string name="beta_session_identity">Datos de la sesión iniciada. La consulta y edición del perfil estarán disponibles próximamente.</string>
-    <string name="beta_local_logout">Cerrar sesión en este dispositivo</string>
-    <string name="beta_logout_hint">El cierre es local. La sesión del servidor permanece vigente hasta su expiración.</string>
+    <string name="beta_session_identity">Datos de la sesión iniciada.</string>
+    <string name="beta_local_logout">Cerrar sesión</string>
+    <string name="beta_logout_hint">Al cerrar sesión, VirGo revoca tu acceso en el servidor y borra tus datos de este dispositivo.</string>
     <string name="beta_booking">Reservaciones</string>
     <string name="beta_payment">Pago</string>
     <string name="beta_receipt">Comprobante</string>

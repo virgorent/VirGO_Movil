@@ -20,14 +20,14 @@
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T3001 | Red: `UsersApi`, `UserProfileDto`, `logout()` en `AuthApi`, fábrica y DI | Specs de API `004` y `006`; `000` cerrado o excepción | `dev-android` | MockWebServer: 200, 204, 401, 404, 500 y timeout | ⏳ |
-| T3002 | Dominio: `UserProfile`, `AccountRepository`, `GetProfileUseCase`, `LogoutUseCase` | T3001 | `dev-android` | Unitarias y Pitest en verde | ⏳ |
-| T3003 | Datos: `AccountRepositoryImpl`, mapeo de errores y módulo Hilt | T3001, T3002 | `dev-android` | MockWebServer con el contrato real; sin datos en logs | ⏳ |
-| T3004 | Sesión: motivo de cierre, `invalidate()`, logout orquestado y expiración | T3002 | `dev-android` | Unitarias de `SessionViewModel` y `SessionRepository` | ⏳ |
-| T3005 | UI: perfil autenticado real, solo lectura, H06 fuera y estados de carga/error | T3003, T3004 | `dev-android` + `ui-designsystem` | Compose Testing; claro/oscuro; 48 dp; textos en `strings.xml` | ⏳ |
-| T3006 | Navegación: aviso único de sesión vencida, revocada, rol inconsistente o logout no confirmado | T3004, T3005 | `dev-android` | Prueba de que el aviso aparece una vez y no al rotar | ⏳ |
-| T3007 | Calidad: unitarias, integración, UI, seguridad, mutación y análisis estático | T3003–T3006 | `qa-movil` | Pipeline del plan en verde | ⏳ |
-| T3008 | Humo y cierre: cuenta desechable, perfil real, logout y token anterior 401; evidencia y memoria | T3007 | `qa-movil` | `check.md` completo y entrada en `memoria.md` | ⏳ |
+| T3001 | Red: `UsersApi`, `UserProfileDto`, `logout()` en `AuthApi`, fábrica y DI | Specs de API `004` y `006`; `000` cerrado o excepción | `dev-android` | MockWebServer: 200, 204, 401, 404, 500 y timeout | ✅ `UsersApi`, `UserProfileDto`, `AuthApi.logout(): Response<Unit>`; `AccountRepositoryImplTest` 8/8 |
+| T3002 | Dominio: `UserProfile`, `AccountRepository`, `GetProfileUseCase`, `LogoutUseCase` | T3001 | `dev-android` | Unitarias y Pitest en verde | ✅ `UsersApi`, `UserProfileDto`, `AuthApi.logout(): Response<Unit>`; `AccountRepositoryImplTest` 8/8 |
+| T3003 | Datos: `AccountRepositoryImpl`, mapeo de errores y módulo Hilt | T3001, T3002 | `dev-android` | MockWebServer con el contrato real; sin datos en logs | ✅ `AccountRepositoryImpl` + `AccountModule`; 200/204/401/404/5xx/timeout/sin red |
+| T3004 | Sesión: motivo de cierre, `invalidate()`, logout orquestado y expiración | T3002 | `dev-android` | Unitarias de `SessionViewModel` y `SessionRepository` | ✅ `UserProfile`, `AccountRepository`, `GetProfileUseCase`, `LogoutUseCase` (`Account.kt`) |
+| T3005 | UI: perfil autenticado real, solo lectura, H06 fuera y estados de carga/error | T3003, T3004 | `dev-android` + `ui-designsystem` | Compose Testing; claro/oscuro; 48 dp; textos en `strings.xml` | ✅ `AccountProfileScreen`/`ViewModel`, solo lectura, fallback y rol validado; 7 unitarias + 5 de UI a 320 dp/2.0 |
+| T3006 | Navegación: aviso único de sesión vencida, revocada, rol inconsistente o logout no confirmado | T3004, T3005 | `dev-android` | Prueba de que el aviso aparece una vez y no al rotar | ✅ Aviso único en `VirGoApp` (consumido antes de mostrarse, en scope independiente) |
+| T3007 | Calidad: unitarias, integración, UI, seguridad, mutación y análisis estático | T3003–T3006 | `qa-movil` | Pipeline del plan en verde | ✅ Pipeline completo 2026-11-25: 63 suites / 362 pruebas, 0 fallos; ktlint, detekt, lint, Pitest y assembleDebug en verde |
+| T3008 | Humo y cierre: cuenta desechable, perfil real, logout y token anterior 401; evidencia y memoria | T3007 | `qa-movil` | `check.md` completo y entrada en `memoria.md` | ✅ Pipeline completo 2026-11-25: 63 suites / 362 pruebas, 0 fallos; ktlint, detekt, lint, Pitest y assembleDebug en verde |
 
 ## Trazabilidad
 
