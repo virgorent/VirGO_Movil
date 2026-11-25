@@ -40,7 +40,7 @@
 
 ## 4. PR
 
-- [ ] PR: enlace —
+- [x] PR: [virgorent/VirGO_Movil#42](https://github.com/virgorent/VirGO_Movil/pull/42) (borrador, base `feat/022-registrar-salon`).
 - [ ] Una revisión aprobada y checks requeridos en verde. No se fusiona antes del despliegue de backend.
 
 ## 5. Memoria
