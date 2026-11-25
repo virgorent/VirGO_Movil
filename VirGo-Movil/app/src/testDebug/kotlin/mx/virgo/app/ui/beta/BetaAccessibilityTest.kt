@@ -30,6 +30,11 @@ import mx.virgo.app.ui.bookings.BookingDraft
 import mx.virgo.app.ui.bookings.BookingError
 import mx.virgo.app.ui.bookings.BookingsContent
 import mx.virgo.app.ui.bookings.BookingsUiState
+import mx.virgo.app.ui.ownerrequests.AnswerError
+import mx.virgo.app.ui.ownerrequests.OwnerRequestsActions
+import mx.virgo.app.ui.ownerrequests.OwnerRequestsContent
+import mx.virgo.app.ui.ownerrequests.OwnerRequestsUiState
+import mx.virgo.app.ui.ownerrequests.RequestDetailState
 import mx.virgo.app.ui.ownervenues.OwnerVenuesContent
 import mx.virgo.app.ui.ownervenues.OwnerVenuesUiState
 import mx.virgo.app.ui.ownervenues.VenueForm
@@ -53,6 +58,8 @@ import mx.virgo.app.ui.venuedetail.VenueDetailContent
 import mx.virgo.app.ui.venuedetail.VenueDetailUiState
 import mx.virgo.core.common.AppError
 import mx.virgo.core.designsystem.theme.VirGoTheme
+import mx.virgo.core.domain.AnswerField
+import mx.virgo.core.domain.AnswerProblem
 import mx.virgo.core.domain.BookingField
 import mx.virgo.core.domain.BookingProblem
 import mx.virgo.core.domain.OwnerVenue
@@ -133,6 +140,31 @@ class BetaAccessibilityTest {
 
     private val venue =
         Venue("real-id", "Salón con un nombre bastante largo", null, "Centro histórico", 180, 0.0, 0, null, null)
+
+    private val pending = sampleQuote().copy(clientName = "Ana María López Hernández", message = "Somos 120 personas.")
+
+    /** 024 CA-06: lista, vacío, formulario con errores y respondida. */
+    private val ownerRequests by lazy {
+        mapOf(
+            "requests" to OwnerRequestsUiState(loading = false, quotes = listOf(pending, sampleAnsweredQuote())),
+            "requests empty" to OwnerRequestsUiState(loading = false),
+            "request form" to
+                OwnerRequestsUiState(
+                    detail =
+                        RequestDetailState(
+                            pending.id,
+                            loading = false,
+                            quote = pending,
+                            fieldErrors = mapOf(AnswerField.DEPOSIT to AnswerProblem.ABOVE_TOTAL),
+                            error = AnswerError.NETWORK,
+                        ),
+                ),
+            "request answered" to
+                OwnerRequestsUiState(
+                    detail = RequestDetailState(pending.id, false, sampleAnsweredQuote(), justAnswered = true),
+                ),
+        )
+    }
 
     @Test
     fun catalogStatesAreAccessibleInBothThemes() {
@@ -290,7 +322,7 @@ class BetaAccessibilityTest {
         }
     }
 
-    /** 022 CA-08: «Mis salones» y los tres pasos del asistente, con errores visibles. */
+    /** 022 CA-08 y 024 CA-06: «Mis salones», el asistente y las solicitudes con su respuesta. */
     @Test
     fun ownerVenuesAreAccessibleInBothThemes() {
         val lists =
@@ -328,6 +360,9 @@ class BetaAccessibilityTest {
         listOf(false, true).forEach { dark ->
             lists.forEach { (name, state) ->
                 sweep("owner venues $name dark=$dark", dark) { OwnerVenuesContent(state, {}, {}, {}) }
+            }
+            ownerRequests.forEach { (name, state) ->
+                sweep("$name dark=$dark", dark) { OwnerRequestsContent(state, OwnerRequestsActions()) }
             }
             wizard.forEach { (name, state) ->
                 sweep("$name dark=$dark", dark) { VenueWizardContent(state, VenueWizardActions()) }

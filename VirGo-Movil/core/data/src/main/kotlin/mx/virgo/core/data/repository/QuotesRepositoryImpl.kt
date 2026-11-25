@@ -3,12 +3,14 @@ package mx.virgo.core.data.repository
 import kotlinx.coroutines.CancellationException
 import mx.virgo.core.common.AppResult
 import mx.virgo.core.domain.Quote
+import mx.virgo.core.domain.QuoteAnswer
 import mx.virgo.core.domain.QuoteEventType
 import mx.virgo.core.domain.QuoteRequest
 import mx.virgo.core.domain.QuoteStatus
 import mx.virgo.core.domain.QuotesRepository
 import mx.virgo.core.network.api.QuotesApi
 import mx.virgo.core.network.dto.CreateQuoteRequestDto
+import mx.virgo.core.network.dto.QuoteAnswerRequestDto
 import mx.virgo.core.network.dto.QuoteDto
 import mx.virgo.core.network.dto.QuoteTargetDto
 import java.math.BigDecimal
@@ -38,6 +40,20 @@ class QuotesRepositoryImpl
 
         override suspend fun get(id: String): AppResult<Quote> = safeCall { AppResult.Success(api.get(id).toQuote()) }
 
+        override suspend fun respond(
+            id: String,
+            answer: QuoteAnswer,
+        ): AppResult<Quote> =
+            safeCall {
+                val body =
+                    QuoteAnswerRequestDto(
+                        total = answer.total.toDouble(),
+                        deposit = answer.deposit?.toDouble(),
+                        message = answer.message.trim().ifEmpty { null },
+                    )
+                AppResult.Success(api.respond(id, body).toQuote())
+            }
+
         @Suppress("TooGenericExceptionCaught")
         private suspend fun <T> safeCall(block: suspend () -> AppResult<T>): AppResult<T> =
             try {
@@ -63,4 +79,5 @@ internal fun QuoteDto.toQuote(): Quote =
         deposit = response?.deposit?.let(BigDecimal::valueOf),
         responseMessage = response?.message,
         createdAt = createdAt,
+        clientName = clientName.orEmpty(),
     )

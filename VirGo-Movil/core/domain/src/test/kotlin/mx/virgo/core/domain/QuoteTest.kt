@@ -163,5 +163,10 @@ class QuoteTest {
         override suspend fun list(): AppResult<List<Quote>> = listResult
 
         override suspend fun get(id: String): AppResult<Quote> = AppResult.Failure(AppError.NotFound)
+
+        override suspend fun respond(
+            id: String,
+            answer: QuoteAnswer,
+        ): AppResult<Quote> = AppResult.Failure(AppError.NotFound)
     }
 }

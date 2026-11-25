@@ -119,3 +119,18 @@ Tareas autorizadas: **T801–T807**; T808 (humo en producción) espera el
 despliegue. Mismos límites: MockWebServer con la forma real del backend, sin
 fusionar antes del despliegue, gates completos y sin dependencias, permisos ni
 secretos nuevos. La respuesta del propietario (P-02) no entra en esta ampliación.
+
+## Aprobación del resto de specs (2026-11-25)
+
+Tras entregar `008`, el usuario pidió los 20 specs restantes: «hazlos todos de una
+vez tienes mi aprobacion». Se registra como aprobación de cada spec reescrito a la
+v2.0.0 contra el contrato real del backend y como ampliación de esta excepción a
+sus tareas de implementación. Cada spec deja aquí su línea antes de implementarse.
+
+Límites, además de los anteriores: solo pantallas con endpoint real (sin datos de
+muestra), sin manejo de tarjetas ni cobros, y los specs sin backend (`012`, `013`)
+no se implementan.
+
+| Spec | Tareas autorizadas | Contrato |
+|---|---|---|
+| `024-propietario-solicitudes` | T2401–T2404 | `GET /quotes`, `GET /quotes/:id`, `POST /quotes/:id/response` (PR #41) |
