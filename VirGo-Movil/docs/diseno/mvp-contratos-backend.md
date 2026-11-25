@@ -26,7 +26,10 @@ móvil. Estado en producción: consulta del 2026-11-24/25 a
 | **P0** | `GET /api/v1/quotes` · `GET /api/v1/quotes/:id` | `008` | ❌ no existe |
 | **P0** | `POST /api/v1/bookings` | `009` | ✅ declarado en OpenAPI (no probado) |
 | **P0** | `GET /api/v1/bookings/:id` | `009` | ❌ no existe |
-| P1 | `PATCH /api/v1/venues/:id` | `022` | ❌ no existe |
+| **P0** | `GET /api/v1/venues/mine` | `022` | ❌ no existe (spec `025`) |
+| **P0** | `GET /api/v1/bookings` | `009` | ❌ no existe (spec `066`) |
+| **P0** | `PATCH /api/v1/venues/:id` | `022` | ❌ no existe |
+| P1 | `POST /api/v1/quotes/:id/response` (propietario responde) | `008` | ❌ no existe (spec `062`) |
 | P1 | `POST /api/v1/quotes/:id/accept` · `/reject` | `008` | ❌ no existe |
 | P1 | `GET /api/v1/venues/:id/availability` | `006` | ❌ no existe |
 | P2 | `GET /api/v1/venues/:id/reviews` | `006` | ❌ no existe |
@@ -53,6 +56,12 @@ móvil. Estado en producción: consulta del 2026-11-24/25 a
 4. **Forma del detalle de salón:** extender el objeto de `GET /venues` (ya
    tiene `location` GeoJSON y `rating {average,count}`) con descripción,
    fotos (URLs), servicios, precios y reglas.
+
+5. **`eventId` y `quoteId`.** `POST /quotes` y `POST /bookings` los exigen,
+   pero «Crear evento» (`007`) no está en el MVP. Propuesta: ambos opcionales;
+   la reserva directa desde el detalle no lleva cotización.
+6. **Esquema de `venues`.** Exige `location` (GeoJSON) y `photos`, pero no hay
+   mapa en la app ni carga de archivos. Propuesta: opcionales o vacíos en el MVP.
 
 ## Qué se pide a backend
 
