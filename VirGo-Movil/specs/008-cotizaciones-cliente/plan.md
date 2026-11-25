@@ -3,41 +3,97 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `008-cotizaciones-cliente` |
-| Versión | 1.0.0 |
-| Estado | Borrador |
-| Fecha | 2026-11-05 |
-| Rol | Cliente |
-| Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
+| Versión | 2.0.0 |
+| Estado | Aprobado por el usuario (lote MVP, 2026-11-25) |
+| Fecha | 2026-11-25 |
+| Constitución | v1.2.0 |
 | Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
 ## 1. Resumen técnico
 
-Módulo `:feature:cotizacionescliente`, con pantallas Compose y un `ViewModel` por pantalla. Cada `ViewModel` expone un `UiState` inmutable por `StateFlow` y llama a casos de uso de `:core:domain`.
+- `:core:network`: `QuotesApi` (`create`, `list`, `get`), `CreateQuoteRequestDto`, `QuoteDto`, `QuotesResponseDto`.
+- `:core:domain`: `Quote`, `QuoteStatus` (con `UNKNOWN`), `QuoteRequest`, `QuotesRepository`,
+  `ValidateQuoteRequestUseCase` (fecha no pasada, invitados ≥ 1, mensaje ≤ 500),
+  `CreateQuoteUseCase`, `GetQuotesUseCase`, `GetQuoteUseCase`.
+- `:core:data`: `QuotesRepositoryImpl`; Problem Details con errores de campo → `AppError.Validation(fields)`.
+- `:app`: `ui/quotes/` con `QuoteRequestScreen`, `QuotesScreen`, `QuoteDetailScreen` y un `ViewModel` por pantalla.
+  Rutas `QuoteRequestRoute(venueId)`, `QuotesRoute`, `QuoteDetailRoute(quoteId)`.
+  La sección «quotes» del espacio del cliente abre `QuotesScreen` en lugar de la tarjeta «Próximamente».
 
-## 2. Constitution Check
+## 2. Contexto técnico
+
+| Aspecto | Decisión |
+|---|---|
+| Fecha | `java.time.LocalDate` (nativo desde API 26, que es el `minSdk`; sin desugaring) serializada `yyyy-MM-dd` |
+| Validación | En dominio (JVM puro, Pitest); el servidor sigue siendo la autoridad |
+| Envíos dobles | Botón deshabilitado durante el envío; el estado no se reenvía al rotar |
+| Persistencia | Ninguna; borrador del formulario en `SavedStateHandle` |
+
+## 3. Constitution Check
 
 | Art. | Resultado | Cómo se cumple |
 |---|---|---|
-| I y II | ✅ Cumple | Spec atómico por flujo. |
-| III | ✅ Cumple | MVVM/UDF; los módulos `:feature:*` no dependen entre sí. |
-| IV | ✅ Cumple | Solo consume `/api/v1`, con Bearer y `AppError`. |
-| V | ✅ Cumple | Sin secretos ni datos sensibles en logs. |
-| VI | ✅ Cumple | Sección 3. |
-| VII | ✅ Cumple | Sistema de diseño y `strings.xml`. |
+| I | ⚠️ Pendiente | Flujo corto de tres pantallas; falta aprobación. |
+| II | ⚠️ Pendiente | Requiere `000` cerrado o excepción. |
+| III | ✅ Cumple | MVVM/UDF; validación en `:core:domain`. |
+| IV | ⚠️ Parcial | Contrato de `POST` definido; `eventId` (P-01) y forma de lista/detalle (P-04) pendientes. |
+| V | ✅ Cumple | Sin datos del evento en logs. |
+| VI–XII | ✅ Planificado | Pruebas en §8; pipeline existente; memoria al cerrar. |
 
-## 3. Estrategia de pruebas
+## 4. Estructura
+
+```text
+core/network/.../api/QuotesApi.kt          # nuevo
+core/network/.../dto/QuoteDtos.kt          # nuevo
+core/domain/.../Quote.kt                   # Quote, QuoteStatus, QuoteRequest
+core/domain/.../QuotesRepository.kt
+core/domain/.../ValidateQuoteRequestUseCase.kt
+core/domain/.../CreateQuoteUseCase.kt · GetQuotesUseCase.kt · GetQuoteUseCase.kt
+core/data/.../repository/QuotesRepositoryImpl.kt · di/QuotesModule.kt
+app/.../ui/quotes/QuoteRequest{Screen,ViewModel}.kt
+app/.../ui/quotes/Quotes{Screen,ViewModel}.kt
+app/.../ui/quotes/QuoteDetail{Screen,ViewModel}.kt
+app/.../navigation/{Routes,VirGoNavHost}.kt · demo/RoleWorkspace.kt
+app/src/main/res/values/quotes_strings.xml
+```
+
+## 5. Decisiones técnicas (ADR)
+
+| ADR | Decisión | Motivo |
+|---|---|---|
+| ADR-01 | `QuoteStatus.UNKNOWN` en lugar de fallar | El backend puede añadir estados. |
+| ADR-02 | Sin `eventId` en el cuerpo mientras P-01 siga abierta | `007` no está en el MVP. |
+| ADR-03 | Los montos se muestran solo si el servidor los envía | No inventar precios. |
+| ADR-04 | Errores de campo de Problem Details mapeados por nombre de campo | Mensajes junto al campo (RNF-02). |
+
+## 6. Diseño
+
+- `QuoteRequestUiState(venueName, eventType, date, guests, services, selected, message, fieldErrors, sending, capacityWarning)`.
+- `QuotesUiState(loading, error, quotes)`; `QuoteDetailUiState(loading, error, quote)`.
+- Etiquetas de estado con color semántico **y** texto (no solo color).
+
+## 7. DevSecOps y CI/CD
+
+Pipeline existente; Gitleaks, dependency review y CodeQL. Sin dependencias nuevas.
+
+## 8. Estrategia de pruebas
 
 | Tipo | Casos |
 |---|---|
-| Unitarias | `ViewModel` con Turbine y casos de uso |
-| Integración | Repositorio con MockWebServer: éxito, 4xx/5xx y sin conexión |
-| UI | Compose Testing de cada pantalla, con escala de fuente 2.0 |
-| Seguridad | Sin datos sensibles en logs |
-| Mutación | Pitest en casos de uso |
-| Humo | La pantalla funciona contra la URL de producción |
+| Unitarias | Validación (fechas límite, invitados, mensaje 500/501), `ViewModel` de las tres pantallas, mapeo de estados |
+| Integración | MockWebServer: `201`, `400` con campos, `401`, `404`, `500`, timeout; lista vacía/con estados desconocidos; detalle con y sin montos |
+| UI | CA-01 a CA-08; barrido de accesibilidad 320 dp/2.0 en ambos temas |
+| Seguridad | Mensaje y datos del evento ausentes en logs |
+| Mutación | Pitest en `ValidateQuoteRequestUseCase` y mapeo de `QuoteStatus` |
+| Humo | Crear una cotización real contra producción con cuenta desechable cuando `060`/`061` estén desplegados |
 
-## 4. Riesgos
+## 9. Riesgos y mitigaciones
 
 | Riesgo | Mitigación |
 |---|---|
-| El endpoint aún no existe | MockWebServer con el contrato del spec de API |
+| Nadie responde cotizaciones (P-02) | Decisión explícita antes de implementar; la reserva directa en `009` no depende de esto. |
+| Contrato de lista/detalle cambia | DTO tolerante y `UNKNOWN`. |
+
+## 10. Fases
+
+F1 red/dominio/datos (T801–T803) · F2 UI (T804–T806) · F3 calidad y humo (T807–T808).

@@ -941,3 +941,14 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Entrega:** implementación subida en `1109d72`;
   [PR #35](https://github.com/virgorent/VirGO_Movil/pull/35) en borrador,
   asignado a `ccabrera-dev8`, sin solicitar revisores visuales adicionales.
+
+### 2026-11-25 · Lote de specs del MVP cliente
+
+- **Autor:** usuario + Claude Code.
+- **Qué se hizo:** se reescribieron a v2.0.0 los borradores `006`, `008`, `009` y `022`, y se actualizó `030` (traído del PR #33) al estado de la beta `034`. Los cinco quedan **Propuestos para aprobación** como lote MVP. Se retiraron las simulaciones de la maqueta (respuestas automáticas, tarjeta «0000», actividad de ejemplo, fotos de ejemplo).
+- **Decisiones de alcance propuestas:** reservar **sin cobro en la app** (`pending_payment`, anticipo del 30 % calculado por el servidor); detalle sin galería (no hay carga de fotos ni librería de imágenes); publicación directa del salón por el propietario; precios ocultos sin sesión.
+- **Hallazgos de contrato (backend):** `POST /quotes` y `POST /bookings` exigen `eventId` y `007` no está en el MVP; `POST /bookings` exige `quoteId`; el esquema `venues` exige `location` y `photos`; ninguna cotización pasa a «Respondida» sin `POST /quotes/:id/response` (`062`). Endpoints adicionales del MVP: `GET /venues/mine` (`025`) y `GET /bookings` (`066`).
+- **Aprobación:** el usuario aprobó el lote completo el 2026-11-25 («Apruebo el lote»).
+- **Bloqueo constitucional:** el Art. II.2 impide ejecutar tareas hasta que `000` esté cerrado **y** backend entregue la URL y el JSON de cada endpoint. Esto prevalece sobre la autorización previa de implementar contra MockWebServer; requiere cerrar `000` o una excepción temporal aprobada y registrada (precedente: `docs/diseno/excepcion-demo-urgente.md`). `030` ya cumple la segunda condición (endpoints desplegados).
+- **Pendiente:** respuestas de backend a las preguntas P-xx de cada spec; cierre de `000` (T014 TalkBack y T036) antes de implementar.
+- **Costo:** $0.
