@@ -1,26 +1,43 @@
 package mx.virgo.app.ui.beta
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.Groups
+import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import mx.virgo.app.R
+import mx.virgo.core.designsystem.components.EmptyState
 import mx.virgo.core.designsystem.components.VirGoButton
 import mx.virgo.core.designsystem.components.VirGoCard
+import mx.virgo.core.designsystem.components.VirGoIconBubble
 import mx.virgo.core.designsystem.components.VirGoOutlinedButton
+import mx.virgo.core.designsystem.components.VirGoPageHeader
+import mx.virgo.core.designsystem.theme.pageBackground
 import mx.virgo.core.domain.Venue
 
 @Composable
@@ -42,49 +59,47 @@ internal fun BetaCatalogContent(
     onLogin: (() -> Unit)? = null,
     onRegister: (() -> Unit)? = null,
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize().padding(horizontal = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        item {
-            BetaCatalogHeader()
-        }
-        if (onLogin != null && onRegister != null) {
+    Column(modifier.fillMaxSize().background(pageBackground())) {
+        VirGoPageHeader(title = stringResource(R.string.beta_catalog), kicker = stringResource(R.string.beta_label))
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
             item {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    VirGoButton(onClick = onLogin, text = stringResource(R.string.beta_login))
-                    VirGoOutlinedButton(onClick = onRegister, modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(R.string.beta_register))
-                    }
+                Text(stringResource(R.string.beta_catalog_hint), color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            if (onLogin != null && onRegister != null) {
+                item { AccountActions(onLogin, onRegister) }
+            }
+            catalogBody(state, onRefresh)
+        }
+    }
+}
+
+private fun androidx.compose.foundation.lazy.LazyListScope.catalogBody(
+    state: BetaCatalogState,
+    onRefresh: () -> Unit,
+) {
+    when {
+        state.loading -> item { CatalogLoading() }
+        state.failed ->
+            item {
+                CatalogState(Icons.Outlined.CloudOff, R.string.beta_catalog_error, R.string.beta_catalog_retry_hint) {
+                    VirGoButton(onClick = onRefresh, text = stringResource(R.string.beta_retry))
                 }
             }
-        }
-        when {
-            state.loading ->
-                item {
-                    CircularProgressIndicator()
-                    Text(stringResource(R.string.beta_loading))
-                }
-            state.failed ->
-                item {
-                    BetaStatusCard(R.string.beta_catalog_error, R.string.beta_catalog_retry_hint)
-                }
-            state.venues.isEmpty() ->
-                item {
-                    BetaStatusCard(R.string.beta_catalog_empty, R.string.beta_catalog_empty_hint)
-                }
-            else ->
-                items(state.venues) { venue ->
-                    BetaVenueCard(venue)
-                }
-        }
-        if (!state.loading) {
+        state.venues.isEmpty() ->
             item {
-                VirGoOutlinedButton(
-                    onClick = onRefresh,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
-                ) {
-                    Text(stringResource(if (state.failed) R.string.beta_retry else R.string.beta_refresh))
+                CatalogState(Icons.Outlined.Storefront, R.string.beta_catalog_empty, R.string.beta_catalog_empty_hint) {
+                    VirGoOutlinedButton(onClick = onRefresh) { Text(stringResource(R.string.beta_refresh)) }
+                }
+            }
+        else -> {
+            items(state.venues) { venue -> BetaVenueCard(venue) }
+            item {
+                VirGoOutlinedButton(onClick = onRefresh, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.beta_refresh))
                 }
             }
         }
@@ -92,16 +107,43 @@ internal fun BetaCatalogContent(
 }
 
 @Composable
-private fun BetaCatalogHeader() {
+private fun AccountActions(
+    onLogin: () -> Unit,
+    onRegister: () -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        VirGoButton(onClick = onLogin, text = stringResource(R.string.beta_login))
+        VirGoOutlinedButton(onClick = onRegister, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.beta_register))
+        }
+    }
+}
+
+@Composable
+private fun CatalogLoading() {
     Column(
-        Modifier.padding(top = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        Modifier.fillMaxWidth().padding(vertical = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text(stringResource(R.string.beta_label), style = MaterialTheme.typography.labelLarge)
-        Text(stringResource(R.string.beta_catalog), style = MaterialTheme.typography.headlineMedium)
-        Text(
-            stringResource(R.string.beta_catalog_hint),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        CircularProgressIndicator()
+        Text(stringResource(R.string.beta_loading), color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+private fun CatalogState(
+    icon: ImageVector,
+    title: Int,
+    text: Int,
+    action: @Composable () -> Unit,
+) {
+    VirGoCard(Modifier.fillMaxWidth()) {
+        EmptyState(
+            title = stringResource(title),
+            text = stringResource(text),
+            iconVector = icon,
+            action = action,
         )
     }
 }
@@ -109,13 +151,36 @@ private fun BetaCatalogHeader() {
 @Composable
 private fun BetaVenueCard(venue: Venue) {
     VirGoCard(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(venue.name, style = MaterialTheme.typography.titleLarge)
-            venue.zone?.takeIf { it.isNotBlank() }?.let { Text(it) }
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                VirGoIconBubble(Icons.Outlined.Storefront, size = VENUE_ICON_DP)
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text(venue.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    venue.zone?.takeIf { it.isNotBlank() }?.let { VenueFact(Icons.Outlined.Place, it) }
+                }
+            }
             if (venue.capacity > 0) {
-                Text(stringResource(R.string.beta_capacity, venue.capacity))
+                VenueFact(Icons.Outlined.Groups, stringResource(R.string.beta_capacity, venue.capacity))
             }
             VirGoButton(onClick = {}, enabled = false, text = stringResource(R.string.beta_soon))
         }
     }
 }
+
+@Composable
+private fun VenueFact(
+    icon: ImageVector,
+    text: String,
+) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Icon(
+            icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(18.dp),
+        )
+        Text(text, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+private const val VENUE_ICON_DP = 44

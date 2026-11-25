@@ -45,7 +45,7 @@ class AccountProfileScreenTest {
     @Test
     fun serverProfileShowsPhoneAndVerification() {
         show(AccountProfileUiState(loading = false, profile = sampleUserProfile()))
-        compose.onNodeWithText("Datos de tu cuenta").assertIsDisplayed()
+        compose.onNodeWithText("Datos de tu cuenta", ignoreCase = true).performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Ana Lopez").assertIsDisplayed()
         compose.onNodeWithText("+525512345678").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Correo verificado").performScrollTo().assertIsDisplayed()

@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -62,11 +63,9 @@ class BetaScreensTest {
         }
         compose.onNodeWithText("IA Studio").assertIsDisplayed()
         compose.onNodeWithText("Simular guardar diseño").assertDoesNotExist()
-        compose
-            .onNode(
-                hasText("Próximamente") and hasClickAction(),
-            ).performScrollTo()
-            .assertIsNotEnabled()
+        // 035 RF-12: insignia «Próximamente» y ninguna acción habilitada.
+        compose.onNodeWithText("Próximamente").performScrollTo().assertIsDisplayed()
+        compose.onNode(hasClickAction() and isEnabled()).assertDoesNotExist()
     }
 
     @Test
@@ -138,7 +137,8 @@ class BetaScreensTest {
                     role.value = currentRole
                     route.value = it.route
                 }
-                compose.onNode(hasText("Próximamente") and hasClickAction()).performScrollTo().assertIsNotEnabled()
+                compose.onNodeWithText("Próximamente").performScrollTo().assertIsDisplayed()
+                compose.onNode(hasClickAction() and isEnabled()).assertDoesNotExist()
                 compose.onNodeWithText("Guardar", substring = true).assertDoesNotExist()
                 compose.onNodeWithText("Simular", substring = true).assertDoesNotExist()
             }

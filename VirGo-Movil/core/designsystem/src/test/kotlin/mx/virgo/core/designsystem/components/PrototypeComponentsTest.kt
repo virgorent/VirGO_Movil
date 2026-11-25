@@ -39,7 +39,8 @@ class PrototypeComponentsTest {
         compose.setContent {
             VirGoTheme { VirGoPageHeader(title = "Tu cuenta", kicker = "Cliente", onBack = { back = true }) }
         }
-        compose.onNodeWithText("CLIENTE").assertIsDisplayed()
+        // El kicker se dibuja en mayúsculas, pero su semántica conserva el texto original.
+        compose.onNodeWithText("Cliente").assertIsDisplayed()
         compose.onNodeWithText("Tu cuenta").assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading))
         compose
             .onNode(hasClickAction() and hasContentDescription("Regresar"))
@@ -54,7 +55,10 @@ class PrototypeComponentsTest {
         var opened = false
         compose.setContent {
             VirGoTheme {
-                VirGoRow(title = "Tu cuenta", subtitle = "Datos", icon = Icons.Outlined.Person, onClick = { opened = true })
+                VirGoRow(title = "Tu cuenta", subtitle = "Datos", icon = Icons.Outlined.Person, onClick = {
+                    opened =
+                        true
+                })
             }
         }
         compose

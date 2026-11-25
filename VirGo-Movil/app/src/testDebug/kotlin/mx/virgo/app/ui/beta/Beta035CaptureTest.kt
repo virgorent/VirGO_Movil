@@ -1,6 +1,8 @@
 package mx.virgo.app.ui.beta
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,8 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import android.graphics.Canvas
-import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import mx.virgo.app.R
 import mx.virgo.app.demo.DemoRole
@@ -59,12 +59,17 @@ class Beta035CaptureTest {
                 "catalogo-vacio" to {
                     BetaCatalogContent(BetaCatalogState(loading = false), onRefresh = {}, onLogin = {}, onRegister = {})
                 },
-                "catalogo-error" to { BetaCatalogContent(BetaCatalogState(loading = false, failed = true), onRefresh = {}) },
+                "catalogo-error" to
+                    { BetaCatalogContent(BetaCatalogState(loading = false, failed = true), onRefresh = {}) },
                 "catalogo-datos" to {
-                    BetaCatalogContent(BetaCatalogState(loading = false, venues = listOf(venue, venue.copy(id = "syn-2"))), {})
+                    BetaCatalogContent(
+                        BetaCatalogState(loading = false, venues = listOf(venue, venue.copy(id = "syn-2"))),
+                        {},
+                    )
                 },
                 "secciones" to { BetaSectionsMenu(DemoRole.OWNER, onNavigate = {}) },
-                "seccion-pendiente" to { BetaSectionScreen(DemoRole.CLIENT, "studio", "Cuenta de prueba", "prueba@example.invalid") },
+                "seccion-pendiente" to
+                    { BetaSectionScreen(DemoRole.CLIENT, "studio", "Cuenta de prueba", "prueba@example.invalid") },
                 "cuenta" to {
                     AccountProfileContent(
                         AccountProfileUiState(loading = false, profile = sampleUserProfile()),
@@ -73,7 +78,13 @@ class Beta035CaptureTest {
                     )
                 },
                 "espacio-proveedor" to {
-                    RoleWorkspace(DemoRole.PROVIDER, "syn-provider", onLogout = {}, "Cuenta de prueba", "prueba@example.invalid")
+                    RoleWorkspace(
+                        DemoRole.PROVIDER,
+                        "syn-provider",
+                        onLogout = {},
+                        "Cuenta de prueba",
+                        "prueba@example.invalid",
+                    )
                 },
             )
         output.mkdirs()

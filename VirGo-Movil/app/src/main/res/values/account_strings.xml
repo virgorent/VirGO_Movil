@@ -4,6 +4,7 @@
     <string name="account_loading">Consultando tus datos…</string>
     <string name="account_phone">Teléfono</string>
     <string name="account_verification">Verificación</string>
+    <string name="account_role">Rol</string>
     <string name="account_verified">Correo verificado</string>
     <string name="account_not_verified">Sin verificar</string>
     <string name="account_unavailable_value">No disponible</string>

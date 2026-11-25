@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -76,6 +77,8 @@ fun VirGoRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         if (icon != null) VirGoIconBubble(icon, tone)
+        // Con letra grande el contenido de la derecha baja bajo el título para no aplastarlo.
+        val stackTrailing = trailing != null && LocalDensity.current.fontScale >= STACK_TRAILING_SCALE
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(text = title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
             if (subtitle != null) {
@@ -87,9 +90,11 @@ fun VirGoRow(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
+            if (stackTrailing) trailing?.invoke()
         }
         when {
-            trailing != null -> trailing()
+            trailing != null && !stackTrailing -> trailing()
+            trailing != null -> Unit
             onClick != null ->
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
@@ -112,7 +117,12 @@ fun VirGoIconBubble(
         modifier = Modifier.size(size.dp).background(colors.container, IconBubbleShape),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(imageVector = icon, contentDescription = null, tint = colors.content, modifier = Modifier.size((size / 2).dp))
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = colors.content,
+            modifier = Modifier.size((size / 2).dp),
+        )
     }
 }
 
@@ -123,6 +133,7 @@ fun VirGoRowDivider() {
 }
 
 private const val ICON_BUBBLE_DP = 32
+private const val STACK_TRAILING_SCALE = 1.3f
 
 @Preview(name = "Claro", widthDp = 393)
 @Preview(name = "Oscuro", widthDp = 393, uiMode = Configuration.UI_MODE_NIGHT_YES)
