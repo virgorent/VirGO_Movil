@@ -22,6 +22,7 @@ import mx.virgo.app.ui.beta.BetaSectionsMenu
 import mx.virgo.app.ui.beta.betaTitle
 import mx.virgo.app.ui.bookings.ClientBookings
 import mx.virgo.app.ui.ownervenues.OwnerVenuesRoute
+import mx.virgo.app.ui.quotes.ClientQuotes
 import mx.virgo.app.ui.venuedetail.ClientExplore
 import mx.virgo.core.designsystem.components.VirGoPageHeader
 import mx.virgo.core.designsystem.theme.pageBackground
@@ -111,7 +112,7 @@ private fun BetaWorkspace(
 /** Inicio y «Mis salones» del propietario muestran sus salones reales (022 RF-01). */
 private val OWNER_VENUE_ROUTES = setOf("ownerHome", "ownerVenues")
 
-private enum class WorkspaceScreen { SECTIONS, CATALOG, BOOKINGS, OWNER_VENUES, ACCOUNT, SECTION }
+private enum class WorkspaceScreen { SECTIONS, CATALOG, BOOKINGS, QUOTES, OWNER_VENUES, ACCOUNT, SECTION }
 
 @Composable
 private fun WorkspaceBody(
@@ -126,8 +127,11 @@ private fun WorkspaceBody(
 ) {
     when (screen) {
         WorkspaceScreen.SECTIONS -> BetaSectionsMenu(role, navigate)
-        WorkspaceScreen.CATALOG -> ClientExplore(onMyBookings = { navigate("bookings") })
+        WorkspaceScreen.CATALOG ->
+            ClientExplore(onMyBookings = { navigate("bookings") }, onMyQuotes = { navigate("quotes") })
         WorkspaceScreen.BOOKINGS -> ClientBookings()
+        WorkspaceScreen.QUOTES ->
+            ClientQuotes(onCatalog = { navigate("explore") }, onMyBookings = { navigate("bookings") })
         WorkspaceScreen.OWNER_VENUES -> ownerVenuesScreen()
         WorkspaceScreen.ACCOUNT -> accountScreen(identity, onLogout)
         WorkspaceScreen.SECTION -> BetaSectionScreen(role, route, identity.name, identity.email)
@@ -142,6 +146,7 @@ private fun workspaceScreen(
     when {
         role == DemoRole.CLIENT && route == "explore" -> WorkspaceScreen.CATALOG
         role == DemoRole.CLIENT && route == "bookings" -> WorkspaceScreen.BOOKINGS
+        role == DemoRole.CLIENT && route == "quotes" -> WorkspaceScreen.QUOTES
         role == DemoRole.OWNER && route in OWNER_VENUE_ROUTES -> WorkspaceScreen.OWNER_VENUES
         route == "profile" -> WorkspaceScreen.ACCOUNT
         else -> WorkspaceScreen.SECTION

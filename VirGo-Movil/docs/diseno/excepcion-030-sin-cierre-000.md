@@ -104,3 +104,18 @@ Tareas autorizadas: **T901–T907**; T908 (humo en producción) espera el
 despliegue. Mismos límites: sin cobro ni datos de pago, MockWebServer con la
 forma real del backend, sin fusionar antes del despliegue, gates completos y
 sin dependencias, permisos ni secretos nuevos.
+
+## Ampliación a `008-cotizaciones-cliente` (2026-11-25)
+
+Tras entregar `009`, se preguntó si seguir con `008` y el usuario respondió:
+«hazlos todos de una vez». Se registra antes de cerrar la implementación.
+
+| Condición del Art. II.2 | `008` | Efecto |
+|---|---|---|
+| `000` cerrado | ❌ | **Se exceptúa** |
+| URL y JSON de backend | ⚠️ `POST /quotes`, `GET /quotes` y `GET /quotes/:id` verificados en el código de `feat/api-mobile-priority` (`7cf6124`) más el PR #41 de backend; **sin URL desplegada** | **Se exceptúa la URL** |
+
+Tareas autorizadas: **T801–T807**; T808 (humo en producción) espera el
+despliegue. Mismos límites: MockWebServer con la forma real del backend, sin
+fusionar antes del despliegue, gates completos y sin dependencias, permisos ni
+secretos nuevos. La respuesta del propietario (P-02) no entra en esta ampliación.

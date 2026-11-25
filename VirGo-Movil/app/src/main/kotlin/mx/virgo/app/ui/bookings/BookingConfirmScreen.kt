@@ -4,25 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -40,7 +30,6 @@ import mx.virgo.core.designsystem.components.ErrorBanner
 import mx.virgo.core.designsystem.components.LoadingState
 import mx.virgo.core.designsystem.components.VirGoButton
 import mx.virgo.core.designsystem.components.VirGoCard
-import mx.virgo.core.designsystem.components.VirGoOutlinedButton
 import mx.virgo.core.designsystem.components.VirGoPageBody
 import mx.virgo.core.designsystem.components.VirGoPageHeader
 import mx.virgo.core.designsystem.components.VirGoRow
@@ -49,9 +38,7 @@ import mx.virgo.core.designsystem.theme.VirGoTone
 import mx.virgo.core.designsystem.theme.pageBackground
 import mx.virgo.core.domain.BookingField
 import mx.virgo.core.domain.BookingProblem
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneOffset
 
 /** C8 → C23: confirma y, al registrarse, muestra el comprobante del servidor. */
 @Composable
@@ -144,70 +131,19 @@ private fun ConfirmForm(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateField(
     date: LocalDate?,
     problem: BookingProblem?,
     onDate: (LocalDate) -> Unit,
 ) {
-    var picking by rememberSaveable { mutableStateOf(false) }
-    val label = stringResource(R.string.booking_date)
     val errorText =
         when (problem) {
             BookingProblem.PAST_DATE -> stringResource(R.string.booking_error_date_past)
             null -> null
             else -> stringResource(R.string.booking_error_date_required)
         }
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(label, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
-        VirGoOutlinedButton(
-            onClick = { picking = true },
-            modifier =
-                Modifier.fillMaxWidth().semantics {
-                    contentDescription = label
-                    if (errorText != null) error(errorText)
-                },
-        ) {
-            Text(
-                date?.let { stringResource(R.string.booking_date_value, formatDate(it)) }
-                    ?: stringResource(R.string.booking_date_pick),
-            )
-        }
-        errorText?.let { FieldError(it) }
-    }
-    if (picking) {
-        val todayUtc =
-            LocalDate
-                .now()
-                .atStartOfDay()
-                .toInstant(ZoneOffset.UTC)
-                .toEpochMilli()
-        val pickerState =
-            rememberDatePickerState(
-                initialSelectedDateMillis = date?.atStartOfDay()?.toInstant(ZoneOffset.UTC)?.toEpochMilli(),
-                selectableDates =
-                    object : SelectableDates {
-                        override fun isSelectableDate(utcTimeMillis: Long): Boolean = utcTimeMillis >= todayUtc
-                    },
-            )
-        DatePickerDialog(
-            onDismissRequest = { picking = false },
-            confirmButton = {
-                TextButton(onClick = {
-                    pickerState.selectedDateMillis?.let {
-                        onDate(Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate())
-                    }
-                    picking = false
-                }) { Text(stringResource(R.string.booking_date_ok)) }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { picking = false },
-                ) { Text(stringResource(R.string.booking_date_cancel)) }
-            },
-        ) { DatePicker(state = pickerState) }
-    }
+    EventDateField(stringResource(R.string.booking_date), date, errorText, onDate)
 }
 
 @Composable

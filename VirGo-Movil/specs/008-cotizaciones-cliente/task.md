@@ -3,8 +3,8 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `008-cotizaciones-cliente` |
-| Versión | 2.0.0 |
-| Estado | Aprobado por el usuario (lote MVP, 2026-11-25). **Tareas ⛔ por el Art. II.2** hasta cerrar `000` y recibir la URL y el JSON de backend (o excepción aprobada). |
+| Versión | 2.1.0 |
+| Estado | Aprobado por el usuario (lote MVP, 2026-11-25). Tareas T801–T807 autorizadas por la excepción ampliada ([`excepcion-030-sin-cierre-000.md`](../../docs/diseno/excepcion-030-sin-cierre-000.md)); T808 espera el despliegue de backend. |
 | Fecha | 2026-11-25 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 
@@ -12,14 +12,14 @@
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T801 | Red: `QuotesApi` y DTOs | `000`; P-01 decidida | `dev-android` | MockWebServer: 201, 400, 401, 404, 500, timeout | ⏳ |
-| T802 | Dominio: modelos, `ValidateQuoteRequestUseCase` y casos de uso | T801 | `dev-android` | Unitarias y Pitest en verde | ⏳ |
-| T803 | Datos: `QuotesRepositoryImpl`, errores de campo y módulo Hilt | T801, T802 | `dev-android` | Integración con el contrato | ⏳ |
-| T804 | UI C21: formulario, validación, aviso de capacidad y envío único | T803; `006` T603 | `dev-android` + `ui-designsystem` | Compose Testing CA-01–CA-04 | ⏳ |
-| T805 | UI C22: lista, estados, vacío, error y actualizar | T803 | `dev-android` | Compose Testing CA-05, CA-06 | ⏳ |
-| T806 | UI C7: detalle con/sin respuesta y «Reservar» hacia `009`; sección del espacio del cliente | T805 | `dev-android` | Compose Testing CA-07, CA-08; `NavigationTest` | ⏳ |
-| T807 | Calidad: accesibilidad, seguridad y pipeline completo | T804–T806 | `qa-movil` | Pipeline en verde; CA-09 | ⏳ |
-| T808 | Humo contra producción y cierre | T807; backend `060`/`061` desplegados | `qa-movil` | `check.md` y `memoria.md` | ⏳ |
+| T801 | Red: `QuotesApi` y DTOs | `000`; P-01 decidida | `dev-android` | MockWebServer: 201, 400, 401, 404, 500, timeout | ✅ |
+| T802 | Dominio: modelos, `ValidateQuoteRequestUseCase` y casos de uso | T801 | `dev-android` | Unitarias y Pitest en verde | ✅ |
+| T803 | Datos: `QuotesRepositoryImpl`, errores de campo y módulo Hilt | T801, T802 | `dev-android` | Integración con el contrato | ✅ |
+| T804 | UI C21: formulario, validación, aviso de capacidad y envío único | T803; `006` T603 | `dev-android` + `ui-designsystem` | Compose Testing CA-01–CA-04 | ✅ |
+| T805 | UI C22: lista, estados, vacío, error y actualizar | T803 | `dev-android` | Compose Testing CA-05, CA-06 | ✅ |
+| T806 | UI C7: detalle con/sin respuesta y «Reservar» hacia `009`; sección del espacio del cliente | T805 | `dev-android` | Compose Testing CA-07, CA-08; `NavigationTest` | ✅ |
+| T807 | Calidad: accesibilidad, seguridad y pipeline completo | T804–T806 | `qa-movil` | Pipeline en verde; CA-09 | ✅ |
+| T808 | Humo contra producción y cierre | T807; backend `060`/`061` desplegados | `qa-movil` | `check.md` y `memoria.md` | ⛔ |
 
 ## Matriz de trazabilidad
 
