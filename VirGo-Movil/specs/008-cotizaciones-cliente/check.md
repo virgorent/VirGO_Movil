@@ -43,7 +43,7 @@
 
 ## 4. PR
 
-- [ ] PR: enlace —
+- [x] PR: [virgorent/VirGO_Movil#44](https://github.com/virgorent/VirGO_Movil/pull/44) (borrador, base `feat/009-reservar`).
 - [ ] Una revisión aprobada y checks requeridos en verde. No se fusiona antes del despliegue de backend.
 
 ## 5. Memoria
