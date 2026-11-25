@@ -914,3 +914,27 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Costo:** herramientas locales existentes; sin servicios ni dependencias nuevas.
 - **Aprendizaje:** diferenciar acciones, navegación y selección reduce competencia visual. Recompilar sin incremental resolvió los símbolos duplicados tras mover fuentes. Un fallo aislado de `NavigationTest` no se reprodujo al repetir la suite completa; causa no determinada.
 - **Pendiente:** aceptación visual del usuario y CI del nuevo head. No se declara pulido exhaustivo de todas las pantallas, TalkBack ni cierre de T014/T036. Sin fusión ni release.
+
+### 2026-11-24 · Beta integrada sin simulaciones en el recorrido normal
+
+- **Autor:** usuario + OpenCode, con revisiones automatizadas de seguridad y trazabilidad.
+- **Módulo / tareas:** `034-beta-integrada`, T3401–T3404 verificadas localmente;
+  T3405 pendiente de aceptación humana. Alcance visual autorizado explícitamente
+  en la conversación; no habilita `030` ni cierra la base.
+- **Qué se hizo:** tras comprobar #32 aprobado y fusionado, rama
+  `feat/034-beta-integrada` desde `main`. Catálogo sin muestras/mapa ilustrativo;
+  destinos por rol con estados pendientes y acciones deshabilitadas; cuenta de
+  solo lectura desde sesión, logout local explícito, sin ruta demo ni selector.
+- **Evidencia:** [informe y capturas](docs/evidencia/beta-integrada/verificacion.md);
+  pipeline completo verde en 2m21s, 60 suites/334 pruebas sin fallos. APK debug
+  instalado en emulador. SHA-256 en el informe.
+- **Decisiones:** conservar componentes históricos sin acceso desde la beta;
+  no inventar capacidades, fotos, distancias o transacciones. Recuperación sin
+  endpoint operativo presenta indisponibilidad. Perfil/logout remotos aparte.
+- **Costo:** herramientas locales; sin dependencias, servicios o permisos nuevos.
+- **Aprendizaje:** retirar solo el rótulo demo sería engañoso; se eliminaron
+  los recorridos simulados de la navegación normal. Detekt detectó un método
+  largo; se separaron componentes sin relajar reglas.
+- **Pendiente:** revisión visual exclusiva del usuario, TalkBack, tamaños y
+  navegación ampliada, CI remoto y revisión técnica antes de fusionar. Sin
+  release, cambio de versión, cuentas productivas ni despliegue backend.

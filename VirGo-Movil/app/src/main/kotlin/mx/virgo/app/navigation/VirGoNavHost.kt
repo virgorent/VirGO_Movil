@@ -1,28 +1,21 @@
 package mx.virgo.app.navigation
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import mx.virgo.app.BuildConfig
 import mx.virgo.app.R
 import mx.virgo.app.demo.DemoRole
 import mx.virgo.app.demo.RoleWorkspace
-import mx.virgo.app.demo.VisualDemoApp
 import mx.virgo.app.session.ActiveSession
 import mx.virgo.app.session.SessionRole
-import mx.virgo.app.ui.guest.GuestHomeScreen
+import mx.virgo.app.ui.beta.BetaCatalogScreen
+import mx.virgo.app.ui.beta.BetaUnavailableScreen
 import mx.virgo.app.ui.login.LoginScreen
-import mx.virgo.app.ui.recover.RecoverScreen
 import mx.virgo.app.ui.register.RegisterScreen
 
 @Composable
@@ -51,8 +44,7 @@ fun VirGoNavHost(
     ) {
         guestHomeDestination(
             onLoginClick = { navController.navigate(LoginRoute) },
-            onRegisterClick = { venueId -> navController.navigate(RegisterRoute(venueId)) },
-            onPreviewClick = { navController.navigate(VisualPreviewRoute) },
+            onRegisterClick = { navController.navigate(RegisterRoute()) },
         )
         loginDestination(
             onLoginSuccess = onSessionRefresh,
@@ -76,11 +68,9 @@ fun VirGoNavHost(
             onBackClick = { navController.popBackStack() },
         )
         recoverDestination(
-            onDone = { navController.popBackStack(route = LoginRoute, inclusive = false) },
             onBackClick = { navController.popBackStack() },
         )
         homeDestination(session, onLogout)
-        visualPreviewDestination(navController)
         developmentDestinations(navController)
     }
 }
@@ -97,22 +87,10 @@ private fun NavHostController.navigateToHome() {
 
 private fun NavGraphBuilder.guestHomeDestination(
     onLoginClick: () -> Unit,
-    onRegisterClick: (Int?) -> Unit,
-    onPreviewClick: () -> Unit,
+    onRegisterClick: () -> Unit,
 ) {
     composable<GuestHomeRoute> {
-        Column(Modifier.fillMaxSize()) {
-            if (BuildConfig.DEBUG) {
-                TextButton(onClick = onPreviewClick) {
-                    Text(stringResource(R.string.unified_preview))
-                }
-            }
-            GuestHomeScreen(
-                onLoginClick = onLoginClick,
-                onRegisterClick = onRegisterClick,
-                modifier = Modifier.weight(1f),
-            )
-        }
+        BetaCatalogScreen(onLogin = onLoginClick, onRegister = onRegisterClick)
     }
 }
 
@@ -147,15 +125,9 @@ private fun NavGraphBuilder.registerDestination(
     }
 }
 
-private fun NavGraphBuilder.recoverDestination(
-    onDone: () -> Unit,
-    onBackClick: () -> Unit,
-) {
+private fun NavGraphBuilder.recoverDestination(onBackClick: () -> Unit) {
     composable<RecoverRoute> {
-        RecoverScreen(
-            onDone = onDone,
-            onBackClick = onBackClick,
-        )
+        BetaUnavailableScreen(title = R.string.beta_recovery, onBack = onBackClick)
     }
 }
 
@@ -182,13 +154,3 @@ private fun SessionRole.toWorkspaceRole(): DemoRole =
         SessionRole.OWNER -> DemoRole.OWNER
         SessionRole.PROVIDER -> DemoRole.PROVIDER
     }
-
-private fun NavGraphBuilder.visualPreviewDestination(navController: NavHostController) {
-    composable<VisualPreviewRoute> {
-        if (BuildConfig.DEBUG) {
-            VisualDemoApp(onExit = { navController.popBackStack() })
-        } else {
-            LaunchedEffect(Unit) { navController.popBackStack() }
-        }
-    }
-}

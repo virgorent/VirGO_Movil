@@ -34,7 +34,7 @@ class UnifiedWorkspaceTest {
             }
         }
         compose.onNodeWithText("Cambiar rol").assertDoesNotExist()
-        compose.onNodeWithText("Cerrar sesión").assertIsDisplayed().performClick()
+        compose.onNodeWithText("Cerrar sesión en este dispositivo").assertIsDisplayed().performClick()
         compose.runOnIdle { assertTrue(loggedOut) }
     }
 
@@ -45,7 +45,7 @@ class UnifiedWorkspaceTest {
                 RoleWorkspace(DemoRole.OWNER, "synthetic-account-owner", onLogout = {})
             }
         }
-        compose.onNodeWithText("Todas las pantallas de este rol").performClick()
+        compose.onNodeWithText("Secciones").performClick()
         compose.onNodeWithText("Mis salones").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Mi servicio").assertDoesNotExist()
         compose.onNodeWithText("Zonas de cobertura").assertDoesNotExist()

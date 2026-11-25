@@ -40,6 +40,7 @@ internal fun DemoBottomNavigation(
     onNavigate: (String) -> Unit,
     onIndex: () -> Unit,
     systemInsets: Boolean = true,
+    indexLabel: Int = R.string.demo_all_screens,
 ) {
     Surface(tonalElevation = DemoMetrics.barElevation) {
         val padding = if (systemInsets) Modifier.navigationBarsPadding() else Modifier
@@ -62,7 +63,7 @@ internal fun DemoBottomNavigation(
                 onClick = onIndex,
                 modifier = Modifier.fillMaxWidth().heightIn(min = DemoMetrics.touchTarget),
             ) {
-                Text(stringResource(R.string.demo_all_screens))
+                Text(stringResource(indexLabel))
             }
         }
     }

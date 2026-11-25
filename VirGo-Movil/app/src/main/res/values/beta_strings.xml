@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="beta_label">VirGo · Beta</string>
+    <string name="beta_sections">Secciones</string>
+    <string name="beta_soon">Próximamente</string>
+    <string name="beta_pending">Esta sección estará disponible cuando su servicio esté conectado. Por ahora no se pueden realizar operaciones aquí.</string>
+    <string name="beta_catalog">Encuentra tu espacio</string>
+    <string name="beta_catalog_hint">Salones publicados en VirGo</string>
+    <string name="beta_catalog_empty">Aún no hay salones publicados</string>
+    <string name="beta_catalog_empty_hint">Cuando se publique el catálogo, podrás consultarlo aquí. No mostramos salones de ejemplo.</string>
+    <string name="beta_catalog_error">No pudimos cargar los salones</string>
+    <string name="beta_catalog_retry_hint">Comprueba tu conexión y vuelve a intentarlo.</string>
+    <string name="beta_loading">Cargando salones…</string>
+    <string name="beta_retry">Volver a intentar</string>
+    <string name="beta_refresh">Actualizar</string>
+    <string name="beta_capacity">Hasta %1$d personas</string>
+    <string name="beta_login">Iniciar sesión</string>
+    <string name="beta_register">Crear cuenta</string>
+    <string name="beta_account">Tu cuenta</string>
+    <string name="beta_session_identity">Datos de la sesión iniciada. La consulta y edición del perfil estarán disponibles próximamente.</string>
+    <string name="beta_local_logout">Cerrar sesión en este dispositivo</string>
+    <string name="beta_logout_hint">El cierre es local. La sesión del servidor permanece vigente hasta su expiración.</string>
+    <string name="beta_booking">Reservaciones</string>
+    <string name="beta_payment">Pago</string>
+    <string name="beta_receipt">Comprobante</string>
+    <string name="beta_recovery">Recuperar contraseña</string>
+</resources>
