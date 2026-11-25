@@ -969,5 +969,6 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Qué se hizo:** T3501–T3508 y T3509 salvo la aceptación visual. Componentes del lenguaje del prototipo (`VirGoPageHeader`, `VirGoRow`, `VirGoSection`, `VirGoPageBody`, tonos de `VirGoBadge`, fondo `soft`); catálogo, menú de secciones, sección sin servicio, Cuenta y espacio de trabajo rediseñados; mapa de íconos por destino.
 - **Evidencia:** pipeline aislado **BUILD SUCCESSFUL in 6m 13s**, 67 suites / 376 pruebas sin fallos (+14). Capturas `docs/evidencia/035/antes-*` y `despues-*` (393 dp, claro y oscuro).
 - **Aprendizaje:** el barrido a 320 dp/2.0 detectó un defecto real (título «Mensajes» de 12 px de ancho junto a la insignia); se resolvió apilando el contenido final. Los textos centrados daban falsos positivos al medir el nodo; ahora se mide el ancho de línea. El *kicker* se ve en mayúsculas pero expone el texto original a TalkBack y a las pruebas. Correr Gradle en `app/build/` mientras Android Studio ejecuta la app bloquea `R.jar` y deja APK truncados; el pipeline usa un *init script* que aísla el directorio de compilación.
-- **Pendiente:** CA-07 (aceptación visual exclusiva del usuario), CI remoto del PR #40 y fusión en orden #35 → #36 → #38 → #39 → #40.
+- **Aceptación visual:** el usuario aceptó CA-07 el 2026-11-25 («Lo acepto»).
+- **Pendiente:** CI remoto del PR #40 y fusión en orden #35 → #36 → #38 → #39 → #40.
 - **Costo:** $0.

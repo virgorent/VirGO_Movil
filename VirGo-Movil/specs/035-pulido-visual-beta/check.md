@@ -3,8 +3,8 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `035-pulido-visual-beta` |
-| Estado del spec | Aprobado por el usuario (2026-11-25) · implementado, pendiente de aceptación visual |
-| Revisó | Claude Code (evidencia técnica); aceptación visual: `ccabrera-dev8` (pendiente) |
+| Estado del spec | Aprobado por el usuario (2026-11-25) · implementado y aceptado visualmente; pendiente de fusión |
+| Revisó | Claude Code (evidencia técnica); aceptación visual: `ccabrera-dev8` (2026-11-25) |
 | Fecha | 2026-11-25 |
 
 La revisión técnica no sustituye la aceptación visual del usuario (CA-07). No se afirma paridad con Figma: la referencia es el prototipo local «VirGo Event Management App».
@@ -24,7 +24,7 @@ La revisión técnica no sustituye la aceptación visual del usuario (CA-07). No
 | CA-04 | `AccountProfileScreenTest` + pruebas de `030` en verde + `despues-cuenta-*.png` | ✅ |
 | CA-05 | `NavigationTest` y `UnifiedWorkspaceTest` (encabezado, barra inferior) + `despues-espacio-proveedor-*.png` | ✅ |
 | CA-06 | `BetaAccessibilityTest`: 320 dp, escala 2.0, ambos temas, 48 dp, sin texto recortado ni de ancho mínimo; `ToneContrastTest` (AA) | ✅ |
-| CA-07 | Aceptación visual del usuario sobre `docs/evidencia/035/antes-*` y `despues-*` | ⏳ |
+| CA-07 | Aceptación visual del usuario sobre `docs/evidencia/035/antes-*` y `despues-*`: «Lo acepto» (`ccabrera-dev8`, 2026-11-25) | ✅ |
 
 ## 3. Pruebas
 

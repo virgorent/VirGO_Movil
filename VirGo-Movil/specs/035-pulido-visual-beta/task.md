@@ -20,7 +20,7 @@
 | T3506 | Cuenta con iniciales, filas y «Cerrar sesión» al final | T3503; `030` | `dev-android` | CA-04 y pruebas de `030` en verde | ✅ |
 | T3507 | Encabezado del espacio de trabajo y píldora de la barra inferior; revisión de acceso | T3503 | `dev-android` | CA-05 | ✅ |
 | T3508 | Barrido de accesibilidad 320 dp/2.0 ambos temas y pipeline completo | T3504–T3507 | `qa-movil` | CA-06; pipeline en verde | ✅ |
-| T3509 | Capturas «después», `check.md`, `memoria.md` y entrega para aceptación visual | T3508 | `qa-movil` | CA-07 pendiente del usuario | 🔄 |
+| T3509 | Capturas «después», `check.md`, `memoria.md` y entrega para aceptación visual | T3508 | `qa-movil` | CA-07 aceptado por el usuario | ✅ |
 
 ## Matriz de trazabilidad
 
