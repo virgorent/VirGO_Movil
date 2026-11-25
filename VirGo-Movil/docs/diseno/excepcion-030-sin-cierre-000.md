@@ -74,3 +74,18 @@ Límites adicionales:
 - El PR no se fusiona a `main` antes de que backend despliegue esos endpoints.
 - Mismos límites que arriba: gates completos, sin dependencias, permisos ni
   secretos nuevos, sin release, revisión obligatoria del usuario y sin datos de muestra.
+
+## Ampliación a `006-detalle-salon` (2026-11-25)
+
+Tras entregar `022`, se propuso seguir con `006` bajo la misma excepción y el
+usuario respondió: «Sí, sigue con 006». Se registra antes de implementar.
+
+| Condición del Art. II.2 | `006` | Efecto |
+|---|---|---|
+| `000` cerrado | ❌ | **Se exceptúa** |
+| URL y JSON de backend | ⚠️ `GET /api/v1/venues/:id` verificado en el código de `feat/api-mobile-priority` (`7cf6124`) y ejecutado en local; **sin URL desplegada** | **Se exceptúa la URL** |
+
+Tareas autorizadas: **T601–T605**; T606 (humo en producción) espera el
+despliegue. Rigen los mismos límites que en `022`: MockWebServer con cuerpos
+reales del backend local, sin fusionar antes del despliegue, gates completos,
+sin dependencias, permisos ni secretos nuevos, sin release y sin datos de muestra.

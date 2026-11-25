@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 006 · Detalle del salón -->
+    <string name="venue_detail_open">Ver detalle</string>
+    <string name="venue_detail_title">Detalle del salón</string>
+    <string name="venue_detail_kicker">Salón</string>
+    <string name="venue_detail_back">Volver al catálogo</string>
+    <string name="venue_detail_loading">Cargando el salón…</string>
+    <string name="venue_detail_verified">Verificado</string>
+    <string name="venue_detail_rating">%1$s · %2$d reseñas</string>
+    <string name="venue_detail_no_reviews">Sin reseñas todavía</string>
+    <string name="venue_detail_price_hour">%1$s por hora</string>
+    <string name="venue_detail_price_day">%1$s por día</string>
+    <string name="venue_detail_price_login">Inicia sesión para ver precios</string>
+    <string name="venue_detail_price_quote">Precio a cotizar</string>
+    <string name="venue_detail_min_hours">Mínimo %1$d horas</string>
+    <string name="venue_detail_capacity">Hasta %1$d personas</string>
+    <string name="venue_detail_about">Sobre el salón</string>
+    <string name="venue_detail_info">Información</string>
+    <string name="venue_detail_zone">Zona</string>
+    <string name="venue_detail_address">Dirección</string>
+    <string name="venue_detail_categories">Tipo de espacio</string>
+    <string name="venue_detail_amenities">Amenidades</string>
+    <string name="venue_detail_price">Precio</string>
+    <string name="venue_detail_quote">Solicitar cotización</string>
+    <string name="venue_detail_book">Reservar</string>
+    <string name="venue_detail_guest_hint">Crea una cuenta o inicia sesión para cotizar o reservar este salón.</string>
+    <string name="venue_detail_client_only">Disponible para cuentas de cliente.</string>
+    <string name="venue_detail_actions_soon">Cotizar y reservar desde la app estarán disponibles en la siguiente actualización.</string>
+    <string name="venue_detail_not_found">Este salón ya no está disponible</string>
+    <string name="venue_detail_not_found_hint">Puede que lo hayan retirado del catálogo.</string>
+    <string name="venue_detail_error">No pudimos cargar el salón</string>
+    <string name="venue_detail_error_hint">Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="venue_detail_retry">Reintentar</string>
+</resources>

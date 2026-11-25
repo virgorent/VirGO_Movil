@@ -31,6 +31,10 @@ import mx.virgo.app.ui.ownervenues.VenueWizardContent
 import mx.virgo.app.ui.ownervenues.VenueWizardOutcome
 import mx.virgo.app.ui.ownervenues.VenueWizardUiState
 import mx.virgo.app.ui.ownervenues.WizardError
+import mx.virgo.app.ui.venuedetail.DetailViewer
+import mx.virgo.app.ui.venuedetail.VenueDetailActions
+import mx.virgo.app.ui.venuedetail.VenueDetailContent
+import mx.virgo.app.ui.venuedetail.VenueDetailUiState
 import mx.virgo.core.common.AppError
 import mx.virgo.core.designsystem.theme.VirGoTheme
 import mx.virgo.core.domain.OwnerVenue
@@ -40,6 +44,7 @@ import mx.virgo.core.domain.VenueDraftValidator
 import mx.virgo.core.domain.VenueStatus
 import mx.virgo.core.domain.VenueStep
 import mx.virgo.core.testing.sampleUserProfile
+import mx.virgo.core.testing.sampleVenueDetail
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -124,10 +129,39 @@ class BetaAccessibilityTest {
     }
 
     @Test
-    fun sectionsAndAccountAreAccessibleInLightTheme() = assertSections(darkTheme = false)
+    fun sectionsAreAccessibleInBothThemes() {
+        assertSections(darkTheme = false)
+        assertSections(darkTheme = true)
+    }
 
+    /** 006 CA-08: detalle para visitante, cliente y otro rol, más 404 y error. */
     @Test
-    fun sectionsAndAccountAreAccessibleInDarkTheme() = assertSections(darkTheme = true)
+    fun venueDetailIsAccessibleInBothThemes() {
+        val detail =
+            sampleVenueDetail().copy(
+                name = "Salón Jardín de las Bugambilias con un nombre muy largo",
+                address = "Av. Juriquilla 1000, interior 25, fraccionamiento muy largo, Querétaro",
+                categories = listOf("Salon de eventos", "Jardin"),
+                amenities = listOf("Aire acondicionado", "Pista de baile", "Pantalla LED"),
+                ratingAverage = 4.8,
+                ratingCount = 12,
+                verified = true,
+            )
+        val states =
+            DetailViewer.entries.associate {
+                "detail $it" to VenueDetailUiState(venueId = detail.id, loading = false, venue = detail, viewer = it)
+            } +
+                mapOf(
+                    "detail loading" to VenueDetailUiState(venueId = detail.id),
+                    "detail 404" to VenueDetailUiState(venueId = "x", loading = false, error = AppError.NotFound),
+                    "detail error" to VenueDetailUiState(venueId = "x", loading = false, error = AppError.Network),
+                )
+        listOf(false, true).forEach { dark ->
+            states.forEach { (name, state) ->
+                sweep("$name dark=$dark", dark) { VenueDetailContent(state, VenueDetailActions()) }
+            }
+        }
+    }
 
     @Test
     fun unavailableRecoveryIsAccessibleInBothThemes() {

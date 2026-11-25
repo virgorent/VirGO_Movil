@@ -14,6 +14,12 @@ data class RegisterRoute(
     val venueId: Int? = null,
 )
 
+/** 006: detalle público de un salón publicado. */
+@Serializable
+data class VenueDetailRoute(
+    val venueId: String,
+)
+
 @Serializable
 data object LoginRoute
 

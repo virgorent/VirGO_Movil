@@ -142,7 +142,7 @@ private fun ListsFields(
         options = VenueCatalogs.categories,
         selected = form.categories.toSet(),
         error = errors[VenueField.CATEGORIES]?.let { R.string.venue_error_invalid },
-        labelOf = { categoryLabel(it) },
+        labelOf = { venueCategoryLabel(it) },
     ) { value -> onChange { it.copy(categories = it.categories.toggle(value)) } }
     ChoiceGroup(
         label = R.string.venue_field_amenities,
@@ -191,7 +191,7 @@ internal fun ReviewStep(
             R.string.venue_field_price,
             stringResource(R.string.venue_review_price, form.price, unit.lowercase(), draft.minHours ?: 0),
         )
-        ReviewRow(R.string.venue_field_categories, form.categories.map { categoryLabel(it) }.joinOrNone(none))
+        ReviewRow(R.string.venue_field_categories, form.categories.map { venueCategoryLabel(it) }.joinOrNone(none))
         ReviewRow(R.string.venue_field_amenities, form.amenities.joinOrNone(none))
         ReviewRow(R.string.venue_field_services, draft.services.joinOrNone(none))
     }
@@ -233,7 +233,7 @@ private fun List<String>.toggle(value: String): List<String> = if (value in this
 private fun List<String>.joinOrNone(none: String): String = if (isEmpty()) none else joinToString(", ")
 
 @Composable
-private fun categoryLabel(value: String): String =
+internal fun venueCategoryLabel(value: String): String =
     stringResource(
         when (value) {
             "Salon" -> R.string.venue_category_salon

@@ -17,6 +17,8 @@ import mx.virgo.app.ui.beta.BetaCatalogScreen
 import mx.virgo.app.ui.beta.BetaUnavailableScreen
 import mx.virgo.app.ui.login.LoginScreen
 import mx.virgo.app.ui.register.RegisterScreen
+import mx.virgo.app.ui.venuedetail.VenueDetailActions
+import mx.virgo.app.ui.venuedetail.VenueDetailScreen
 
 @Composable
 fun VirGoNavHost(
@@ -45,6 +47,12 @@ fun VirGoNavHost(
         guestHomeDestination(
             onLoginClick = { navController.navigate(LoginRoute) },
             onRegisterClick = { navController.navigate(RegisterRoute()) },
+            onOpenVenue = { navController.navigate(VenueDetailRoute(it)) },
+        )
+        venueDetailDestination(
+            onBack = { navController.popBackStack() },
+            // 006 RF-08: el detalle queda en la pila; desde registro se vuelve a él.
+            onSignIn = { navController.navigate(RegisterRoute()) },
         )
         loginDestination(
             onLoginSuccess = onSessionRefresh,
@@ -88,9 +96,22 @@ private fun NavHostController.navigateToHome() {
 private fun NavGraphBuilder.guestHomeDestination(
     onLoginClick: () -> Unit,
     onRegisterClick: () -> Unit,
+    onOpenVenue: (String) -> Unit,
 ) {
     composable<GuestHomeRoute> {
-        BetaCatalogScreen(onLogin = onLoginClick, onRegister = onRegisterClick)
+        BetaCatalogScreen(onLogin = onLoginClick, onRegister = onRegisterClick, onOpenVenue = onOpenVenue)
+    }
+}
+
+private fun NavGraphBuilder.venueDetailDestination(
+    onBack: () -> Unit,
+    onSignIn: () -> Unit,
+) {
+    composable<VenueDetailRoute> { entry ->
+        VenueDetailScreen(
+            venueId = entry.toRoute<VenueDetailRoute>().venueId,
+            actions = VenueDetailActions(onBack = onBack, onSignIn = onSignIn),
+        )
     }
 }
 
