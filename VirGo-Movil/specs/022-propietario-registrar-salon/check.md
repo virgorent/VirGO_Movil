@@ -41,7 +41,7 @@
 
 ## 4. PR
 
-- [ ] PR: enlace —
+- [x] PR: [virgorent/VirGO_Movil#41](https://github.com/virgorent/VirGO_Movil/pull/41) (borrador, base `feat/035-pulido-visual`).
 - [ ] Una revisión aprobada y checks requeridos en verde. No se fusiona antes del despliegue de backend (excepción).
 
 ## 5. Memoria
