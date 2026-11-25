@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 009 · Confirmar reservación (C8) -->
+    <string name="booking_confirm_title">Confirmar reservación</string>
+    <string name="booking_kicker">Reservación</string>
+    <string name="booking_back">Volver</string>
+    <string name="booking_price_reference">Precio de referencia: %1$s</string>
+    <string name="booking_date">Fecha del evento</string>
+    <string name="booking_date_pick">Elegir fecha</string>
+    <string name="booking_date_value">%1$s · Cambiar</string>
+    <string name="booking_date_ok">Aceptar</string>
+    <string name="booking_date_cancel">Cancelar</string>
+    <string name="booking_hours">Horas</string>
+    <string name="booking_hours_hint">El salón pide al menos %1$d horas.</string>
+    <string name="booking_no_charge">No se cobra nada en la app. VirGo calcula el total y un anticipo del 30 %; el salón te indicará cómo pagarlo. La fecha se aparta cuando el pago se valide.</string>
+    <string name="booking_confirm">Confirmar reservación</string>
+    <string name="booking_sending">Registrando…</string>
+    <string name="booking_error_date_required">Elige la fecha del evento.</string>
+    <string name="booking_error_date_past">La fecha no puede estar en el pasado.</string>
+    <string name="booking_error_hours_required">Escribe cuántas horas, al menos 1.</string>
+    <string name="booking_error_hours_minimum">Este salón pide al menos %1$d horas.</string>
+    <string name="booking_error_rejected">VirGo no aceptó la fecha o las horas. Revisa que la fecha no sea pasada y las horas mínimas del salón.</string>
+    <string name="booking_error_network">No pudimos registrar la reservación. Intenta de nuevo: no se duplicará.</string>
+    <string name="booking_error_not_found">Este salón ya no está disponible.</string>
+    <string name="booking_error_forbidden">Solo las cuentas de cliente pueden reservar.</string>
+    <string name="booking_error_server">Algo falló en el servidor. Intenta de nuevo: no se duplicará.</string>
+    <string name="booking_venue_error">No pudimos cargar el salón.</string>
+    <string name="booking_retry">Reintentar</string>
+
+    <!-- 009 · Comprobante (C23) -->
+    <string name="booking_receipt_title">Reservación registrada</string>
+    <string name="booking_receipt_folio">Folio %1$s</string>
+    <string name="booking_receipt_venue">Salón</string>
+    <string name="booking_receipt_date">Fecha</string>
+    <string name="booking_receipt_hours">Horas</string>
+    <string name="booking_receipt_total">Total</string>
+    <string name="booking_receipt_deposit">Anticipo (30 %)</string>
+    <string name="booking_receipt_status">Estado</string>
+    <string name="booking_receipt_notice">No se ha cobrado nada y la fecha todavía no está apartada. El salón te indicará cómo pagar el anticipo.</string>
+    <string name="booking_receipt_my_bookings">Ver mis reservaciones</string>
+    <string name="booking_receipt_catalog">Volver al catálogo</string>
+    <string name="booking_hours_value">%1$d horas</string>
+    <string name="booking_status_pending">Pendiente de pago</string>
+    <string name="booking_status_confirmed">Confirmada</string>
+    <string name="booking_status_cancelled">Cancelada</string>
+    <string name="booking_status_unknown">En revisión</string>
+    <string name="booking_unknown_amount">Lo confirma el salón</string>
+
+    <!-- 009 · Mis reservaciones -->
+    <string name="bookings_title">Mis reservaciones</string>
+    <string name="bookings_loading">Cargando tus reservaciones…</string>
+    <string name="bookings_empty">Aún no tienes reservaciones</string>
+    <string name="bookings_empty_hint">Cuando reserves un salón, aparecerá aquí con su folio.</string>
+    <string name="bookings_error">No pudimos cargar tus reservaciones.</string>
+    <string name="bookings_item">%1$s · %2$s</string>
+    <string name="bookings_receipt_error">No pudimos abrir el comprobante.</string>
+</resources>

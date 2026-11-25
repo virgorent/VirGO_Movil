@@ -6,7 +6,6 @@ import mx.virgo.core.network.api.AuthApi
 import mx.virgo.core.network.api.FavoritesApi
 import mx.virgo.core.network.api.HealthApi
 import mx.virgo.core.network.api.NoticesApi
-import mx.virgo.core.network.api.OwnerVenuesApi
 import mx.virgo.core.network.api.UsersApi
 import mx.virgo.core.network.api.VenuesApi
 import mx.virgo.core.network.interceptor.AuthInterceptor
@@ -52,11 +51,6 @@ fun createUsersApi(
     client: OkHttpClient = defaultOkHttpClient(),
 ): UsersApi = createRetrofit(baseUrl, client).create(UsersApi::class.java)
 
-fun createOwnerVenuesApi(
-    baseUrl: String,
-    client: OkHttpClient = defaultOkHttpClient(),
-): OwnerVenuesApi = createRetrofit(baseUrl, client).create(OwnerVenuesApi::class.java)
-
 fun defaultOkHttpClient(): OkHttpClient =
     OkHttpClient
         .Builder()
@@ -78,7 +72,7 @@ fun createOkHttpClient(
             }
         }.build()
 
-private fun createRetrofit(
+internal fun createRetrofit(
     baseUrl: String,
     client: OkHttpClient,
 ): Retrofit {

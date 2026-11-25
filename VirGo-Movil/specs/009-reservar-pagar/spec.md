@@ -3,8 +3,8 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `009-reservar-pagar` |
-| Versión | 2.0.0 |
-| Estado | Aprobado por el usuario (lote MVP, 2026-11-25) |
+| Versión | 2.1.0 |
+| Estado | Aprobado por el usuario (lote MVP, 2026-11-25) · v2.1.0 ajustada al contrato real (§9) |
 | Fecha | 2026-11-25 (v1.0.0 del 2026-11-05 sustituida) |
 | Constitución | v1.2.0 |
 | Rol | Cliente |
@@ -40,7 +40,7 @@ el pago con tarjeta o transferencia queda para un spec posterior (§7).
 | RF-02 | **[C8]** Campos: fecha (selector; no pasada; prellenada si viene de una cotización) y horas (entero ≥ 1 y ≥ horas mínimas del salón si el servidor las envía). |
 | RF-03 | **[C8]** Aviso fijo antes de confirmar: «No se cobra nada en la app. VirGo calcula el total y un anticipo del 30 %; el salón te indicará cómo pagarlo. La fecha se aparta cuando el pago se valide.» |
 | RF-04 | **[C8]** «Confirmar reservación» envía `POST /api/v1/bookings` con `venueId`, `date`, `hours` y `quoteId` si existe; sin `deposit` (el servidor aplica el 30 %). Lleva un encabezado `Idempotency-Key` (UUID) generado una vez por intento y **reutilizado en los reintentos**. |
-| RF-05 | **[C8]** El botón se desactiva mientras envía. Errores: `400` con mensajes de campo (p. ej. horas mínimas); `404` «Este salón ya no está disponible»; `401` cierra sesión (`030`); red/5xx con reintento usando la misma clave. |
+| RF-05 | **[C8]** El botón se desactiva mientras envía. Errores: la app valida fecha y horas mínimas antes de enviar; un `400` del servidor llega sin detalle por campo y se muestra junto a las horas («VirGo no aceptó la fecha o las horas…»); `404` «Este salón ya no está disponible»; `401` cierra sesión (`030`); red/5xx con reintento usando la misma clave. |
 | RF-06 | **[C23]** Ante éxito se abre «Reservación registrada» con los datos del servidor: folio, salón, fecha, horas, total, anticipo y estado. `pending_payment` se lee «Pendiente de pago». |
 | RF-07 | **[C23]** El comprobante repite que no se ha cobrado nada y que la fecha no está apartada todavía. Acciones: «Ver mis reservaciones» y «Volver al catálogo». |
 | RF-08 | **[Mis reservaciones]** Lista `GET /api/v1/bookings`: folio, salón, fecha y estado; más reciente primero. Vacío: «Aún no tienes reservaciones». Carga, error y reintento. Sustituye la sección «bookings» de muestra del espacio del cliente. |
@@ -109,3 +109,5 @@ Leído en `VirGO_Backend` `feat/api-mobile-priority` (`7cf6124`) más el PR #41;
 - El servidor calcula `total` y el anticipo por omisión; un `deposit` mayor que el total → `400`. Respuesta `201` con `status: "pending_payment"` y `folio`.
 - Errores `400` solo con `title` (sin errores por campo).
 - Pagos: con el PR #41 un pago del cliente queda `pending` y **no** confirma la reservación. El MVP no cobra en la app, como ya define este spec.
+- Lectura (`GET /bookings`, `/bookings/:id`): devuelven el `Booking` completo (`folio`, `venueName`, `date`, `hours`, `total`, `deposit`, `status`, `createdAt`…). También exponen `idempotencyKey`, `clientId` y `payments`; la app los ignora (hallazgo para backend: no deberían salir en la respuesta).
+- `Idempotency-Key`: el controlador acepta hasta 100 caracteres; la app envía un UUID (36).

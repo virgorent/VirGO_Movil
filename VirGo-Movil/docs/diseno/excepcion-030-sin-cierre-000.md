@@ -89,3 +89,18 @@ Tareas autorizadas: **T601–T605**; T606 (humo en producción) espera el
 despliegue. Rigen los mismos límites que en `022`: MockWebServer con cuerpos
 reales del backend local, sin fusionar antes del despliegue, gates completos,
 sin dependencias, permisos ni secretos nuevos, sin release y sin datos de muestra.
+
+## Ampliación a `009-reservar-pagar` (2026-11-25)
+
+Tras entregar `006`, se propuso seguir con `009` bajo la misma excepción y el
+usuario respondió: «Sí, sigue con 009». Se registra antes de implementar.
+
+| Condición del Art. II.2 | `009` | Efecto |
+|---|---|---|
+| `000` cerrado | ❌ | **Se exceptúa** |
+| URL y JSON de backend | ⚠️ `POST /bookings`, `GET /bookings` y `GET /bookings/:id` verificados en el código de `feat/api-mobile-priority` (`7cf6124`); **sin URL desplegada** | **Se exceptúa la URL** |
+
+Tareas autorizadas: **T901–T907**; T908 (humo en producción) espera el
+despliegue. Mismos límites: sin cobro ni datos de pago, MockWebServer con la
+forma real del backend, sin fusionar antes del despliegue, gates completos y
+sin dependencias, permisos ni secretos nuevos.

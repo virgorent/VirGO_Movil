@@ -993,3 +993,14 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Aprendizaje:** `GET /venues/:id` no envía `services` ni `verified`; el DTO tolera ambos. Se creó `VenueDetailRepository` aparte para no romper los cuatro dobles de `VenueRepository`. `RegisterRoute.venueId` es un entero de las muestras antiguas: el contexto del salón se conserva por la pila de navegación.
 - **Pendiente:** T606 (humo en producción), `008`/`009` para habilitar las acciones.
 - **Costo:** $0.
+
+### 2026-11-25 · `009-reservar-pagar` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** «Sí, sigue con 009»; ampliación registrada en la excepción.
+- **Qué se hizo:** T901–T907. «Reservar» desde el detalle abre la confirmación (fecha con selector que solo permite hoy o después, horas con el mínimo del salón y aviso de que no se cobra nada); el comprobante muestra folio, total, anticipo y «Pendiente de pago» del servidor; «Mis reservaciones» con lista real y comprobante por reservación.
+- **Evidencia:** 81 suites / 474 pruebas sin fallos (+32).
+- **Aprendizaje:** la `Idempotency-Key` se guarda con el borrador y solo cambia si cambian fecha u horas: un reintento tras perder la red no duplica. El `400` de reservas no trae detalle por campo, por eso la app valida antes y muestra el rechazo junto a las horas. `NavigationTest` depende de la API real y puede fallar si la red va lenta.
+- **Hallazgo para backend:** `GET /bookings` y `/bookings/:id` exponen `idempotencyKey`, `clientId` y `payments`; conviene no devolverlos.
+- **Pendiente:** T908 (humo en producción); `008` para el camino con cotización.
+- **Costo:** $0.

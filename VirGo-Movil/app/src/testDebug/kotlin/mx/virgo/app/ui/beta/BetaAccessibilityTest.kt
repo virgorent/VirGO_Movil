@@ -23,6 +23,13 @@ import mx.virgo.app.demo.RoleWorkspace
 import mx.virgo.app.ui.account.AccountProfileContent
 import mx.virgo.app.ui.account.AccountProfileUiState
 import mx.virgo.app.ui.account.SessionIdentity
+import mx.virgo.app.ui.bookings.BookingConfirmActions
+import mx.virgo.app.ui.bookings.BookingConfirmContent
+import mx.virgo.app.ui.bookings.BookingConfirmUiState
+import mx.virgo.app.ui.bookings.BookingDraft
+import mx.virgo.app.ui.bookings.BookingError
+import mx.virgo.app.ui.bookings.BookingsContent
+import mx.virgo.app.ui.bookings.BookingsUiState
 import mx.virgo.app.ui.ownervenues.OwnerVenuesContent
 import mx.virgo.app.ui.ownervenues.OwnerVenuesUiState
 import mx.virgo.app.ui.ownervenues.VenueForm
@@ -37,12 +44,15 @@ import mx.virgo.app.ui.venuedetail.VenueDetailContent
 import mx.virgo.app.ui.venuedetail.VenueDetailUiState
 import mx.virgo.core.common.AppError
 import mx.virgo.core.designsystem.theme.VirGoTheme
+import mx.virgo.core.domain.BookingField
+import mx.virgo.core.domain.BookingProblem
 import mx.virgo.core.domain.OwnerVenue
 import mx.virgo.core.domain.Venue
 import mx.virgo.core.domain.VenueDraft
 import mx.virgo.core.domain.VenueDraftValidator
 import mx.virgo.core.domain.VenueStatus
 import mx.virgo.core.domain.VenueStep
+import mx.virgo.core.testing.sampleBooking
 import mx.virgo.core.testing.sampleUserProfile
 import mx.virgo.core.testing.sampleVenueDetail
 import org.junit.Assert.assertEquals
@@ -134,9 +144,9 @@ class BetaAccessibilityTest {
         assertSections(darkTheme = true)
     }
 
-    /** 006 CA-08: detalle para visitante, cliente y otro rol, más 404 y error. */
+    /** 006 y 009 CA-08: detalle (3 tipos de usuario, 404, error), confirmar, comprobante y lista. */
     @Test
-    fun venueDetailIsAccessibleInBothThemes() {
+    fun clientFlowIsAccessibleInBothThemes() {
         val detail =
             sampleVenueDetail().copy(
                 name = "Salón Jardín de las Bugambilias con un nombre muy largo",
@@ -156,10 +166,28 @@ class BetaAccessibilityTest {
                     "detail 404" to VenueDetailUiState(venueId = "x", loading = false, error = AppError.NotFound),
                     "detail error" to VenueDetailUiState(venueId = "x", loading = false, error = AppError.Network),
                 )
+        val booking = sampleBooking().copy(venueName = detail.name)
+        val confirm =
+            BookingConfirmUiState(
+                draft = BookingDraft(venueId = detail.id, date = "2027-05-15", hours = "2"),
+                venue = detail,
+                loadingVenue = false,
+                fieldErrors = mapOf(BookingField.HOURS to BookingProblem.BELOW_MINIMUM),
+                error = BookingError.NETWORK,
+            )
+        val bookingScreens =
+            mapOf<String, @Composable () -> Unit>(
+                "confirm" to { BookingConfirmContent(confirm, BookingConfirmActions()) },
+                "confirm rejected" to { BookingConfirmContent(confirm.copy(rejected = true), BookingConfirmActions()) },
+                "receipt" to { BookingConfirmContent(confirm.copy(booking = booking), BookingConfirmActions()) },
+                "bookings" to { BookingsContent(BookingsUiState(loading = false, bookings = listOf(booking)), {}, {}) },
+                "bookings empty" to { BookingsContent(BookingsUiState(loading = false), {}, {}) },
+            )
         listOf(false, true).forEach { dark ->
             states.forEach { (name, state) ->
                 sweep("$name dark=$dark", dark) { VenueDetailContent(state, VenueDetailActions()) }
             }
+            bookingScreens.forEach { (name, screen) -> sweep("$name dark=$dark", dark, screen) }
         }
     }
 

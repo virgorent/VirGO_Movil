@@ -131,7 +131,7 @@ private fun LegacyAccountSummary(
 }
 
 /** Destinos con servicio conectado; el resto muestra «Próximamente». */
-private val connectedRoutes = setOf("profile", "explore", "ownerHome", "ownerVenues")
+private val connectedRoutes = setOf("profile", "explore", "bookings", "ownerHome", "ownerVenues")
 
 @Composable
 internal fun BetaSectionsMenu(

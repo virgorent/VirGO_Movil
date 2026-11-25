@@ -32,10 +32,10 @@
 
 | Art. | Resultado | Cómo se cumple |
 |---|---|---|
-| I | ⚠️ Pendiente | Flujo corto (confirmar → comprobante → lista); falta aprobación. |
-| II | ⚠️ Pendiente | Requiere `000` cerrado o excepción. |
+| I | ✅ Cumple | Flujo corto aprobado (lote MVP). |
+| II | ⚠️ Excepción | Ampliación aprobada («Sí, sigue con 009»), sin `000` cerrado ni URL desplegada. |
 | III | ✅ Cumple | MVVM/UDF; validación e idempotencia en dominio. |
-| IV | ⚠️ Parcial | `POST` definido; `eventId`/`quoteId` opcionales (P-01) y JSON de lectura (P-04) pendientes. |
+| IV | ⚠️ Parcial | Contrato verificado en el código de backend (§9 del spec): `quoteId`/`eventId` opcionales, lectura con el `Booking` completo; falta la URL desplegada. |
 | V | ✅ Cumple | Sin datos de pago; sin claves en logs. |
 | VI–XII | ✅ Planificado | Pruebas en §8; pipeline existente. |
 
