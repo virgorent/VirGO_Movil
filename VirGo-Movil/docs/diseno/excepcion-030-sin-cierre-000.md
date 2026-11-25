@@ -48,3 +48,29 @@ del usuario y sin datos de muestra.
 - Cerrar `000` (T014 TalkBack, T036) y registrar en su `check.md` que `030` se
   implementó bajo esta excepción.
 - Al cerrar `000`, esta excepción deja de ser necesaria y se marca como regularizada en `memoria.md`.
+
+## Ampliación a `022-propietario-registrar-salon` (2026-11-25)
+
+Se explicó al usuario que `022` incumple las **dos** condiciones del Art. II.2:
+`000` sigue abierto y los endpoints de salones del propietario no están
+desplegados (viven en `VirGO_Backend` PR #37, sin fusionar). Se propuso
+implementar contra el backend corriendo en local con el JSON real de ese PR.
+Respondió: «Sí, amplío y dale». Se registra antes de implementar.
+
+| Condición del Art. II.2 | `022` | Efecto |
+|---|---|---|
+| `000` cerrado | ❌ | **Se exceptúa** |
+| URL y JSON de backend | ⚠️ JSON verificado en el código de `feat/api-mobile-priority` (`7cf6124`) y ejecutado en local; **sin URL desplegada** | **Se exceptúa la URL**; el JSON se toma del código y de respuestas reales en local |
+
+Endpoints: `POST /api/v1/venues`, `GET /api/v1/venues/mine`,
+`POST /api/v1/venues/{id}/publish`.
+
+Límites adicionales:
+
+- Las pruebas usan MockWebServer con cuerpos copiados de respuestas reales del
+  backend local; el humo contra producción queda **pendiente** hasta el despliegue.
+- Si el contrato cambia al fusionar o desplegar, se ajusta en la misma rama y se
+  registra en `memoria.md` de ambos proyectos.
+- El PR no se fusiona a `main` antes de que backend despliegue esos endpoints.
+- Mismos límites que arriba: gates completos, sin dependencias, permisos ni
+  secretos nuevos, sin release, revisión obligatoria del usuario y sin datos de muestra.

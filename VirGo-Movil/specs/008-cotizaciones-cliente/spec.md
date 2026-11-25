@@ -101,3 +101,12 @@ estado lo decide el servidor y nada se simula.
 | P-02 | Sin la respuesta del propietario (`POST /quotes/:id/response`, `062`) ninguna cotización pasa a «Respondida». | Usuario + backend | Añadir al lote un spec mínimo «propietario responde cotización» (lista de solicitudes + monto total), o aceptar que en el MVP la reserva directa (`009`) no requiere cotización. |
 | P-03 | ¿Reservar desde una cotización la marca `accepted` en el servidor? | Backend | Sí, dentro de `POST /bookings` con `quoteId`. |
 | P-04 | Forma del JSON de lista/detalle y nombres de estado. | Backend | Los de RF-08; la app tolera estados nuevos. |
+
+## 9. Contrato verificado (2026-11-25)
+
+Leído en `VirGO_Backend` `feat/api-mobile-priority` (`7cf6124`) más el PR #41 (correcciones propuestas por Móvil); **aún no desplegado**.
+
+- `POST /api/v1/quotes` (rol `client`): `{target: {type: "venue", id}, eventType, eventDate (yyyy-MM-dd), guests ≥ 1, eventId?, requestedServices?, message? ≤ 2000}`. `eventId` es **opcional**; `eventType` ∈ `Boda`, `XV años`, `Cumpleaños`, `Corporativo`, `Otro`.
+- Errores `400`: con el PR #41, `ValidationProblem` con `errors` por campo (`eventDate`, `guests`, `eventType`, `target.id`…); sin él, solo `title` → la app debe tolerar ambos.
+- Salón inexistente o no publicado → `404`. Respuesta `201` con `status: "sent"`.
+- Responder (`POST /quotes/:id/response`) lo hace el **propietario** del salón (PR #41; antes exigía `provider` y nadie podía responder). El cliente acepta o rechaza solo desde `answered`; no puede retirar una `sent`.

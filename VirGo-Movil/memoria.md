@@ -972,3 +972,14 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Aceptación visual:** el usuario aceptó CA-07 el 2026-11-25 («Lo acepto»).
 - **Pendiente:** CI remoto del PR #40 y fusión en orden #35 → #36 → #38 → #39 → #40.
 - **Costo:** $0.
+
+### 2026-11-25 · `022-propietario-registrar-salon` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** «Sí, amplío y dale»; ampliación registrada en [`docs/diseno/excepcion-030-sin-cierre-000.md`](docs/diseno/excepcion-030-sin-cierre-000.md) (sin `000` cerrado y sin URL desplegada).
+- **Qué se hizo:** T2201–T2207. «Mis salones» (inicio del propietario) y asistente de tres pasos: datos → capacidad y precio → revisar; guardar borrador, publicar y retomar. Spec a v2.1.0 con el contrato real (zonas por colonia, `hour`/`day`, listas cerradas, retomar desde `mine`, crear al salir de P4). Contrato verificado añadido a `006`, `008` y `009`.
+- **Evidencia:** 73 suites / 422 pruebas sin fallos (+46); humo completo contra el backend en local.
+- **Hallazgos de backend (ayuda a `VirGO_Backend`):** PR #41 (el dueño no podía responder cotizaciones; un pago del cliente quedaba validado y confirmaba la reservación; errores por campo en cotizaciones) y PR #42 (no existía forma de crear cuentas `owner`/`provider`: el registro siempre creaba `client`). Ambos hacia `feat/api-mobile-priority`, pendientes de su revisión.
+- **Aprendizaje:** `POST /venues` exige capacidad y precio, así que el borrador no puede crearse al salir de P3. `GET /venues/:id` no devuelve borradores; retomar usa `mine`, que no trae servicios, por eso el `PATCH` los omite hasta que se editan. El barrido de accesibilidad detectó que `VirGoRow` corta el subtítulo a dos líneas: el resumen usa texto sin límite.
+- **Pendiente:** T2208 (humo en producción tras desplegar y fusionar PR #42), app: enviar el rol elegido en `002` cuando backend lo acepte, aceptación del usuario. El PR no se fusiona antes del despliegue.
+- **Costo:** $0.

@@ -23,6 +23,7 @@ private val problemJson = Json { ignoreUnknownKeys = true }
 
 private const val HTTP_BAD_REQUEST = 400
 private const val HTTP_UNAUTHORIZED = 401
+private const val HTTP_FORBIDDEN = 403
 private const val HTTP_NOT_FOUND = 404
 private const val HTTP_CONFLICT = 409
 
@@ -108,6 +109,7 @@ private fun retrofit2.Response<*>.toAppError(): AppError {
     return when (code()) {
         HTTP_BAD_REQUEST -> AppError.Validation(problem?.errors ?: emptyMap())
         HTTP_UNAUTHORIZED -> AppError.Unauthorized
+        HTTP_FORBIDDEN -> AppError.Forbidden
         HTTP_NOT_FOUND -> AppError.NotFound
         HTTP_CONFLICT -> AppError.Conflict
         else -> AppError.Server(problem?.traceId)

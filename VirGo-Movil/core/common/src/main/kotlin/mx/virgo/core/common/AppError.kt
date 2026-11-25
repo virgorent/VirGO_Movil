@@ -7,6 +7,9 @@ sealed interface AppError {
 
     data object Unauthorized : AppError
 
+    /** 403: la cuenta no tiene el rol necesario. */
+    data object Forbidden : AppError
+
     data object NotFound : AppError
 
     data object Conflict : AppError

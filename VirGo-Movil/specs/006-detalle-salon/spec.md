@@ -103,3 +103,12 @@ que el backend puede servir; el resto queda fuera de alcance (§7).
 | P-04 | ¿Fotos en el MVP? Requiere endpoint de carga (backend) y una librería de imágenes (Coil), dependencia nueva sujeta a revisión | Usuario + backend | Fuera del MVP; se añade en un spec propio. |
 
 Mientras P-01 siga abierta, la implementación usa MockWebServer con la propuesta (Art. VIII.6).
+
+## 9. Contrato verificado (2026-11-25)
+
+Leído en `VirGO_Backend` `feat/api-mobile-priority` (`7cf6124`) y ejecutado en local; **aún no desplegado**.
+
+- `GET /api/v1/venues/:id` (anónimo) solo devuelve salones `published`; un borrador responde `404`, también a su dueño (el dueño usa `GET /venues/mine`).
+- `price` solo viene con sesión (regla A3); sin sesión se omite. Respuesta: `price: {baseAmount, unit}` con `unit` `hour` o `day`; `minimumHours` en la raíz.
+- `photos` es una lista de URLs de texto (hoy vacía: no hay carga de fotos); `rating: {average, count}`.
+- `zone` usa colonias de Querétaro (`Juriquilla`, `Centro`, `El Refugio`, `Santa Fe`, `Antea`, `Jurica`, `Corregidora`, `El Marqués`); `categories` y `amenities` son listas cerradas del servidor (ver `022` RF-03).

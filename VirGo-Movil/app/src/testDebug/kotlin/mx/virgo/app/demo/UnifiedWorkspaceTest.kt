@@ -7,6 +7,8 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import mx.virgo.app.ui.account.AccountProfileContent
 import mx.virgo.app.ui.account.AccountProfileUiState
+import mx.virgo.app.ui.ownervenues.OwnerVenuesContent
+import mx.virgo.app.ui.ownervenues.OwnerVenuesUiState
 import mx.virgo.core.designsystem.theme.VirGoTheme
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -32,6 +34,7 @@ class UnifiedWorkspaceTest {
                     role = DemoRole.OWNER,
                     accountKey = "synthetic-account-owner",
                     onLogout = { loggedOut = true },
+                    ownerVenuesScreen = { OwnerVenuesContent(OwnerVenuesUiState(loading = false), {}, {}, {}) },
                     accountScreen = { identity, logout ->
                         AccountProfileContent(
                             AccountProfileUiState(loading = false),
@@ -59,7 +62,12 @@ class UnifiedWorkspaceTest {
     fun ownerIndexCannotOfferProviderAdministration() {
         compose.setContent {
             VirGoTheme {
-                RoleWorkspace(DemoRole.OWNER, "synthetic-account-owner", onLogout = {})
+                RoleWorkspace(
+                    DemoRole.OWNER,
+                    "synthetic-account-owner",
+                    onLogout = {},
+                    ownerVenuesScreen = { OwnerVenuesContent(OwnerVenuesUiState(loading = false), {}, {}, {}) },
+                )
             }
         }
         compose.onNodeWithText("Secciones").performClick()

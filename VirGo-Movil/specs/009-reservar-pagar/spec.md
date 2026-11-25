@@ -100,3 +100,12 @@ el pago con tarjeta o transferencia queda para un spec posterior (§7).
 | P-02 | ¿Cómo paga el cliente el anticipo en el MVP? | Usuario + propietario | Fuera de la app (el salón lo indica); el pago en la app es un spec posterior. |
 | P-03 | ¿El servidor devuelve horas mínimas en `GET /venues/:id`? | Backend | Sí (`price.minHours`); si no llega, la app solo exige ≥ 1. |
 | P-04 | Forma del JSON de `GET /bookings` y `/bookings/:id` y nombres de estado. | Backend | Folio, venue `{id,name}`, `date`, `hours`, `total`, `deposit`, `status`; la app tolera estados nuevos. |
+
+## 9. Contrato verificado (2026-11-25)
+
+Leído en `VirGO_Backend` `feat/api-mobile-priority` (`7cf6124`) más el PR #41; **aún no desplegado**.
+
+- `POST /api/v1/bookings` (rol `client`) exige el encabezado `Idempotency-Key` (≤ 128); repetirlo devuelve la misma reservación. Cuerpo: `{venueId, date (yyyy-MM-dd), hours, deposit?, quoteId?, eventId?}`; `quoteId` y `eventId` son **opcionales**.
+- El servidor calcula `total` y el anticipo por omisión; un `deposit` mayor que el total → `400`. Respuesta `201` con `status: "pending_payment"` y `folio`.
+- Errores `400` solo con `title` (sin errores por campo).
+- Pagos: con el PR #41 un pago del cliente queda `pending` y **no** confirma la reservación. El MVP no cobra en la app, como ya define este spec.
