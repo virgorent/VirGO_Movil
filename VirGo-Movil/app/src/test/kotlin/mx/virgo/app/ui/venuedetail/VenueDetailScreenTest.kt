@@ -1,6 +1,8 @@
 package mx.virgo.app.ui.venuedetail
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -139,24 +141,33 @@ class VenueDetailScreenTest {
     }
 
     @Test
-    fun clientExploreOpensTheDetailAndReturnsToTheCatalog() {
+    fun clientExploreGoesFromCatalogToDetailToBookingAndBack() {
         compose.setContent {
             VirGoTheme {
                 ClientExplore(
-                    catalog = { open ->
-                        androidx.compose.material3.TextButton(onClick = { open("v7") }) { Text("Catálogo") }
+                    catalog = { open -> TextButton(onClick = { open("v7") }) { Text("Catálogo") } },
+                    detail = { id, back, book ->
+                        Column {
+                            TextButton(onClick = back) { Text("Detalle $id") }
+                            TextButton(onClick = { book(id) }) { Text("Reservar $id") }
+                        }
                     },
-                    detail = {
-                        id,
-                        back,
-                        ->
-                        androidx.compose.material3.TextButton(onClick = back) { Text("Detalle $id") }
+                    booking = { id, back, toCatalog ->
+                        Column {
+                            TextButton(onClick = back) { Text("Confirmar $id") }
+                            TextButton(onClick = toCatalog) { Text("Al catálogo") }
+                        }
                     },
                 )
             }
         }
         compose.onNodeWithText("Catálogo").performClick()
+        compose.onNodeWithText("Reservar v7").performClick()
+        compose.onNodeWithText("Confirmar v7").assertIsDisplayed().performClick()
         compose.onNodeWithText("Detalle v7").assertIsDisplayed().performClick()
+        compose.onNodeWithText("Catálogo").assertIsDisplayed().performClick()
+        compose.onNodeWithText("Reservar v7").performClick()
+        compose.onNodeWithText("Al catálogo").performClick()
         compose.onNodeWithText("Catálogo").assertIsDisplayed()
     }
 }

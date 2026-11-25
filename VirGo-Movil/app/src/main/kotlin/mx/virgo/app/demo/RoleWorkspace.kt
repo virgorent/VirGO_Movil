@@ -20,6 +20,7 @@ import mx.virgo.app.ui.account.SessionIdentity
 import mx.virgo.app.ui.beta.BetaSectionScreen
 import mx.virgo.app.ui.beta.BetaSectionsMenu
 import mx.virgo.app.ui.beta.betaTitle
+import mx.virgo.app.ui.bookings.ClientBookings
 import mx.virgo.app.ui.ownervenues.OwnerVenuesRoute
 import mx.virgo.app.ui.venuedetail.ClientExplore
 import mx.virgo.core.designsystem.components.VirGoPageHeader
@@ -110,7 +111,7 @@ private fun BetaWorkspace(
 /** Inicio y «Mis salones» del propietario muestran sus salones reales (022 RF-01). */
 private val OWNER_VENUE_ROUTES = setOf("ownerHome", "ownerVenues")
 
-private enum class WorkspaceScreen { SECTIONS, CATALOG, OWNER_VENUES, ACCOUNT, SECTION }
+private enum class WorkspaceScreen { SECTIONS, CATALOG, BOOKINGS, OWNER_VENUES, ACCOUNT, SECTION }
 
 @Composable
 private fun WorkspaceBody(
@@ -125,7 +126,8 @@ private fun WorkspaceBody(
 ) {
     when (screen) {
         WorkspaceScreen.SECTIONS -> BetaSectionsMenu(role, navigate)
-        WorkspaceScreen.CATALOG -> ClientExplore()
+        WorkspaceScreen.CATALOG -> ClientExplore(onMyBookings = { navigate("bookings") })
+        WorkspaceScreen.BOOKINGS -> ClientBookings()
         WorkspaceScreen.OWNER_VENUES -> ownerVenuesScreen()
         WorkspaceScreen.ACCOUNT -> accountScreen(identity, onLogout)
         WorkspaceScreen.SECTION -> BetaSectionScreen(role, route, identity.name, identity.email)
@@ -139,6 +141,7 @@ private fun workspaceScreen(
 ): WorkspaceScreen =
     when {
         role == DemoRole.CLIENT && route == "explore" -> WorkspaceScreen.CATALOG
+        role == DemoRole.CLIENT && route == "bookings" -> WorkspaceScreen.BOOKINGS
         role == DemoRole.OWNER && route in OWNER_VENUE_ROUTES -> WorkspaceScreen.OWNER_VENUES
         route == "profile" -> WorkspaceScreen.ACCOUNT
         else -> WorkspaceScreen.SECTION

@@ -7,6 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import mx.virgo.core.common.AuthTokenProvider
 import mx.virgo.core.network.BuildConfig
 import mx.virgo.core.network.api.AuthApi
+import mx.virgo.core.network.api.BookingsApi
 import mx.virgo.core.network.api.FavoritesApi
 import mx.virgo.core.network.api.HealthApi
 import mx.virgo.core.network.api.NoticesApi
@@ -14,6 +15,7 @@ import mx.virgo.core.network.api.OwnerVenuesApi
 import mx.virgo.core.network.api.UsersApi
 import mx.virgo.core.network.api.VenuesApi
 import mx.virgo.core.network.createAuthApi
+import mx.virgo.core.network.createBookingsApi
 import mx.virgo.core.network.createFavoritesApi
 import mx.virgo.core.network.createHealthApi
 import mx.virgo.core.network.createNoticesApi
@@ -55,6 +57,10 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideUsersApi(client: OkHttpClient): UsersApi = createUsersApi(BuildConfig.API_BASE_URL, client)
+
+    @Provides
+    @Singleton
+    fun provideBookingsApi(client: OkHttpClient): BookingsApi = createBookingsApi(BuildConfig.API_BASE_URL, client)
 
     @Provides
     @Singleton
