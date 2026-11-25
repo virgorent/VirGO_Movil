@@ -941,3 +941,15 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Entrega:** implementación subida en `1109d72`;
   [PR #35](https://github.com/virgorent/VirGO_Movil/pull/35) en borrador,
   asignado a `ccabrera-dev8`, sin solicitar revisores visuales adicionales.
+
+### 2026-11-25 · Cierre técnico de T014 y alcance MVP
+
+- **Autor:** usuario + Claude Code.
+- **Módulo / tareas:** `000-arquitectura-base` · T014 (revisión integral) y preparación de T036. Base **38/40**.
+- **Decisión de alcance (usuario, 2026-11-25):** MVP = flujo cliente + registro de salón: `030` cuenta/sesión, `005` explorar, `006` detalle, `008` cotizar, `009` reservar y `022` propietario registra salón. El resto de propietario y proveedor queda en «Próximamente». Se autoriza implementar el MVP contra MockWebServer con contrato acordado, sin esperar el despliegue del backend; cada spec sigue requiriendo aprobación.
+- **Qué se hizo:** `BetaAccessibilityTest` (6) barre catálogo (cargando/vacío/error/datos), menú «Secciones» y destinos de los tres roles, Cuenta, recuperación y espacio de trabajo a 320 dp/fuente 2.0 en ambos temas: texto sin cortes ni elipsis, controles ≥ 48 dp e imágenes con descripción. `DesignSystemThemeTest` suma 4 pares de texto a 4.5:1 (`primary`/`surface`, `primary`/`background`, `onSurfaceVariant`/`background`, `onBackground`/`background`). Sin defectos: no hubo cambios de producción.
+- **Evidencia:** pipeline completo **BUILD SUCCESSFUL in 3m 24s**, 61 suites / 340 pruebas sin fallos; Pitest dominio 60 % (57/95), common 33 % (1/3). Detalle en [`docs/evidencia/T014-revision-integral.md`](docs/evidencia/T014-revision-integral.md). `check.md`: CA-01, CA-07, CA-08, CA-10 y §3 con evidencia.
+- **Hallazgos:** el ruleset `main-protection` ya está **activo** en GitHub (se cierra el pendiente operativo de gobernanza). El CI del PR #35 falló una vez por red al descargar `android-all` de Robolectric; el reintento salió verde.
+- **Pendiente para cerrar `000` (T036):** TalkBack manual del usuario (6 pasos), aprobación del profesor, reconciliar P-01 (`mx.virgo.app` ya publicado en `v0.2.0` y Google Play), arranque en frío del APK actual (RNF-03) y la incoherencia de versión de la constitución (encabezado v1.2.0 frente a «vigente v1.1.1» en esta memoria).
+- **Costo:** $0.
+- **Aprendizaje:** en barridos semánticos los nodos fuera del viewport reportan límites táctiles recortados a 0 dp; se mide el tamaño sin recorte para no confundir scroll con defecto.

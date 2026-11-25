@@ -211,6 +211,11 @@ class DesignSystemThemeTest {
                 primaryContainer,
                 4.5f,
             )
+            // T014: the beta uses primary as text colour (beta label, account role) on surface/background.
+            assertContrast("$theme primary text/surface", primary, surface, 4.5f)
+            assertContrast("$theme primary text/background", primary, background, 4.5f)
+            assertContrast("$theme onSurfaceVariant text/background", onSurfaceVariant, background, 4.5f)
+            assertContrast("$theme onBackground text/background", onBackground, background, 4.5f)
         }
     }
 
