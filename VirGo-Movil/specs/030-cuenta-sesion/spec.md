@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `030-cuenta-sesion` |
 | Versión | 0.2.0 |
-| Estado | Propuesto para aprobación (lote MVP, 2026-11-25) |
+| Estado | Aprobado por el usuario (lote MVP, 2026-11-25) |
 | Fecha | 2026-11-24 |
 | Constitución | v1.2.0 |
 | Rol | Cliente, Propietario y Proveedor |

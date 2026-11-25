@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `030-cuenta-sesion` |
 | Versión | 0.1.0 |
-| Estado | Propuesto para aprobación (lote MVP); sin tareas ejecutables hasta aprobar el spec y desbloquear `000` |
+| Estado | Aprobado por el usuario (lote MVP, 2026-11-25). **Tareas ⛔ por el Art. II.2** hasta cerrar `000` y recibir la URL y el JSON de backend (o excepción aprobada). |
 | Fecha | 2026-11-24 |
 | Constitución | v1.2.0 |
 | Rol | Cliente, Propietario y Proveedor |

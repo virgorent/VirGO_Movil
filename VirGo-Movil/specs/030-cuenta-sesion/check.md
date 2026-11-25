@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `030-cuenta-sesion` |
-| Estado del spec | Propuesto para aprobación (lote MVP) |
+| Estado del spec | Aprobado por el usuario (lote MVP, 2026-11-25) |
 | Revisó | — |
 | Fecha | 2026-11-24 |
 | Constitución | v1.2.0 |

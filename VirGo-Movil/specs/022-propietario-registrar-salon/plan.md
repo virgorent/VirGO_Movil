@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `022-propietario-registrar-salon` |
 | Versión | 2.0.0 |
-| Estado | Propuesto para aprobación (lote MVP, 2026-11-25) |
+| Estado | Aprobado por el usuario (lote MVP, 2026-11-25) |
 | Fecha | 2026-11-25 |
 | Constitución | v1.2.0 |
 | Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |

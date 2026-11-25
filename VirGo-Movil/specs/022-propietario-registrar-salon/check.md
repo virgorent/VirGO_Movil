@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `022-propietario-registrar-salon` |
-| Estado del spec | Propuesto para aprobación (lote MVP) |
+| Estado del spec | Aprobado por el usuario (lote MVP, 2026-11-25) |
 | Revisó | — |
 | Fecha | 2026-11-25 |
 
@@ -11,7 +11,7 @@ Sin evidencia todavía: el módulo no se ha implementado.
 
 ## 1. Especificación y gobernanza
 
-- [ ] Spec, plan y tareas aprobados por el usuario.
+- [x] Spec, plan y tareas aprobados por el usuario el 2026-11-25 (lote MVP).
 - [ ] `000` cerrado o excepción aprobada (Art. II.2).
 - [ ] P-01 (publicación directa), P-02 (`location`), P-03 (`photos`) y P-04 (`price`) decididas con backend.
 

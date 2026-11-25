@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `009-reservar-pagar` |
 | Versión | 2.0.0 |
-| Estado | Propuesto para aprobación (lote MVP). **Las tareas no se ejecutan hasta aprobar este archivo y desbloquear `000`.** |
+| Estado | Aprobado por el usuario (lote MVP, 2026-11-25). **Tareas ⛔ por el Art. II.2** hasta cerrar `000` y recibir la URL y el JSON de backend (o excepción aprobada). |
 | Fecha | 2026-11-25 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 
