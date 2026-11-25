@@ -1015,3 +1015,15 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Hallazgos para backend:** reservar con `quoteId` no usa el total cotizado (cobra precio de lista) ni marca la cotización como `accepted`.
 - **Pendiente:** T808 (humo en producción); `024` para que el propietario responda desde la app.
 - **Costo:** $0.
+
+### 2026-11-25 · `024-propietario-solicitudes` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** «hazlos todos de una vez tienes mi aprobacion»; spec reescrito a la v2.0.0 y registrado en la excepción.
+- **Qué se hizo:** T2401–T2404. «Solicitudes» del propietario con pestañas Nuevas, Respondidas y Todas; detalle con el cliente y formulario de respuesta (total, anticipo opcional y nota). Así las cotizaciones del `008` pueden llegar a «Respondida» desde la app.
+- **Evidencia:** 89 suites / 528 pruebas sin fallos (+18).
+- **Aprendizaje:** el backend no valida que el anticipo sea menor que el total; la app lo valida. `VirGoRow` admite `subtitleMaxLines` para datos que no deben cortarse. `NavigationTest` depende de la API real y falla cada vez más seguido: conviene aislarla con MockWebServer.
+- **Fuera de alcance:** conceptos por línea (el backend solo acepta un total) y «Mensajes», que pasa a `020`.
+- **Pendiente:** T2405 (humo en producción).
+- **Costo:** $0.
+

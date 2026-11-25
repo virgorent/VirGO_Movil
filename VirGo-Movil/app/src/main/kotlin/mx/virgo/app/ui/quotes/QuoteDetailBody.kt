@@ -26,11 +26,15 @@ import mx.virgo.core.designsystem.theme.VirGoTone
 import mx.virgo.core.domain.Quote
 import mx.virgo.core.domain.QuoteStatus
 
-/** C7: datos de la solicitud y, si el salón respondió, sus montos tal cual (008 RF-10/RF-11). */
+/**
+ * C7: datos de la solicitud y, si el salón respondió, sus montos tal cual (008 RF-10/RF-11).
+ * El propietario (`ownerView`) ve además al cliente y, sin respuesta, el formulario en su lugar (024).
+ */
 @Composable
 internal fun QuoteDetailBody(
     quote: Quote,
-    onBook: (Quote) -> Unit,
+    onBook: ((Quote) -> Unit)?,
+    ownerView: Boolean = false,
 ) {
     Text(
         text = quote.venueName,
@@ -41,6 +45,7 @@ internal fun QuoteDetailBody(
     QuoteStatusBadge(quote.status)
     VirGoCard {
         Column(Modifier.padding(horizontal = 16.dp)) {
+            if (ownerView) DetailRow(R.string.quote_detail_client, quote.clientName)
             DetailRow(R.string.quote_detail_type, quote.eventType?.let { stringResource(eventTypeLabel(it)) }.orEmpty())
             DetailRow(R.string.quote_detail_date, quote.eventDate?.let(::formatDate).orEmpty())
             DetailRow(
@@ -52,7 +57,7 @@ internal fun QuoteDetailBody(
         }
     }
     val total = quote.total
-    if (total == null) {
+    if (total == null && !ownerView) {
         VirGoCard {
             VirGoRow(
                 title = stringResource(R.string.quote_detail_waiting),
@@ -61,7 +66,7 @@ internal fun QuoteDetailBody(
                 standalone = false,
             )
         }
-    } else {
+    } else if (total != null) {
         VirGoCard {
             Column(Modifier.padding(horizontal = 16.dp)) {
                 DetailRow(R.string.quote_detail_total, formatMxn(total.toDouble()))
@@ -70,7 +75,9 @@ internal fun QuoteDetailBody(
             }
         }
     }
-    if (quote.canBook) VirGoButton(onClick = { onBook(quote) }, text = stringResource(R.string.quote_detail_book))
+    if (quote.canBook && onBook != null) {
+        VirGoButton(onClick = { onBook(quote) }, text = stringResource(R.string.quote_detail_book))
+    }
 }
 
 @Composable

@@ -19,6 +19,14 @@ data class CreateQuoteRequestDto(
     val message: String? = null,
 )
 
+/** Respuesta del propietario; `deposit` y `message` se omiten si son nulos. */
+@Serializable
+data class QuoteAnswerRequestDto(
+    val total: Double,
+    val deposit: Double? = null,
+    val message: String? = null,
+)
+
 @Serializable
 data class QuotesResponseDto(
     val data: List<QuoteDto> = emptyList(),
@@ -31,10 +39,11 @@ data class QuoteResponseDto(
     val message: String? = null,
 )
 
-/** Solo los campos que muestra la app; el cliente y los servicios se ignoran. */
+/** Solo los campos que muestra la app; el id del cliente y los servicios se ignoran. */
 @Serializable
 data class QuoteDto(
     val id: String,
+    val clientName: String? = null,
     val targetId: String? = null,
     val targetName: String? = null,
     val eventType: String? = null,

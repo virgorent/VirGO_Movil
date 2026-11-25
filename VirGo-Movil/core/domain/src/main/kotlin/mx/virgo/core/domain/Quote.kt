@@ -58,6 +58,8 @@ data class Quote(
     val deposit: BigDecimal?,
     val responseMessage: String?,
     val createdAt: String?,
+    /** Quién pidió la cotización; el propietario lo ve en sus solicitudes (024 RF-02). */
+    val clientName: String = "",
 ) {
     /** Solo una cotización respondida con salón conocido lleva a reservar (008 RF-11). */
     val canBook: Boolean get() = status == QuoteStatus.ANSWERED && venueId != null
@@ -128,4 +130,10 @@ interface QuotesRepository {
     suspend fun list(): AppResult<List<Quote>>
 
     suspend fun get(id: String): AppResult<Quote>
+
+    /** Respuesta del propietario del salón (024 RF-05). */
+    suspend fun respond(
+        id: String,
+        answer: QuoteAnswer,
+    ): AppResult<Quote>
 }

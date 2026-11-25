@@ -55,6 +55,8 @@ fun VirGoRow(
     standalone: Boolean = true,
     onClick: (() -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
+    /** Datos que no deben cortarse (nombres, fechas) usan `Int.MAX_VALUE`. */
+    subtitleMaxLines: Int = 2,
 ) {
     val container =
         if (standalone) {
@@ -86,7 +88,7 @@ fun VirGoRow(
                     text = subtitle,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
+                    maxLines = subtitleMaxLines,
                     overflow = TextOverflow.Ellipsis,
                 )
             }

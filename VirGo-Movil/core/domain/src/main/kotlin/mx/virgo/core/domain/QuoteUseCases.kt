@@ -48,6 +48,17 @@ class GetQuotesUseCase
             }
     }
 
+class RespondQuoteUseCase
+    @Inject
+    constructor(
+        private val repository: QuotesRepository,
+    ) {
+        suspend operator fun invoke(
+            id: String,
+            answer: QuoteAnswer,
+        ): AppResult<Quote> = repository.respond(id, answer)
+    }
+
 class GetQuoteUseCase
     @Inject
     constructor(

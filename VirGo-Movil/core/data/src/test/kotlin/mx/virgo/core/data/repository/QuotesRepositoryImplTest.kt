@@ -9,6 +9,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
 import mx.virgo.core.common.AuthTokenProvider
+import mx.virgo.core.domain.QuoteAnswer
 import mx.virgo.core.domain.QuoteEventType
 import mx.virgo.core.domain.QuoteRequest
 import mx.virgo.core.domain.QuoteStatus
@@ -120,6 +121,48 @@ class QuotesRepositoryImplTest {
             assertEquals("Listo", detail.responseMessage)
             server.takeRequest()
             assertEquals("/api/v1/quotes/5b2e7c10-0000-4000-8000-000000000001", server.takeRequest().path)
+        }
+
+    @Test
+    fun respondSendsTheOwnerAnswerAndReadsTheAnsweredQuote() =
+        runTest {
+            val answered =
+                QUOTE_BODY
+                    .replace("\"sent\"", "\"answered\"")
+                    .replace("\"response\":null", "\"response\":{\"total\":48000.5,\"deposit\":null,\"message\":null}")
+            server.enqueue(MockResponse().setBody(answered))
+            server.enqueue(MockResponse().setBody(answered))
+
+            val quote = (repository.respond("q-1", QuoteAnswer(BigDecimal("48000.50"))) as AppResult.Success).value
+            assertEquals(QuoteStatus.ANSWERED, quote.status)
+            assertEquals("Ana", quote.clientName)
+            val sent = server.takeRequest()
+            assertEquals("/api/v1/quotes/q-1/response", sent.path)
+            assertEquals("POST", sent.method)
+            val json = Json.parseToJsonElement(sent.body.readUtf8()).jsonObject
+            assertEquals(48000.5, json["total"]!!.jsonPrimitive.content.toDouble(), 0.0)
+            assertFalse(json.containsKey("deposit"))
+            assertFalse(json.containsKey("message"))
+
+            repository.respond("q-1", QuoteAnswer(BigDecimal("100"), BigDecimal("30"), " Gracias "))
+            val full = Json.parseToJsonElement(server.takeRequest().body.readUtf8()).jsonObject
+            assertEquals(30.0, full["deposit"]!!.jsonPrimitive.content.toDouble(), 0.0)
+            assertEquals("Gracias", full["message"]!!.jsonPrimitive.content)
+        }
+
+    @Test
+    fun respondConflictAndForbiddenAreMapped() =
+        runTest {
+            server.enqueue(MockResponse().setResponseCode(409))
+            assertEquals(
+                AppResult.Failure(AppError.Conflict),
+                repository.respond("q", QuoteAnswer(BigDecimal.ONE)),
+            )
+            server.enqueue(MockResponse().setResponseCode(403))
+            assertEquals(
+                AppResult.Failure(AppError.Forbidden),
+                repository.respond("q", QuoteAnswer(BigDecimal.ONE)),
+            )
         }
 
     @Test

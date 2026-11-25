@@ -3,6 +3,7 @@ package mx.virgo.core.testing
 import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
 import mx.virgo.core.domain.Quote
+import mx.virgo.core.domain.QuoteAnswer
 import mx.virgo.core.domain.QuoteEventType
 import mx.virgo.core.domain.QuoteRequest
 import mx.virgo.core.domain.QuoteStatus
@@ -20,6 +21,8 @@ class FakeQuotesRepository : QuotesRepository {
     var createFailure: AppResult.Failure? = null
     var landsDespiteFailure = false
     var listFailure: AppResult.Failure? = null
+    var respondFailure: AppResult.Failure? = null
+    val answers = mutableListOf<Pair<String, QuoteAnswer>>()
 
     override suspend fun create(request: QuoteRequest): AppResult<Quote> {
         requests += request
@@ -43,6 +46,32 @@ class FakeQuotesRepository : QuotesRepository {
 
     override suspend fun get(id: String): AppResult<Quote> =
         quotes.firstOrNull { it.id == id }?.let { AppResult.Success(it) } ?: AppResult.Failure(AppError.NotFound)
+
+    /** Como el servidor: solo desde «Enviada»; otro estado es `409`. */
+    override suspend fun respond(
+        id: String,
+        answer: QuoteAnswer,
+    ): AppResult<Quote> {
+        answers += id to answer
+        val index = quotes.indexOfFirst { it.id == id }
+        val failure = respondFailure
+        return when {
+            failure != null -> failure
+            index < 0 -> AppResult.Failure(AppError.NotFound)
+            quotes[index].status != QuoteStatus.SENT -> AppResult.Failure(AppError.Conflict)
+            else -> {
+                val answered =
+                    quotes[index].copy(
+                        status = QuoteStatus.ANSWERED,
+                        total = answer.total,
+                        deposit = answer.deposit,
+                        responseMessage = answer.message.trim().ifEmpty { null },
+                    )
+                quotes[index] = answered
+                AppResult.Success(answered)
+            }
+        }
+    }
 }
 
 fun sampleQuote(): Quote =
@@ -59,6 +88,7 @@ fun sampleQuote(): Quote =
         deposit = null,
         responseMessage = null,
         createdAt = "2026-11-25T18:00:00Z",
+        clientName = "Ana López",
     )
 
 /** La misma cotización respondida por el propietario con un total. */
