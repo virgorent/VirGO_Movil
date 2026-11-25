@@ -20,4 +20,5 @@ Informe: [verificacion.md](../../docs/evidencia/beta-integrada/verificacion.md).
 - ktlint, detekt, lint y assembleDebug: en verde, pipeline final 2m21s.
 - Instalación y arranque debug en emulador; fixture de catálogo vacío local,
   no acreditan funcionamiento de producción.
-- PR/CI y aceptación humana: pendientes; no se autoriza publicación.
+- [PR #35](https://github.com/virgorent/VirGO_Movil/pull/35) en borrador, asignado
+  solo a `ccabrera-dev8`; CI y aceptación humana pendientes. Sin release.

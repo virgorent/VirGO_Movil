@@ -938,3 +938,6 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Pendiente:** revisión visual exclusiva del usuario, TalkBack, tamaños y
   navegación ampliada, CI remoto y revisión técnica antes de fusionar. Sin
   release, cambio de versión, cuentas productivas ni despliegue backend.
+- **Entrega:** implementación subida en `1109d72`;
+  [PR #35](https://github.com/virgorent/VirGO_Movil/pull/35) en borrador,
+  asignado a `ccabrera-dev8`, sin solicitar revisores visuales adicionales.
