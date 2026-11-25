@@ -45,10 +45,11 @@ fun BetaCatalogScreen(
     modifier: Modifier = Modifier,
     onLogin: (() -> Unit)? = null,
     onRegister: (() -> Unit)? = null,
+    onOpenVenue: ((String) -> Unit)? = null,
     viewModel: BetaCatalogViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
-    BetaCatalogContent(state, viewModel::refresh, modifier, onLogin, onRegister)
+    BetaCatalogContent(state, viewModel::refresh, modifier, onLogin, onRegister, onOpenVenue)
 }
 
 @Composable
@@ -58,6 +59,7 @@ internal fun BetaCatalogContent(
     modifier: Modifier = Modifier,
     onLogin: (() -> Unit)? = null,
     onRegister: (() -> Unit)? = null,
+    onOpenVenue: ((String) -> Unit)? = null,
 ) {
     Column(modifier.fillMaxSize().background(pageBackground())) {
         VirGoPageHeader(title = stringResource(R.string.beta_catalog), kicker = stringResource(R.string.beta_label))
@@ -72,7 +74,7 @@ internal fun BetaCatalogContent(
             if (onLogin != null && onRegister != null) {
                 item { AccountActions(onLogin, onRegister) }
             }
-            catalogBody(state, onRefresh)
+            catalogBody(state, onRefresh, onOpenVenue)
         }
     }
 }
@@ -80,6 +82,7 @@ internal fun BetaCatalogContent(
 private fun androidx.compose.foundation.lazy.LazyListScope.catalogBody(
     state: BetaCatalogState,
     onRefresh: () -> Unit,
+    onOpenVenue: ((String) -> Unit)?,
 ) {
     when {
         state.loading -> item { CatalogLoading() }
@@ -96,7 +99,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.catalogBody(
                 }
             }
         else -> {
-            items(state.venues) { venue -> BetaVenueCard(venue) }
+            items(state.venues) { venue -> BetaVenueCard(venue, onOpenVenue) }
             item {
                 VirGoOutlinedButton(onClick = onRefresh, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.beta_refresh))
@@ -149,7 +152,10 @@ private fun CatalogState(
 }
 
 @Composable
-private fun BetaVenueCard(venue: Venue) {
+private fun BetaVenueCard(
+    venue: Venue,
+    onOpen: ((String) -> Unit)?,
+) {
     VirGoCard(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -162,7 +168,12 @@ private fun BetaVenueCard(venue: Venue) {
             if (venue.capacity > 0) {
                 VenueFact(Icons.Outlined.Groups, stringResource(R.string.beta_capacity, venue.capacity))
             }
-            VirGoButton(onClick = {}, enabled = false, text = stringResource(R.string.beta_soon))
+            // 006 RF-01: «Ver detalle» cuando hay a dónde ir; sin destino sigue «Próximamente».
+            if (onOpen != null) {
+                VirGoButton(onClick = { onOpen(venue.id) }, text = stringResource(R.string.venue_detail_open))
+            } else {
+                VirGoButton(onClick = {}, enabled = false, text = stringResource(R.string.beta_soon))
+            }
         }
     }
 }

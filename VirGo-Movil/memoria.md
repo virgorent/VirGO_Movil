@@ -983,3 +983,13 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Aprendizaje:** `POST /venues` exige capacidad y precio, así que el borrador no puede crearse al salir de P3. `GET /venues/:id` no devuelve borradores; retomar usa `mine`, que no trae servicios, por eso el `PATCH` los omite hasta que se editan. El barrido de accesibilidad detectó que `VirGoRow` corta el subtítulo a dos líneas: el resumen usa texto sin límite.
 - **Pendiente:** T2208 (humo en producción tras desplegar y fusionar PR #42), app: enviar el rol elegido en `002` cuando backend lo acepte, aceptación del usuario. El PR no se fusiona antes del despliegue.
 - **Costo:** $0.
+
+### 2026-11-25 · `006-detalle-salon` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** «Sí, sigue con 006»; ampliación registrada en la excepción.
+- **Qué se hizo:** T601–T605. «Ver detalle» en el catálogo (visitante por navegación; cliente dentro de su espacio con `ClientExplore`). Detalle con calificación honesta, precio solo con sesión, información, tipo de espacio y amenidades; acciones según rol. Cotizar y reservar quedan deshabilitadas con aviso hasta `008`/`009`.
+- **Evidencia:** 76 suites / 442 pruebas sin fallos (+20).
+- **Aprendizaje:** `GET /venues/:id` no envía `services` ni `verified`; el DTO tolera ambos. Se creó `VenueDetailRepository` aparte para no romper los cuatro dobles de `VenueRepository`. `RegisterRoute.venueId` es un entero de las muestras antiguas: el contexto del salón se conserva por la pila de navegación.
+- **Pendiente:** T606 (humo en producción), `008`/`009` para habilitar las acciones.
+- **Costo:** $0.

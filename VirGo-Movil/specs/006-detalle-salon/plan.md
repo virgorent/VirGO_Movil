@@ -13,7 +13,7 @@
 
 - Se implementa en `:app` y `:core:*`, como `005` y `030`; no se crea `:feature:*`.
 - `:core:network`: `VenuesApi.venue(id)` y `VenueDetailDto` (extiende los campos de `VenueDto`).
-- `:core:domain`: `VenueDetail`, `GetVenueDetailUseCase`; `VenueRepository.venue(id)`.
+- `:core:domain`: `VenueDetail`, `GetVenueDetailUseCase` y `VenueDetailRepository` (interfaz aparte para no romper los dobles de `VenueRepository`).
 - `:core:data`: implementación en el repositorio de salones existente; `404` → `AppError.NotFound`.
 - `:app`: `VenueDetailRoute(venueId)`, `VenueDetailViewModel` y `VenueDetailScreen` en `ui/venuedetail/`.
   El catálogo beta cambia el botón deshabilitado por «Ver detalle».
@@ -32,10 +32,10 @@
 
 | Art. | Resultado | Cómo se cumple |
 |---|---|---|
-| I | ⚠️ Pendiente | Spec atómico (una pantalla); falta aprobación humana. |
-| II | ⚠️ Pendiente | Requiere `000` cerrado o excepción aprobada. |
+| I | ✅ Cumple | Spec atómico aprobado (lote MVP). |
+| II | ⚠️ Excepción | Ampliación aprobada («Sí, sigue con 006»), sin `000` cerrado ni URL desplegada. |
 | III | ✅ Cumple | UI → dominio → datos; un `StateFlow` por `ViewModel`. |
-| IV | ⚠️ Parcial | `/api/v1`, Problem Details; forma del JSON pendiente (P-01). |
+| IV | ⚠️ Parcial | Forma del JSON verificada en el código de backend (§9 del spec); falta la URL desplegada. |
 | V | ✅ Cumple | Sin datos sensibles en logs; HTTPS en release. |
 | VI | ✅ Planificado | Sección 8. |
 | VII | ✅ Cumple | Sistema de diseño, `strings.xml`, claro/oscuro. |

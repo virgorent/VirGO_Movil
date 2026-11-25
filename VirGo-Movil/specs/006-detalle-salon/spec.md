@@ -3,8 +3,8 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `006-detalle-salon` |
-| Versión | 2.0.0 |
-| Estado | Aprobado por el usuario (lote MVP, 2026-11-25) |
+| Versión | 2.1.0 |
+| Estado | Aprobado por el usuario (lote MVP, 2026-11-25) · v2.1.0 ajustada al contrato real (§9) |
 | Fecha | 2026-11-25 (v1.0.0 del 2026-11-05 sustituida) |
 | Constitución | v1.2.0 |
 | Rol | Cliente y visitante |
@@ -40,9 +40,9 @@ que el backend puede servir; el resto queda fuera de alcance (§7).
 | RF-03 | **[B13]** Sin galería en el MVP: no existe endpoint de carga de fotos (backend `026` P-01) y la app no tiene librería de imágenes. B13 no muestra fotos ni imágenes de relleno (ver P-04). |
 | RF-04 | **[B13]** Calificación: solo se muestra si `rating.count > 0` («4.8 · 12 reseñas»), sin enlace a reseñas. Con `count = 0` se muestra «Sin reseñas todavía». |
 | RF-05 | **[B13]** Insignia «Verificado» solo si el servidor envía `verified: true`. |
-| RF-06 | **[B13]** Precio: con sesión, se muestra el precio base y su unidad («$12,000 por evento», «$2,500 por hora»). Sin sesión, se muestra «Inicia sesión para ver precios» (regla A3 del backend). Si el servidor no envía precio, se muestra «Precio a cotizar». |
-| RF-07 | **[B13]** Acciones: «Solicitar cotización» (abre `008`) y «Reservar» (abre `009`). Ambas requieren sesión con rol `client`. |
-| RF-08 | **[B13]** Sin sesión, las dos acciones llevan a registro con el salón como contexto (`RegisterRoute(venueId)`, ya existente); desde registro o login se puede volver al detalle. |
+| RF-06 | **[B13]** Precio: con sesión, se muestra el precio base y su unidad («$12,000 por día», «$2,500 por hora»; el servidor usa `day` u `hour`). Sin sesión, se muestra «Inicia sesión para ver precios» (regla A3 del backend). Si el servidor no envía precio, se muestra «Precio a cotizar». |
+| RF-07 | **[B13]** Acciones: «Solicitar cotización» (abre `008`) y «Reservar» (abre `009`). Ambas requieren sesión con rol `client`. Mientras `008`/`009` no estén implementados se muestran deshabilitadas con un aviso, sin simular el flujo. |
+| RF-08 | **[B13]** Sin sesión, las dos acciones llevan a registro; el detalle queda en la pila de navegación y desde registro o login se vuelve a él. (`RegisterRoute.venueId` es un entero de las muestras anteriores y no aplica a los `id` reales del servidor.) |
 | RF-09 | **[B13]** Con sesión de rol `owner` o `provider`, las acciones no se muestran y aparece «Disponible para cuentas de cliente». |
 | RF-10 | **[B13]** Estados: carga; error de red o 5xx con «Reintentar»; `404` como «Este salón ya no está disponible» con botón para volver al catálogo. |
 | RF-11 | **[B13]** Botón de regreso al catálogo con área táctil de 48 dp. |

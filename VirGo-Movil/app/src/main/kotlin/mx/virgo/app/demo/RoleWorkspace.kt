@@ -17,11 +17,11 @@ import androidx.compose.ui.res.stringResource
 import mx.virgo.app.R
 import mx.virgo.app.ui.account.AccountProfileScreen
 import mx.virgo.app.ui.account.SessionIdentity
-import mx.virgo.app.ui.beta.BetaCatalogScreen
 import mx.virgo.app.ui.beta.BetaSectionScreen
 import mx.virgo.app.ui.beta.BetaSectionsMenu
 import mx.virgo.app.ui.beta.betaTitle
 import mx.virgo.app.ui.ownervenues.OwnerVenuesRoute
+import mx.virgo.app.ui.venuedetail.ClientExplore
 import mx.virgo.core.designsystem.components.VirGoPageHeader
 import mx.virgo.core.designsystem.theme.pageBackground
 
@@ -125,7 +125,7 @@ private fun WorkspaceBody(
 ) {
     when (screen) {
         WorkspaceScreen.SECTIONS -> BetaSectionsMenu(role, navigate)
-        WorkspaceScreen.CATALOG -> BetaCatalogScreen()
+        WorkspaceScreen.CATALOG -> ClientExplore()
         WorkspaceScreen.OWNER_VENUES -> ownerVenuesScreen()
         WorkspaceScreen.ACCOUNT -> accountScreen(identity, onLogout)
         WorkspaceScreen.SECTION -> BetaSectionScreen(role, route, identity.name, identity.email)
