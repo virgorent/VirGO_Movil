@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `022-propietario-registrar-salon` |
 | Versión | 2.0.0 |
-| Estado | Aprobado por el usuario (lote MVP, 2026-11-25). **Tareas ⛔ por el Art. II.2** hasta cerrar `000` y recibir la URL y el JSON de backend (o excepción aprobada). |
+| Estado | Aprobado por el usuario (lote MVP, 2026-11-25). Tareas T2201–T2207 autorizadas por la excepción ampliada ([`excepcion-030-sin-cierre-000.md`](../../docs/diseno/excepcion-030-sin-cierre-000.md)); T2208 espera el despliegue de backend. |
 | Fecha | 2026-11-25 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 
@@ -12,14 +12,14 @@
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T2201 | Red: `OwnerVenuesApi` y DTOs | `000`; P-01–P-04 decididas | `dev-android` | MockWebServer: 201, 200, 400, 401, 403, 500, timeout | ⏳ |
-| T2202 | Dominio: modelos, validación por paso, guardar y publicar | T2201 | `dev-android` | Unitarias y Pitest en verde | ⏳ |
-| T2203 | Datos: `OwnerVenuesRepositoryImpl` y módulo Hilt | T2201, T2202 | `dev-android` | Integración: un solo `POST` por registro | ⏳ |
-| T2204 | UI Mis salones: lista, estados, vacío y entrada del asistente | T2203; `030` (rol) | `dev-android` | Compose Testing CA-01 | ⏳ |
-| T2205 | UI asistente P3–P5: validación, borrador, publicar y edición | T2203 | `dev-android` + `ui-designsystem` | Compose Testing CA-02–CA-06 | ⏳ |
-| T2206 | Retomar borrador desde Mis salones | T2204, T2205; `006` T601 | `dev-android` | Compose Testing CA-07 | ⏳ |
-| T2207 | Calidad: accesibilidad, seguridad y pipeline completo | T2204–T2206 | `qa-movil` | Pipeline en verde; CA-08 | ⏳ |
-| T2208 | Humo: publicar un salón de prueba y verlo en el catálogo; cierre | T2207; backend `025`–`027`, `029` desplegados | `qa-movil` | `check.md` y `memoria.md` | ⏳ |
+| T2201 | Red: `OwnerVenuesApi` y DTOs | Excepción; P-01–P-05 resueltas | `dev-android` | MockWebServer: 201, 200, 400, 401, 403, 500, timeout | ✅ |
+| T2202 | Dominio: modelos, validación por paso, guardar y publicar | T2201 | `dev-android` | Unitarias y Pitest en verde | ✅ |
+| T2203 | Datos: `OwnerVenuesRepositoryImpl` y módulo Hilt | T2201, T2202 | `dev-android` | Integración: un solo `POST` por registro | ✅ |
+| T2204 | UI Mis salones: lista, estados, vacío y entrada del asistente | T2203; `030` (rol) | `dev-android` | Compose Testing CA-01 | ✅ |
+| T2205 | UI asistente P3–P5: validación, borrador, publicar y edición | T2203 | `dev-android` + `ui-designsystem` | Compose Testing CA-02–CA-06 | ✅ |
+| T2206 | Retomar borrador desde Mis salones | T2204, T2205; `006` T601 | `dev-android` | Compose Testing CA-07 | ✅ |
+| T2207 | Calidad: accesibilidad, seguridad y pipeline completo | T2204–T2206 | `qa-movil` | Pipeline en verde; CA-08 | ✅ |
+| T2208 | Humo: publicar un salón de prueba y verlo en el catálogo; cierre | T2207; backend `025`–`027`, `029` desplegados | `qa-movil` | `check.md` y `memoria.md` | ⛔ |
 
 ## Matriz de trazabilidad
 

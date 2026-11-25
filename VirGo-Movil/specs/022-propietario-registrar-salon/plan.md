@@ -11,8 +11,8 @@
 
 ## 1. Resumen técnico
 
-- `:core:network`: `OwnerVenuesApi` (`mine`, `create`, `update`, `publish`) y DTOs `VenueDraftDto`, `OwnerVenueDto`;
-  `get(id)` reutiliza `VenuesApi.venue(id)` de `006`.
+- `:core:network`: `OwnerVenuesApi` (`mine`, `create`, `update`, `publish`) y DTOs `VenueDraftDto`, `OwnerVenueDto`.
+  Retomar un borrador usa los datos de `mine` (`GET /venues/:id` no devuelve borradores).
 - `:core:domain`: `VenueDraft`, `VenueZone`, `PriceUnit`, `OwnerVenue`, `OwnerVenuesRepository`,
   `ValidateVenueDraftUseCase` (por paso), `SaveVenueDraftUseCase` (crea o actualiza según exista `id`),
   `PublishVenueUseCase`, `GetMyVenuesUseCase`.
@@ -26,17 +26,17 @@
 |---|---|
 | Asistente | Un `ViewModel` para los tres pasos; el `id` del salón se guarda en cuanto el `POST` responde |
 | Duplicados | `POST` solo si no hay `id`; si el `POST` falla por red sin respuesta, el reintento consulta `GET /venues/mine` antes de volver a crear (ADR-04) |
-| Dinero | `BigDecimal`; entrada en MXN con validación > 0 |
+| Dinero | Entrada en MXN como texto validado (> 0, hasta 2 decimales); se envía como número JSON |
 | Persistencia | `SavedStateHandle` (rotación/proceso); sin almacenamiento local del borrador |
 
 ## 3. Constitution Check
 
 | Art. | Resultado | Cómo se cumple |
 |---|---|---|
-| I | ⚠️ Pendiente | Flujo de alta de salón; falta aprobación. |
-| II | ⚠️ Pendiente | Requiere `000` cerrado o excepción. |
+| I | ✅ Cumple | Spec aprobado (lote MVP, 2026-11-25). |
+| II | ⚠️ Excepción | Ampliación aprobada en `docs/diseno/excepcion-030-sin-cierre-000.md`: sin `000` cerrado y sin URL desplegada; JSON del código de backend y de respuestas locales. |
 | III | ✅ Cumple | Validación por paso en dominio. |
-| IV | ⚠️ Parcial | Endpoints en borrador; `location`, `photos`, `price` y publicación pendientes (P-01–P-04). |
+| IV | ⚠️ Parcial | Contrato verificado en `VirGO_Backend` PR #37 y en local; P-01–P-05 resueltas; falta la URL desplegada (humo T2208). |
 | V | ✅ Cumple | Sin datos del salón en logs. |
 | VI–XII | ✅ Planificado | Pruebas en §8. |
 
@@ -58,7 +58,7 @@ app/src/main/res/values/owner_venues_strings.xml
 
 | ADR | Decisión | Motivo |
 |---|---|---|
-| ADR-01 | Crear el borrador al salir de P3 | Asegura un `id` temprano y permite retomar. |
+| ADR-01 | Crear el borrador al salir de P4 | `POST /venues` exige capacidad y precio; asegura el `id` antes de revisar y permite retomar. |
 | ADR-02 | Publicación directa (`publish`) | No hay rol de administrador (P-01). |
 | ADR-03 | Sin fotos ni ubicación capturadas | Sin endpoint de carga ni mapa; depende de P-02/P-03. |
 | ADR-04 | Verificar en `mine` antes de reintentar un `POST` sin respuesta | Evita duplicados sin exigir idempotencia al backend. |

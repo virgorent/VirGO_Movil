@@ -21,6 +21,7 @@ import mx.virgo.app.ui.beta.BetaCatalogScreen
 import mx.virgo.app.ui.beta.BetaSectionScreen
 import mx.virgo.app.ui.beta.BetaSectionsMenu
 import mx.virgo.app.ui.beta.betaTitle
+import mx.virgo.app.ui.ownervenues.OwnerVenuesRoute
 import mx.virgo.core.designsystem.components.VirGoPageHeader
 import mx.virgo.core.designsystem.theme.pageBackground
 
@@ -35,9 +36,10 @@ fun RoleWorkspace(
     accountScreen: @Composable (SessionIdentity, () -> Unit) -> Unit = { identity, logout ->
         AccountProfileScreen(identity, logout)
     },
+    ownerVenuesScreen: @Composable () -> Unit = { OwnerVenuesRoute() },
 ) {
     key(accountKey, role) {
-        BetaWorkspace(role, accountName, accountEmail, onLogout, accountScreen)
+        BetaWorkspace(role, accountName, accountEmail, onLogout, accountScreen, ownerVenuesScreen)
     }
 }
 
@@ -48,6 +50,7 @@ private fun BetaWorkspace(
     accountEmail: String,
     onLogout: () -> Unit,
     accountScreen: @Composable (SessionIdentity, () -> Unit) -> Unit,
+    ownerVenuesScreen: @Composable () -> Unit,
 ) {
     var history by rememberSaveable(role) { mutableStateOf(role.home) }
     var sections by rememberSaveable { mutableStateOf(false) }
@@ -90,12 +93,53 @@ private fun BetaWorkspace(
             color = pageBackground(),
             contentColor = MaterialTheme.colorScheme.onSurface,
         ) {
-            when {
-                sections -> BetaSectionsMenu(role, navigate)
-                role == DemoRole.CLIENT && route == "explore" -> BetaCatalogScreen()
-                route == "profile" -> accountScreen(SessionIdentity(accountName, accountEmail, role.label), onLogout)
-                else -> BetaSectionScreen(role, route, accountName, accountEmail)
-            }
+            WorkspaceBody(
+                screen = if (sections) WorkspaceScreen.SECTIONS else workspaceScreen(role, route),
+                role = role,
+                route = route,
+                navigate = navigate,
+                identity = SessionIdentity(accountName, accountEmail, role.label),
+                onLogout = onLogout,
+                accountScreen = accountScreen,
+                ownerVenuesScreen = ownerVenuesScreen,
+            )
         }
     }
 }
+
+/** Inicio y «Mis salones» del propietario muestran sus salones reales (022 RF-01). */
+private val OWNER_VENUE_ROUTES = setOf("ownerHome", "ownerVenues")
+
+private enum class WorkspaceScreen { SECTIONS, CATALOG, OWNER_VENUES, ACCOUNT, SECTION }
+
+@Composable
+private fun WorkspaceBody(
+    screen: WorkspaceScreen,
+    role: DemoRole,
+    route: String,
+    navigate: (String) -> Unit,
+    identity: SessionIdentity,
+    onLogout: () -> Unit,
+    accountScreen: @Composable (SessionIdentity, () -> Unit) -> Unit,
+    ownerVenuesScreen: @Composable () -> Unit,
+) {
+    when (screen) {
+        WorkspaceScreen.SECTIONS -> BetaSectionsMenu(role, navigate)
+        WorkspaceScreen.CATALOG -> BetaCatalogScreen()
+        WorkspaceScreen.OWNER_VENUES -> ownerVenuesScreen()
+        WorkspaceScreen.ACCOUNT -> accountScreen(identity, onLogout)
+        WorkspaceScreen.SECTION -> BetaSectionScreen(role, route, identity.name, identity.email)
+    }
+}
+
+/** Pantalla con servicio conectado para la ruta; el resto es la sección «Próximamente». */
+private fun workspaceScreen(
+    role: DemoRole,
+    route: String,
+): WorkspaceScreen =
+    when {
+        role == DemoRole.CLIENT && route == "explore" -> WorkspaceScreen.CATALOG
+        role == DemoRole.OWNER && route in OWNER_VENUE_ROUTES -> WorkspaceScreen.OWNER_VENUES
+        route == "profile" -> WorkspaceScreen.ACCOUNT
+        else -> WorkspaceScreen.SECTION
+    }

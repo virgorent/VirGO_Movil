@@ -23,8 +23,22 @@ import mx.virgo.app.demo.RoleWorkspace
 import mx.virgo.app.ui.account.AccountProfileContent
 import mx.virgo.app.ui.account.AccountProfileUiState
 import mx.virgo.app.ui.account.SessionIdentity
+import mx.virgo.app.ui.ownervenues.OwnerVenuesContent
+import mx.virgo.app.ui.ownervenues.OwnerVenuesUiState
+import mx.virgo.app.ui.ownervenues.VenueForm
+import mx.virgo.app.ui.ownervenues.VenueWizardActions
+import mx.virgo.app.ui.ownervenues.VenueWizardContent
+import mx.virgo.app.ui.ownervenues.VenueWizardOutcome
+import mx.virgo.app.ui.ownervenues.VenueWizardUiState
+import mx.virgo.app.ui.ownervenues.WizardError
+import mx.virgo.core.common.AppError
 import mx.virgo.core.designsystem.theme.VirGoTheme
+import mx.virgo.core.domain.OwnerVenue
 import mx.virgo.core.domain.Venue
+import mx.virgo.core.domain.VenueDraft
+import mx.virgo.core.domain.VenueDraftValidator
+import mx.virgo.core.domain.VenueStatus
+import mx.virgo.core.domain.VenueStep
 import mx.virgo.core.testing.sampleUserProfile
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -62,13 +76,51 @@ class BetaAccessibilityTest {
     private val darkHolder = mutableStateOf(false)
     private var started = false
 
+    private val ownerVenues =
+        listOf(
+            OwnerVenue(
+                "v1",
+                VenueDraft(
+                    name = "Salón Jardín de las Bugambilias con nombre largo",
+                    shortName = "Bugambilias",
+                    description = "Salón con jardín y terraza para eventos grandes.",
+                    address = "Av. Juriquilla 100, Querétaro",
+                    zone = "El Marqués",
+                    capacity = 350,
+                    priceBase = java.math.BigDecimal("1500.50"),
+                    minHours = 4,
+                    categories = setOf("Salon de eventos", "Jardin"),
+                    amenities = setOf("Aire acondicionado", "Pista de baile"),
+                ),
+                VenueStatus.DRAFT,
+            ),
+            OwnerVenue(
+                "v2",
+                VenueDraft(name = "Terraza Centro", zone = "Centro", capacity = 80),
+                VenueStatus.PUBLISHED,
+            ),
+            OwnerVenue("v3", VenueDraft(name = "Rooftop Antea", zone = "Antea"), VenueStatus.REVIEW),
+        )
+
     private val venue =
         Venue("real-id", "Salón con un nombre bastante largo", null, "Centro histórico", 180, 0.0, 0, null, null)
 
     @Test
     fun catalogStatesAreAccessibleInBothThemes() {
-        assertCatalogStates(darkTheme = false)
-        assertCatalogStates(darkTheme = true)
+        val states =
+            mapOf(
+                "loading" to BetaCatalogState(),
+                "empty" to BetaCatalogState(loading = false),
+                "error" to BetaCatalogState(loading = false, failed = true),
+                "data" to BetaCatalogState(loading = false, venues = listOf(venue, venue.copy(id = "b", capacity = 0))),
+            )
+        listOf(false, true).forEach { dark ->
+            states.forEach { (name, state) ->
+                sweep("catalog $name dark=$dark", dark) {
+                    BetaCatalogContent(state, onRefresh = {}, onLogin = {}, onRegister = {})
+                }
+            }
+        }
     }
 
     @Test
@@ -105,7 +157,16 @@ class BetaAccessibilityTest {
         listOf(DemoRole.OWNER, DemoRole.PROVIDER).forEach { role ->
             listOf(false, true).forEach { dark ->
                 sweep("workspace $role dark=$dark", dark) {
-                    RoleWorkspace(role, "synthetic-$role-$dark", onLogout = {}, SESSION_NAME, SESSION_EMAIL)
+                    RoleWorkspace(
+                        role,
+                        "synthetic-$role-$dark",
+                        onLogout = {},
+                        SESSION_NAME,
+                        SESSION_EMAIL,
+                        ownerVenuesScreen = {
+                            OwnerVenuesContent(OwnerVenuesUiState(loading = false, venues = ownerVenues), {}, {}, {})
+                        },
+                    )
                 }
                 compose.onNode(hasText("Secciones") and hasClickAction()).performClick()
                 compose.waitForIdle()
@@ -114,17 +175,47 @@ class BetaAccessibilityTest {
         }
     }
 
-    private fun assertCatalogStates(darkTheme: Boolean) {
-        val states =
+    /** 022 CA-08: «Mis salones» y los tres pasos del asistente, con errores visibles. */
+    @Test
+    fun ownerVenuesAreAccessibleInBothThemes() {
+        val lists =
             mapOf(
-                "loading" to BetaCatalogState(),
-                "empty" to BetaCatalogState(loading = false),
-                "error" to BetaCatalogState(loading = false, failed = true),
-                "data" to BetaCatalogState(loading = false, venues = listOf(venue, venue.copy(id = "b", capacity = 0))),
+                "loading" to OwnerVenuesUiState(),
+                "empty" to OwnerVenuesUiState(loading = false),
+                "error" to OwnerVenuesUiState(loading = false, error = AppError.Network),
+                "data" to
+                    OwnerVenuesUiState(
+                        loading = false,
+                        venues = ownerVenues,
+                        outcome = VenueWizardOutcome.PUBLISHED,
+                    ),
             )
-        states.forEach { (name, state) ->
-            sweep("catalog $name dark=$darkTheme", darkTheme) {
-                BetaCatalogContent(state, onRefresh = {}, onLogin = {}, onRegister = {})
+        val broken =
+            VenueForm(
+                description = "corta",
+                capacity = "0",
+                services =
+                    "a".repeat(
+                        VenueDraftValidator.SERVICE_MAX + 1,
+                    ),
+            )
+        val wizard =
+            VenueStep.entries.associate { step ->
+                "wizard $step" to
+                    VenueWizardUiState(
+                        key = "k",
+                        step = step,
+                        form = if (step == VenueStep.REVIEW) VenueForm.from(ownerVenues.first()) else broken,
+                        fieldErrors = VenueDraftValidator.validate(broken.toDraft(), step),
+                        error = WizardError.CHECK_FIELDS,
+                    )
+            }
+        listOf(false, true).forEach { dark ->
+            lists.forEach { (name, state) ->
+                sweep("owner venues $name dark=$dark", dark) { OwnerVenuesContent(state, {}, {}, {}) }
+            }
+            wizard.forEach { (name, state) ->
+                sweep("$name dark=$dark", dark) { VenueWizardContent(state, VenueWizardActions()) }
             }
         }
     }
