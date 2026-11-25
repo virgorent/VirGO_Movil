@@ -1,21 +1,33 @@
-# Tareas — 009 Reservar y pagar
+# Tareas — 009 Reservar (sin cobro en la app)
 
 | Campo | Valor |
 |---|---|
 | Módulo | `009-reservar-pagar` |
-| Versión | 1.0.0 |
-| Estado | Borrador |
-| Fecha | 2026-11-05 |
-| Rol | Cliente |
-| Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
+| Versión | 2.0.0 |
+| Estado | Propuesto para aprobación (lote MVP). **Las tareas no se ejecutan hasta aprobar este archivo y desbloquear `000`.** |
+| Fecha | 2026-11-25 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 
 **Estados:** ⏳ Pendiente · 🔄 En curso · ✅ Hecha (con evidencia) · ⛔ Bloqueada
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T901 | Pantalla C8 Pago del anticipo y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T902 | Pantalla C23 Comprobante de pago y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T903 | Repositorio y casos de uso | T901 | `dev-android` | Pruebas con MockWebServer en verde | ⏳ |
-| T904 | Pruebas unitarias, de UI y de seguridad | T902 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ⏳ |
-| T905 | Integrar con la URL real y hacer la prueba de humo | Specs de API | `qa-movil` | `check.md` completo | ⏳ |
+| T901 | Red: `BookingsApi` con `Idempotency-Key` y DTOs | `000`; P-01 decidida | `dev-android` | MockWebServer: 201, 400, 401, 404, 500, timeout; encabezado presente | ⏳ |
+| T902 | Dominio: modelos, validación y casos de uso con clave de idempotencia | T901 | `dev-android` | Unitarias y Pitest en verde | ⏳ |
+| T903 | Datos: `BookingsRepositoryImpl` y módulo Hilt | T901, T902 | `dev-android` | Integración: reintento con la misma clave | ⏳ |
+| T904 | UI C8: confirmación, aviso sin cobro, validación y envío único | T903; `006` T603 | `dev-android` + `ui-designsystem` | Compose Testing CA-01–CA-05 | ⏳ |
+| T905 | UI C23: comprobante con datos del servidor | T904 | `dev-android` | Compose Testing CA-06 | ⏳ |
+| T906 | UI Mis reservaciones: lista, vacío, error y apertura del comprobante; sección del espacio del cliente | T903 | `dev-android` | Compose Testing CA-07; `NavigationTest` | ⏳ |
+| T907 | Calidad: accesibilidad, seguridad (sin datos de pago) y pipeline completo | T904–T906 | `qa-movil` + `seguridad-ci` | Pipeline en verde; CA-08 | ⏳ |
+| T908 | Humo contra producción y cierre | T907; backend `009`, `066`, `067` desplegados; salón de prueba | `qa-movil` | `check.md` y `memoria.md` | ⏳ |
+
+## Matriz de trazabilidad
+
+| RF | CA | Tarea |
+|---|---|---|
+| RF-01, RF-02 | CA-01, CA-02, CA-03 | T902, T904 |
+| RF-03, RF-07 | CA-06 | T904, T905 |
+| RF-04, RF-05 | CA-01, CA-04, CA-05 | T901, T903, T904 |
+| RF-06 | CA-06 | T905 |
+| RF-08, RF-09 | CA-07 | T906 |
+| RF-10 | CA-08 | T905–T907 |

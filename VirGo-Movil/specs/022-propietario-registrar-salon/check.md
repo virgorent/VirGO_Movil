@@ -1,22 +1,34 @@
-# Check — 022 Registrar un salón
+# Check — 022 Propietario: registrar salón
 
 | Campo | Valor |
 |---|---|
 | Módulo | `022-propietario-registrar-salon` |
-| Estado del spec | Borrador |
+| Estado del spec | Propuesto para aprobación (lote MVP) |
 | Revisó | — |
+| Fecha | 2026-11-25 |
 
-## 1. Criterios de aceptación
+Sin evidencia todavía: el módulo no se ha implementado.
+
+## 1. Especificación y gobernanza
+
+- [ ] Spec, plan y tareas aprobados por el usuario.
+- [ ] `000` cerrado o excepción aprobada (Art. II.2).
+- [ ] P-01 (publicación directa), P-02 (`location`), P-03 (`photos`) y P-04 (`price`) decididas con backend.
+
+## 2. Criterios de aceptación
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | Prueba o captura | ⏳ |
-| CA-02 | Prueba o captura | ⏳ |
-| CA-03 | Prueba o captura | ⏳ |
-| CA-04 | Prueba o captura | ⏳ |
-| CA-05 | Prueba o captura | ⏳ |
+| CA-01 | Prueba de UI de Mis salones vacío | ⏳ |
+| CA-02 | Unitaria de validación + prueba de UI | ⏳ |
+| CA-03 | Integración: un `POST` y luego `PATCH` | ⏳ |
+| CA-04 | Prueba de borrador en Mis salones | ⏳ |
+| CA-05 | Prueba de publicar + humo en el catálogo | ⏳ |
+| CA-06 | Integración: reintento sin duplicado | ⏳ |
+| CA-07 | Prueba de retomar borrador | ⏳ |
+| CA-08 | Barrido de accesibilidad 320 dp/2.0 ambos temas | ⏳ |
 
-## 2. Pruebas
+## 3. Pruebas
 
 | Tipo | Evidencia | Estado |
 |---|---|---|
@@ -27,11 +39,11 @@
 | Mutación | Puntaje: — % | ⏳ |
 | Humo | APK contra producción | ⏳ |
 
-## 3. PR y release
+## 4. PR
 
 - [ ] PR: enlace —
-- [ ] Una revisión aprobada.
+- [ ] Una revisión aprobada y checks requeridos en verde.
 
-## 4. Memoria y aprendizaje
+## 5. Memoria
 
 - [ ] Entrada en `memoria.md`.

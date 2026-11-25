@@ -914,3 +914,12 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Costo:** herramientas locales existentes; sin servicios ni dependencias nuevas.
 - **Aprendizaje:** diferenciar acciones, navegación y selección reduce competencia visual. Recompilar sin incremental resolvió los símbolos duplicados tras mover fuentes. Un fallo aislado de `NavigationTest` no se reprodujo al repetir la suite completa; causa no determinada.
 - **Pendiente:** aceptación visual del usuario y CI del nuevo head. No se declara pulido exhaustivo de todas las pantallas, TalkBack ni cierre de T014/T036. Sin fusión ni release.
+
+### 2026-11-25 · Lote de specs del MVP cliente
+
+- **Autor:** usuario + Claude Code.
+- **Qué se hizo:** se reescribieron a v2.0.0 los borradores `006`, `008`, `009` y `022`, y se actualizó `030` (traído del PR #33) al estado de la beta `034`. Los cinco quedan **Propuestos para aprobación** como lote MVP. Se retiraron las simulaciones de la maqueta (respuestas automáticas, tarjeta «0000», actividad de ejemplo, fotos de ejemplo).
+- **Decisiones de alcance propuestas:** reservar **sin cobro en la app** (`pending_payment`, anticipo del 30 % calculado por el servidor); detalle sin galería (no hay carga de fotos ni librería de imágenes); publicación directa del salón por el propietario; precios ocultos sin sesión.
+- **Hallazgos de contrato (backend):** `POST /quotes` y `POST /bookings` exigen `eventId` y `007` no está en el MVP; `POST /bookings` exige `quoteId`; el esquema `venues` exige `location` y `photos`; ninguna cotización pasa a «Respondida» sin `POST /quotes/:id/response` (`062`). Endpoints adicionales del MVP: `GET /venues/mine` (`025`) y `GET /bookings` (`066`).
+- **Pendiente:** aprobación del lote por el usuario; respuestas de backend a las preguntas P-xx de cada spec; cierre de `000` (T014 TalkBack y T036) antes de implementar.
+- **Costo:** $0.
