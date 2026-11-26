@@ -21,6 +21,8 @@ import mx.virgo.app.ui.beta.BetaSectionScreen
 import mx.virgo.app.ui.beta.BetaSectionsMenu
 import mx.virgo.app.ui.beta.betaTitle
 import mx.virgo.app.ui.bookings.ClientBookings
+import mx.virgo.app.ui.events.ClientEvents
+import mx.virgo.app.ui.events.EventStep
 import mx.virgo.app.ui.ownerrequests.OwnerRequests
 import mx.virgo.app.ui.ownervenues.OwnerVenuesRoute
 import mx.virgo.app.ui.quotes.ClientQuotes
@@ -110,6 +112,10 @@ private fun BetaWorkspace(
     }
 }
 
+/** «Mi Evento», «Invitados» y «Pendientes» abren el evento real; las dos últimas, ese paso (014 RF-04). */
+private val EVENT_STEPS = mapOf("event" to null, "guests" to EventStep.GUESTS, "tasks" to EventStep.TASKS)
+private val EVENT_ROUTES = EVENT_STEPS.keys
+
 /** Inicio y «Mis salones» del propietario muestran sus salones reales (022 RF-01). */
 private val OWNER_VENUE_ROUTES = setOf("ownerHome", "ownerVenues")
 
@@ -118,6 +124,7 @@ private enum class WorkspaceScreen {
     CATALOG,
     BOOKINGS,
     QUOTES,
+    EVENTS,
     OWNER_VENUES,
     OWNER_REQUESTS,
     ACCOUNT,
@@ -140,6 +147,7 @@ private fun WorkspaceBody(
         WorkspaceScreen.CATALOG ->
             ClientExplore(onMyBookings = { navigate("bookings") }, onMyQuotes = { navigate("quotes") })
         WorkspaceScreen.BOOKINGS -> ClientBookings()
+        WorkspaceScreen.EVENTS -> ClientEvents(openStep = EVENT_STEPS[route])
         WorkspaceScreen.QUOTES ->
             ClientQuotes(onCatalog = { navigate("explore") }, onMyBookings = { navigate("bookings") })
         WorkspaceScreen.OWNER_VENUES -> ownerVenuesScreen()
@@ -149,17 +157,23 @@ private fun WorkspaceBody(
     }
 }
 
-/** Pantalla con servicio conectado para la ruta; el resto es la sección «Próximamente». */
+/** Rutas con servicio conectado por rol; el resto es la sección «Próximamente». */
+private val CONNECTED_SCREENS: Map<DemoRole, Map<String, WorkspaceScreen>> =
+    mapOf(
+        DemoRole.CLIENT to
+            mapOf(
+                "explore" to WorkspaceScreen.CATALOG,
+                "bookings" to WorkspaceScreen.BOOKINGS,
+                "quotes" to WorkspaceScreen.QUOTES,
+            ) + EVENT_ROUTES.associateWith { WorkspaceScreen.EVENTS },
+        DemoRole.OWNER to
+            OWNER_VENUE_ROUTES.associateWith { WorkspaceScreen.OWNER_VENUES } +
+            ("ownerRequests" to WorkspaceScreen.OWNER_REQUESTS),
+    )
+
 private fun workspaceScreen(
     role: DemoRole,
     route: String,
 ): WorkspaceScreen =
-    when {
-        role == DemoRole.CLIENT && route == "explore" -> WorkspaceScreen.CATALOG
-        role == DemoRole.CLIENT && route == "bookings" -> WorkspaceScreen.BOOKINGS
-        role == DemoRole.CLIENT && route == "quotes" -> WorkspaceScreen.QUOTES
-        role == DemoRole.OWNER && route in OWNER_VENUE_ROUTES -> WorkspaceScreen.OWNER_VENUES
-        role == DemoRole.OWNER && route == "ownerRequests" -> WorkspaceScreen.OWNER_REQUESTS
-        route == "profile" -> WorkspaceScreen.ACCOUNT
-        else -> WorkspaceScreen.SECTION
-    }
+    CONNECTED_SCREENS[role]?.get(route)
+        ?: if (route == "profile") WorkspaceScreen.ACCOUNT else WorkspaceScreen.SECTION

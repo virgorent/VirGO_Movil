@@ -134,3 +134,7 @@ no se implementan.
 | Spec | Tareas autorizadas | Contrato |
 |---|---|---|
 | `024-propietario-solicitudes` | T2401–T2404 | `GET /quotes`, `GET /quotes/:id`, `POST /quotes/:id/response` (PR #41) |
+| `007-crear-evento` | T701–T703 | `POST /events`, `PATCH /events/:id` |
+| `014-mi-evento` | T1401–T1402 | `GET /events`, `GET /events/:id` |
+| `016-invitados` | T1601–T1603 | `GET/POST/PATCH/DELETE /events/:id/guests` |
+| `017-pendientes` | T1701–T1703 | `GET/POST/PATCH/DELETE /events/:id/tasks` |
