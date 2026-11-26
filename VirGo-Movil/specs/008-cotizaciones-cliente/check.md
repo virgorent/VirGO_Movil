@@ -3,20 +3,33 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `008-cotizaciones-cliente` |
-| Estado del spec | Borrador |
+| Estado del spec | Aprobado por el usuario (lote MVP, 2026-11-25) |
 | Revisó | — |
+| Fecha | 2026-11-25 |
 
-## 1. Criterios de aceptación
+Sin evidencia todavía: el módulo no se ha implementado.
+
+## 1. Especificación y gobernanza
+
+- [x] Spec, plan y tareas aprobados por el usuario el 2026-11-25 (lote MVP).
+- [ ] `000` cerrado o excepción aprobada (Art. II.2).
+- [ ] P-01 (`eventId`) y P-02 (respuesta del propietario) decididas.
+
+## 2. Criterios de aceptación
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | Prueba o captura | ⏳ |
-| CA-02 | Prueba o captura | ⏳ |
-| CA-03 | Prueba o captura | ⏳ |
-| CA-04 | Prueba o captura | ⏳ |
-| CA-05 | Prueba o captura | ⏳ |
+| CA-01 | Prueba de UI + MockWebServer del cuerpo enviado; humo | ⏳ |
+| CA-02 | Unitaria de validación + prueba de UI | ⏳ |
+| CA-03 | MockWebServer 400 con campos + prueba de UI | ⏳ |
+| CA-04 | Prueba de reintento sin duplicado | ⏳ |
+| CA-05 | Prueba de lista con estados conocidos y desconocido | ⏳ |
+| CA-06 | Prueba de estado vacío | ⏳ |
+| CA-07 | Prueba de detalle respondido y navegación a `009` | ⏳ |
+| CA-08 | Prueba de detalle enviado sin acción | ⏳ |
+| CA-09 | Barrido de accesibilidad 320 dp/2.0 ambos temas | ⏳ |
 
-## 2. Pruebas
+## 3. Pruebas
 
 | Tipo | Evidencia | Estado |
 |---|---|---|
@@ -27,11 +40,11 @@
 | Mutación | Puntaje: — % | ⏳ |
 | Humo | APK contra producción | ⏳ |
 
-## 3. PR y release
+## 4. PR
 
 - [ ] PR: enlace —
-- [ ] Una revisión aprobada.
+- [ ] Una revisión aprobada y checks requeridos en verde.
 
-## 4. Memoria y aprendizaje
+## 5. Memoria
 
 - [ ] Entrada en `memoria.md`.

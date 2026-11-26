@@ -23,9 +23,6 @@ data object RecoverRoute
 @Serializable
 data object HomeRoute
 
-@Serializable
-data object VisualPreviewRoute
-
 data class TopLevelDestination(
     val icon: ImageVector,
     val labelRes: Int,
