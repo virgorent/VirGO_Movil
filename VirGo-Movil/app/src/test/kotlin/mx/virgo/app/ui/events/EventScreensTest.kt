@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasImeAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -16,6 +17,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.text.input.ImeAction
 import mx.virgo.app.session.FakeSessionTokenStore
 import mx.virgo.app.session.SessionRepository
 import mx.virgo.core.designsystem.theme.VirGoTheme
@@ -97,6 +99,10 @@ class EventScreensTest {
         compose.onNodeWithText("La fecha no puede estar en el pasado.").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("El salón Salón Las Palmas se conserva.").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Guardando…").performScrollTo().assertIsNotEnabled()
+        // Los campos de números pasan al siguiente con el teclado; el presupuesto cierra el formulario.
+        compose.onNode(hasContentDescription("Invitados") and hasImeAction(ImeAction.Next)).assertExists()
+        compose.onNode(hasContentDescription("Horas") and hasImeAction(ImeAction.Next)).assertExists()
+        compose.onNode(hasContentDescription("Presupuesto en pesos") and hasImeAction(ImeAction.Done)).assertExists()
     }
 
     @Test
