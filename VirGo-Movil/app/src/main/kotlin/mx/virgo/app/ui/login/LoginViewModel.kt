@@ -49,11 +49,14 @@ class LoginViewModel
                 when (val result = login(current.email, current.password)) {
                     is AppResult.Success -> {
                         val persisted = sessionRepository.establish(result.value)
+                        // Se borra la contraseña y se reinicia `submitted`: si no, el campo vacío
+                        // se marca «Mínimo 8 caracteres» el instante antes de cambiar de pantalla.
                         update {
                             it.copy(
                                 isLoading = false,
                                 loggedIn = persisted,
                                 password = "",
+                                submitted = false,
                                 error = if (persisted) null else AppError.Unauthorized,
                             )
                         }
