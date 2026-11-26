@@ -15,11 +15,13 @@ class RegisterUseCase
             email: String,
             phone: String,
             password: String,
+            role: AccountRole = AccountRole.CLIENT,
         ): AppResult<RegisteredUser> =
             repository.register(
                 name = name.trim(),
                 email = email.trim().lowercase(),
                 phone = MX_COUNTRY_CODE + phone.trim(),
                 password = password,
+                role = role,
             )
     }

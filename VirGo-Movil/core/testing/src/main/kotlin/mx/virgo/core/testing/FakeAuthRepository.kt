@@ -17,6 +17,9 @@ class FakeAuthRepository : AuthRepository {
     var registerCalls: Int = 0
         private set
 
+    var lastRegisterRole: mx.virgo.core.domain.AccountRole? = null
+        private set
+
     var lastRegisterName: String = ""
         private set
 
@@ -43,12 +46,14 @@ class FakeAuthRepository : AuthRepository {
         email: String,
         phone: String,
         password: String,
+        role: mx.virgo.core.domain.AccountRole,
     ): AppResult<RegisteredUser> {
         registerCalls += 1
         lastRegisterName = name
         lastRegisterEmail = email
         lastRegisterPhone = phone
         lastRegisterPassword = password
+        lastRegisterRole = role
         return registerResult
     }
 }
