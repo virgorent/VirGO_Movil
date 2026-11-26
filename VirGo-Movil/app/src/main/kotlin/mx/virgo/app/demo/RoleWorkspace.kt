@@ -118,7 +118,7 @@ private val EVENT_STEPS = mapOf("event" to null, "guests" to EventStep.GUESTS, "
 private val EVENT_ROUTES = EVENT_STEPS.keys
 
 /** Pantallas del cliente que dibujan su propio encabezado con pasos internos. */
-private val OWN_HEADER_ROUTES = setOf("explore", "quotes")
+private val OWN_HEADER_ROUTES = setOf("explore", "quotes") + EVENT_ROUTES
 
 /** Inicio y «Mis salones» del propietario muestran sus salones reales (022 RF-01). */
 private val OWNER_VENUE_ROUTES = setOf("ownerHome", "ownerVenues")
@@ -152,7 +152,7 @@ private fun WorkspaceBody(
         WorkspaceScreen.CATALOG ->
             ClientExplore(onMyBookings = { navigate("bookings") }, onMyQuotes = { navigate("quotes") })
         WorkspaceScreen.BOOKINGS -> ClientBookings()
-        WorkspaceScreen.EVENTS -> ClientEvents(openStep = EVENT_STEPS[route])
+        WorkspaceScreen.EVENTS -> ClientEvents(EVENT_STEPS[route], betaTitle(role, route), onBack = back)
         WorkspaceScreen.QUOTES ->
             ClientQuotes(onCatalog = { navigate("explore") }, onMyBookings = { navigate("bookings") }, onBack = back)
         WorkspaceScreen.OWNER_VENUES -> ownerVenuesScreen()

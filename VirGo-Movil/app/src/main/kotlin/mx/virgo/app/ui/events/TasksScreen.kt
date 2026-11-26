@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -145,7 +146,14 @@ private fun TaskGroup(
                     tone = tone,
                     standalone = false,
                     onClick = { actions.onEdit(task) },
-                    trailing = { Checkbox(checked = task.done, onCheckedChange = { actions.onToggle(task) }) },
+                    trailing = {
+                        // Sin nombre, TalkBack solo diría «casilla»: se nombra con el pendiente.
+                        Checkbox(
+                            checked = task.done,
+                            onCheckedChange = { actions.onToggle(task) },
+                            modifier = Modifier.semantics { contentDescription = task.title },
+                        )
+                    },
                     subtitleMaxLines = Int.MAX_VALUE,
                 )
                 SecondaryAction(stringResource(R.string.guests_delete)) { actions.onDelete(task) }

@@ -1,7 +1,9 @@
 package mx.virgo.app.ui.events
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Celebration
@@ -26,6 +28,7 @@ import mx.virgo.core.designsystem.components.LoadingState
 import mx.virgo.core.designsystem.components.VirGoButton
 import mx.virgo.core.designsystem.components.VirGoCard
 import mx.virgo.core.designsystem.components.VirGoPageBody
+import mx.virgo.core.designsystem.components.VirGoPageHeader
 import mx.virgo.core.designsystem.components.VirGoRow
 import mx.virgo.core.designsystem.components.VirGoRowDivider
 import mx.virgo.core.designsystem.theme.VirGoTone
@@ -38,6 +41,8 @@ import mx.virgo.core.domain.ClientEvent
 @Composable
 fun ClientEvents(
     openStep: EventStep? = null,
+    @StringRes title: Int = R.string.demo_title_event,
+    onBack: (() -> Unit)? = null,
     viewModel: EventsViewModel = hiltViewModel(),
     form: @Composable (String?, () -> Unit, (ClientEvent) -> Unit) -> Unit = { id, back, saved ->
         EventFormScreen(id, onBack = back, onSaved = saved)
@@ -55,48 +60,80 @@ fun ClientEvents(
         viewModel.open(it.id)
     }
     val event = detail?.event
-    when {
-        step == EventStep.CREATE -> {
-            BackHandler(onBack = back)
-            form(null, back, saved)
+    // Encabezado propio: su flecha deshace el paso interno antes de salir de «Mi Evento».
+    val innerBack: (() -> Unit)? =
+        if (step != null) {
+            back
+        } else if (detail != null) {
+            viewModel::closeDetail
+        } else {
+            null
         }
-        detail != null && step == EventStep.EDIT -> {
-            BackHandler(onBack = back)
-            form(detail.eventId, back, saved)
-        }
-        event != null && step == EventStep.GUESTS -> {
-            BackHandler(onBack = back)
-            guests(event, back)
-        }
-        detail != null && step == EventStep.TASKS -> {
-            BackHandler(onBack = back)
-            tasks(detail.eventId, back)
-        }
-        detail != null -> {
-            BackHandler(onBack = viewModel::closeDetail)
-            VirGoPageBody {
-                EventDetailBody(
-                    detail,
-                    EventDetailActions(
-                        onEdit = { step = EventStep.EDIT },
-                        onGuests = { step = EventStep.GUESTS },
-                        onTasks = { step = EventStep.TASKS },
-                        onRetry = { viewModel.open(detail.eventId) },
-                        onBack = viewModel::closeDetail,
-                    ),
-                )
+    Column(Modifier.fillMaxSize()) {
+        EventsHeader(title, innerBack ?: onBack)
+        when {
+            step == EventStep.CREATE -> {
+                BackHandler(onBack = back)
+                form(null, back, saved)
             }
+            detail != null && step == EventStep.EDIT -> {
+                BackHandler(onBack = back)
+                form(detail.eventId, back, saved)
+            }
+            event != null && step == EventStep.GUESTS -> {
+                BackHandler(onBack = back)
+                guests(event, back)
+            }
+            detail != null && step == EventStep.TASKS -> {
+                BackHandler(onBack = back)
+                tasks(detail.eventId, back)
+            }
+            detail != null -> {
+                BackHandler(onBack = viewModel::closeDetail)
+                EventDetailStep(detail, viewModel) { step = it }
+            }
+            else ->
+                EventsListContent(
+                    state,
+                    onOpen = {
+                        viewModel.open(it)
+                        step = openStep
+                    },
+                    onCreate = { step = EventStep.CREATE },
+                    onRetry = viewModel::refresh,
+                )
         }
-        else ->
-            EventsListContent(
-                state,
-                onOpen = {
-                    viewModel.open(it)
-                    step = openStep
-                },
-                onCreate = { step = EventStep.CREATE },
-                onRetry = viewModel::refresh,
-            )
+    }
+}
+
+@Composable
+private fun EventsHeader(
+    @StringRes title: Int,
+    onBack: (() -> Unit)?,
+) = VirGoPageHeader(
+    title = stringResource(title),
+    kicker = stringResource(R.string.demo_role_client),
+    onBack = onBack,
+    backContentDescription = stringResource(R.string.demo_back),
+)
+
+@Composable
+private fun EventDetailStep(
+    detail: EventDetailState,
+    viewModel: EventsViewModel,
+    onStep: (EventStep) -> Unit,
+) {
+    VirGoPageBody {
+        EventDetailBody(
+            detail,
+            EventDetailActions(
+                onEdit = { onStep(EventStep.EDIT) },
+                onGuests = { onStep(EventStep.GUESTS) },
+                onTasks = { onStep(EventStep.TASKS) },
+                onRetry = { viewModel.open(detail.eventId) },
+                onBack = viewModel::closeDetail,
+            ),
+        )
     }
 }
 
