@@ -1062,3 +1062,26 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Pendiente para cerrar `000` (T036):** TalkBack manual del usuario (6 pasos), aprobación del profesor, reconciliar P-01 (`mx.virgo.app` ya publicado en `v0.2.0` y Google Play), arranque en frío del APK actual (RNF-03) y la incoherencia de versión de la constitución (encabezado v1.2.0 frente a «vigente v1.1.1» en esta memoria).
 - **Costo:** $0.
 - **Aprendizaje:** en barridos semánticos los nodos fuera del viewport reportan límites táctiles recortados a 0 dp; se mide el tamaño sin recorte para no confundir scroll con defecto.
+
+### 2026-11-26 · Emulador, validador de Atlas y limpieza de PRs
+
+- **Autor:** usuario + Claude Code («Haz todo», «dale», «Sí, hazlo»).
+- **Emulador (Pixel_10_Pro contra el backend local con la cadena y los PRs propios):** catálogo real, registro y login de cliente y de propietario (el servidor guarda `owner`), detalle con precio, cotizar, ver la respuesta, reservar con cotización (folio `VG-2026-0001`, la cotización pasa a `accepted`), «Mi Evento» con evento, invitado y pendiente. Errores hallados y corregidos en la app (PRs #48 → #49):
+  - encabezado doble al reservar desde «Mis cotizaciones», y la flecha del detalle salía de la sección;
+  - el comprobante decía «Anticipo (30 %)» aunque el anticipo lo fija la cotización;
+  - el aviso de rol del registro decía «Sprint 3» y «verás VirGo como cliente», ya falso;
+  - en «Mi Evento», la flecha salía al catálogo desde invitados o pendientes, la casilla del pendiente no tenía nombre para TalkBack y la mesa se leía como un número suelto.
+- **Hallazgo de despliegue:** `db/schema/quotes.json` es `strict`/`error` y exige en `response` los campos `items`, `note`, `subtotal`, `tax`, `total`, `validUntil` y `answeredAt`; la API guardaba `{total, deposit, message}`. Revisión estática de los documentos que escriben los repositorios Mongo: solo fallaba la respuesta de cotización. Arreglo en VirGO_Backend #56 (con prueba de contrato código ↔ esquema); la nota de la respuesta baja a 1000 caracteres y la app lo alinea (`024` v2.0.1). **No se probó contra un MongoDB real con el validador**: no hubo Docker disponible.
+- **Ensayos:** la cadena final del backend (main + #39 + #46 + #47 + #48 + #56) se fusiona sin conflictos, con **286/286** pruebas y el recorrido HTTP en 38/38; la pila móvil entra a `main` sin conflictos (36 commits, `main` sin cambios desde que se armó).
+- **Humo:** `scripts/humo-produccion.py` (PR #50) con modo `lectura` predeterminado (no escribe), `cuentas` y `completo` (deja un salón de prueba publicado: la API no permite borrarlo). Probado en local: 3/3, 20/20 y 28/28.
+- **Estado de PRs al cierre:**
+  - Backend: #38, #40, #44 y #45 fusionados; #39 aprobado por `ccabrera-dev8` y atrás de `main`; #46, #47, #48 y #56 esperan revisión, con resumen publicado en cada uno; #53, #54 y #55 (issues #49, #50 y #52 de la revisión del #38) en verde, sin revisar; Dependabot #32–#35 cerrados por el usuario (#32 era coverlet, no .NET 11).
+  - Móvil: la pila #35 → #50 en verde; los borradores #41–#46, #48 y #49 pasaron a revisión; el título del #40 se corrigió («trae código»). Cerrados por obsoletos: #11, #22, #23, #27, #28, #29, #31, #33, #36, #37 y #38 (lo útil de #36 y #33 se rescató en #50); el usuario cerró #25 y #15. #26 (okhttp 5) abierto y en espera; #30 pendiente de decisión.
+- **Restricción de aprobación:** los PRs abiertos con la cuenta `ccabrera-dev8` no los puede aprobar `ccabrera-dev8`; necesitan la aprobación de otro miembro. La aceptación visual sigue siendo exclusiva de `ccabrera-dev8`.
+- **Roles (palabras del usuario):** «el backend lo tiene esau en sí, gafas es el de las apis». Quién aplica el validador en Atlas y quién despliega no está acordado por escrito.
+- **Pendiente:**
+  - revisión y fusión de #46, #47, #48 y #56; «Update branch» y fusión del #39;
+  - aplicar el validador en Atlas (no hay `MONGODB_URI` de producción disponible para quien lo preparó), desplegar y correr el humo;
+  - riesgos abiertos: las cotizaciones siguen exponiendo `clientId`, y dos reservas simultáneas con la misma cotización y distinta clave podrían duplicarse (#46);
+  - TalkBack manual (T014) y aceptación visual de la pila.
+- **Costo:** $0.
