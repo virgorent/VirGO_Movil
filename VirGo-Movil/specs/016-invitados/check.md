@@ -31,7 +31,7 @@
 
 ## 3. PR
 
-- [ ] PR: enlace —
+- [x] PR: [virgorent/VirGO_Movil#46](https://github.com/virgorent/VirGO_Movil/pull/46) (borrador, base `feat/024-solicitudes`).
 
 ## 4. Memoria
 
