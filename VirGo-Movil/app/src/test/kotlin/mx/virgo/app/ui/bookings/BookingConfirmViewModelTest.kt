@@ -74,6 +74,15 @@ class BookingConfirmViewModelTest {
     }
 
     @Test
+    fun withAQuoteTheDateIsFixedAndTheQuotedTotalIsKept() {
+        val vm = viewModel()
+        vm.start("v1", quoteId = "q-9", date = day0.plusDays(30), quotedTotal = java.math.BigDecimal("48000"))
+        vm.setDate(day0.plusDays(40))
+        assertEquals(day0.plusDays(30), vm.state.value.date)
+        assertEquals("48000", vm.state.value.draft.quotedTotal)
+    }
+
+    @Test
     fun pastDateOrZeroHoursNeverReachTheServer() {
         val vm = viewModel()
         vm.start("v1")

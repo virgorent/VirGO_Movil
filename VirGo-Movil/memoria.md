@@ -1037,3 +1037,9 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Pendiente:** humo en producción (T704, T1403, T1604, T1704).
 - **Costo:** $0.
 
+
+### 2026-11-26 · Reservar con cotización: total y fecha cotizados
+
+- **Autor:** usuario + Claude Code («Sí, arráncale»).
+- **Backend:** PRs VirGO_Backend #46 (reservar con `quoteId` usa el total y anticipo cotizados, exige la fecha cotizada y acepta la cotización) y #47 (las reservaciones ya no exponen `clientId` ni `idempotencyKey`), ambos sobre #40, con 223 y 221 pruebas en verde.
+- **Móvil:** al reservar desde una cotización, la confirmación muestra el total cotizado y la fecha cotizada sin selector (el servidor ahora rechaza otra fecha). 93 suites / 556 pruebas sin fallos (+2).

@@ -18,7 +18,7 @@ class QuoteAnswerTest {
         assertEquals(0, BigDecimal("14400").compareTo(answer.deposit))
         assertEquals("Incluye limpieza", answer.message)
         assertNull(QuoteAnswerValidator.validate("1", "", "").first!!.deposit)
-        assertTrue(QuoteAnswerValidator.validate("100", "100", "a".repeat(2000)).second.isEmpty())
+        assertTrue(QuoteAnswerValidator.validate("100", "100", "a".repeat(1000)).second.isEmpty())
         assertTrue(QuoteAnswerValidator.validate("100", "0", "").second.isEmpty())
     }
 
@@ -42,7 +42,7 @@ class QuoteAnswerTest {
         assertEquals(AnswerProblem.INVALID, QuoteAnswerValidator.validate("100", "x", "").second[AnswerField.DEPOSIT])
         assertEquals(
             AnswerProblem.TOO_LONG,
-            QuoteAnswerValidator.validate("100", "", "a".repeat(2001)).second[AnswerField.MESSAGE],
+            QuoteAnswerValidator.validate("100", "", "a".repeat(1001)).second[AnswerField.MESSAGE],
         )
         assertNull(QuoteAnswerValidator.validate("x", "5", "").second[AnswerField.DEPOSIT])
     }

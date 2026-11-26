@@ -145,7 +145,7 @@ private fun GuestRow(
         listOfNotNull(
             guest.phone,
             stringResource(R.string.guests_item_companions, guest.companions),
-            guest.table,
+            guest.table?.let { tableLabel(it) },
         ).joinToString(" · ")
     VirGoRow(
         title = guest.name,
@@ -239,3 +239,8 @@ private fun statusTone(status: GuestStatus): VirGoTone =
         GuestStatus.DECLINED -> VirGoTone.RED
         GuestStatus.UNKNOWN -> VirGoTone.GRAY
     }
+
+/** «5» se lee como «Mesa 5»; si ya lo escribieron con la palabra, se deja como está. */
+@Composable
+private fun tableLabel(table: String): String =
+    if (table.trim().startsWith("mesa", ignoreCase = true)) table else stringResource(R.string.guests_item_table, table)

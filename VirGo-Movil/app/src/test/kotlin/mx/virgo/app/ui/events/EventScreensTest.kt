@@ -6,13 +6,18 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasImeAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onLast
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.text.input.ImeAction
 import mx.virgo.app.session.FakeSessionTokenStore
 import mx.virgo.app.session.SessionRepository
 import mx.virgo.core.designsystem.theme.VirGoTheme
@@ -24,6 +29,8 @@ import mx.virgo.core.testing.sampleEvent
 import mx.virgo.core.testing.sampleGuest
 import mx.virgo.core.testing.sampleTask
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -92,6 +99,10 @@ class EventScreensTest {
         compose.onNodeWithText("La fecha no puede estar en el pasado.").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("El salón Salón Las Palmas se conserva.").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Guardando…").performScrollTo().assertIsNotEnabled()
+        // Los campos de números pasan al siguiente con el teclado; el presupuesto cierra el formulario.
+        compose.onNode(hasContentDescription("Invitados") and hasImeAction(ImeAction.Next)).assertExists()
+        compose.onNode(hasContentDescription("Horas") and hasImeAction(ImeAction.Next)).assertExists()
+        compose.onNode(hasContentDescription("Presupuesto en pesos") and hasImeAction(ImeAction.Done)).assertExists()
     }
 
     @Test
@@ -154,16 +165,25 @@ class EventScreensTest {
         compose.onNodeWithText("Hechas").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Contratar fotógrafo").performScrollTo().assertIsDisplayed()
         assertEquals(emptyList<String>(), toggled)
+        // Cada casilla lleva el nombre de su pendiente para TalkBack.
+        compose
+            .onNode(
+                hasContentDescription("Pagar anticipo") and isToggleable(),
+                useUnmergedTree = true,
+            ).performClick()
+        assertEquals(listOf("late"), toggled)
     }
 
     @Test
     fun clientEventsOpensTheRequestedStep() {
         val repository = FakeEventsRepository().apply { events += sampleEvent() }
         val vm = EventsViewModel(repository, SessionRepository(FakeSessionTokenStore(), Clock.systemUTC()))
+        var leftWorkspace = false
         compose.setContent {
             VirGoTheme {
                 ClientEvents(
                     openStep = EventStep.GUESTS,
+                    onBack = { leftWorkspace = true },
                     viewModel = vm,
                     guests = { event, back -> TextButton(onClick = back) { Text("Invitados de ${event.name}") } },
                 )
@@ -172,5 +192,12 @@ class EventScreensTest {
         compose.onNodeWithText("Boda de Ana y Luis").performClick()
         compose.onNodeWithText("Invitados de Boda de Ana y Luis").assertIsDisplayed().performClick()
         compose.onNodeWithText("Editar evento").performScrollTo().assertIsDisplayed()
+        // La flecha del encabezado deshace cada paso antes de salir de «Mi Evento».
+        compose.onNodeWithText("Mi Evento").assertIsDisplayed()
+        compose.onNodeWithContentDescription("Volver").performClick()
+        compose.onNodeWithText("Editar evento").assertDoesNotExist()
+        assertFalse(leftWorkspace)
+        compose.onNodeWithContentDescription("Volver").performClick()
+        assertTrue(leftWorkspace)
     }
 }

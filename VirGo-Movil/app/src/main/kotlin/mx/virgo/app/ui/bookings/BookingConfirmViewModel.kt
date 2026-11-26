@@ -22,6 +22,7 @@ import mx.virgo.core.domain.BookingValidator
 import mx.virgo.core.domain.CreateBookingUseCase
 import mx.virgo.core.domain.GetVenueDetailUseCase
 import mx.virgo.core.domain.VenueDetail
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
 import javax.inject.Inject
@@ -40,6 +41,8 @@ data class BookingDraft(
     val date: String? = null,
     val hours: String = "",
     val key: String = UUID.randomUUID().toString(),
+    /** Total que respondió el salón; con cotización el servidor cobra este y exige su fecha. */
+    val quotedTotal: String? = null,
 )
 
 /** Callbacks de C8/C23, agrupados para probar el contenido sin `ViewModel`. */
@@ -103,11 +106,22 @@ class BookingConfirmViewModel
             venueId: String,
             quoteId: String? = null,
             date: LocalDate? = null,
+            quotedTotal: BigDecimal? = null,
         ) {
             val current = mutableState.value
             // Un comprobante anterior no se reabre: reservar de nuevo es un intento nuevo.
             if (current.draft.venueId != venueId || current.draft.quoteId != quoteId || current.booking != null) {
-                emit(BookingConfirmUiState(draft = BookingDraft(venueId, quoteId, date?.toString())))
+                emit(
+                    BookingConfirmUiState(
+                        draft =
+                            BookingDraft(
+                                venueId,
+                                quoteId,
+                                date?.toString(),
+                                quotedTotal = quotedTotal?.toPlainString(),
+                            ),
+                    ),
+                )
             }
             if (mutableState.value.venue == null) loadVenue()
         }
@@ -128,7 +142,11 @@ class BookingConfirmViewModel
             }
         }
 
-        fun setDate(date: LocalDate) = change(mutableState.value.draft.copy(date = date.toString()), BookingField.DATE)
+        /** Con cotización la fecha es la cotizada y no se cambia. */
+        fun setDate(date: LocalDate) {
+            if (mutableState.value.draft.quoteId != null) return
+            change(mutableState.value.draft.copy(date = date.toString()), BookingField.DATE)
+        }
 
         fun setHours(hours: String) =
             change(

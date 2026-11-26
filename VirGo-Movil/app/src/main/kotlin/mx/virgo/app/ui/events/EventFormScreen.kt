@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import mx.virgo.app.R
@@ -111,6 +112,7 @@ private fun FormFields(
         state.errorFor(EventField.BUDGET),
         hint = stringResource(R.string.event_form_budget_hint),
         keyboardType = KeyboardType.Decimal,
+        imeAction = ImeAction.Done,
     ) { actions.onForm(form.copy(budget = it)) }
     state.original?.venueName?.let {
         Text(stringResource(R.string.event_form_venue_kept, it), color = MaterialTheme.colorScheme.onSurfaceVariant)

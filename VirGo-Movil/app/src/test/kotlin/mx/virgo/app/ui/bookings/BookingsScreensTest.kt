@@ -49,6 +49,21 @@ class BookingsScreensTest {
     }
 
     @Test
+    fun withAQuoteShowsTheQuotedTotalAndDateWithoutPicker() {
+        compose.setContent {
+            VirGoTheme {
+                BookingConfirmContent(
+                    ready.copy(draft = ready.draft.copy(quoteId = "q-9", quotedTotal = "48000")),
+                    BookingConfirmActions(),
+                )
+            }
+        }
+        compose.onNodeWithText("Total cotizado por el salón", substring = true).assertIsDisplayed()
+        compose.onNodeWithText("Fecha cotizada", substring = true).assertIsDisplayed()
+        compose.onNodeWithText("Precio de referencia", substring = true).assertDoesNotExist()
+    }
+
+    @Test
     fun fieldErrorsAndServerRejectionAreShownNextToTheirField() {
         compose.setContent {
             VirGoTheme {

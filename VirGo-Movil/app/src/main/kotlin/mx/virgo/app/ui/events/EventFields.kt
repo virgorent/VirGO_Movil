@@ -18,6 +18,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import mx.virgo.app.R
@@ -33,6 +34,8 @@ internal fun LabeledInput(
     hint: String? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     singleLine: Boolean = true,
+    // «Siguiente» mueve el foco al próximo campo; el último del formulario usa «Listo».
+    imeAction: ImeAction = if (singleLine) ImeAction.Next else ImeAction.Default,
     onValueChange: (String) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -42,7 +45,7 @@ internal fun LabeledInput(
             onValueChange = onValueChange,
             isError = errorText != null,
             singleLine = singleLine,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
             modifier =
                 Modifier.semantics {
                     contentDescription = label

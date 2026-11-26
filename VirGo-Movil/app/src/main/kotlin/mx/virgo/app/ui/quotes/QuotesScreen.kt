@@ -2,6 +2,7 @@ package mx.virgo.app.ui.quotes
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.RequestQuote
@@ -27,6 +28,7 @@ import mx.virgo.core.designsystem.components.LoadingState
 import mx.virgo.core.designsystem.components.VirGoButton
 import mx.virgo.core.designsystem.components.VirGoCard
 import mx.virgo.core.designsystem.components.VirGoPageBody
+import mx.virgo.core.designsystem.components.VirGoPageHeader
 import mx.virgo.core.designsystem.components.VirGoRow
 import mx.virgo.core.designsystem.components.VirGoRowDivider
 import mx.virgo.core.designsystem.theme.VirGoTone
@@ -35,11 +37,14 @@ import mx.virgo.core.domain.Quote
 /**
  * «Mis cotizaciones» del cliente: lista real, detalle y, si el salón respondió, reservar
  * con la cotización (008 RF-07–RF-11). El paso de reservar sobrevive a la rotación.
+ * Lleva su propio encabezado: así la confirmación no queda debajo de «Mis cotizaciones»
+ * y la flecha del detalle vuelve a la lista.
  */
 @Composable
 fun ClientQuotes(
     onCatalog: () -> Unit,
     onMyBookings: () -> Unit,
+    onBack: (() -> Unit)? = null,
     viewModel: QuotesViewModel = hiltViewModel(),
     bookingStep: @Composable (Quote, () -> Unit) -> Unit = { quote, back ->
         BookingConfirmScreen(
@@ -47,6 +52,7 @@ fun ClientQuotes(
             actions = BookingConfirmActions(onBack = back, onMyBookings = onMyBookings, onCatalog = onCatalog),
             quoteId = quote.id,
             date = quote.eventDate,
+            quotedTotal = quote.total,
         )
     },
 ) {
@@ -59,16 +65,24 @@ fun ClientQuotes(
         return
     }
     if (state.detail != null) BackHandler(onBack = viewModel::closeDetail)
-    QuotesContent(
-        state,
-        QuotesActions(
-            onOpen = viewModel::open,
-            onRetry = viewModel::refresh,
-            onRetryDetail = viewModel::open,
-            onCatalog = onCatalog,
-            onBook = { booking = true },
-        ),
-    )
+    Column(Modifier.fillMaxSize()) {
+        VirGoPageHeader(
+            title = stringResource(R.string.demo_title_quotes),
+            kicker = stringResource(R.string.demo_role_client),
+            onBack = if (state.detail != null) viewModel::closeDetail else onBack,
+            backContentDescription = stringResource(R.string.demo_back),
+        )
+        QuotesContent(
+            state,
+            QuotesActions(
+                onOpen = viewModel::open,
+                onRetry = viewModel::refresh,
+                onRetryDetail = viewModel::open,
+                onCatalog = onCatalog,
+                onBook = { booking = true },
+            ),
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

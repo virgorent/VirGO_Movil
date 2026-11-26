@@ -24,7 +24,8 @@ enum class AnswerProblem {
 
 /** Convierte lo capturado en una respuesta válida o en errores por campo. */
 object QuoteAnswerValidator {
-    const val MAX_MESSAGE = 2000
+    /** Límite de `quotes.response.note` en el validador de MongoDB (backend PR #56). */
+    const val MAX_MESSAGE = 1000
     private const val MAX_DECIMALS = 2
 
     fun validate(

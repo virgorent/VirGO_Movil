@@ -64,6 +64,7 @@
     <string name="guests_totals">Confirmados: %1$d · Pendientes: %2$d · No asisten: %3$d</string>
     <string name="guests_item">%1$s · %2$s</string>
     <string name="guests_item_companions">%1$d acompañantes</string>
+    <string name="guests_item_table">Mesa %1$s</string>
     <string name="guests_status_confirmed">Confirmado</string>
     <string name="guests_status_pending">Pendiente</string>
     <string name="guests_status_declined">No asiste</string>

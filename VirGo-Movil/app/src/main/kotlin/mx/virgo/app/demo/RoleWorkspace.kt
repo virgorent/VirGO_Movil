@@ -72,8 +72,8 @@ private fun BetaWorkspace(
     Scaffold(
         contentWindowInsets = WindowInsets(0),
         topBar = {
-            // El catálogo tiene su propio encabezado (035 RF-08); el resto usa el del espacio.
-            if (sections || !(role == DemoRole.CLIENT && route == "explore")) {
+            // El catálogo y las cotizaciones tienen su propio encabezado (035 RF-08); el resto usa el del espacio.
+            if (sections || !(role == DemoRole.CLIENT && route in OWN_HEADER_ROUTES)) {
                 VirGoPageHeader(
                     title = stringResource(if (sections) R.string.beta_sections else betaTitle(role, route)),
                     kicker = stringResource(role.label),
@@ -107,6 +107,7 @@ private fun BetaWorkspace(
                 onLogout = onLogout,
                 accountScreen = accountScreen,
                 ownerVenuesScreen = ownerVenuesScreen,
+                back = back,
             )
         }
     }
@@ -115,6 +116,9 @@ private fun BetaWorkspace(
 /** «Mi Evento», «Invitados» y «Pendientes» abren el evento real; las dos últimas, ese paso (014 RF-04). */
 private val EVENT_STEPS = mapOf("event" to null, "guests" to EventStep.GUESTS, "tasks" to EventStep.TASKS)
 private val EVENT_ROUTES = EVENT_STEPS.keys
+
+/** Pantallas del cliente que dibujan su propio encabezado con pasos internos. */
+private val OWN_HEADER_ROUTES = setOf("explore", "quotes") + EVENT_ROUTES
 
 /** Inicio y «Mis salones» del propietario muestran sus salones reales (022 RF-01). */
 private val OWNER_VENUE_ROUTES = setOf("ownerHome", "ownerVenues")
@@ -141,15 +145,16 @@ private fun WorkspaceBody(
     onLogout: () -> Unit,
     accountScreen: @Composable (SessionIdentity, () -> Unit) -> Unit,
     ownerVenuesScreen: @Composable () -> Unit,
+    back: () -> Unit,
 ) {
     when (screen) {
         WorkspaceScreen.SECTIONS -> BetaSectionsMenu(role, navigate)
         WorkspaceScreen.CATALOG ->
             ClientExplore(onMyBookings = { navigate("bookings") }, onMyQuotes = { navigate("quotes") })
         WorkspaceScreen.BOOKINGS -> ClientBookings()
-        WorkspaceScreen.EVENTS -> ClientEvents(openStep = EVENT_STEPS[route])
+        WorkspaceScreen.EVENTS -> ClientEvents(EVENT_STEPS[route], betaTitle(role, route), onBack = back)
         WorkspaceScreen.QUOTES ->
-            ClientQuotes(onCatalog = { navigate("explore") }, onMyBookings = { navigate("bookings") })
+            ClientQuotes(onCatalog = { navigate("explore") }, onMyBookings = { navigate("bookings") }, onBack = back)
         WorkspaceScreen.OWNER_VENUES -> ownerVenuesScreen()
         WorkspaceScreen.OWNER_REQUESTS -> OwnerRequests()
         WorkspaceScreen.ACCOUNT -> accountScreen(identity, onLogout)

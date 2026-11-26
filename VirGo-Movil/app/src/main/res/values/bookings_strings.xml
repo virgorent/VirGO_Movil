@@ -5,6 +5,8 @@
     <string name="booking_kicker">Reservación</string>
     <string name="booking_back">Volver</string>
     <string name="booking_price_reference">Precio de referencia: %1$s</string>
+    <string name="booking_quoted_total">Total cotizado por el salón: %1$s</string>
+    <string name="booking_quoted_date">Fecha cotizada: %1$s</string>
     <string name="booking_date">Fecha del evento</string>
     <string name="booking_date_pick">Elegir fecha</string>
     <string name="booking_date_value">%1$s · Cambiar</string>
@@ -12,7 +14,7 @@
     <string name="booking_date_cancel">Cancelar</string>
     <string name="booking_hours">Horas</string>
     <string name="booking_hours_hint">El salón pide al menos %1$d horas.</string>
-    <string name="booking_no_charge">No se cobra nada en la app. VirGo calcula el total y un anticipo del 30 %; el salón te indicará cómo pagarlo. La fecha se aparta cuando el pago se valide.</string>
+    <string name="booking_no_charge">No se cobra nada en la app. VirGo calcula el total (o usa el que cotizó el salón) y el anticipo; el salón te indicará cómo pagarlo. La fecha se aparta cuando el pago se valide.</string>
     <string name="booking_confirm">Confirmar reservación</string>
     <string name="booking_sending">Registrando…</string>
     <string name="booking_error_date_required">Elige la fecha del evento.</string>
@@ -34,7 +36,7 @@
     <string name="booking_receipt_date">Fecha</string>
     <string name="booking_receipt_hours">Horas</string>
     <string name="booking_receipt_total">Total</string>
-    <string name="booking_receipt_deposit">Anticipo (30 %)</string>
+    <string name="booking_receipt_deposit">Anticipo</string>
     <string name="booking_receipt_status">Estado</string>
     <string name="booking_receipt_notice">No se ha cobrado nada y la fecha todavía no está apartada. El salón te indicará cómo pagar el anticipo.</string>
     <string name="booking_receipt_my_bookings">Ver mis reservaciones</string>

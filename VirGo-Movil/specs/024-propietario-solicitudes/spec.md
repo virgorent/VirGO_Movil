@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `024-propietario-solicitudes` |
-| Versión | 2.0.0 |
+| Versión | 2.0.1 |
 | Estado | Aprobado por el usuario («hazlos todos de una vez tienes mi aprobacion», 2026-11-25) |
 | Fecha | 2026-11-25 (v1.0.0 del 2026-11-05 sustituida) |
 | Constitución | v1.2.0 |
@@ -35,7 +35,7 @@ P16 pasa a `020-comunicacion`.
 | RF-01 | **[P7]** «Solicitudes» del espacio del propietario lista `GET /api/v1/quotes` con pestañas **Nuevas** (`sent`), **Respondidas** (`answered`) y **Todas**, más reciente primero. |
 | RF-02 | **[P7]** Cada fila: salón, cliente (`clientName`), fecha, invitados y estado. Vacío, carga y error con reintento; tirar para actualizar. |
 | RF-03 | **[P8]** El detalle (`GET /api/v1/quotes/:id`) muestra la solicitud y el mensaje del cliente. |
-| RF-04 | **[P8]** Con estado `sent` aparece el formulario: total en MXN (obligatorio, > 0), anticipo (opcional, ≥ 0 y ≤ total) y nota para el cliente (opcional, ≤ 2000). |
+| RF-04 | **[P8]** Con estado `sent` aparece el formulario: total en MXN (obligatorio, > 0), anticipo (opcional, ≥ 0 y ≤ total) y nota para el cliente (opcional, ≤ 1000; límite de `response.note` en el validador de MongoDB). |
 | RF-05 | **[P8]** «Enviar al cliente» valida, envía `POST /api/v1/quotes/:id/response` y al `200` muestra la respuesta y la cotización como «Respondida». Sin envíos dobles. |
 | RF-06 | **[P8]** Errores: `400` «Revisa el total»; `404` «Esta solicitud ya no está disponible»; `409` «Esta solicitud ya fue respondida» y se recarga; `403` «Solo el propietario del salón puede responder»; `401` cierra sesión; red/5xx con reintento conservando lo capturado. |
 | RF-07 | Con otro estado (respondida, aceptada, rechazada, vencida o desconocido) el detalle es de solo lectura y muestra la respuesta enviada si existe. |
@@ -72,5 +72,5 @@ P16 pasa a `020-comunicacion`.
 Leído en `VirGO_Backend` `feat/api-mobile-priority` (`7cf6124`) más el PR #41; **aún no desplegado**.
 
 - `GET /api/v1/quotes` devuelve `{data: [Quote]}` con las cotizaciones del usuario y las dirigidas a sus salones; `GET /quotes/:id` igual para una.
-- `POST /api/v1/quotes/:id/response` (rol `owner`, PR #41): `{total > 0, deposit?, message? ≤ 2000}`. Solo desde `sent`; otro estado → `409`. Salón ajeno → `404`. Respuesta `200` con la cotización en `answered` y `response {total, deposit, message}`.
+- `POST /api/v1/quotes/:id/response` (rol `owner`, PR #41): `{total > 0, deposit?, message? ≤ 1000}` (el backend bajó de 2000 a 1000 en el PR #56 para cumplir el validador de `quotes`; también rechaza `deposit` < 0 o > total). Solo desde `sent`; otro estado → `409`. Salón ajeno → `404`. Respuesta `200` con la cotización en `answered` y `response {total, deposit, message}`.
 - El servidor no valida `deposit ≤ total`; la app lo valida.
