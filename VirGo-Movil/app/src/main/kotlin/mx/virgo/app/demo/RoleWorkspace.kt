@@ -19,6 +19,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import mx.virgo.app.R
+import mx.virgo.app.ui.account.AccountProfileScreen
+import mx.virgo.app.ui.account.SessionIdentity
 import mx.virgo.app.ui.beta.BetaCatalogScreen
 import mx.virgo.app.ui.beta.BetaSectionScreen
 import mx.virgo.app.ui.beta.BetaSectionsMenu
@@ -95,6 +97,7 @@ private fun BetaWorkspace(
             when {
                 sections -> BetaSectionsMenu(role, navigate)
                 role == DemoRole.CLIENT && route == "explore" -> BetaCatalogScreen()
+                route == "profile" -> AccountProfileScreen(SessionIdentity(accountName, accountEmail, role.label))
                 else -> BetaSectionScreen(role, route, accountName, accountEmail)
             }
         }

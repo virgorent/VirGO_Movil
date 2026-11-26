@@ -941,3 +941,23 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Entrega:** implementación subida en `1109d72`;
   [PR #35](https://github.com/virgorent/VirGO_Movil/pull/35) en borrador,
   asignado a `ccabrera-dev8`, sin solicitar revisores visuales adicionales.
+
+### 2026-11-25 · Lote de specs del MVP cliente
+
+- **Autor:** usuario + Claude Code.
+- **Qué se hizo:** se reescribieron a v2.0.0 los borradores `006`, `008`, `009` y `022`, y se actualizó `030` (traído del PR #33) al estado de la beta `034`. Los cinco quedan **Propuestos para aprobación** como lote MVP. Se retiraron las simulaciones de la maqueta (respuestas automáticas, tarjeta «0000», actividad de ejemplo, fotos de ejemplo).
+- **Decisiones de alcance propuestas:** reservar **sin cobro en la app** (`pending_payment`, anticipo del 30 % calculado por el servidor); detalle sin galería (no hay carga de fotos ni librería de imágenes); publicación directa del salón por el propietario; precios ocultos sin sesión.
+- **Hallazgos de contrato (backend):** `POST /quotes` y `POST /bookings` exigen `eventId` y `007` no está en el MVP; `POST /bookings` exige `quoteId`; el esquema `venues` exige `location` y `photos`; ninguna cotización pasa a «Respondida» sin `POST /quotes/:id/response` (`062`). Endpoints adicionales del MVP: `GET /venues/mine` (`025`) y `GET /bookings` (`066`).
+- **Aprobación:** el usuario aprobó el lote completo el 2026-11-25 («Apruebo el lote»).
+- **Bloqueo constitucional:** el Art. II.2 impide ejecutar tareas hasta que `000` esté cerrado **y** backend entregue la URL y el JSON de cada endpoint. Esto prevalece sobre la autorización previa de implementar contra MockWebServer; requiere cerrar `000` o una excepción temporal aprobada y registrada (precedente: `docs/diseno/excepcion-demo-urgente.md`). `030` ya cumple la segunda condición (endpoints desplegados).
+- **Pendiente:** respuestas de backend a las preguntas P-xx de cada spec; cierre de `000` (T014 TalkBack y T036) antes de implementar.
+- **Costo:** $0.
+
+### 2026-11-25 · `030-cuenta-sesion` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** excepción temporal aprobada por el usuario («Sí, registra excepción»), registrada antes de implementar en [`docs/diseno/excepcion-030-sin-cierre-000.md`](docs/diseno/excepcion-030-sin-cierre-000.md).
+- **Qué se hizo:** T3001–T3007. Perfil real desde `GET /users/me` (solo lectura, sin inventar teléfono ni verificación); logout remoto con `POST /auth/logout` (acepta 200/204; 401 = ya revocada; red/5xx/10 s → cierre local con aviso); motivos de cierre (`EXPIRED`, `REVOKED`, `ROLE_MISMATCH`, `ACCOUNT_UNAVAILABLE`, `LOGOUT_UNCONFIRMED`) mostrados una vez; rol del servidor validado contra la sesión.
+- **Evidencia:** pipeline completo **BUILD SUCCESSFUL in 4m 2s**, 63 suites / 362 pruebas sin fallos (+28). Nuevas: `AccountRepositoryImplTest` 8, `SessionViewModelTest` +8, `AccountProfileViewModelTest` 7, `AccountProfileScreenTest` 5.
+- **Aprendizaje:** consumir el motivo dentro de un `LaunchedEffect` con ese motivo como clave cancela el `showSnackbar`; el aviso se lanza en un scope independiente.
+- **Pendiente:** T3008 (humo con cuenta desechable creada por el usuario: login → perfil → logout → token anterior 401), capturas y aceptación visual; regularizar la excepción al cerrar `000`.

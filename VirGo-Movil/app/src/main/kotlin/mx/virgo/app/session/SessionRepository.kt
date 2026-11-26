@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import mx.virgo.core.datastore.StoredSession
@@ -63,7 +64,33 @@ class SessionRepository(
             protect { clearSession(error = false) }
         }
 
-    internal fun remainingMillis(): Long = (mutableExpiration.value - clock.millis()).coerceAtLeast(0L)
+    /** Cierra la sesión local y publica el motivo. Idempotente: un segundo motivo no reemplaza al primero. */
+    suspend fun invalidate(reason: SessionEndReason) =
+        mutex.withLock {
+            if (blocked && mutableState.value.session == null) return@withLock
+            protect { clearSession(error = false, reason = reason) }
+        }
+
+    /** Llamado por el temporizador: solo cierra si la vigencia realmente terminó. */
+    suspend fun expire() =
+        mutex.withLock {
+            if (mutableState.value.session == null || remainingMillis > 0) return@withLock
+            protect { clearSession(error = false, reason = SessionEndReason.EXPIRED) }
+        }
+
+    internal fun markLoggingOut(): Boolean {
+        val current = mutableState.value
+        if (current.loggingOut || current.session == null) return false
+        mutableState.update { it.copy(loggingOut = true) }
+        return true
+    }
+
+    fun consumeEndReason() {
+        mutableState.update { it.copy(endReason = null) }
+    }
+
+    internal val remainingMillis: Long
+        get() = (mutableExpiration.value - clock.millis()).coerceAtLeast(0L)
 
     private fun publish(stored: StoredSession) {
         require(stored.isValidAt(clock.millis())) { "Expired session" }
@@ -77,10 +104,13 @@ class SessionRepository(
             )
     }
 
-    private suspend fun clearSession(error: Boolean) {
+    private suspend fun clearSession(
+        error: Boolean,
+        reason: SessionEndReason? = null,
+    ) {
         blocked = true
         mutableExpiration.value = 0
-        mutableState.value = SessionUiState(loading = false, error = error)
+        mutableState.value = SessionUiState(loading = false, error = error, endReason = reason)
         tokenStore.clear()
     }
 
