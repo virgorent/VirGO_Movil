@@ -36,7 +36,7 @@
     <string name="booking_receipt_date">Fecha</string>
     <string name="booking_receipt_hours">Horas</string>
     <string name="booking_receipt_total">Total</string>
-    <string name="booking_receipt_deposit">Anticipo (30 %)</string>
+    <string name="booking_receipt_deposit">Anticipo</string>
     <string name="booking_receipt_status">Estado</string>
     <string name="booking_receipt_notice">No se ha cobrado nada y la fecha todavía no está apartada. El salón te indicará cómo pagar el anticipo.</string>
     <string name="booking_receipt_my_bookings">Ver mis reservaciones</string>

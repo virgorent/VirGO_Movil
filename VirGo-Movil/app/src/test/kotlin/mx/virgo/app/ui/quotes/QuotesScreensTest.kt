@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -193,9 +194,16 @@ class QuotesScreensTest {
                 )
             }
         }
+        compose.onNodeWithText("Mis cotizaciones").assertIsDisplayed()
         compose.onNodeWithText("Salón Las Palmas").performClick()
         compose.onNodeWithText("Reservar").performScrollTo().performClick()
+        // La confirmación trae su propio encabezado: el de la lista no queda encima.
+        compose.onNodeWithText("Mis cotizaciones").assertDoesNotExist()
         compose.onNodeWithText("Reservar ${sampleAnsweredQuote().id} 2027-05-15").assertIsDisplayed().performClick()
         compose.onNodeWithText("Incluye mobiliario y limpieza.").performScrollTo().assertIsDisplayed()
+        // La flecha del detalle vuelve a la lista, no sale de «Mis cotizaciones».
+        compose.onNodeWithContentDescription("Volver").performClick()
+        compose.onNodeWithText("Incluye mobiliario y limpieza.").assertDoesNotExist()
+        compose.onNodeWithText("Salón Las Palmas").assertIsDisplayed()
     }
 }
