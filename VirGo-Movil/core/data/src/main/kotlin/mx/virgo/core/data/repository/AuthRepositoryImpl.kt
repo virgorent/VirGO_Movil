@@ -53,11 +53,18 @@ class AuthRepositoryImpl
             email: String,
             phone: String,
             password: String,
+            role: mx.virgo.core.domain.AccountRole,
         ): AppResult<RegisteredUser> =
             try {
                 val response =
                     authApi.register(
-                        RegisterRequestDto(name = name, email = email, password = password, phone = phone),
+                        RegisterRequestDto(
+                            name = name,
+                            email = email,
+                            password = password,
+                            phone = phone,
+                            role = role.wire,
+                        ),
                     )
                 AppResult.Success(response.toRegisteredUser())
             } catch (cancellation: CancellationException) {

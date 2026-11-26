@@ -1043,3 +1043,10 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Autor:** usuario + Claude Code («Sí, arráncale»).
 - **Backend:** PRs VirGO_Backend #46 (reservar con `quoteId` usa el total y anticipo cotizados, exige la fecha cotizada y acepta la cotización) y #47 (las reservaciones ya no exponen `clientId` ni `idempotencyKey`), ambos sobre #40, con 223 y 221 pruebas en verde.
 - **Móvil:** al reservar desde una cotización, la confirmación muestra el total cotizado y la fecha cotizada sin selector (el servidor ahora rechaza otra fecha). 93 suites / 556 pruebas sin fallos (+2).
+
+### 2026-11-26 · Prueba local del MVP de punta a punta y rol en el registro
+
+- **Autor:** usuario + Claude Code («Sí, prueba local»).
+- **Prueba:** backend local en memoria con la cadena #38→#39→#40 más VirGO_Backend #44–#47 juntos (rama local que no se sube). Recorrido por HTTP con los mismos cuerpos que manda la app: registro con rol, salón creado y publicado, catálogo y detalle con y sin sesión, cotización con errores por campo, respuesta del dueño (y `403` para el cliente, `409` al repetir), reserva con la cotización (total y anticipo cotizados, cotización `accepted`, misma reservación con la misma clave, sin `clientId` ni `idempotencyKey`), reserva directa con precio de lista y mínimo de horas. **38/38 en verde.**
+- **Hallazgo y arreglo:** la app no mandaba el rol elegido al registrarse, así que nadie podía crear una cuenta de propietario desde la app. Ahora `RegisterRequestDto` envía `role` (002 RF-01). 93 suites / 558 pruebas sin fallos (+2).
+- **Aviso para backend:** #44 y #45 tocan el mismo archivo de pruebas (`VerticalSliceTests.cs`); al rebasar la cadena habrá un conflicto sencillo de resolver.

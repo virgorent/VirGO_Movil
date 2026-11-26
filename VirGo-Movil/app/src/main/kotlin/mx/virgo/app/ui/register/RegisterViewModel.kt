@@ -81,7 +81,10 @@ class RegisterViewModel
             }
             viewModelScope.launch {
                 update { it.copy(isLoading = true) }
-                when (val result = register(current.name, current.email, current.phone, current.password)) {
+                when (
+                    val result =
+                        register(current.name, current.email, current.phone, current.password, current.role.accountRole)
+                ) {
                     is AppResult.Success -> {
                         RegisteredEmailStore.register(email)
                         update { it.copy(isLoading = false, registered = true) }

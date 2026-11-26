@@ -80,8 +80,8 @@
     <string name="register_role_owner">Tengo un salón</string>
     <string name="register_role_provider">Soy proveedor</string>
     <string name="register_role_group">Tipo de cuenta</string>
-    <string name="register_role_note_owner">Las herramientas para propietarios llegan en el Sprint 3. Mientras tanto verás VirGo como cliente.</string>
-    <string name="register_role_note_provider">Las herramientas para proveedores llegan en el Sprint 3. Mientras tanto verás VirGo como cliente.</string>
+    <string name="register_role_note_owner">Podrás registrar tus salones y responder las solicitudes de cotización de los clientes.</string>
+    <string name="register_role_note_provider">Tu espacio de proveedor está en beta: algunas secciones todavía dicen «Próximamente».</string>
     <string name="register_benefit_prices">Precios</string>
     <string name="register_benefit_ai">Simulación IA</string>
     <string name="register_benefit_event">Tu evento</string>

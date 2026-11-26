@@ -352,6 +352,7 @@ fun LoginScreenPreview() {
                                 email: String,
                                 phone: String,
                                 password: String,
+                                role: mx.virgo.core.domain.AccountRole,
                             ) = AppResult.Failure(AppError.Unknown)
                         },
                     ),

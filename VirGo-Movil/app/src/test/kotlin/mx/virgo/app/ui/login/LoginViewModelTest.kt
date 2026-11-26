@@ -68,6 +68,8 @@ class LoginViewModelTest {
         assertEquals(1, fakeRepository.calls)
         assertEquals("ana@mail.com", state.email)
         assertEquals("", state.password)
+        // La pantalla marca el campo con `submitted && !passwordValid`: tras entrar no debe marcarse.
+        assertFalse(state.submitted && !state.passwordValid)
         assertEquals(1, tokenStore.saveCalls)
         assertEquals(
             "client",
@@ -86,6 +88,7 @@ class LoginViewModelTest {
         viewModel.submit()
         assertFalse(viewModel.state.value.loggedIn)
         assertEquals(AppError.Unauthorized, viewModel.state.value.error)
+        assertFalse(viewModel.state.value.submitted && !viewModel.state.value.passwordValid)
         assertNull(tokenStore.stored.value)
     }
 

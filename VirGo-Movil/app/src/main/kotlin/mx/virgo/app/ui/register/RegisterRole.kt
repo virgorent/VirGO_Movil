@@ -29,6 +29,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mx.virgo.app.R
+import mx.virgo.core.domain.AccountRole
 
 private val RoleContainerShape = RoundedCornerShape(13.dp)
 private const val LARGE_FONT_SCALE = 1.5f
@@ -42,10 +43,12 @@ private val NoteAmberBorder = Color(0xFFF3DEAE)
 enum class RegisterRole(
     val labelRes: Int,
     val noteRes: Int?,
+    /** Rol que se envía al servidor al crear la cuenta (002 RF-01). */
+    val accountRole: AccountRole,
 ) {
-    CLIENT(R.string.register_role_client, null),
-    OWNER(R.string.register_role_owner, R.string.register_role_note_owner),
-    PROVIDER(R.string.register_role_provider, R.string.register_role_note_provider),
+    CLIENT(R.string.register_role_client, null, AccountRole.CLIENT),
+    OWNER(R.string.register_role_owner, R.string.register_role_note_owner, AccountRole.OWNER),
+    PROVIDER(R.string.register_role_provider, R.string.register_role_note_provider, AccountRole.PROVIDER),
 }
 
 @Composable

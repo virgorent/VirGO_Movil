@@ -105,7 +105,21 @@ class RegisterViewModelTest {
                 assertNull(viewModel.state.value.formError)
                 assertFalse(viewModel.state.value.isLoading)
                 assertEquals(1, fakeRepository.registerCalls)
+                assertEquals(mx.virgo.core.domain.AccountRole.CLIENT, fakeRepository.lastRegisterRole)
                 expectNoEvents()
+            }
+        }
+
+    @Test
+    fun ownerRoleIsSentToTheServer() =
+        runTest {
+            val viewModel = viewModel()
+            fillValidForm(viewModel, "owner-${System.nanoTime()}@mail.com")
+            viewModel.onRoleChange(RegisterRole.OWNER)
+            viewModel.events.test {
+                viewModel.submit()
+                assertEquals(RegisterEvent.Registered, awaitItem())
+                assertEquals(mx.virgo.core.domain.AccountRole.OWNER, fakeRepository.lastRegisterRole)
             }
         }
 
