@@ -2,6 +2,7 @@ package mx.virgo.app
 
 import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -24,8 +25,19 @@ class NavigationTest {
 
     private fun string(resId: Int): String = ApplicationProvider.getApplicationContext<Context>().getString(resId)
 
+    /**
+     * La app real arranca restaurando la sesión y pidiendo el catálogo a la API; con la red lenta
+     * los botones tardan. Se espera a que aparezcan en lugar de fallar al primer cuadro.
+     */
+    private fun awaitText(text: String) {
+        compose.waitUntil(STARTUP_TIMEOUT_MS) {
+            compose.onAllNodes(hasText(text), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
+        }
+    }
+
     @Test
     fun betaCatalogIsTheStartDestinationWithoutDemoAccess() {
+        awaitText(string(R.string.beta_login))
         compose.onNodeWithText(string(R.string.beta_label)).assertIsDisplayed()
         compose.onNodeWithText(string(R.string.beta_login)).assertIsDisplayed()
         compose.onNodeWithText(string(R.string.unified_preview)).assertDoesNotExist()
@@ -34,6 +46,7 @@ class NavigationTest {
 
     @Test
     fun betaCatalogOpensRegisterWithoutSelectingASampleVenue() {
+        awaitText(string(R.string.beta_register))
         compose.onNodeWithText(string(R.string.beta_register)).performScrollTo().performClick()
         compose.waitForIdle()
 
@@ -54,7 +67,10 @@ class NavigationTest {
 
     @Test
     fun betaCatalogOpensRealLogin() {
+        awaitText(string(R.string.beta_login))
         compose.onNodeWithText(string(R.string.beta_login)).performClick()
         compose.onNodeWithText(string(R.string.login_title)).performScrollTo().assertIsDisplayed()
     }
 }
+
+private const val STARTUP_TIMEOUT_MS = 15_000L

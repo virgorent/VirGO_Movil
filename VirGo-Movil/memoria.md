@@ -1027,3 +1027,13 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Pendiente:** T2405 (humo en producción).
 - **Costo:** $0.
 
+### 2026-11-26 · Bloque del evento (`007`, `014`, `016`, `017`) implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** «hazlos todos de una vez tienes mi aprobacion»; specs reescritos a la v2.0.0 y registrados en la excepción. `015` queda sin backend (solo hay un presupuesto total).
+- **Qué se hizo:** «Mi evento» con lista real, detalle (días que faltan, salón, invitados, horas y presupuesto) y accesos; crear y editar evento conservando el salón; invitados con totales por estado, alta, edición, baja con confirmación y compartir invitación por la hoja de Android; pendientes agrupados en Vencidas, Próximas y Hechas, con marcar, editar y eliminar. `NavigationTest` ahora espera al catálogo en lugar de fallar con la red lenta. `NetworkModule` se dividió (`MarketplaceNetworkModule`) por el límite de funciones.
+- **Evidencia:** 93 suites / 554 pruebas sin fallos (+26).
+- **Hallazgo importante:** el backend cerró el PR #37 y lo dividió en #38 → #39 → #40 hacia `main`; esa cadena **no incluye** `EventsController` (ni favoritos, conversaciones, proveedores, reseñas o estadísticas). Este bloque no tiene servidor hasta que el backend lo agregue. Mis correcciones se trasladaron a la cadena nueva: VirGO_Backend #44 (registro con rol) y #45 (el propietario responde cotizaciones).
+- **Pendiente:** humo en producción (T704, T1403, T1604, T1704).
+- **Costo:** $0.
+

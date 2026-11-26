@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `015-presupuesto` |
 | Versión | 1.0.0 |
-| Estado | Borrador |
+| Estado | Borrador · **sin backend** (revisado 2026-11-25) |
 | Fecha | 2026-11-05 |
 | Rol | Cliente |
 | Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
@@ -58,3 +58,9 @@
 | `PATCH /api/v1/events/:id` | `046-patch-events-id` |
 
 Sin URL y JSON probados del backend, la pantalla se prueba solo con MockWebServer (Art. VIII.6).
+
+## Revisión contra el backend (2026-11-25)
+
+El backend solo guarda un `budget` total por evento; `budgetPlan` siempre es `null` y no hay
+categorías, alertas ni reparto sugerido. No se implementa hasta que exista ese contrato. El
+presupuesto total se captura en `007` y se muestra en `014`.

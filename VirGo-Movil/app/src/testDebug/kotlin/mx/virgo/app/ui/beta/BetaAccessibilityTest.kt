@@ -30,6 +30,23 @@ import mx.virgo.app.ui.bookings.BookingDraft
 import mx.virgo.app.ui.bookings.BookingError
 import mx.virgo.app.ui.bookings.BookingsContent
 import mx.virgo.app.ui.bookings.BookingsUiState
+import mx.virgo.app.ui.events.EventDetailActions
+import mx.virgo.app.ui.events.EventDetailBody
+import mx.virgo.app.ui.events.EventDetailState
+import mx.virgo.app.ui.events.EventError
+import mx.virgo.app.ui.events.EventFormActions
+import mx.virgo.app.ui.events.EventFormContent
+import mx.virgo.app.ui.events.EventFormUiState
+import mx.virgo.app.ui.events.EventsListContent
+import mx.virgo.app.ui.events.EventsUiState
+import mx.virgo.app.ui.events.GuestEditor
+import mx.virgo.app.ui.events.GuestsActions
+import mx.virgo.app.ui.events.GuestsContent
+import mx.virgo.app.ui.events.GuestsUiState
+import mx.virgo.app.ui.events.TaskEditor
+import mx.virgo.app.ui.events.TasksActions
+import mx.virgo.app.ui.events.TasksContent
+import mx.virgo.app.ui.events.TasksUiState
 import mx.virgo.app.ui.ownerrequests.AnswerError
 import mx.virgo.app.ui.ownerrequests.OwnerRequestsActions
 import mx.virgo.app.ui.ownerrequests.OwnerRequestsContent
@@ -62,10 +79,14 @@ import mx.virgo.core.domain.AnswerField
 import mx.virgo.core.domain.AnswerProblem
 import mx.virgo.core.domain.BookingField
 import mx.virgo.core.domain.BookingProblem
+import mx.virgo.core.domain.EventField
+import mx.virgo.core.domain.EventProblem
+import mx.virgo.core.domain.GuestField
 import mx.virgo.core.domain.OwnerVenue
 import mx.virgo.core.domain.QuoteField
 import mx.virgo.core.domain.QuoteProblem
 import mx.virgo.core.domain.QuoteStatus
+import mx.virgo.core.domain.TaskField
 import mx.virgo.core.domain.Venue
 import mx.virgo.core.domain.VenueDraft
 import mx.virgo.core.domain.VenueDraftValidator
@@ -73,7 +94,10 @@ import mx.virgo.core.domain.VenueStatus
 import mx.virgo.core.domain.VenueStep
 import mx.virgo.core.testing.sampleAnsweredQuote
 import mx.virgo.core.testing.sampleBooking
+import mx.virgo.core.testing.sampleEvent
+import mx.virgo.core.testing.sampleGuest
 import mx.virgo.core.testing.sampleQuote
+import mx.virgo.core.testing.sampleTask
 import mx.virgo.core.testing.sampleUserProfile
 import mx.virgo.core.testing.sampleVenueDetail
 import org.junit.Assert.assertEquals
@@ -166,6 +190,59 @@ class BetaAccessibilityTest {
         )
     }
 
+    /** 007, 014, 016 y 017: lista, detalle, formulario, invitados y pendientes con errores visibles. */
+    private val eventScreens by lazy {
+        val event = sampleEvent().copy(name = "Boda de Ana María y Luis Fernando con un nombre largo")
+        val guest = sampleGuest().copy(name = "María Fernanda Pérez Hernández", table = "Mesa de honor 12")
+        val task = sampleTask().copy(title = "Contratar al fotógrafo y al video para toda la noche")
+        mapOf<String, @Composable () -> Unit>(
+            "events" to { EventsListContent(EventsUiState(loading = false, events = listOf(event)), {}, {}, {}) },
+            "events empty" to { EventsListContent(EventsUiState(loading = false), {}, {}, {}) },
+            "event detail" to {
+                EventDetailBody(
+                    EventDetailState(event.id, false, event),
+                    EventDetailActions(),
+                    java.time.LocalDate.parse("2027-05-01"),
+                )
+            },
+            "event form" to {
+                EventFormContent(
+                    EventFormUiState(
+                        original = event,
+                        eventId = event.id,
+                        fieldErrors = mapOf(EventField.BUDGET to EventProblem.INVALID),
+                        error = EventError.NETWORK,
+                    ),
+                    EventFormActions(),
+                )
+            },
+            "guests" to {
+                GuestsContent(GuestsUiState("e", loading = false, guests = listOf(guest)), event.name, GuestsActions())
+            },
+            "guest form" to {
+                GuestsContent(
+                    GuestsUiState("e", loading = false, editor = GuestEditor(errors = GuestField.entries.toSet())),
+                    event.name,
+                    GuestsActions(),
+                )
+            },
+            "tasks" to {
+                TasksContent(
+                    TasksUiState("e", loading = false, tasks = listOf(task, task.copy(id = "d", done = true))),
+                    java.time.LocalDate.parse("2027-03-01"),
+                    TasksActions(),
+                )
+            },
+            "task form" to {
+                TasksContent(
+                    TasksUiState("e", loading = false, editor = TaskEditor(errors = TaskField.entries.toSet())),
+                    java.time.LocalDate.parse("2027-03-01"),
+                    TasksActions(),
+                )
+            },
+        )
+    }
+
     @Test
     fun catalogStatesAreAccessibleInBothThemes() {
         val states =
@@ -237,7 +314,7 @@ class BetaAccessibilityTest {
         }
     }
 
-    /** 008 CA-09: solicitar (errores y aviso de capacidad), enviada, lista, vacío y detalle. */
+    /** 008 CA-09 y el bloque del evento: solicitar (errores y aviso de capacidad), enviada, lista, vacío y detalle. */
     @Test
     fun quotesAreAccessibleInBothThemes() {
         val venue = sampleVenueDetail().copy(name = "Salón Jardín de las Bugambilias con un nombre muy largo")
@@ -277,7 +354,7 @@ class BetaAccessibilityTest {
                 },
             )
         listOf(false, true).forEach { dark ->
-            screens.forEach { (name, screen) -> sweep("$name dark=$dark", dark, screen) }
+            (screens + eventScreens).forEach { (name, screen) -> sweep("$name dark=$dark", dark, screen) }
         }
     }
 
