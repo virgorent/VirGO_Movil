@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material3.Icon
@@ -19,10 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mx.virgo.core.designsystem.R
 import mx.virgo.core.designsystem.theme.VirGoTheme
+import mx.virgo.core.designsystem.theme.VirGoTone
+import mx.virgo.core.designsystem.theme.colors
 
 @Composable
 fun VirGoBadge(
@@ -32,13 +36,35 @@ fun VirGoBadge(
     contentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     leadingIcon: (@Composable () -> Unit)? = null,
 ) {
+    BadgeContainer(text, modifier, containerColor, contentColor, leadingIcon)
+}
+
+/** Insignia de estado con tono del prototipo (`.ui-badge`); siempre con texto, no solo color. */
+@Composable
+fun VirGoBadge(
+    text: String,
+    tone: VirGoTone,
+    modifier: Modifier = Modifier,
+) {
+    val colors = tone.colors()
+    BadgeContainer(text, modifier, colors.container, colors.content, leadingIcon = null)
+}
+
+@Composable
+private fun BadgeContainer(
+    text: String,
+    modifier: Modifier,
+    containerColor: Color,
+    contentColor: Color,
+    leadingIcon: (@Composable () -> Unit)?,
+) {
     Box(
         modifier =
             modifier
                 .background(
                     color = containerColor,
-                    shape = MaterialTheme.shapes.small,
-                ).padding(horizontal = 10.dp, vertical = 4.dp),
+                    shape = RoundedCornerShape(7.dp),
+                ).padding(horizontal = 8.dp, vertical = 4.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -48,6 +74,7 @@ fun VirGoBadge(
             Text(
                 text = text,
                 style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.ExtraBold,
                 color = contentColor,
             )
         }

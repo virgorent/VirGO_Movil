@@ -21,15 +21,19 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mx.virgo.core.designsystem.R
 import mx.virgo.core.designsystem.theme.VirGoTheme
+import mx.virgo.core.designsystem.theme.VirGoTone
 
 @Composable
 fun EmptyState(
@@ -38,6 +42,7 @@ fun EmptyState(
     text: String? = null,
     icon: (@Composable () -> Unit)? = null,
     action: (@Composable () -> Unit)? = null,
+    iconVector: ImageVector? = null,
 ) {
     Column(
         modifier =
@@ -48,10 +53,13 @@ fun EmptyState(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         icon?.invoke()
+        if (iconVector != null) VirGoIconBubble(iconVector, VirGoTone.VIOLET, size = EMPTY_ICON_DP)
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
+            modifier = Modifier.semantics { heading() },
         )
         if (text != null) {
             Text(
@@ -195,3 +203,5 @@ internal fun ErrorBannerPreview() {
         )
     }
 }
+
+private const val EMPTY_ICON_DP = 56

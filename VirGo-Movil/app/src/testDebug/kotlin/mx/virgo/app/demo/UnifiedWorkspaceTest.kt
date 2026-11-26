@@ -5,6 +5,8 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import mx.virgo.app.ui.account.AccountProfileContent
+import mx.virgo.app.ui.account.AccountProfileUiState
 import mx.virgo.core.designsystem.theme.VirGoTheme
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -30,11 +32,26 @@ class UnifiedWorkspaceTest {
                     role = DemoRole.OWNER,
                     accountKey = "synthetic-account-owner",
                     onLogout = { loggedOut = true },
+                    accountScreen = { identity, logout ->
+                        AccountProfileContent(
+                            AccountProfileUiState(loading = false),
+                            identity,
+                            onRetry = {},
+                            onLogout = logout,
+                        )
+                    },
                 )
             }
         }
         compose.onNodeWithText("Cambiar rol").assertDoesNotExist()
-        compose.onNodeWithText("Cerrar sesión").assertIsDisplayed().performClick()
+        // 035 RF-09: «Cerrar sesión» vive en Cuenta, no en la barra superior.
+        compose.onNodeWithText("Cerrar sesión").assertDoesNotExist()
+        compose.onNodeWithText("Perfil").performClick()
+        compose
+            .onNodeWithText("Cerrar sesión")
+            .performScrollTo()
+            .assertIsDisplayed()
+            .performClick()
         compose.runOnIdle { assertTrue(loggedOut) }
     }
 

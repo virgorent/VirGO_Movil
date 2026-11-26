@@ -961,3 +961,14 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Evidencia:** pipeline completo **BUILD SUCCESSFUL in 4m 2s**, 63 suites / 362 pruebas sin fallos (+28). Nuevas: `AccountRepositoryImplTest` 8, `SessionViewModelTest` +8, `AccountProfileViewModelTest` 7, `AccountProfileScreenTest` 5.
 - **Aprendizaje:** consumir el motivo dentro de un `LaunchedEffect` con ese motivo como clave cancela el `showSnackbar`; el aviso se lanza en un scope independiente.
 - **Pendiente:** T3008 (humo con cuenta desechable creada por el usuario: login → perfil → logout → token anterior 401), capturas y aceptación visual; regularizar la excepción al cerrar `000`.
+
+### 2026-11-25 · `035-pulido-visual-beta` implementado
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** spec aprobado («Apruebo y amplío») y excepción ampliada en [`docs/diseno/excepcion-030-sin-cierre-000.md`](docs/diseno/excepcion-030-sin-cierre-000.md).
+- **Qué se hizo:** T3501–T3508 y T3509 salvo la aceptación visual. Componentes del lenguaje del prototipo (`VirGoPageHeader`, `VirGoRow`, `VirGoSection`, `VirGoPageBody`, tonos de `VirGoBadge`, fondo `soft`); catálogo, menú de secciones, sección sin servicio, Cuenta y espacio de trabajo rediseñados; mapa de íconos por destino.
+- **Evidencia:** pipeline aislado **BUILD SUCCESSFUL in 6m 13s**, 67 suites / 376 pruebas sin fallos (+14). Capturas `docs/evidencia/035/antes-*` y `despues-*` (393 dp, claro y oscuro).
+- **Aprendizaje:** el barrido a 320 dp/2.0 detectó un defecto real (título «Mensajes» de 12 px de ancho junto a la insignia); se resolvió apilando el contenido final. Los textos centrados daban falsos positivos al medir el nodo; ahora se mide el ancho de línea. El *kicker* se ve en mayúsculas pero expone el texto original a TalkBack y a las pruebas. Correr Gradle en `app/build/` mientras Android Studio ejecuta la app bloquea `R.jar` y deja APK truncados; el pipeline usa un *init script* que aísla el directorio de compilación.
+- **Aceptación visual:** el usuario aceptó CA-07 el 2026-11-25 («Lo acepto»).
+- **Pendiente:** CI remoto del PR #40 y fusión en orden #35 → #36 → #38 → #39 → #40.
+- **Costo:** $0.

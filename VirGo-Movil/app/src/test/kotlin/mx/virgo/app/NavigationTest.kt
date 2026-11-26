@@ -47,7 +47,8 @@ class NavigationTest {
             .performClick()
         compose.waitForIdle()
 
-        compose.onNodeWithText(string(R.string.beta_label)).performScrollTo().assertIsDisplayed()
+        // 035: el encabezado es fijo, fuera del área desplazable.
+        compose.onNodeWithText(string(R.string.beta_label)).assertIsDisplayed()
         compose.onNodeWithText(string(R.string.beta_login)).performScrollTo().assertIsDisplayed()
     }
 

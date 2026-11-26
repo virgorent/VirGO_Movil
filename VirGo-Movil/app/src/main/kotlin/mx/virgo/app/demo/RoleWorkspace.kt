@@ -1,15 +1,11 @@
 package mx.virgo.app.demo
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -24,7 +20,9 @@ import mx.virgo.app.ui.account.SessionIdentity
 import mx.virgo.app.ui.beta.BetaCatalogScreen
 import mx.virgo.app.ui.beta.BetaSectionScreen
 import mx.virgo.app.ui.beta.BetaSectionsMenu
-import mx.virgo.core.designsystem.components.VirGoOutlinedButton
+import mx.virgo.app.ui.beta.betaTitle
+import mx.virgo.core.designsystem.components.VirGoPageHeader
+import mx.virgo.core.designsystem.theme.pageBackground
 
 /** The beta uses only the authenticated identity and never grants a selectable role. */
 @Composable
@@ -34,9 +32,12 @@ fun RoleWorkspace(
     onLogout: () -> Unit,
     accountName: String = "",
     accountEmail: String = "",
+    accountScreen: @Composable (SessionIdentity, () -> Unit) -> Unit = { identity, logout ->
+        AccountProfileScreen(identity, logout)
+    },
 ) {
     key(accountKey, role) {
-        BetaWorkspace(role, accountName, accountEmail, onLogout)
+        BetaWorkspace(role, accountName, accountEmail, onLogout, accountScreen)
     }
 }
 
@@ -46,6 +47,7 @@ private fun BetaWorkspace(
     accountName: String,
     accountEmail: String,
     onLogout: () -> Unit,
+    accountScreen: @Composable (SessionIdentity, () -> Unit) -> Unit,
 ) {
     var history by rememberSaveable(role) { mutableStateOf(role.home) }
     var sections by rememberSaveable { mutableStateOf(false) }
@@ -62,24 +64,14 @@ private fun BetaWorkspace(
     Scaffold(
         contentWindowInsets = WindowInsets(0),
         topBar = {
-            Column(
-                Modifier.fillMaxWidth().padding(horizontal = DemoMetrics.pagePadding),
-                verticalArrangement = Arrangement.spacedBy(DemoMetrics.compactSpacing),
-            ) {
-                Text(
-                    stringResource(R.string.beta_label),
-                    Modifier.padding(top = DemoMetrics.spacing),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
+            // El catálogo tiene su propio encabezado (035 RF-08); el resto usa el del espacio.
+            if (sections || !(role == DemoRole.CLIENT && route == "explore")) {
+                VirGoPageHeader(
+                    title = stringResource(if (sections) R.string.beta_sections else betaTitle(role, route)),
+                    kicker = stringResource(role.label),
+                    onBack = if (sections || history.contains("|")) back else null,
+                    backContentDescription = stringResource(R.string.demo_back),
                 )
-                if (sections || history.contains("|")) {
-                    VirGoOutlinedButton(onClick = back) {
-                        Text(stringResource(R.string.demo_back))
-                    }
-                }
-                VirGoOutlinedButton(onClick = onLogout, modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.beta_local_logout))
-                }
             }
         },
         bottomBar = {
@@ -93,11 +85,15 @@ private fun BetaWorkspace(
             )
         },
     ) { padding ->
-        Surface(Modifier.padding(padding)) {
+        Surface(
+            Modifier.padding(padding),
+            color = pageBackground(),
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ) {
             when {
                 sections -> BetaSectionsMenu(role, navigate)
                 role == DemoRole.CLIENT && route == "explore" -> BetaCatalogScreen()
-                route == "profile" -> AccountProfileScreen(SessionIdentity(accountName, accountEmail, role.label))
+                route == "profile" -> accountScreen(SessionIdentity(accountName, accountEmail, role.label), onLogout)
                 else -> BetaSectionScreen(role, route, accountName, accountEmail)
             }
         }
