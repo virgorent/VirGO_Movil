@@ -1,12 +1,17 @@
 """Pruebas de humo del MVP de VirGo contra una API desplegada.
 
 Uso:
-  python humo_produccion.py --base https://<host-de-la-api>             (modo seguro)
-  python humo_produccion.py --base https://<host-de-la-api> --completo  (crea salón, cotización y reserva)
+  python humo-produccion.py --base https://<host-de-la-api>                  (solo lectura)
+  python humo-produccion.py --base https://<host-de-la-api> --modo cuentas   (crea cuenta y evento)
+  python humo-produccion.py --base https://<host-de-la-api> --modo completo  (además salón, cotización y reserva)
 
-Modo seguro: cuenta y sesión (030), catálogo y detalle (005/006) y el bloque del evento
-(007/014/016/017). No deja nada público. Al final borra invitado y pendiente y la cuenta
-(DELETE /users/me la anonimiza).
+Modo lectura (predeterminado): health, catálogo público y detalle sin sesión (005/006).
+No escribe nada.
+
+Modo cuentas: además crea una cuenta de cliente, una de cliente ajeno y un evento con invitado
+y pendiente (030, 007/014/016/017). No deja nada público: borra invitado y pendiente y las cuentas
+(DELETE /users/me las anonimiza), pero el evento queda guardado porque la API no permite
+borrarlo.
 
 Modo completo: además, salón (022), cotización (008), respuesta (024) y reserva (009). La API
 no tiene forma de borrar ni despublicar un salón, ni de cancelar una reserva: el salón de
@@ -27,8 +32,11 @@ from datetime import date, timedelta
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--base', required=True, help='URL base de la API, sin /api/v1')
-parser.add_argument('--completo', action='store_true', help='también salón, cotización, respuesta y reserva')
+parser.add_argument('--modo', choices=['lectura', 'cuentas', 'completo'], default='lectura',
+                    help='lectura (no escribe), cuentas (cuenta y evento) o completo (además salón, cotización y reserva)')
 args = parser.parse_args()
+WRITES = args.modo != 'lectura'
+FULL = args.modo == 'completo'
 BASE = args.base.rstrip('/')
 results, created = [], []
 
@@ -82,7 +90,7 @@ today = date.today()
 status, _ = call('GET', '/health')
 check('T3008', 'health 200', status == 200, status)
 
-client = account()
+client = account() if WRITES else None
 if client:
     status, me = call('GET', '/api/v1/users/me', token=client)
     check('T3008', 'GET /users/me 200 con rol client', status == 200 and (me or {}).get('role') == 'client', status)
@@ -93,8 +101,9 @@ venues = data(catalog)
 check('T606', 'catálogo público 200', status == 200, status)
 if venues:
     vid = venues[0]['id']
-    status, detail = call('GET', f'/api/v1/venues/{vid}', token=client)
-    check('T606', 'detalle con sesión trae precio', status == 200 and (detail or {}).get('price'), status)
+    if client:
+        status, detail = call('GET', f'/api/v1/venues/{vid}', token=client)
+        check('T606', 'detalle con sesión trae precio', status == 200 and (detail or {}).get('price'), status)
     status, guest_view = call('GET', f'/api/v1/venues/{vid}')
     check('T606', 'detalle sin sesión oculta el precio', status == 200 and not (guest_view or {}).get('price'), status)
 else:
@@ -128,10 +137,13 @@ if client:
             check('T1704', 'marcar pendiente hecho 200', status == 200 and (done or {}).get('done') is True, status)
             status, _ = call('DELETE', f'/api/v1/events/{eid}/tasks/{task["id"]}', token=client)
             check('T1704', 'borrar pendiente 204', status in (200, 204), status)
-        status, _ = call('GET', f'/api/v1/events/{eid}', token=account())
+        other = account()
+        status, _ = call('GET', f'/api/v1/events/{eid}', token=other)
         check('T704', 'otro cliente no ve el evento (404)', status == 404, status)
+        if other:
+            call('DELETE', '/api/v1/users/me', token=other)
 
-if args.completo and client:
+if FULL and client:
     owner = account('owner')
     venue_body = {'name': '[PRUEBA DE HUMO] No reservar', 'shortName': 'Prueba de humo',
                   'description': 'Salón creado por la prueba de humo. Se borra después. No reservar.',
@@ -173,7 +185,7 @@ if client:
 failed = [r for r in results if not r[2]]
 for task, name, ok, detail in results:
     print(('OK   ' if ok else 'FALLA'), f'{task:6} {name}', '' if ok else f'-> {detail}')
-print(f'\n{len(results) - len(failed)}/{len(results)} comprobaciones en verde ({"completo" if args.completo else "seguro"})')
+print(f'\n{len(results) - len(failed)}/{len(results)} comprobaciones en verde (modo {args.modo})')
 if created:
     print('\nCreado en la base (borrar si no aplica):')
     for collection, oid in created:
