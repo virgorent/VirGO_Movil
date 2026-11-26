@@ -47,6 +47,7 @@ fun ClientQuotes(
             actions = BookingConfirmActions(onBack = back, onMyBookings = onMyBookings, onCatalog = onCatalog),
             quoteId = quote.id,
             date = quote.eventDate,
+            quotedTotal = quote.total,
         )
     },
 ) {

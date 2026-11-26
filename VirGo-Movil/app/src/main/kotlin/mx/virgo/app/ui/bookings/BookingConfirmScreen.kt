@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import mx.virgo.app.R
 import mx.virgo.app.ui.venuedetail.DetailViewer
+import mx.virgo.app.ui.venuedetail.formatMxn
 import mx.virgo.app.ui.venuedetail.priceText
 import mx.virgo.core.designsystem.components.EmptyState
 import mx.virgo.core.designsystem.components.ErrorBanner
@@ -38,6 +39,7 @@ import mx.virgo.core.designsystem.theme.VirGoTone
 import mx.virgo.core.designsystem.theme.pageBackground
 import mx.virgo.core.domain.BookingField
 import mx.virgo.core.domain.BookingProblem
+import java.math.BigDecimal
 import java.time.LocalDate
 
 /** C8 → C23: confirma y, al registrarse, muestra el comprobante del servidor. */
@@ -47,9 +49,10 @@ fun BookingConfirmScreen(
     actions: BookingConfirmActions,
     quoteId: String? = null,
     date: LocalDate? = null,
+    quotedTotal: BigDecimal? = null,
     viewModel: BookingConfirmViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(venueId, quoteId) { viewModel.start(venueId, quoteId, date) }
+    LaunchedEffect(venueId, quoteId) { viewModel.start(venueId, quoteId, date, quotedTotal) }
     val state by viewModel.state.collectAsState()
     BookingConfirmContent(
         state,
@@ -109,11 +112,24 @@ private fun ConfirmForm(
 ) {
     val venue = state.venue ?: return
     Text(venue.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+    val quoted = state.draft.quotedTotal?.toBigDecimalOrNull()
     Text(
-        stringResource(R.string.booking_price_reference, priceText(venue, DetailViewer.CLIENT)),
+        if (quoted != null) {
+            stringResource(R.string.booking_quoted_total, formatMxn(quoted.toDouble()))
+        } else {
+            stringResource(R.string.booking_price_reference, priceText(venue, DetailViewer.CLIENT))
+        },
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
-    DateField(state.date, state.fieldErrors[BookingField.DATE], actions.onDate)
+    if (state.draft.quoteId != null) {
+        Text(
+            stringResource(R.string.booking_quoted_date, state.date?.let(::formatDate).orEmpty()),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.SemiBold,
+        )
+    } else {
+        DateField(state.date, state.fieldErrors[BookingField.DATE], actions.onDate)
+    }
     HoursField(state, actions.onHours)
     VirGoCard {
         VirGoRow(
