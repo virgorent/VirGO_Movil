@@ -914,3 +914,9 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Costo:** herramientas locales existentes; sin servicios ni dependencias nuevas.
 - **Aprendizaje:** diferenciar acciones, navegación y selección reduce competencia visual. Recompilar sin incremental resolvió los símbolos duplicados tras mover fuentes. Un fallo aislado de `NavigationTest` no se reprodujo al repetir la suite completa; causa no determinada.
 - **Pendiente:** aceptación visual del usuario y CI del nuevo head. No se declara pulido exhaustivo de todas las pantallas, TalkBack ni cierre de T014/T036. Sin fusión ni release.
+
+### 2026-11-26 · Autorización para trabajar en otros repositorios
+
+- **Autor:** usuario + Claude Code.
+- **Decisión:** el usuario autorizó que los agentes trabajen también en `VirGO_Backend` y en los demás repositorios de VirGo («si puedes trabajar en los demás repositorios»), siempre con rama propia y por PR. Siguen prohibidos aprobar o fusionar PRs ajenos, desplegar, cambiar secretos, tocar workflows o el ruleset y hacer push a ramas de otras personas.
+- **Dónde quedó:** `AGENTS.md` (raíz) y `VirGo-Movil/AGENTS.md`, sección «Coordinación con el Backend».
