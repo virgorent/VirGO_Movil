@@ -6,6 +6,7 @@ import mx.virgo.core.network.api.BookingsApi
 import mx.virgo.core.network.api.ConversationsApi
 import mx.virgo.core.network.api.EventPlanningApi
 import mx.virgo.core.network.api.EventsApi
+import mx.virgo.core.network.api.OwnerToolsApi
 import mx.virgo.core.network.api.OwnerVenuesApi
 import mx.virgo.core.network.api.QuotesApi
 import okhttp3.OkHttpClient
@@ -35,6 +36,11 @@ fun createConversationsApi(
     baseUrl: String,
     client: OkHttpClient = defaultOkHttpClient(),
 ): ConversationsApi = createRetrofit(baseUrl, client).create(ConversationsApi::class.java)
+
+fun createOwnerToolsApi(
+    baseUrl: String,
+    client: OkHttpClient = defaultOkHttpClient(),
+): OwnerToolsApi = createRetrofit(baseUrl, client).create(OwnerToolsApi::class.java)
 
 fun createAvailabilityApi(
     baseUrl: String,

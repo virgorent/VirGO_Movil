@@ -22,10 +22,17 @@ import mx.virgo.core.designsystem.components.VirGoRow
 import mx.virgo.core.designsystem.components.VirGoRowDivider
 import mx.virgo.core.designsystem.theme.VirGoTone
 import mx.virgo.core.domain.Booking
+import mx.virgo.core.domain.BookingStatus
 
-/** «Mis reservaciones» del cliente: lista real y comprobante de cada una (009 RF-08/RF-09). */
+/**
+ * «Mis reservaciones» del cliente: lista real y comprobante de cada una (009 RF-08/RF-09).
+ * [reviewSlot] dibuja «Calificar el salón» (`019`) bajo el comprobante; vacío en pruebas sin Hilt.
+ */
 @Composable
-fun ClientBookings(viewModel: BookingsViewModel = hiltViewModel()) {
+fun ClientBookings(
+    reviewSlot: @Composable (Booking) -> Unit = {},
+    viewModel: BookingsViewModel = hiltViewModel(),
+) {
     val state by viewModel.state.collectAsState()
     if (state.receipt != null) BackHandler(onBack = viewModel::closeReceipt)
     BookingsContent(
@@ -34,6 +41,7 @@ fun ClientBookings(viewModel: BookingsViewModel = hiltViewModel()) {
         onRetry = viewModel::refresh,
         onRetryReceipt = viewModel::open,
         folioActions = FolioSearchActions(onChange = viewModel::onFolioChange, onSearch = viewModel::searchFolio),
+        reviewSlot = reviewSlot,
     )
 }
 
@@ -44,6 +52,7 @@ internal fun BookingsContent(
     onRetry: () -> Unit,
     onRetryReceipt: (String) -> Unit = onOpen,
     folioActions: FolioSearchActions = FolioSearchActions(),
+    reviewSlot: @Composable (Booking) -> Unit = {},
 ) {
     VirGoPageBody {
         val receipt = state.receipt
@@ -51,7 +60,7 @@ internal fun BookingsContent(
             FolioSearch(state, folioActions)
         }
         when {
-            receipt != null -> ReceiptFromList(receipt, onRetryReceipt)
+            receipt != null -> ReceiptFromList(receipt, onRetryReceipt, reviewSlot)
             state.loading && state.bookings.isEmpty() ->
                 LoadingState(
                     message = stringResource(R.string.bookings_loading),
@@ -77,12 +86,15 @@ internal fun BookingsContent(
 private fun ReceiptFromList(
     receipt: ReceiptState,
     onRetry: (String) -> Unit,
+    reviewSlot: @Composable (Booking) -> Unit,
 ) {
     val booking = receipt.booking
     when {
         booking != null -> {
             BookingReceiptBody(booking, onMyBookings = null, onCatalog = null)
             ChangesNotice()
+            val venueId = booking.venueId
+            if (venueId != null && booking.status != BookingStatus.CANCELLED) reviewSlot(booking)
         }
         receipt.failed ->
             ErrorBanner(

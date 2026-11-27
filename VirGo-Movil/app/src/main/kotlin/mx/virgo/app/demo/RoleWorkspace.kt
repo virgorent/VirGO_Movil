@@ -33,6 +33,12 @@ import mx.virgo.app.ui.ownercalendar.OwnerCalendar
 import mx.virgo.app.ui.ownerhome.OwnerHome
 import mx.virgo.app.ui.ownerhome.OwnerHomeActions
 import mx.virgo.app.ui.ownerrequests.OwnerRequests
+import mx.virgo.app.ui.ownertools.OwnerInsight
+import mx.virgo.app.ui.ownertools.OwnerInsights
+import mx.virgo.app.ui.ownertools.OwnerReviews
+import mx.virgo.app.ui.ownertools.OwnerVenueTool
+import mx.virgo.app.ui.ownertools.ReviewForm
+import mx.virgo.app.ui.ownertools.VenueTool
 import mx.virgo.app.ui.ownervenues.OwnerVenuesRoute
 import mx.virgo.app.ui.quotes.ClientQuotes
 import mx.virgo.app.ui.studio.ClientStudio
@@ -142,6 +148,11 @@ private enum class WorkspaceScreen {
     STUDIO,
     MESSAGES,
     OWNER_MESSAGES,
+    OWNER_PRICING,
+    OWNER_SETUPS,
+    OWNER_PAYMENTS,
+    OWNER_STATS,
+    OWNER_REVIEWS,
     BUDGET,
     BUDGET_SUGGESTION,
     PAYMENTS,
@@ -182,6 +193,11 @@ private val OWNER_SCREENS =
         WorkspaceScreen.OWNER_VENUES,
         WorkspaceScreen.OWNER_REQUESTS,
         WorkspaceScreen.OWNER_MESSAGES,
+        WorkspaceScreen.OWNER_PRICING,
+        WorkspaceScreen.OWNER_SETUPS,
+        WorkspaceScreen.OWNER_PAYMENTS,
+        WorkspaceScreen.OWNER_STATS,
+        WorkspaceScreen.OWNER_REVIEWS,
     )
 
 /** Pantallas conectadas del cliente (`005`–`021`). */
@@ -197,7 +213,10 @@ private fun ClientScreen(
     when (screen) {
         WorkspaceScreen.CATALOG ->
             ClientExplore(onMyBookings = { navigate("bookings") }, onMyQuotes = { navigate("quotes") })
-        WorkspaceScreen.BOOKINGS -> ClientBookings()
+        WorkspaceScreen.BOOKINGS ->
+            ClientBookings(reviewSlot = { booking ->
+                ReviewForm(booking.venueId.orEmpty(), booking.id)
+            })
         WorkspaceScreen.STUDIO -> ClientStudio(onAssistant = { navigate("assistant") })
         WorkspaceScreen.ASSISTANT -> ClientAssistant()
         WorkspaceScreen.MESSAGES -> MessagesInbox()
@@ -237,6 +256,19 @@ private fun OwnerScreen(
         WorkspaceScreen.OWNER_VENUES -> ownerVenuesScreen()
         WorkspaceScreen.OWNER_REQUESTS -> OwnerRequests()
         WorkspaceScreen.OWNER_MESSAGES -> MessagesInbox()
+        else -> OwnerToolScreen(screen)
+    }
+}
+
+/** Herramientas del propietario (`025`). */
+@Composable
+private fun OwnerToolScreen(screen: WorkspaceScreen) {
+    when (screen) {
+        WorkspaceScreen.OWNER_PRICING -> OwnerVenueTool(VenueTool.PRICING)
+        WorkspaceScreen.OWNER_SETUPS -> OwnerVenueTool(VenueTool.SETUPS)
+        WorkspaceScreen.OWNER_PAYMENTS -> OwnerInsights(OwnerInsight.PAYMENTS)
+        WorkspaceScreen.OWNER_STATS -> OwnerInsights(OwnerInsight.STATS)
+        WorkspaceScreen.OWNER_REVIEWS -> OwnerReviews()
         else -> Unit
     }
 }
@@ -262,7 +294,12 @@ private val CONNECTED_SCREENS: Map<DemoRole, Map<String, WorkspaceScreen>> =
             ("ownerRequests" to WorkspaceScreen.OWNER_REQUESTS) +
             ("ownerHome" to WorkspaceScreen.OWNER_HOME) +
             ("ownerCalendar" to WorkspaceScreen.OWNER_CALENDAR) +
-            ("messages" to WorkspaceScreen.OWNER_MESSAGES),
+            ("messages" to WorkspaceScreen.OWNER_MESSAGES) +
+            ("ownerPricing" to WorkspaceScreen.OWNER_PRICING) +
+            ("ownerSetups" to WorkspaceScreen.OWNER_SETUPS) +
+            ("ownerPayments" to WorkspaceScreen.OWNER_PAYMENTS) +
+            ("ownerStats" to WorkspaceScreen.OWNER_STATS) +
+            ("ownerReviews" to WorkspaceScreen.OWNER_REVIEWS),
     )
 
 private fun workspaceScreen(

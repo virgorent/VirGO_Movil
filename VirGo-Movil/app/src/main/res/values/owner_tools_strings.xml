@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 025 Herramientas del propietario -->
+    <string name="tools_error">No pudimos cargar la información. Revisa tu conexión.</string>
+    <string name="tools_no_venues">Publica un salón para usar esta herramienta.</string>
+    <string name="tools_save">Guardar</string>
+    <string name="tools_base_price">Precio base: %1$s %2$s</string>
+    <string name="tools_per_hour">por hora</string>
+    <string name="tools_per_day">por día</string>
+    <string name="tools_weekend_pct">Aumento viernes y sábado (%)</string>
+    <string name="tools_season_pct">Aumento en temporada alta (%)</string>
+    <string name="tools_season_months">Meses de temporada alta</string>
+    <string name="tools_pct_invalid">Los aumentos van de 0 a 100 %.</string>
+    <string name="tools_preview">Así lo verá el cliente</string>
+    <string name="tools_setup_banquet">Banquete (personas)</string>
+    <string name="tools_setup_auditorium">Auditorio (personas)</string>
+    <string name="tools_setup_cocktail">Coctel (personas)</string>
+    <string name="tools_floor_plan_soon">Subir el plano llegará pronto.</string>
+    <string name="tools_payments_notice">VirGo no cobra: aquí ves los anticipos de las reservaciones de tus salones.</string>
+    <string name="tools_received">Anticipos confirmados</string>
+    <string name="tools_to_collect">Por confirmar</string>
+    <string name="tools_payment_line">Folio %1$s · %2$s · anticipo %3$s</string>
+    <string name="tools_months">%1$d meses</string>
+    <string name="tools_visits_out">Las visitas al salón todavía no se miden.</string>
+    <string name="tools_stats_line">%1$d solicitudes · %2$d reservaciones · %3$d %% de conversión</string>
+
+    <!-- 019 y 025 Reseñas -->
+    <string name="reviews_unavailable">Las reseñas llegarán pronto.</string>
+    <string name="reviews_empty">Este salón aún no tiene reseñas.</string>
+    <string name="reviews_summary">%1$.1f ★ · %2$d reseñas</string>
+    <string name="reviews_your_reply">Tu respuesta: %1$s</string>
+    <string name="reviews_reply">Responder</string>
+    <string name="reviews_edit_reply">Editar respuesta</string>
+    <string name="reviews_reply_failed">No se envió tu respuesta. Inténtalo de nuevo.</string>
+    <string name="reviews_send">Enviar respuesta</string>
+    <string name="reviews_rate_venue">Calificar el salón</string>
+    <string name="reviews_comment">Cuéntanos cómo te fue</string>
+    <string name="reviews_publish">Publicar</string>
+    <string name="reviews_published">Gracias, tu reseña ya aparece en el salón.</string>
+    <string name="reviews_already">Ya calificaste este salón.</string>
+    <string name="reviews_not_allowed">Podrás calificar cuando tu reservación esté confirmada.</string>
+    <string name="reviews_failed">No se publicó tu reseña. Inténtalo de nuevo.</string>
+    <plurals name="reviews_stars">
+        <item quantity="one">%1$d estrella</item>
+        <item quantity="other">%1$d estrellas</item>
+    </plurals>
+</resources>
