@@ -5,12 +5,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import mx.virgo.core.network.BuildConfig
+import mx.virgo.core.network.api.AiApi
 import mx.virgo.core.network.api.AvailabilityApi
 import mx.virgo.core.network.api.BookingsApi
 import mx.virgo.core.network.api.EventPlanningApi
 import mx.virgo.core.network.api.EventsApi
 import mx.virgo.core.network.api.OwnerVenuesApi
 import mx.virgo.core.network.api.QuotesApi
+import mx.virgo.core.network.createAiApi
 import mx.virgo.core.network.createAvailabilityApi
 import mx.virgo.core.network.createBookingsApi
 import mx.virgo.core.network.createEventPlanningApi
@@ -36,6 +38,10 @@ object MarketplaceNetworkModule {
     @Provides
     @Singleton
     fun provideQuotesApi(client: OkHttpClient): QuotesApi = createQuotesApi(BuildConfig.API_BASE_URL, client)
+
+    @Provides
+    @Singleton
+    fun provideAiApi(client: OkHttpClient): AiApi = createAiApi(BuildConfig.API_BASE_URL, client)
 
     @Provides
     @Singleton

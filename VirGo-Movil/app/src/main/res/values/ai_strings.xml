@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 012 IA Studio -->
+    <string name="studio_intro">Calcula mesas y personal para tu evento y pide ideas de decoración a la IA.</string>
+    <string name="studio_open_assistant">Preguntar al asistente</string>
+    <string name="studio_loading">Preparando tu estudio…</string>
+    <string name="studio_guests">Invitados</string>
+    <string name="studio_guests_invalid">Escribe entre 1 y 2000 invitados.</string>
+    <string name="studio_from_event">Tomado de tu evento «%1$s».</string>
+    <string name="studio_tab_tables">Mesas</string>
+    <string name="studio_tab_staff">Personal</string>
+    <string name="studio_tab_ideas">Ideas</string>
+    <string name="studio_layout_center">Pista al centro</string>
+    <string name="studio_layout_max">Máximo aforo</string>
+    <string name="studio_layout_imperial">Imperial</string>
+    <string name="studio_tables_value">%1$d mesas de %2$d personas</string>
+    <string name="studio_no_capacity">Elige un salón en tu evento para revisar si caben.</string>
+    <string name="studio_does_not_fit">No caben en esta distribución: el salón admite %1$d personas así.</string>
+    <string name="studio_fits">Caben: el salón admite %1$d personas en esta distribución.</string>
+    <string name="studio_staff_waiters">Meseros</string>
+    <string name="studio_staff_security">Seguridad</string>
+    <string name="studio_staff_cleaning">Limpieza</string>
+    <string name="studio_staff_rule">1 por cada %1$d invitados</string>
+    <string name="studio_staff_less">Menos %1$s</string>
+    <string name="studio_staff_more">Más %1$s</string>
+    <string name="studio_staff_reset">Volver a la sugerencia</string>
+    <string name="studio_staff_hint">Es una sugerencia; ajústala a tus necesidades.</string>
+    <string name="studio_ai_label">Sugerencia de IA</string>
+    <string name="studio_ideas_loading">Pidiendo ideas a la IA…</string>
+    <string name="studio_ideas_unavailable">Las ideas con IA llegarán pronto.</string>
+    <string name="studio_ideas_error">No pudimos traer las ideas. Revisa tu conexión.</string>
+    <string name="studio_ideas_empty">La IA no encontró ideas para tu evento.</string>
+    <string name="studio_ideas_within">Las ideas suman %1$s, dentro de tu presupuesto de decoración (%2$s).</string>
+    <string name="studio_ideas_over">Por encima del presupuesto de decoración: suman %1$s y tienes %2$s.</string>
+    <string name="ai_busy">Espera un momento y vuelve a intentar.</string>
+
+    <!-- 013 Asistente IA -->
+    <string name="assistant_greeting">¡Hola! Puedo ayudarte con presupuesto, mesas, personal, invitaciones y fechas.</string>
+    <string name="assistant_thinking">El asistente está escribiendo…</string>
+    <string name="assistant_unavailable">El asistente todavía no está conectado.</string>
+    <string name="assistant_failed">No pudimos enviar tu pregunta. Revisa tu conexión.</string>
+    <string name="assistant_input">Pregúntame sobre tu evento</string>
+    <string name="assistant_send">Enviar</string>
+    <string name="assistant_you">Tú:</string>
+    <string name="assistant_bot">Asistente:</string>
+    <string name="assistant_uncertain">No estoy seguro; confírmalo con el salón o en Ayuda.</string>
+    <string-array name="assistant_suggestions">
+        <item>¿Cuánto gastar en cada cosa?</item>
+        <item>¿Cuántos meseros necesito?</item>
+        <item>¿Cuándo envío invitaciones?</item>
+        <item>¿Con cuánto tiempo reservo?</item>
+    </string-array>
+</resources>

@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import mx.virgo.app.session.SessionEndReason
 import mx.virgo.app.session.SessionRepository
+import mx.virgo.app.session.endsSession
 import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
 import mx.virgo.core.domain.BlockDayUseCase
@@ -215,13 +215,6 @@ class OwnerCalendarViewModel
 private fun OwnerCalendarUiState.pendingBlock(): Triple<String, LocalDate, BlockForm>? {
     val form = blockForm?.takeIf { it.reason != null && !saving }
     return form?.let { ready -> venueId?.let { venue -> selected?.let { date -> Triple(venue, date, ready) } } }
-}
-
-/** Un 401 cierra la sesión (`030`); el resto lo maneja cada pantalla. */
-internal suspend fun SessionRepository.endsSession(error: AppError): Boolean {
-    if (error != AppError.Unauthorized) return false
-    invalidate(SessionEndReason.REVOKED)
-    return true
 }
 
 private inline fun MutableStateFlow<OwnerCalendarUiState>.edit(

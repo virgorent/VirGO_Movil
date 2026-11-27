@@ -1,5 +1,6 @@
 package mx.virgo.core.network
 
+import mx.virgo.core.network.api.AiApi
 import mx.virgo.core.network.api.AvailabilityApi
 import mx.virgo.core.network.api.BookingsApi
 import mx.virgo.core.network.api.EventPlanningApi
@@ -23,6 +24,11 @@ fun createOwnerVenuesApi(
     baseUrl: String,
     client: OkHttpClient = defaultOkHttpClient(),
 ): OwnerVenuesApi = createRetrofit(baseUrl, client).create(OwnerVenuesApi::class.java)
+
+fun createAiApi(
+    baseUrl: String,
+    client: OkHttpClient = defaultOkHttpClient(),
+): AiApi = createRetrofit(baseUrl, client).create(AiApi::class.java)
 
 fun createAvailabilityApi(
     baseUrl: String,

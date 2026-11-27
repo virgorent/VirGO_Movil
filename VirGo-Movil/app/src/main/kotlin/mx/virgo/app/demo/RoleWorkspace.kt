@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import mx.virgo.app.R
 import mx.virgo.app.ui.account.AccountProfileScreen
 import mx.virgo.app.ui.account.SessionIdentity
+import mx.virgo.app.ui.assistant.ClientAssistant
 import mx.virgo.app.ui.beta.BetaSectionScreen
 import mx.virgo.app.ui.beta.BetaSectionsMenu
 import mx.virgo.app.ui.beta.betaTitle
@@ -29,6 +30,7 @@ import mx.virgo.app.ui.ownerhome.OwnerHomeActions
 import mx.virgo.app.ui.ownerrequests.OwnerRequests
 import mx.virgo.app.ui.ownervenues.OwnerVenuesRoute
 import mx.virgo.app.ui.quotes.ClientQuotes
+import mx.virgo.app.ui.studio.ClientStudio
 import mx.virgo.app.ui.venuedetail.ClientExplore
 import mx.virgo.core.designsystem.components.VirGoPageHeader
 import mx.virgo.core.designsystem.theme.pageBackground
@@ -132,6 +134,8 @@ private enum class WorkspaceScreen {
     BOOKINGS,
     QUOTES,
     EVENTS,
+    STUDIO,
+    ASSISTANT,
     OWNER_HOME,
     OWNER_CALENDAR,
     OWNER_VENUES,
@@ -157,6 +161,8 @@ private fun WorkspaceBody(
         WorkspaceScreen.CATALOG ->
             ClientExplore(onMyBookings = { navigate("bookings") }, onMyQuotes = { navigate("quotes") })
         WorkspaceScreen.BOOKINGS -> ClientBookings()
+        WorkspaceScreen.STUDIO -> ClientStudio(onAssistant = { navigate("assistant") })
+        WorkspaceScreen.ASSISTANT -> ClientAssistant()
         WorkspaceScreen.EVENTS -> ClientEvents(EVENT_STEPS[route], betaTitle(role, route), onBack = back)
         WorkspaceScreen.QUOTES ->
             ClientQuotes(onCatalog = { navigate("explore") }, onMyBookings = { navigate("bookings") }, onBack = back)
@@ -186,6 +192,8 @@ private val CONNECTED_SCREENS: Map<DemoRole, Map<String, WorkspaceScreen>> =
                 "explore" to WorkspaceScreen.CATALOG,
                 "bookings" to WorkspaceScreen.BOOKINGS,
                 "quotes" to WorkspaceScreen.QUOTES,
+                "studio" to WorkspaceScreen.STUDIO,
+                "assistant" to WorkspaceScreen.ASSISTANT,
             ) + EVENT_ROUTES.associateWith { WorkspaceScreen.EVENTS },
         DemoRole.OWNER to
             OWNER_VENUE_ROUTES.associateWith { WorkspaceScreen.OWNER_VENUES } +
