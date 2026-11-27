@@ -1,5 +1,6 @@
 package mx.virgo.app.ui.bookings
 
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
@@ -13,6 +14,7 @@ import mx.virgo.core.domain.BookingProblem
 import mx.virgo.core.testing.sampleBooking
 import mx.virgo.core.testing.sampleVenueDetail
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -140,5 +142,63 @@ class BookingsScreensTest {
         }
         compose.onNodeWithText("Folio VG-2027-0001").assertIsDisplayed()
         compose.onNodeWithText("Ver mis reservaciones").assertDoesNotExist()
+    }
+
+    @Test
+    fun folioSearchShowsFormatErrorAndSearches() {
+        var searched = false
+        compose.setContent {
+            VirGoTheme {
+                BookingsContent(
+                    BookingsUiState(loading = false, folioQuery = "abc", folioError = FolioError.FORMAT),
+                    onOpen = {},
+                    onRetry = {},
+                    folioActions = FolioSearchActions(onSearch = { searched = true }),
+                )
+            }
+        }
+        compose.onNodeWithText("por ejemplo VG-2026-0001", substring = true).assertIsDisplayed()
+        compose.onNodeWithText("Buscar").performClick()
+        assertTrue(searched)
+    }
+
+    @Test
+    fun unknownFolioMessageDoesNotHideTheList() {
+        compose.setContent {
+            VirGoTheme {
+                BookingsContent(
+                    BookingsUiState(
+                        loading = false,
+                        bookings = listOf(sampleBooking()),
+                        folioError = FolioError.NOT_FOUND,
+                    ),
+                    {},
+                    {},
+                )
+            }
+        }
+        compose.onNodeWithText("No encontramos ese folio en tus reservaciones").assertIsDisplayed()
+        compose.onNodeWithText("Salón Las Palmas").performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun receiptExplainsChangesWithoutCancelButtons() {
+        compose.setContent {
+            VirGoTheme {
+                BookingsContent(
+                    BookingsUiState(
+                        loading = false,
+                        receipt = ReceiptState(sampleBooking().id, loading = false, booking = sampleBooking()),
+                    ),
+                    {},
+                    {},
+                )
+            }
+        }
+        compose.onNodeWithText("¿Necesitas cancelar o cambiar la fecha?").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Buscar por folio").assertDoesNotExist()
+        compose.onAllNodes(hasClickAction() and hasText("Cancelar", substring = true)).assertCountEquals(0)
+        compose.onAllNodes(hasClickAction() and hasText("Reprogramar", substring = true)).assertCountEquals(0)
+        compose.onAllNodes(hasText("reembolso", substring = true, ignoreCase = true)).assertCountEquals(0)
     }
 }

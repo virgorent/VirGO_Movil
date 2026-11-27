@@ -86,6 +86,9 @@ interface BookingsRepository {
     suspend fun list(): AppResult<List<Booking>>
 
     suspend fun get(id: String): AppResult<Booking>
+
+    /** `GET /api/v1/bookings/by-folio/:folio` (`010`); `404` si el folio no es de la cuenta. */
+    suspend fun byFolio(folio: String): AppResult<Booking>
 }
 
 class CreateBookingUseCase
@@ -118,4 +121,21 @@ class GetBookingUseCase
         private val repository: BookingsRepository,
     ) {
         suspend operator fun invoke(id: String): AppResult<Booking> = repository.get(id)
+    }
+
+/** Folio de reservación `VG-AAAA-NNNN` (`010` RF-02). Se normaliza antes de validar. */
+object BookingFolio {
+    private val pattern = Regex("""^VG-\d{4}-\d{4}$""")
+
+    /** Quita espacios y pasa a mayúsculas; devuelve `null` si no tiene el formato. */
+    fun normalize(raw: String): String? = raw.filterNot { it.isWhitespace() }.uppercase().takeIf { pattern.matches(it) }
+}
+
+class FindBookingByFolioUseCase
+    @Inject
+    constructor(
+        private val repository: BookingsRepository,
+    ) {
+        /** El folio ya debe venir normalizado por [BookingFolio]. */
+        suspend operator fun invoke(folio: String): AppResult<Booking> = repository.byFolio(folio)
     }

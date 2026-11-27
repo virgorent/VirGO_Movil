@@ -56,4 +56,13 @@
     <string name="bookings_error">No pudimos cargar tus reservaciones.</string>
     <string name="bookings_item">%1$s · %2$s</string>
     <string name="bookings_receipt_error">No pudimos abrir el comprobante.</string>
+    <string name="bookings_folio_label">Buscar por folio</string>
+    <string name="bookings_folio_hint">VG-2026-0001</string>
+    <string name="bookings_folio_search">Buscar</string>
+    <string name="bookings_folio_searching">Buscando…</string>
+    <string name="bookings_folio_format">Escribe el folio como aparece en tu comprobante, por ejemplo VG-2026-0001</string>
+    <string name="bookings_folio_not_found">No encontramos ese folio en tus reservaciones</string>
+    <string name="bookings_folio_failed">No pudimos buscar el folio. Revisa tu conexión.</string>
+    <string name="bookings_changes_title">¿Necesitas cancelar o cambiar la fecha?</string>
+    <string name="bookings_changes_text">Por ahora los cambios se acuerdan directamente con el salón. Ten a la mano tu folio.</string>
 </resources>

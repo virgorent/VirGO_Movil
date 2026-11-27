@@ -24,4 +24,10 @@ interface BookingsApi {
     suspend fun get(
         @Path("id") id: String,
     ): BookingDto
+
+    /** Backend `068`: el folio va en la ruta, codificado por Retrofit (`010` RF-03). */
+    @GET("api/v1/bookings/by-folio/{folio}")
+    suspend fun byFolio(
+        @Path("folio") folio: String,
+    ): BookingDto
 }

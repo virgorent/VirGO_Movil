@@ -1085,3 +1085,14 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - riesgos abiertos: las cotizaciones siguen exponiendo `clientId`, y dos reservas simultáneas con la misma cotización y distinta clave podrían duplicarse (#46);
   - TalkBack manual (T014) y aceptación visual de la pila.
 - **Costo:** $0.
+
+### 2026-11-26 · Specs 010 y 021 recortados e implementados
+
+- **Autor:** usuario + Claude Code («Sí, recórtalos», «Aprobados, impleméntalos»).
+- **Recorte (PR #52):** `010` v2.0.0 queda en buscar por folio y un aviso de solo lectura; cancelar, reprogramar y reembolsos salen porque `069` no tiene controlador. `021` v2.0.0 queda en borrar cuenta (solo clientes) y ocultar el corazón de favoritos; el resto no tiene backend.
+- **Hallazgo (corregido tras el emulador):** `ExploreScreen` llamaba a `/api/v1/favorites`, que no existe en ningún backend, pero esa pantalla **no está conectada**: la pestaña «Explorar» usa el catálogo beta, sin corazón. El riesgo era latente; queda apagado con `FAVORITES_ENABLED = false` por si se conecta.
+- **Hallazgo:** `DELETE /users/me` cambia el nombre a «Cuenta eliminada» y anonimiza correo y teléfono, pero las reservaciones y cotizaciones guardan su copia del nombre. El diálogo lo dice tal cual (P-04).
+- **Evidencia:** `ktlintCheck detekt testDebugUnitTest` en verde, 583 pruebas y 0 fallas. Emulador (Pixel_10_Pro, backend local en memoria): formato inválido sin llamada; `VG-2026-0099` → 404 con su mensaje; `vg-2026-0001` → 200 y detalle con el aviso; «Cancelar» no envía nada; «Borrar cuenta» → `DELETE /users/me` 204, vuelve al inicio con «Tu cuenta se borró.» y el login viejo da 401; el propietario no ve la acción. El aviso quedaba pegado al borde derecho y se corrigió (también el aviso de `009`). Sin TalkBack todavía.
+- **Pendiente:** TalkBack y aceptación visual de `ccabrera-dev8`; humo contra producción tras el despliegue; P-01 (borrado de propietarios) y P-02 (enlace web de borrado para Google Play).
+- **Costo:** $0.
+- **Aprendizaje:** en MockWebServer, un `DISCONNECT_AT_START` encolado después de otras respuestas no da un error de red fiable (OkHttp reintenta en otra conexión); cada caso sin red va en su propia prueba.

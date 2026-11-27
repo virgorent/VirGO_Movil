@@ -62,7 +62,8 @@ class ExploreViewModel
                             catalog = venues.toSamples()
                         }
                         // Favoritos y avisos: si aún no responden, se quedan vacíos (Art. VIII.6).
-                        val favorites = getFavorites()
+                        // `021` RF-07: sin endpoint de favoritos no se llama a la API.
+                        val favorites = if (FAVORITES_ENABLED) getFavorites() else null
                         if (favorites is AppResult.Success) {
                             val ids = favorites.value.map { it.targetId }.toSet()
                             _state.value = _state.value.copy(favoriteIds = ids)

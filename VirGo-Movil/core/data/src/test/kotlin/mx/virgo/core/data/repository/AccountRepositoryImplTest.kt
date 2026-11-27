@@ -135,6 +135,36 @@ class AccountRepositoryImplTest {
 
             assertEquals(AppResult.Failure(AppError.Network), repository.logout())
         }
+
+    @Test
+    fun deleteAccountSendsDeleteWithBearerAndAccepts204() =
+        runTest {
+            server.enqueue(MockResponse().setResponseCode(204))
+
+            assertEquals(AppResult.Success(Unit), repository.deleteAccount())
+            val request = server.takeRequest()
+            assertEquals("DELETE", request.method)
+            assertEquals("/api/v1/users/me", request.path)
+            assertEquals("Bearer $TOKEN", request.getHeader("Authorization"))
+        }
+
+    @Test
+    fun deleteAccountReportsUnauthorizedServerAndNetwork() =
+        runTest {
+            server.enqueue(MockResponse().setResponseCode(401))
+            server.enqueue(MockResponse().setResponseCode(500))
+
+            assertEquals(AppResult.Failure(AppError.Unauthorized), repository.deleteAccount())
+            assertTrue((repository.deleteAccount() as AppResult.Failure).error is AppError.Server)
+        }
+
+    @Test
+    fun deleteAccountWithoutNetworkMapsToNetwork() =
+        runTest {
+            server.enqueue(MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START))
+
+            assertEquals(AppResult.Failure(AppError.Network), repository.deleteAccount())
+        }
 }
 
 private const val TOKEN = "header.payload.signature"

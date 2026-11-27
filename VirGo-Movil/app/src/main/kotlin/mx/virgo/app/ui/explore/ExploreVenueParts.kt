@@ -97,14 +97,22 @@ internal fun ExplorePrice(
     Text(text = text, style = style, color = color, modifier = modifier)
 }
 
-/** Corazón de favorito (RF-08): área táctil de 48 dp con la IconButton. */
+/**
+ * Favoritos apagados (`021` RF-07): el backend no tiene `/api/v1/favorites`, así que el corazón no podría
+ * guardar nada. Se vuelve a encender cuando exista el endpoint.
+ */
+internal const val FAVORITES_ENABLED = false
+
+/** Corazón de favorito (RF-08): área táctil de 48 dp con la IconButton. No se pinta sin [FAVORITES_ENABLED]. */
 @Composable
 internal fun ExploreFavoriteButton(
     isFavorite: Boolean,
     venueName: String,
     onToggle: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = FAVORITES_ENABLED,
 ) {
+    if (!enabled) return
     IconButton(onClick = onToggle, modifier = modifier) {
         Icon(
             imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,

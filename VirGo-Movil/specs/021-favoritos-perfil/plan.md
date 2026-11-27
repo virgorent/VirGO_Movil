@@ -49,4 +49,4 @@ Se extiende `030`; no se crea módulo `:feature:*`.
 |---|---|
 | Borrado accidental | Diálogo con «Cancelar» por defecto y texto explícito. |
 | El backend cambia lo que conserva | P-03: se revisa el texto con Esaú o Gafass antes de fusionar. |
-| Ocultar favoritos parece una regresión | `005` RF-08 decía favoritos solo de muestra; con el backend actual el corazón siempre falla. |
+| Ocultar favoritos parece una regresión | `005` RF-08 decía favoritos solo de muestra; el corazón de `ExploreScreen` no podía guardar nada; hoy esa pantalla ni siquiera está conectada. |

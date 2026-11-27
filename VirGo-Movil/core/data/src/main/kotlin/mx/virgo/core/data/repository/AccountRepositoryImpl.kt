@@ -8,6 +8,7 @@ import mx.virgo.core.network.api.AuthApi
 import mx.virgo.core.network.api.UsersApi
 import mx.virgo.core.network.dto.UserProfileDto
 import retrofit2.HttpException
+import retrofit2.Response
 import javax.inject.Inject
 
 class AccountRepositoryImpl
@@ -19,15 +20,12 @@ class AccountRepositoryImpl
         override suspend fun getProfile(): AppResult<UserProfile> =
             safeCall { AppResult.Success(usersApi.me().toUserProfile()) }
 
-        override suspend fun logout(): AppResult<Unit> =
-            safeCall {
-                val response = authApi.logout()
-                if (response.isSuccessful) {
-                    AppResult.Success(Unit)
-                } else {
-                    AppResult.Failure(HttpException(response).toAppError())
-                }
-            }
+        override suspend fun logout(): AppResult<Unit> = safeCall { authApi.logout().toUnitResult() }
+
+        override suspend fun deleteAccount(): AppResult<Unit> = safeCall { usersApi.deleteMe().toUnitResult() }
+
+        private fun Response<Unit>.toUnitResult(): AppResult<Unit> =
+            if (isSuccessful) AppResult.Success(Unit) else AppResult.Failure(HttpException(this).toAppError())
 
         @Suppress("TooGenericExceptionCaught")
         private suspend fun <T> safeCall(block: suspend () -> AppResult<T>): AppResult<T> =

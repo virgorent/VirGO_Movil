@@ -18,6 +18,9 @@ interface AccountRepository {
 
     /** Revoca la sesión actual en el servidor (`POST /api/v1/auth/logout`). */
     suspend fun logout(): AppResult<Unit>
+
+    /** Borra la cuenta en el servidor (`DELETE /api/v1/users/me`, `021`). */
+    suspend fun deleteAccount(): AppResult<Unit>
 }
 
 class GetProfileUseCase
@@ -34,4 +37,12 @@ class LogoutUseCase
         private val repository: AccountRepository,
     ) {
         suspend operator fun invoke(): AppResult<Unit> = repository.logout()
+    }
+
+class DeleteAccountUseCase
+    @Inject
+    constructor(
+        private val repository: AccountRepository,
+    ) {
+        suspend operator fun invoke(): AppResult<Unit> = repository.deleteAccount()
     }
