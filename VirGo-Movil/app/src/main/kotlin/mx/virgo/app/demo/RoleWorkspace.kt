@@ -23,6 +23,9 @@ import mx.virgo.app.ui.beta.betaTitle
 import mx.virgo.app.ui.bookings.ClientBookings
 import mx.virgo.app.ui.events.ClientEvents
 import mx.virgo.app.ui.events.EventStep
+import mx.virgo.app.ui.ownercalendar.OwnerCalendar
+import mx.virgo.app.ui.ownerhome.OwnerHome
+import mx.virgo.app.ui.ownerhome.OwnerHomeActions
 import mx.virgo.app.ui.ownerrequests.OwnerRequests
 import mx.virgo.app.ui.ownervenues.OwnerVenuesRoute
 import mx.virgo.app.ui.quotes.ClientQuotes
@@ -120,8 +123,8 @@ private val EVENT_ROUTES = EVENT_STEPS.keys
 /** Pantallas del cliente que dibujan su propio encabezado con pasos internos. */
 private val OWN_HEADER_ROUTES = setOf("explore", "quotes") + EVENT_ROUTES
 
-/** Inicio y «Mis salones» del propietario muestran sus salones reales (022 RF-01). */
-private val OWNER_VENUE_ROUTES = setOf("ownerHome", "ownerVenues")
+/** «Mis salones» del propietario muestra sus salones reales (022 RF-01); «Inicio» es su tablero (023). */
+private val OWNER_VENUE_ROUTES = setOf("ownerVenues")
 
 private enum class WorkspaceScreen {
     SECTIONS,
@@ -129,6 +132,8 @@ private enum class WorkspaceScreen {
     BOOKINGS,
     QUOTES,
     EVENTS,
+    OWNER_HOME,
+    OWNER_CALENDAR,
     OWNER_VENUES,
     OWNER_REQUESTS,
     ACCOUNT,
@@ -155,6 +160,17 @@ private fun WorkspaceBody(
         WorkspaceScreen.EVENTS -> ClientEvents(EVENT_STEPS[route], betaTitle(role, route), onBack = back)
         WorkspaceScreen.QUOTES ->
             ClientQuotes(onCatalog = { navigate("explore") }, onMyBookings = { navigate("bookings") }, onBack = back)
+        WorkspaceScreen.OWNER_HOME ->
+            OwnerHome(
+                name = identity.name,
+                actions =
+                    OwnerHomeActions(
+                        onVenues = { navigate("ownerVenues") },
+                        onRequests = { navigate("ownerRequests") },
+                        onCalendar = { navigate("ownerCalendar") },
+                    ),
+            )
+        WorkspaceScreen.OWNER_CALENDAR -> OwnerCalendar(onVenues = { navigate("ownerVenues") })
         WorkspaceScreen.OWNER_VENUES -> ownerVenuesScreen()
         WorkspaceScreen.OWNER_REQUESTS -> OwnerRequests()
         WorkspaceScreen.ACCOUNT -> accountScreen(identity, onLogout)
@@ -173,7 +189,9 @@ private val CONNECTED_SCREENS: Map<DemoRole, Map<String, WorkspaceScreen>> =
             ) + EVENT_ROUTES.associateWith { WorkspaceScreen.EVENTS },
         DemoRole.OWNER to
             OWNER_VENUE_ROUTES.associateWith { WorkspaceScreen.OWNER_VENUES } +
-            ("ownerRequests" to WorkspaceScreen.OWNER_REQUESTS),
+            ("ownerRequests" to WorkspaceScreen.OWNER_REQUESTS) +
+            ("ownerHome" to WorkspaceScreen.OWNER_HOME) +
+            ("ownerCalendar" to WorkspaceScreen.OWNER_CALENDAR),
     )
 
 private fun workspaceScreen(

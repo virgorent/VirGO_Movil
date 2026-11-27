@@ -29,4 +29,5 @@ data class BookingDto(
     val deposit: Double? = null,
     val status: String? = null,
     val createdAt: String? = null,
+    val clientName: String? = null,
 )

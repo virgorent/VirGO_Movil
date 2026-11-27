@@ -1,43 +1,26 @@
-# Plan — 023 Inicio y calendario
+# Plan — 023 Inicio y calendario del propietario
 
 | Campo | Valor |
 |---|---|
 | Módulo | `023-propietario-inicio-calendario` |
-| Versión | 1.0.0 |
-| Estado | Borrador |
-| Fecha | 2026-11-05 |
-| Rol | Propietario |
-| Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
-| Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
+| Versión | 2.0.0 |
+| Estado | Aprobado por el usuario (2026-11-27) |
 
 ## 1. Resumen técnico
 
-Módulo `:feature:propietarioiniciocalendario`, con pantallas Compose y un `ViewModel` por pantalla. Cada `ViewModel` expone un `UiState` inmutable por `StateFlow` y llama a casos de uso de `:core:domain`.
+| Capa | Cambio |
+|---|---|
+| `:core:network` | `AvailabilityApi`: disponibilidad por rango, crear y borrar bloqueo. DTO con `id` opcional. |
+| `:core:data` | `AvailabilityRepositoryImpl` con el `safeCall` de siempre. |
+| `:core:domain` | `VenueDay`, `BlockReason`, `AvailabilityRepository`; `OwnerDashboard` calculado de salones, cotizaciones y reservaciones (función pura con pruebas). |
+| `:app` `ui/ownerhome` | `OwnerHomeViewModel` + pantalla; `ownerHome` deja de abrir «Mis salones». |
+| `:app` `ui/ownercalendar` | `OwnerCalendarViewModel` + pantalla con mes, días, detalle del día y hoja de bloqueo. |
+| `:app` `demo/RoleWorkspace` | `ownerHome` y `ownerCalendar` pasan a pantallas conectadas. |
 
-## 2. Constitution Check
-
-| Art. | Resultado | Cómo se cumple |
-|---|---|---|
-| I y II | ✅ Cumple | Spec atómico por flujo. |
-| III | ✅ Cumple | MVVM/UDF; los módulos `:feature:*` no dependen entre sí. |
-| IV | ✅ Cumple | Solo consume `/api/v1`, con Bearer y `AppError`. |
-| V | ✅ Cumple | Sin secretos ni datos sensibles en logs. |
-| VI | ✅ Cumple | Sección 3. |
-| VII | ✅ Cumple | Sistema de diseño y `strings.xml`. |
-
-## 3. Estrategia de pruebas
+## 2. Estrategia de pruebas
 
 | Tipo | Casos |
 |---|---|
-| Unitarias | `ViewModel` con Turbine y casos de uso |
-| Integración | Repositorio con MockWebServer: éxito, 4xx/5xx y sin conexión |
-| UI | Compose Testing de cada pantalla, con escala de fuente 2.0 |
-| Seguridad | Sin datos sensibles en logs |
-| Mutación | Pitest en casos de uso |
-| Humo | La pantalla funciona contra la URL de producción |
-
-## 4. Riesgos
-
-| Riesgo | Mitigación |
-|---|---|
-| El endpoint aún no existe | MockWebServer con el contrato del spec de API |
+| Unitarias | Cálculo del tablero; marcas del mes; empalme; `ViewModel` con éxito, error, 401 y 409. |
+| Integración | MockWebServer: rutas, query `from`/`to`, cuerpo del bloqueo, 201/400/404/409 e `id` opcional. |
+| UI | Inicio con datos y vacío; calendario con días marcados, detalle y hoja de bloqueo; fuente 2.0. |

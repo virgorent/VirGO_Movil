@@ -36,6 +36,8 @@ data class Booking(
     val deposit: BigDecimal?,
     val status: BookingStatus,
     val createdAt: String?,
+    /** Solo llega al propietario del salón (`023` RF-07). */
+    val clientName: String = "",
 )
 
 data class BookingRequest(

@@ -65,4 +65,5 @@ internal fun BookingDto.toBooking(): Booking =
         deposit = deposit?.let(BigDecimal::valueOf),
         status = BookingStatus.fromWire(status),
         createdAt = createdAt,
+        clientName = clientName.orEmpty(),
     )
