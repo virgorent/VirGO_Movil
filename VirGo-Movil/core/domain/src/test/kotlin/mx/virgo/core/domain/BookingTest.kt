@@ -68,11 +68,16 @@ class BookingTest {
                     override suspend fun list(): AppResult<List<Booking>> = AppResult.Success(listOf(older, newer))
 
                     override suspend fun get(id: String): AppResult<Booking> = AppResult.Failure(AppError.NotFound)
+
+                    override suspend fun byFolio(folio: String): AppResult<Booking> =
+                        if (folio == newer.folio) AppResult.Success(newer) else AppResult.Failure(AppError.NotFound)
                 }
             assertEquals(listOf("b", "a"), (GetBookingsUseCase(repository)() as AppResult.Success).value.map { it.id })
             CreateBookingUseCase(repository)(BookingRequest("v1", today, 2), "key-1")
             assertEquals(listOf("key-1"), repository.keys)
             assertEquals(AppResult.Failure(AppError.NotFound), GetBookingUseCase(repository)("x"))
+            assertEquals(AppResult.Success(newer), FindBookingByFolioUseCase(repository)("VG-b"))
+            assertEquals(AppResult.Failure(AppError.NotFound), FindBookingByFolioUseCase(repository)("VG-z"))
         }
 
     @Test
