@@ -128,6 +128,32 @@ class BookingsRepositoryImplTest {
             server.enqueue(MockResponse().setResponseCode(500))
             assertTrue((repository.get("x") as AppResult.Failure).error is AppError.Server)
         }
+
+    @Test
+    fun byFolioPutsTheFolioInThePathAndMapsErrors() =
+        runTest {
+            server.enqueue(MockResponse().setBody(BOOKING_BODY))
+            server.enqueue(MockResponse().setResponseCode(404))
+            server.enqueue(MockResponse().setResponseCode(401))
+            server.enqueue(MockResponse().setResponseCode(500))
+
+            val found = (repository.byFolio("VG-2026-0001") as AppResult.Success).value
+            assertEquals("8a1d2c3b-0000-4000-8000-000000000001", found.id)
+            val sent = server.takeRequest()
+            assertEquals("GET", sent.method)
+            assertEquals("/api/v1/bookings/by-folio/VG-2026-0001", sent.path)
+            assertEquals(AppResult.Failure(AppError.NotFound), repository.byFolio("VG-2026-0002"))
+            assertEquals(AppResult.Failure(AppError.Unauthorized), repository.byFolio("VG-2026-0002"))
+            assertTrue((repository.byFolio("VG-2026-0002") as AppResult.Failure).error is AppError.Server)
+        }
+
+    @Test
+    fun byFolioWithoutNetworkMapsToNetwork() =
+        runTest {
+            server.enqueue(MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START))
+
+            assertEquals(AppResult.Failure(AppError.Network), repository.byFolio("VG-2026-0001"))
+        }
 }
 
 private const val BOOKING_TIMEOUT_MS = 300L

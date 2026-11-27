@@ -20,6 +20,12 @@ enum class SessionEndReason {
     ROLE_MISMATCH,
     ACCOUNT_UNAVAILABLE,
     LOGOUT_UNCONFIRMED,
+
+    /** `021` RF-04: el servidor borró la cuenta (204). */
+    ACCOUNT_DELETED,
+
+    /** `021` RF-05: 401 al borrar; la cuenta no se borró. */
+    DELETE_EXPIRED,
 }
 
 data class SessionUiState(

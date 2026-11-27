@@ -52,8 +52,26 @@ fun AccountProfileScreen(
     viewModel: AccountProfileViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
-    AccountProfileContent(state, identity, onRetry = viewModel::retry, onLogout = onLogout)
+    AccountProfileContent(
+        state,
+        identity,
+        onRetry = viewModel::retry,
+        onLogout = onLogout,
+        deleteActions =
+            DeleteAccountActions(
+                onRequest = viewModel::requestDelete,
+                onCancel = viewModel::cancelDelete,
+                onConfirm = viewModel::confirmDelete,
+            ),
+    )
 }
+
+/** Acciones del borrado de cuenta (`021` RF-01–RF-06). */
+internal data class DeleteAccountActions(
+    val onRequest: () -> Unit = {},
+    val onCancel: () -> Unit = {},
+    val onConfirm: () -> Unit = {},
+)
 
 /** Perfil de solo lectura (030 RF-01–RF-04) con el lenguaje del prototipo (035 RF-13). */
 @Composable
@@ -62,6 +80,7 @@ internal fun AccountProfileContent(
     identity: SessionIdentity,
     onRetry: () -> Unit,
     onLogout: () -> Unit = {},
+    deleteActions: DeleteAccountActions = DeleteAccountActions(),
 ) {
     val profile = state.profile
     val unavailable = stringResource(R.string.account_unavailable_value)
@@ -116,6 +135,9 @@ internal fun AccountProfileContent(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         LogoutButton(onLogout)
+        if (state.canDeleteAccount) {
+            DeleteAccountSection(state, deleteActions)
+        }
     }
 }
 

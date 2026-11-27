@@ -98,4 +98,6 @@ private fun SessionEndReason.messageRes(): Int =
         SessionEndReason.ROLE_MISMATCH -> R.string.session_end_role
         SessionEndReason.ACCOUNT_UNAVAILABLE -> R.string.session_end_unavailable
         SessionEndReason.LOGOUT_UNCONFIRMED -> R.string.session_end_unconfirmed
+        SessionEndReason.ACCOUNT_DELETED -> R.string.session_end_deleted
+        SessionEndReason.DELETE_EXPIRED -> R.string.session_end_delete_expired
     }

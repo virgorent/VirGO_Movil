@@ -11,21 +11,24 @@
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | Prueba de `ViewModel` + MockWebServer | ⏳ |
-| CA-02 | Prueba unitaria y de UI | ⏳ |
-| CA-03 | Prueba con `404` | ⏳ |
-| CA-04 | Prueba sin conexión | ⏳ |
-| CA-05 | Prueba de UI del comprobante | ⏳ |
+| CA-01 | `BookingsViewModelTest.ownFolioOpensItsReceiptNormalized`; `BookingsRepositoryImplTest.byFolioPutsTheFolioInThePathAndMapsErrors` | ✅ |
+| CA-02 | `BookingTest.folioIsNormalizedAndValidated`; `BookingsViewModelTest.badFormatNeverReachesTheServer`; `BookingsScreensTest.folioSearchShowsFormatErrorAndSearches` | ✅ |
+| CA-03 | `BookingsViewModelTest.unknownFolioAndNetworkErrorsAreDistinct`; `BookingsScreensTest.unknownFolioMessageDoesNotHideTheList` | ✅ |
+| CA-04 | `BookingsViewModelTest.unknownFolioAndNetworkErrorsAreDistinct`; `BookingsRepositoryImplTest.byFolioWithoutNetworkMapsToNetwork` | ✅ |
+| CA-05 | `BookingsScreensTest.receiptExplainsChangesWithoutCancelButtons` | ✅ |
 
 ## 2. Pruebas
 
+Corrida del 2026-11-26 sobre la punta del #51 con estos cambios: `ktlintCheck detekt testDebugUnitTest` **BUILD SUCCESSFUL**, 583 pruebas y 0 fallas en todo el proyecto.
+
 | Tipo | Evidencia | Estado |
 |---|---|---|
-| Unitarias | Totales: — | ⏳ |
-| Integración | Totales: — | ⏳ |
-| UI | Totales: — | ⏳ |
-| Seguridad | — | ⏳ |
-| Humo | APK contra producción | ⏳ |
+| Unitarias | `BookingTest` (5) y `BookingsViewModelTest` (8) | ✅ |
+| Integración | `BookingsRepositoryImplTest` (7): ruta, 200/404/401/500 y sin red | ✅ |
+| UI | `BookingsScreensTest` (10) | ✅ |
+| Seguridad | El folio va en la ruta, no en la query (prueba de integración); no se agregaron logs | ✅ |
+| Accesibilidad | Etiqueta y error del campo en semántica; **falta** revisión con TalkBack y fuente 2.0 a 320 dp | ⏳ |
+| Humo | APK contra producción tras el despliegue | ⏳ |
 
 ## 3. PR y release
 

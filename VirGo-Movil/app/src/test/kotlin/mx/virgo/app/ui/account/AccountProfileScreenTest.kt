@@ -5,6 +5,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -13,6 +15,7 @@ import androidx.compose.ui.unit.Density
 import mx.virgo.app.R
 import mx.virgo.core.designsystem.theme.VirGoTheme
 import mx.virgo.core.testing.sampleUserProfile
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -34,10 +37,13 @@ class AccountProfileScreenTest {
         state: AccountProfileUiState,
         darkTheme: Boolean = false,
         onRetry: () -> Unit = {},
+        deleteActions: DeleteAccountActions = DeleteAccountActions(),
     ) {
         compose.setContent {
             CompositionLocalProvider(LocalDensity provides Density(LocalDensity.current.density, fontScale = 2f)) {
-                VirGoTheme(darkTheme = darkTheme) { AccountProfileContent(state, identity, onRetry) }
+                VirGoTheme(darkTheme = darkTheme) {
+                    AccountProfileContent(state, identity, onRetry, deleteActions = deleteActions)
+                }
             }
         }
     }
@@ -84,5 +90,54 @@ class AccountProfileScreenTest {
         show(AccountProfileUiState(loading = false, profile = profile))
         compose.onNodeWithText("Sin teléfono registrado").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Sin verificar").performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun clientSeesDeleteActionSeparateFromLogout() {
+        var requested = false
+        show(
+            AccountProfileUiState(loading = false, profile = sampleUserProfile(), canDeleteAccount = true),
+            deleteActions = DeleteAccountActions(onRequest = { requested = true }),
+        )
+        compose.onNodeWithText("Borrar mi cuenta").performScrollTo().performClick()
+        compose.runOnIdle { assertTrue(requested) }
+    }
+
+    @Test
+    fun ownerDoesNotSeeDeleteAction() {
+        show(AccountProfileUiState(loading = false, profile = sampleUserProfile(role = "owner")))
+        compose.onNodeWithText("Borrar mi cuenta").assertDoesNotExist()
+    }
+
+    @Test
+    fun confirmationExplainsWhatHappensAndCancelSendsNothing() {
+        var cancelled = false
+        var confirmed = false
+        show(
+            AccountProfileUiState(loading = false, canDeleteAccount = true, confirmingDelete = true),
+            deleteActions = DeleteAccountActions(onCancel = { cancelled = true }, onConfirm = { confirmed = true }),
+        )
+        compose.onNodeWithText("¿Borrar tu cuenta?").assertIsDisplayed()
+        compose.onNodeWithText("no se puede deshacer", substring = true).assertIsDisplayed()
+        compose.onNodeWithText("Cancelar").performClick()
+        compose.runOnIdle {
+            assertTrue(cancelled)
+            assertFalse(confirmed)
+        }
+    }
+
+    @Test
+    fun deletingDisablesBothButtons() {
+        show(AccountProfileUiState(loading = false, canDeleteAccount = true, confirmingDelete = true, deleting = true))
+        compose.onNodeWithText("Borrando tu cuenta…").assertIsDisplayed()
+        compose.onNodeWithText("Borrar cuenta").assertIsNotEnabled()
+        compose.onNodeWithText("Cancelar").assertIsNotEnabled()
+    }
+
+    @Test
+    fun deleteFailureShowsRetryableError() {
+        show(AccountProfileUiState(loading = false, canDeleteAccount = true, deleteFailed = true))
+        compose.onNodeWithText("No se pudo borrar tu cuenta", substring = true).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Borrar mi cuenta").performScrollTo().assertIsEnabled()
     }
 }

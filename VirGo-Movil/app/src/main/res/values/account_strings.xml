@@ -15,4 +15,13 @@
     <string name="session_end_role">No pudimos validar el rol de tu cuenta. Inicia sesión de nuevo.</string>
     <string name="session_end_unavailable">Tu cuenta ya no está disponible.</string>
     <string name="session_end_unconfirmed">Cerramos tu sesión en este dispositivo, pero no pudimos confirmar la revocación en el servidor.</string>
+    <string name="session_end_deleted">Tu cuenta se borró.</string>
+    <string name="session_end_delete_expired">Tu sesión expiró. Inicia sesión de nuevo para borrar tu cuenta.</string>
+    <string name="account_delete_action">Borrar mi cuenta</string>
+    <string name="account_delete_title">¿Borrar tu cuenta?</string>
+    <string name="account_delete_body">Se cerrará tu sesión en todos tus dispositivos y ya no podrás entrar con este correo. Tus reservaciones y cotizaciones se conservan para el salón con el nombre que tenían. Esta acción no se puede deshacer.</string>
+    <string name="account_delete_confirm">Borrar cuenta</string>
+    <string name="account_delete_cancel">Cancelar</string>
+    <string name="account_delete_progress">Borrando tu cuenta…</string>
+    <string name="account_delete_failed">No se pudo borrar tu cuenta. Inténtalo de nuevo.</string>
 </resources>

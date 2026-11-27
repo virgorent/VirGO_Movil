@@ -17,6 +17,8 @@ class FakeBookingsRepository : BookingsRepository {
     private val byKey = mutableMapOf<String, Booking>()
     var createFailure: AppResult.Failure? = null
     var listFailure: AppResult.Failure? = null
+    var folioFailure: AppResult.Failure? = null
+    val folioQueries = mutableListOf<String>()
 
     override suspend fun create(
         request: BookingRequest,
@@ -43,6 +45,13 @@ class FakeBookingsRepository : BookingsRepository {
 
     override suspend fun get(id: String): AppResult<Booking> =
         bookings.firstOrNull { it.id == id }?.let { AppResult.Success(it) } ?: AppResult.Failure(AppError.NotFound)
+
+    override suspend fun byFolio(folio: String): AppResult<Booking> {
+        folioQueries += folio
+        folioFailure?.let { return it }
+        return bookings.firstOrNull { it.folio == folio }?.let { AppResult.Success(it) }
+            ?: AppResult.Failure(AppError.NotFound)
+    }
 }
 
 fun sampleBooking(): Booking =

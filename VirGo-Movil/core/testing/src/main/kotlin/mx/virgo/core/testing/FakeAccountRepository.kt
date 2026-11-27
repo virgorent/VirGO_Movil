@@ -8,6 +8,10 @@ import mx.virgo.core.domain.UserProfile
 class FakeAccountRepository : AccountRepository {
     var profileResult: AppResult<UserProfile> = AppResult.Success(sampleUserProfile())
     var logoutResult: AppResult<Unit> = AppResult.Success(Unit)
+    var deleteResult: AppResult<Unit> = AppResult.Success(Unit)
+
+    /** Si se asigna, `deleteAccount()` espera a que se complete (pruebas de doble envío). */
+    var deleteGate: CompletableDeferred<Unit>? = null
 
     /** Si se asigna, `logout()` espera a que se complete (pruebas de doble toque y timeout). */
     var logoutGate: CompletableDeferred<Unit>? = null
@@ -15,6 +19,8 @@ class FakeAccountRepository : AccountRepository {
     var profileCalls: Int = 0
         private set
     var logoutCalls: Int = 0
+        private set
+    var deleteCalls: Int = 0
         private set
 
     override suspend fun getProfile(): AppResult<UserProfile> {
@@ -26,6 +32,12 @@ class FakeAccountRepository : AccountRepository {
         logoutCalls += 1
         logoutGate?.await()
         return logoutResult
+    }
+
+    override suspend fun deleteAccount(): AppResult<Unit> {
+        deleteCalls += 1
+        deleteGate?.await()
+        return deleteResult
     }
 }
 

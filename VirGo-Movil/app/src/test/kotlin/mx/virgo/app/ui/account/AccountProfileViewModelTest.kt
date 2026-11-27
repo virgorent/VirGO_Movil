@@ -1,11 +1,13 @@
 package mx.virgo.app.ui.account
 
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.runTest
 import mx.virgo.app.session.FakeSessionTokenStore
 import mx.virgo.app.session.SessionEndReason
 import mx.virgo.app.session.SessionRepository
 import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
+import mx.virgo.core.domain.DeleteAccountUseCase
 import mx.virgo.core.domain.GetProfileUseCase
 import mx.virgo.core.testing.FakeAccountRepository
 import mx.virgo.core.testing.MainDispatcherRule
@@ -29,9 +31,10 @@ class AccountProfileViewModelTest {
     private val store = FakeSessionTokenStore()
     private val session = SessionRepository(store, Clock.fixed(Instant.parse("2026-11-23T00:00:00Z"), ZoneOffset.UTC))
 
-    private suspend fun viewModel(): AccountProfileViewModel {
-        session.establish(sampleAuthSession())
-        return AccountProfileViewModel(GetProfileUseCase(account), session)
+    private suspend fun viewModel(role: String = "client"): AccountProfileViewModel {
+        val auth = sampleAuthSession()
+        session.establish(auth.copy(user = auth.user.copy(role = role)))
+        return AccountProfileViewModel(GetProfileUseCase(account), DeleteAccountUseCase(account), session)
     }
 
     @Test
@@ -104,5 +107,80 @@ class AccountProfileViewModelTest {
             account.profileResult = AppResult.Failure(AppError.Server("trace"))
             assertTrue(viewModel().state.value.outdated)
             assertNull(session.state.value.endReason)
+        }
+
+    @Test
+    fun cancellingTheConfirmationSendsNothing() =
+        runTest {
+            val viewModel = viewModel()
+            assertTrue(viewModel.state.value.canDeleteAccount)
+            viewModel.requestDelete()
+            assertTrue(viewModel.state.value.confirmingDelete)
+            viewModel.cancelDelete()
+            assertFalse(viewModel.state.value.confirmingDelete)
+            assertEquals(0, account.deleteCalls)
+        }
+
+    @Test
+    fun deletedAccountClearsTheSessionAndTheToken() =
+        runTest {
+            val viewModel = viewModel()
+            viewModel.requestDelete()
+            viewModel.confirmDelete()
+            assertEquals(1, account.deleteCalls)
+            assertNull(session.state.value.session)
+            assertNull(store.stored.value)
+            assertEquals(SessionEndReason.ACCOUNT_DELETED, session.state.value.endReason)
+        }
+
+    @Test
+    fun confirmIsSentOnlyOnceWhileDeleting() =
+        runTest {
+            account.deleteGate = CompletableDeferred()
+            val viewModel = viewModel()
+            viewModel.requestDelete()
+            viewModel.confirmDelete()
+            viewModel.confirmDelete()
+            viewModel.cancelDelete()
+            assertTrue(viewModel.state.value.deleting)
+            assertTrue(viewModel.state.value.confirmingDelete)
+            account.deleteGate?.complete(Unit)
+            assertEquals(1, account.deleteCalls)
+        }
+
+    @Test
+    fun unauthorizedDeleteClosesTheSessionAndSaysTheAccountWasNotDeleted() =
+        runTest {
+            account.deleteResult = AppResult.Failure(AppError.Unauthorized)
+            val viewModel = viewModel()
+            viewModel.requestDelete()
+            viewModel.confirmDelete()
+            assertNull(session.state.value.session)
+            assertEquals(SessionEndReason.DELETE_EXPIRED, session.state.value.endReason)
+        }
+
+    @Test
+    fun networkFailureKeepsTheSessionAndShowsTheError() =
+        runTest {
+            account.deleteResult = AppResult.Failure(AppError.Network)
+            val viewModel = viewModel()
+            viewModel.requestDelete()
+            viewModel.confirmDelete()
+            val state = viewModel.state.value
+            assertTrue(state.deleteFailed)
+            assertFalse(state.deleting)
+            assertFalse(state.confirmingDelete)
+            assertTrue(session.state.value.session != null)
+            assertNull(session.state.value.endReason)
+        }
+
+    @Test
+    fun ownersCannotDeleteTheirAccountYet() =
+        runTest {
+            account.profileResult = AppResult.Success(sampleUserProfile(role = "owner"))
+            val viewModel = viewModel(role = "owner")
+            assertFalse(viewModel.state.value.canDeleteAccount)
+            viewModel.requestDelete()
+            assertFalse(viewModel.state.value.confirmingDelete)
         }
 }

@@ -39,6 +39,9 @@ class BookingsRepositoryImpl
         override suspend fun get(id: String): AppResult<Booking> =
             safeCall { AppResult.Success(api.get(id).toBooking()) }
 
+        override suspend fun byFolio(folio: String): AppResult<Booking> =
+            safeCall { AppResult.Success(api.byFolio(folio).toBooking()) }
+
         @Suppress("TooGenericExceptionCaught")
         private suspend fun <T> safeCall(block: suspend () -> AppResult<T>): AppResult<T> =
             try {

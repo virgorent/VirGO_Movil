@@ -186,6 +186,15 @@ class ExploreViewModelTest {
     }
 
     @Test
+    fun favoritesAreNotRequestedWhileTheBackendLacksTheEndpoint() =
+        runTest {
+            venueRepository.result = AppResult.Success(listOf(realVenue()))
+            viewModel()
+            assertFalse(FAVORITES_ENABLED)
+            assertEquals(0, favoritesRepository.getCalls)
+        }
+
+    @Test
     fun sampleFavoriteToggleStaysLocal() {
         val viewModel = viewModel()
         val sample = VenueSamples.first()
@@ -253,8 +262,13 @@ private class FakeFavoritesRepository : FavoritesRepository {
     var addResult: AppResult<Unit> = AppResult.Success(Unit)
     var addCalls: Int = 0
         private set
+    var getCalls: Int = 0
+        private set
 
-    override suspend fun getFavorites(): AppResult<List<Favorite>> = result
+    override suspend fun getFavorites(): AppResult<List<Favorite>> {
+        getCalls += 1
+        return result
+    }
 
     override suspend fun addFavorite(
         targetType: String,

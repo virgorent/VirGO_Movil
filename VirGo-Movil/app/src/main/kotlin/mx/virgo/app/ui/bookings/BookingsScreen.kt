@@ -28,7 +28,13 @@ import mx.virgo.core.domain.Booking
 fun ClientBookings(viewModel: BookingsViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
     if (state.receipt != null) BackHandler(onBack = viewModel::closeReceipt)
-    BookingsContent(state, onOpen = viewModel::open, onRetry = viewModel::refresh, onRetryReceipt = viewModel::open)
+    BookingsContent(
+        state,
+        onOpen = viewModel::open,
+        onRetry = viewModel::refresh,
+        onRetryReceipt = viewModel::open,
+        folioActions = FolioSearchActions(onChange = viewModel::onFolioChange, onSearch = viewModel::searchFolio),
+    )
 }
 
 @Composable
@@ -37,9 +43,13 @@ internal fun BookingsContent(
     onOpen: (String) -> Unit,
     onRetry: () -> Unit,
     onRetryReceipt: (String) -> Unit = onOpen,
+    folioActions: FolioSearchActions = FolioSearchActions(),
 ) {
     VirGoPageBody {
         val receipt = state.receipt
+        if (receipt == null && !(state.loading && state.bookings.isEmpty())) {
+            FolioSearch(state, folioActions)
+        }
         when {
             receipt != null -> ReceiptFromList(receipt, onRetryReceipt)
             state.loading && state.bookings.isEmpty() ->
@@ -70,7 +80,10 @@ private fun ReceiptFromList(
 ) {
     val booking = receipt.booking
     when {
-        booking != null -> BookingReceiptBody(booking, onMyBookings = null, onCatalog = null)
+        booking != null -> {
+            BookingReceiptBody(booking, onMyBookings = null, onCatalog = null)
+            ChangesNotice()
+        }
         receipt.failed ->
             ErrorBanner(
                 message = stringResource(R.string.bookings_receipt_error),

@@ -6,6 +6,7 @@ import mx.virgo.app.session.SessionEndReason
 import mx.virgo.app.session.SessionRepository
 import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
+import mx.virgo.core.domain.FindBookingByFolioUseCase
 import mx.virgo.core.domain.GetBookingUseCase
 import mx.virgo.core.domain.GetBookingsUseCase
 import mx.virgo.core.testing.FakeBookingsRepository
@@ -13,6 +14,7 @@ import mx.virgo.core.testing.MainDispatcherRule
 import mx.virgo.core.testing.sampleAuthSession
 import mx.virgo.core.testing.sampleBooking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -29,7 +31,13 @@ class BookingsViewModelTest {
     private val session =
         SessionRepository(FakeSessionTokenStore(), Clock.fixed(Instant.parse("2026-11-25T00:00:00Z"), ZoneOffset.UTC))
 
-    private fun viewModel() = BookingsViewModel(GetBookingsUseCase(repository), GetBookingUseCase(repository), session)
+    private fun viewModel() =
+        BookingsViewModel(
+            GetBookingsUseCase(repository),
+            GetBookingUseCase(repository),
+            FindBookingByFolioUseCase(repository),
+            session,
+        )
 
     @Test
     fun listsAndOpensAReceipt() {
@@ -73,6 +81,56 @@ class BookingsViewModelTest {
             session.establish(sampleAuthSession())
             repository.listFailure = AppResult.Failure(AppError.Unauthorized)
             viewModel()
+            assertEquals(SessionEndReason.REVOKED, session.state.value.endReason)
+        }
+
+    @Test
+    fun ownFolioOpensItsReceiptNormalized() {
+        repository.bookings += sampleBooking()
+        val vm = viewModel()
+        vm.onFolioChange(" vg-2027-0001 ")
+        vm.searchFolio()
+        assertEquals(listOf("VG-2027-0001"), repository.folioQueries)
+        assertEquals(
+            sampleBooking().id,
+            vm.state.value.receipt
+                ?.booking
+                ?.id,
+        )
+        assertFalse(vm.state.value.searching)
+    }
+
+    @Test
+    fun badFormatNeverReachesTheServer() {
+        val vm = viewModel()
+        vm.onFolioChange("12345")
+        vm.searchFolio()
+        assertEquals(FolioError.FORMAT, vm.state.value.folioError)
+        assertTrue(repository.folioQueries.isEmpty())
+        vm.onFolioChange("")
+        assertNull(vm.state.value.folioError)
+    }
+
+    @Test
+    fun unknownFolioAndNetworkErrorsAreDistinct() {
+        val vm = viewModel()
+        vm.onFolioChange("VG-2026-0009")
+        vm.searchFolio()
+        assertEquals(FolioError.NOT_FOUND, vm.state.value.folioError)
+        repository.folioFailure = AppResult.Failure(AppError.Network)
+        vm.searchFolio()
+        assertEquals(FolioError.FAILED, vm.state.value.folioError)
+        assertNull(vm.state.value.receipt)
+    }
+
+    @Test
+    fun unauthorizedFolioSearchEndsTheSession() =
+        runTest {
+            session.establish(sampleAuthSession())
+            repository.folioFailure = AppResult.Failure(AppError.Unauthorized)
+            val vm = viewModel()
+            vm.onFolioChange("VG-2026-0001")
+            vm.searchFolio()
             assertEquals(SessionEndReason.REVOKED, session.state.value.endReason)
         }
 }

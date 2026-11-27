@@ -4,6 +4,7 @@ import kotlinx.coroutines.test.runTest
 import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.LocalDate
@@ -73,6 +74,17 @@ class BookingTest {
             assertEquals(listOf("key-1"), repository.keys)
             assertEquals(AppResult.Failure(AppError.NotFound), GetBookingUseCase(repository)("x"))
         }
+
+    @Test
+    fun folioIsNormalizedAndValidated() {
+        assertEquals("VG-2026-0001", BookingFolio.normalize(" vg-2026-0001 "))
+        assertEquals("VG-2026-0001", BookingFolio.normalize("VG - 2026 - 0001"))
+        assertNull(BookingFolio.normalize(""))
+        assertNull(BookingFolio.normalize("VG-26-1"))
+        assertNull(BookingFolio.normalize("XX-2026-0001"))
+        assertNull(BookingFolio.normalize("VG-2026-0001/../x"))
+        assertNull(BookingFolio.normalize("VG-2026-00012"))
+    }
 
     private fun booking(
         id: String,
