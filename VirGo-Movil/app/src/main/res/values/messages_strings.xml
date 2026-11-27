@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 020 Mensajes -->
+    <string name="messages_new">Nuevo mensaje</string>
+    <string name="messages_loading">Consultando tus mensajes…</string>
+    <string name="messages_unavailable">Los mensajes llegarán pronto.</string>
+    <string name="messages_error">No pudimos cargar tus mensajes. Revisa tu conexión.</string>
+    <string name="messages_empty">Sin conversaciones</string>
+    <string name="messages_empty_client">Escríbele a un salón al que ya le pediste cotización.</string>
+    <string name="messages_empty_owner">Aquí verás los mensajes de los clientes de tus salones.</string>
+    <string name="messages_thread_error">No pudimos cargar esta conversación.</string>
+    <string name="messages_pick_venue">¿A qué salón quieres escribir?</string>
+    <string name="messages_no_venues">Primero pide una cotización a un salón; después podrás escribirle.</string>
+    <string name="messages_send_failed">No se envió tu mensaje. Toca enviar para reintentar.</string>
+    <string name="messages_input">Escribe un mensaje</string>
+    <string name="messages_send">Enviar mensaje</string>
+    <string name="messages_me">Tú:</string>
+    <string name="messages_them">Salón:</string>
+</resources>

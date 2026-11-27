@@ -1,43 +1,24 @@
-# Plan — 020 Mensajes y notificaciones
+# Plan — 020 Mensajes con el salón
 
 | Campo | Valor |
 |---|---|
 | Módulo | `020-comunicacion` |
-| Versión | 1.0.0 |
-| Estado | Borrador |
-| Fecha | 2026-11-05 |
-| Rol | Cliente |
-| Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
+| Versión | 2.0.0 |
+| Estado | Aprobado por el usuario (2026-11-27) |
 | Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
 ## 1. Resumen técnico
 
-Módulo `:feature:comunicacion`, con pantallas Compose y un `ViewModel` por pantalla. Cada `ViewModel` expone un `UiState` inmutable por `StateFlow` y llama a casos de uso de `:core:domain`.
+| Capa | Cambio |
+|---|---|
+|  | core:domain: Conversation, Message y MessageRules |
+|  | core:network: ConversationsApi (084-088) |
+|  | app ui/messages: MessagesViewModel y pantalla con lista, conversación y nuevo mensaje |
 
-## 2. Constitution Check
-
-| Art. | Resultado | Cómo se cumple |
-|---|---|---|
-| I y II | ✅ Cumple | Spec atómico por flujo. |
-| III | ✅ Cumple | MVVM/UDF; los módulos `:feature:*` no dependen entre sí. |
-| IV | ✅ Cumple | Solo consume `/api/v1`, con Bearer y `AppError`. |
-| V | ✅ Cumple | Sin secretos ni datos sensibles en logs. |
-| VI | ✅ Cumple | Sección 3. |
-| VII | ✅ Cumple | Sistema de diseño y `strings.xml`. |
-
-## 3. Estrategia de pruebas
+## 2. Estrategia de pruebas
 
 | Tipo | Casos |
 |---|---|
-| Unitarias | `ViewModel` con Turbine y casos de uso |
-| Integración | Repositorio con MockWebServer: éxito, 4xx/5xx y sin conexión |
-| UI | Compose Testing de cada pantalla, con escala de fuente 2.0 |
-| Seguridad | Sin datos sensibles en logs |
-| Mutación | Pitest en casos de uso |
-| Humo | La pantalla funciona contra la URL de producción |
-
-## 4. Riesgos
-
-| Riesgo | Mitigación |
-|---|---|
-| El endpoint aún no existe | MockWebServer con el contrato del spec de API |
+| Unitarias | Reglas de dominio y `ViewModel` con éxito, error, 401 y endpoint ausente (404/501). |
+| Integración | MockWebServer: ruta, cuerpo y códigos de respuesta del contrato. |
+| UI | Estados de la pantalla con fuente 2.0 a 320 dp. |

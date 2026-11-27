@@ -8,6 +8,7 @@ import mx.virgo.core.network.BuildConfig
 import mx.virgo.core.network.api.AiApi
 import mx.virgo.core.network.api.AvailabilityApi
 import mx.virgo.core.network.api.BookingsApi
+import mx.virgo.core.network.api.ConversationsApi
 import mx.virgo.core.network.api.EventPlanningApi
 import mx.virgo.core.network.api.EventsApi
 import mx.virgo.core.network.api.OwnerVenuesApi
@@ -15,6 +16,7 @@ import mx.virgo.core.network.api.QuotesApi
 import mx.virgo.core.network.createAiApi
 import mx.virgo.core.network.createAvailabilityApi
 import mx.virgo.core.network.createBookingsApi
+import mx.virgo.core.network.createConversationsApi
 import mx.virgo.core.network.createEventPlanningApi
 import mx.virgo.core.network.createEventsApi
 import mx.virgo.core.network.createOwnerVenuesApi
@@ -38,6 +40,11 @@ object MarketplaceNetworkModule {
     @Provides
     @Singleton
     fun provideQuotesApi(client: OkHttpClient): QuotesApi = createQuotesApi(BuildConfig.API_BASE_URL, client)
+
+    @Provides
+    @Singleton
+    fun provideConversationsApi(client: OkHttpClient): ConversationsApi =
+        createConversationsApi(BuildConfig.API_BASE_URL, client)
 
     @Provides
     @Singleton

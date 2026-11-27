@@ -7,9 +7,11 @@ import dagger.hilt.components.SingletonComponent
 import mx.virgo.core.data.repository.AiRepositoryImpl
 import mx.virgo.core.data.repository.AvailabilityRepositoryImpl
 import mx.virgo.core.data.repository.BookingsRepositoryImpl
+import mx.virgo.core.data.repository.ConversationsRepositoryImpl
 import mx.virgo.core.domain.AiRepository
 import mx.virgo.core.domain.AvailabilityRepository
 import mx.virgo.core.domain.BookingsRepository
+import mx.virgo.core.domain.ConversationsRepository
 import javax.inject.Singleton
 
 @Module
@@ -26,4 +28,8 @@ abstract class BookingsModule {
     @Binds
     @Singleton
     abstract fun bindAiRepository(impl: AiRepositoryImpl): AiRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindConversationsRepository(impl: ConversationsRepositoryImpl): ConversationsRepository
 }

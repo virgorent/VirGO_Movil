@@ -28,6 +28,7 @@ import mx.virgo.app.ui.finance.ClientBudget
 import mx.virgo.app.ui.finance.ClientBudgetSuggestion
 import mx.virgo.app.ui.finance.ClientPayments
 import mx.virgo.app.ui.finance.FinanceLinks
+import mx.virgo.app.ui.messages.MessagesInbox
 import mx.virgo.app.ui.ownercalendar.OwnerCalendar
 import mx.virgo.app.ui.ownerhome.OwnerHome
 import mx.virgo.app.ui.ownerhome.OwnerHomeActions
@@ -139,6 +140,8 @@ private enum class WorkspaceScreen {
     QUOTES,
     EVENTS,
     STUDIO,
+    MESSAGES,
+    OWNER_MESSAGES,
     BUDGET,
     BUDGET_SUGGESTION,
     PAYMENTS,
@@ -178,6 +181,7 @@ private val OWNER_SCREENS =
         WorkspaceScreen.OWNER_CALENDAR,
         WorkspaceScreen.OWNER_VENUES,
         WorkspaceScreen.OWNER_REQUESTS,
+        WorkspaceScreen.OWNER_MESSAGES,
     )
 
 /** Pantallas conectadas del cliente (`005`–`021`). */
@@ -196,6 +200,7 @@ private fun ClientScreen(
         WorkspaceScreen.BOOKINGS -> ClientBookings()
         WorkspaceScreen.STUDIO -> ClientStudio(onAssistant = { navigate("assistant") })
         WorkspaceScreen.ASSISTANT -> ClientAssistant()
+        WorkspaceScreen.MESSAGES -> MessagesInbox()
         WorkspaceScreen.BUDGET ->
             ClientBudget(
                 FinanceLinks(toEvent, onSuggestion = { navigate("budgetAI") }, onPayments = { navigate("payments") }),
@@ -231,6 +236,7 @@ private fun OwnerScreen(
         WorkspaceScreen.OWNER_CALENDAR -> OwnerCalendar(onVenues = { navigate("ownerVenues") })
         WorkspaceScreen.OWNER_VENUES -> ownerVenuesScreen()
         WorkspaceScreen.OWNER_REQUESTS -> OwnerRequests()
+        WorkspaceScreen.OWNER_MESSAGES -> MessagesInbox()
         else -> Unit
     }
 }
@@ -244,6 +250,8 @@ private val CONNECTED_SCREENS: Map<DemoRole, Map<String, WorkspaceScreen>> =
                 "bookings" to WorkspaceScreen.BOOKINGS,
                 "quotes" to WorkspaceScreen.QUOTES,
                 "studio" to WorkspaceScreen.STUDIO,
+                "messages" to WorkspaceScreen.MESSAGES,
+                "chat" to WorkspaceScreen.MESSAGES,
                 "budget" to WorkspaceScreen.BUDGET,
                 "budgetAI" to WorkspaceScreen.BUDGET_SUGGESTION,
                 "payments" to WorkspaceScreen.PAYMENTS,
@@ -253,7 +261,8 @@ private val CONNECTED_SCREENS: Map<DemoRole, Map<String, WorkspaceScreen>> =
             OWNER_VENUE_ROUTES.associateWith { WorkspaceScreen.OWNER_VENUES } +
             ("ownerRequests" to WorkspaceScreen.OWNER_REQUESTS) +
             ("ownerHome" to WorkspaceScreen.OWNER_HOME) +
-            ("ownerCalendar" to WorkspaceScreen.OWNER_CALENDAR),
+            ("ownerCalendar" to WorkspaceScreen.OWNER_CALENDAR) +
+            ("messages" to WorkspaceScreen.OWNER_MESSAGES),
     )
 
 private fun workspaceScreen(
