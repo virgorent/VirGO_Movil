@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -31,6 +32,7 @@ import mx.virgo.core.designsystem.components.VirGoPageBody
 import mx.virgo.core.designsystem.components.VirGoPageHeader
 import mx.virgo.core.designsystem.components.VirGoRow
 import mx.virgo.core.designsystem.components.VirGoRowDivider
+import mx.virgo.core.designsystem.components.VirGoSection
 import mx.virgo.core.designsystem.theme.VirGoTone
 import mx.virgo.core.domain.ClientEvent
 
@@ -43,6 +45,7 @@ fun ClientEvents(
     openStep: EventStep? = null,
     @StringRes title: Int = R.string.demo_title_event,
     onBack: (() -> Unit)? = null,
+    shortcuts: List<EventShortcut> = emptyList(),
     viewModel: EventsViewModel = hiltViewModel(),
     form: @Composable (String?, () -> Unit, (ClientEvent) -> Unit) -> Unit = { id, back, saved ->
         EventFormScreen(id, onBack = back, onSaved = saved)
@@ -101,6 +104,7 @@ fun ClientEvents(
                     },
                     onCreate = { step = EventStep.CREATE },
                     onRetry = viewModel::refresh,
+                    shortcuts = shortcuts,
                 )
         }
     }
@@ -144,6 +148,7 @@ internal fun EventsListContent(
     onOpen: (String) -> Unit,
     onCreate: () -> Unit,
     onRetry: () -> Unit,
+    shortcuts: List<EventShortcut> = emptyList(),
 ) {
     PullToRefreshBox(isRefreshing = state.loading && state.events.isNotEmpty(), onRefresh = onRetry) {
         VirGoPageBody {
@@ -172,6 +177,7 @@ internal fun EventsListContent(
                     VirGoButton(onClick = onCreate, text = stringResource(R.string.events_create))
                 }
             }
+            if (!state.failed && !(state.loading && state.events.isEmpty())) EventShortcuts(shortcuts)
         }
     }
 }
@@ -200,6 +206,33 @@ private fun EventList(
                     onClick = { onOpen(event.id) },
                     subtitleMaxLines = Int.MAX_VALUE,
                 )
+            }
+        }
+    }
+}
+
+/** Acceso desde «Mi Evento» a una pantalla del evento que antes solo estaba en «Secciones». */
+class EventShortcut(
+    @StringRes val label: Int,
+    val icon: ImageVector,
+    val onClick: () -> Unit,
+)
+
+@Composable
+private fun EventShortcuts(shortcuts: List<EventShortcut>) {
+    if (shortcuts.isEmpty()) return
+    VirGoSection(title = stringResource(R.string.events_shortcuts)) {
+        VirGoCard {
+            Column(Modifier.padding(horizontal = 16.dp)) {
+                shortcuts.forEachIndexed { index, shortcut ->
+                    if (index > 0) VirGoRowDivider()
+                    VirGoRow(
+                        title = stringResource(shortcut.label),
+                        icon = shortcut.icon,
+                        standalone = false,
+                        onClick = shortcut.onClick,
+                    )
+                }
             }
         }
     }

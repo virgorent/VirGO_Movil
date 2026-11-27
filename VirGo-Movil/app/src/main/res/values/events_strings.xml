@@ -8,6 +8,7 @@
     <string name="events_create">Crear evento</string>
     <string name="events_item">%1$s · %2$s · %3$d invitados</string>
     <string name="events_retry">Reintentar</string>
+    <string name="events_shortcuts">Organiza tu evento</string>
     <string name="event_detail_error">No pudimos abrir el evento.</string>
     <string name="event_days_left">Faltan %1$d días</string>
     <string name="event_today">Es hoy</string>

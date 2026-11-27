@@ -3,6 +3,10 @@ package mx.virgo.app.demo
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.EventAvailable
+import androidx.compose.material.icons.outlined.Payments
+import androidx.compose.material.icons.outlined.Savings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -23,6 +27,7 @@ import mx.virgo.app.ui.beta.BetaSectionsMenu
 import mx.virgo.app.ui.beta.betaTitle
 import mx.virgo.app.ui.bookings.ClientBookings
 import mx.virgo.app.ui.events.ClientEvents
+import mx.virgo.app.ui.events.EventShortcut
 import mx.virgo.app.ui.events.EventStep
 import mx.virgo.app.ui.favorites.ClientFavorites
 import mx.virgo.app.ui.finance.ClientBudget
@@ -237,12 +242,21 @@ private fun ClientScreen(
             )
         WorkspaceScreen.BUDGET_SUGGESTION -> ClientBudgetSuggestion(onEvent = toEvent)
         WorkspaceScreen.PAYMENTS -> ClientPayments(onEvent = toEvent)
-        WorkspaceScreen.EVENTS -> ClientEvents(EVENT_STEPS[route], title, onBack = back)
+        WorkspaceScreen.EVENTS ->
+            ClientEvents(EVENT_STEPS[route], title, onBack = back, shortcuts = eventShortcuts(navigate))
         WorkspaceScreen.QUOTES ->
             ClientQuotes(onCatalog = { navigate("explore") }, onMyBookings = { navigate("bookings") }, onBack = back)
         else -> Unit
     }
 }
+
+/** «Mi Evento» lleva a reservaciones, presupuesto y pagos sin pasar por «Secciones». */
+private fun eventShortcuts(navigate: (String) -> Unit): List<EventShortcut> =
+    listOf(
+        EventShortcut(R.string.demo_title_bookings, Icons.Outlined.EventAvailable) { navigate("bookings") },
+        EventShortcut(R.string.demo_title_budget, Icons.Outlined.Savings) { navigate("budget") },
+        EventShortcut(R.string.demo_title_payments, Icons.Outlined.Payments) { navigate("payments") },
+    )
 
 /** Pantallas conectadas del propietario (`022`–`025`). */
 @Composable

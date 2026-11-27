@@ -96,6 +96,9 @@ class OwnerScreensTest {
         show { OwnerCalendarContent(state, OwnerCalendarActions(), today) }
         compose.onNodeWithContentDescription("15 de mayo, Reservado").assertIsDisplayed()
         compose.onNodeWithContentDescription("25 de mayo, Bloqueado").assertIsDisplayed()
+        // Hoy es 10 de mayo: un día anterior sin reserva ya no se ofrece como libre.
+        compose.onNodeWithContentDescription("5 de mayo, Ya pasó").assertIsDisplayed()
+        compose.onNodeWithContentDescription("20 de mayo, Libre").assertIsDisplayed()
         compose.onNodeWithText("Hay más de una reservación este día").performScrollTo().assertIsDisplayed()
     }
 

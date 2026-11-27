@@ -42,7 +42,11 @@ internal fun FavoritesContent(
         when (state.status) {
             FavoritesStatus.LOADING -> LoadingState()
             FavoritesStatus.UNAVAILABLE ->
-                Text(stringResource(R.string.favorites_unavailable), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                EmptyState(
+                    title = stringResource(R.string.favorites_unavailable),
+                    text = stringResource(R.string.favorites_unavailable_text),
+                    iconVector = Icons.Outlined.FavoriteBorder,
+                )
             FavoritesStatus.FAILED ->
                 ErrorBanner(
                     stringResource(R.string.tools_error),

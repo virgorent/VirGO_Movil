@@ -1121,3 +1121,15 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Evidencia final:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL**, 556 pruebas, 0 fallas.
 - **Pendiente:** TalkBack, aceptación visual de `ccabrera-dev8`, rol de proveedor y el PR único.
 - **Costo:** $0.
+
+### 2026-11-27 · Aceptación visual y correcciones de navegación
+
+- **Autor:** usuario + Claude Code.
+- **Aceptación visual de `ccabrera-dev8`:** «Revisado y aprobado» (2026-11-27), sobre todas las pantallas de la rama `local/cliente-propietario-no-push` en el commit `3f3a137`. Las pantallas que cambien o se agreguen después necesitan su propio vistazo.
+- **PR único:** el usuario decide que se abre «cuando el MVP esté listo».
+- **Correcciones de navegación (bloque 1):**
+  - «Mi Evento» tiene la tarjeta «Organiza tu evento» con accesos a «Mis reservaciones», «Presupuesto» y «Pagos», que antes solo se encontraban en «Secciones».
+  - En el calendario del propietario, un día pasado sin reserva ni bloqueo dice «Ya pasó» en lugar de «Libre» y se ve atenuado.
+  - Favoritos, mientras el backend no los guarda, muestra la pantalla vacía del sistema de diseño en lugar de texto plano.
+- **Evidencia del bloque 1:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL**, 556 pruebas, 0 fallas (la prueba del calendario agrega «5 de mayo, Ya pasó» y «20 de mayo, Libre»). Emulador: «Mi Evento» abre «Mis reservaciones», «Presupuesto» y «Pagos»; el calendario de noviembre marca del 1 al 26 «Ya pasó» y del 27 en adelante «Libre»; Favoritos muestra la pantalla vacía.
+- **Bloque 2, borradores para aprobación del usuario:** `036-fotos-salones` (nuevo, v1.0.0) y los specs de proveedor `011`, `026`–`029` reescritos a v2.0.0 recortados contra los specs del backend `034`–`041`, `060`–`062` y `073`, que están especificados pero sin implementar.

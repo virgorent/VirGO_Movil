@@ -29,6 +29,7 @@
     <string name="owner_calendar_status_booked">Reservado</string>
     <string name="owner_calendar_status_blocked">Bloqueado</string>
     <string name="owner_calendar_status_free">Libre</string>
+    <string name="owner_calendar_status_past">Ya pasó</string>
     <string name="owner_calendar_blocked_short">Bloq.</string>
     <string name="owner_calendar_overlap">Hay más de una reservación este día</string>
     <string name="owner_calendar_booking_line">Folio %1$s · %2$d horas</string>

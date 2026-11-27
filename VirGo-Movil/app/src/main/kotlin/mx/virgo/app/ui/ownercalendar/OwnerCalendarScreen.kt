@@ -138,7 +138,7 @@ private fun CalendarBody(
             onAction = { actions.onMonth(0) },
         )
     }
-    MonthGrid(state.month, state.days, state.selected, actions.onDay)
+    MonthGrid(state.month, state.days, state.selected, actions.onDay, today)
     Legend()
     state.selectedDay?.let { DayDetail(state, it, actions, today) }
 }
@@ -171,6 +171,7 @@ private fun MonthGrid(
     days: List<CalendarDay>,
     selected: java.time.LocalDate?,
     onDay: (java.time.LocalDate?) -> Unit,
+    today: java.time.LocalDate,
 ) {
     val leading = month.atDay(1).dayOfWeek.value - 1
     val cells: List<CalendarDay?> = List(leading) { null } + days
@@ -190,7 +191,7 @@ private fun MonthGrid(
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 week.forEach { day ->
                     Box(Modifier.weight(1f)) {
-                        if (day != null) DayCell(day, day.date == selected, onDay)
+                        if (day != null) DayCell(day, day.date == selected, onDay, today)
                     }
                 }
                 repeat(WEEK - week.size) { Box(Modifier.weight(1f)) }
@@ -204,15 +205,17 @@ private fun DayCell(
     day: CalendarDay,
     isSelected: Boolean,
     onDay: (java.time.LocalDate?) -> Unit,
+    today: java.time.LocalDate,
 ) {
     val colors = MaterialTheme.colorScheme
     val (container, content) =
         when {
             day.booked -> colors.primary to colors.onPrimary
             day.block != null -> colors.surfaceVariant to colors.onSurfaceVariant
+            day.date.isBefore(today) -> colors.surface to colors.onSurfaceVariant
             else -> colors.surface to colors.onSurface
         }
-    val status = stringResource(dayStatus(day))
+    val status = stringResource(dayStatus(day, today))
     val label = stringResource(R.string.owner_calendar_day_cd, day.date.format(DAY_FORMAT), status)
     Box(
         Modifier
@@ -272,10 +275,15 @@ private fun LegendItem(
     }
 }
 
-internal fun dayStatus(day: CalendarDay): Int =
+/** Un día pasado sin reserva ni bloqueo ya no está «Libre»: no se puede reservar. */
+internal fun dayStatus(
+    day: CalendarDay,
+    today: java.time.LocalDate,
+): Int =
     when {
         day.booked -> R.string.owner_calendar_status_booked
         day.block != null -> R.string.owner_calendar_status_blocked
+        day.date.isBefore(today) -> R.string.owner_calendar_status_past
         else -> R.string.owner_calendar_status_free
     }
 

@@ -3,68 +3,43 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `026-proveedor-perfil` |
-| Versión | 1.0.0 |
-| Estado | Borrador |
-| Fecha | 2026-11-05 |
+| Versión | 2.0.0 |
+| Estado | Borrador v2.0.0, recortado; pendiente de aprobación del usuario |
+| Fecha | 2026-11-27 (v1.0.0 del 2026-11-05 sustituida) |
+| Constitución | v1.2.0 |
 | Rol | Proveedor |
-| Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
+| Fuente | `Checklist VirGo.md` (S2, S7); specs del backend en `VirGo-API/specs` |
 | Plan | [plan.md](plan.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
-## 1. Pantallas
+## 1. Contexto y objetivo
 
-| Código | Pantalla |
-|---|---|
-| S2 | Crear o editar el perfil |
-| S6 | Galería de trabajos |
-| S7 | Zonas de cobertura |
+El proveedor arma su perfil público y lo publica para aparecer en el catálogo de los clientes (`011`). El backend tiene estos endpoints especificados pero aún no implementados, así que la pantalla se construye contra esos specs, se prueba con MockWebServer (Art. VIII.6) y dice «llegará pronto» mientras no existan.
 
 ## 2. Requerimientos funcionales
 
 | ID | Requerimiento |
 |---|---|
-| RF-01 | **[S2]** Nombre del negocio y categoría |
-| RF-02 | **[S2]** Descripción |
-| RF-03 | **[S2]** Cobro por persona o por evento |
-| RF-04 | **[S2]** Paquetes con nombre, precio y qué incluyen |
-| RF-05 | **[S2]** Tiempo de respuesta |
-| RF-06 | **[S2]** Validación: no se publica si falta un campo obligatorio, y se marca qué falta |
-| RF-07 | **[S2]** Al publicar aparece en el catálogo de los clientes |
-| RF-08 | **[S6]** Subir fotos JPG o PNG de hasta 10 MB |
-| RF-09 | **[S6]** Los demás archivos se rechazan con un aviso |
-| RF-10 | **[S6]** Opción de fotos de ejemplo |
-| RF-11 | **[S7]** Selección de zonas en el mapa o en la lista |
-| RF-12 | **[S7]** Se muestran en tu perfil público |
+| RF-01 | **[S2] Crear y editar:** nombre del negocio, categoría, descripción (mín. 20), cobro por persona o por evento, tiempo de respuesta y paquetes (nombre, precio, qué incluye). Crear con `POST /providers` (queda en borrador); editar con `PATCH /providers/me`. |
+| RF-02 | **[S2] Validar:** no deja publicar si falta un campo obligatorio o no hay al menos un paquete, y marca qué falta. |
+| RF-03 | **[S2] Publicar:** «Publicar» cambia el estado a `published` con `PATCH /providers/me`; desde entonces aparece en `011`. |
+| RF-04 | **[S7] Zonas:** selección de zonas de cobertura desde la lista del catálogo de zonas. |
+| RF-05 | Cuando un endpoint aún no existe (`404`/`501`), la pantalla dice «Esta parte llegará pronto» sin error técnico; `401` cierra la sesión; sin conexión, error con «Reintentar». Textos en `strings.xml`. |
 
-## 3. Requerimientos no funcionales
-
-| ID | Requerimiento |
-|---|---|
-| RNF-01 | **Diseño:** solo componentes de `:core:designsystem`; textos en `strings.xml` (Art. VII). |
-| RNF-02 | **Accesibilidad:** contraste AA, áreas táctiles de 48 dp y texto escalable. |
-| RNF-03 | **Seguridad:** sin datos sensibles en logs; tokens solo en `TokenStore`. |
-
-## 4. Criterios de aceptación
+## 3. Criterios de aceptación
 
 | ID | Criterio |
 |---|---|
-| CA-01 | **Dado** la pantalla S2, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-02 | **Dado** la pantalla S6, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-03 | **Dado** la pantalla S7, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-04 | **Dado** una respuesta de error de la API, **cuando** llega, **entonces** se muestra un mensaje claro, sin texto técnico. |
-| CA-05 | **Dado** que no hay conexión, **cuando** se abre la pantalla, **entonces** se muestra un estado de error con opción de reintentar. |
+| CA-01 | **Dado** un perfil sin paquetes, **cuando** toco «Publicar», **entonces** no se envía y se marca «Agrega al menos un paquete». |
+| CA-02 | **Dado** un perfil completo, **cuando** lo publico, **entonces** se envía `status: "published"` y la pantalla dice «Publicado». |
+| CA-03 | **Dado** un proveedor que ya tiene perfil, **cuando** abro «Mi perfil», **entonces** veo sus datos (`GET /providers/me`) para editarlos. |
 
-## 5. Fuera de alcance
+## 4. Fuera de alcance
 
-- Lo que la maqueta simula (sección 7 del checklist), salvo que el spec de API lo implemente.
+- [S6] Subir fotos de la galería (contrato §8) y la opción «fotos de ejemplo».
+- Zonas sobre el mapa.
 
-## 6. Dependencias
+## 5. Dependencias
 
-**Endpoints que consume:**
-
-| Endpoint | Spec en el backend (`virgorent/VirGO_Backend`, `VirGo-API/specs`) |
+| Endpoint | Spec del backend (estado 2026-11-27) |
 |---|---|
-| `POST /api/v1/providers` | `037-post-providers` |
-| `GET /api/v1/providers/me` | `036-get-providers-me` |
-| `PATCH /api/v1/providers/me` | `038-patch-providers-me` |
-
-Sin URL y JSON probados del backend, la pantalla se prueba solo con MockWebServer (Art. VIII.6).
+| `GET /providers/me`, `POST /providers`, `PATCH /providers/me` | `036`, `037`, `038` (📝 especificado) |
