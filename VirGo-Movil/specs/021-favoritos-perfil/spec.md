@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `021-favoritos-perfil` |
 | Versión | 2.0.0 |
-| Estado | Propuesta recortada al MVP, **pendiente de aprobación del usuario** |
+| Estado | Aprobado por el usuario (2026-11-26, «Aprobados, impleméntalos») |
 | Fecha | 2026-11-26 (v1.0.0 del 2026-11-05 sustituida) |
 | Constitución | v1.2.0 |
 | Rol | Cliente |

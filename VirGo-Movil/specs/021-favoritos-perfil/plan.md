@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `021-favoritos-perfil` |
 | Versión | 2.0.0 |
-| Estado | Propuesta, pendiente de aprobación del usuario |
+| Estado | Aprobado por el usuario (2026-11-26) |
 | Fecha | 2026-11-26 |
 | Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 

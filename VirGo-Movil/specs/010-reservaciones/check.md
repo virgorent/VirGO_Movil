@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `010-reservaciones` |
 | Versión del spec | 2.0.0 |
-| Estado del spec | Propuesta, pendiente de aprobación del usuario |
+| Estado del spec | Aprobado por el usuario (2026-11-26) |
 | Revisó | — |
 
 ## 1. Criterios de aceptación

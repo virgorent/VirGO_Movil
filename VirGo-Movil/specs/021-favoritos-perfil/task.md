@@ -4,13 +4,13 @@
 |---|---|
 | Módulo | `021-favoritos-perfil` |
 | Versión | 2.0.0 |
-| Estado | Propuesta, pendiente de aprobación del usuario |
+| Estado | Aprobado por el usuario (2026-11-26) |
 | Fecha | 2026-11-26 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 
 **Estados:** ⏳ Pendiente · 🔄 En curso · ✅ Hecha (con evidencia) · ⛔ Bloqueada
 
-Las tareas T2101–T2106 de la v1.0.0 se sustituyen. Ninguna se ejecuta sin aprobar el spec.
+Las tareas T2101–T2106 de la v1.0.0 se sustituyen. El spec se aprobó el 2026-11-26.
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
