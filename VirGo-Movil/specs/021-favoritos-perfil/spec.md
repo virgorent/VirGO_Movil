@@ -1,10 +1,10 @@
-# Spec — 021 Perfil: borrar cuenta (favoritos y ayuda, pendientes)
+# Spec — 021 Perfil: borrar cuenta y favoritos (ayuda, pendiente)
 
 | Campo | Valor |
 |---|---|
 | Módulo | `021-favoritos-perfil` |
-| Versión | 2.0.0 |
-| Estado | Aprobado por el usuario (2026-11-26, «Aprobados, impleméntalos») |
+| Versión | 2.1.0 |
+| Estado | Aprobado por el usuario (v2.0.0: 2026-11-26, «Aprobados, impleméntalos»; v2.1.0: 2026-11-27, «Aprobados, arranca») |
 | Fecha | 2026-11-26 (v1.0.0 del 2026-11-05 sustituida) |
 | Constitución | v1.2.0 |
 | Rol | Cliente |
@@ -20,7 +20,7 @@ formulario de contacto. Contra el backend que va a `main` (2026-11-26):
 |---|---|---|
 | Ver perfil y cerrar sesión | `GET /users/me`, `POST /auth/logout` | **Ya cubierto por `030`**; no se repite. |
 | Borrar cuenta | `DELETE /users/me` existe | **Entra en este spec.** |
-| Favoritos | No hay controlador de `/favorites` | Fuera; además se apaga el corazón de `ExploreScreen` (RF-07). |
+| Favoritos | No hay controlador de `/favorites` | **v2.1:** entra contra el contrato (§7); dice «llegará pronto» mientras el endpoint responda `404` (RF-10 a RF-13). El corazón de `ExploreScreen` sigue apagado (RF-07). |
 | Editar perfil y contraseña | `PATCH /users/me` y `/password` no existen | Fuera. |
 | Métodos de pago | `/payment-cards` no existe | Fuera. |
 | Ayuda y contacto | `POST /contact` no existe | Fuera. |
@@ -46,8 +46,12 @@ Borrar la cuenta desde la app también es un requisito de Google Play para apps 
 | RF-05 | **[C39]** `401` se trata como sesión expirada (`030` RF-05): la cuenta **no** se borró, y el aviso lo dice: «Tu sesión expiró. Inicia sesión de nuevo para borrar tu cuenta.». |
 | RF-06 | **[C39]** Red, timeout o 5xx: la sesión sigue abierta, el diálogo se cierra y se muestra «No se pudo borrar tu cuenta. Inténtalo de nuevo.». No se reintenta en segundo plano. |
 | RF-07 | **[C38]** Mientras el backend no tenga `/api/v1/favorites`, «Explorar» (lista y mapa) no muestra el corazón de favorito ni llaman a esa API. Se controla con una sola bandera en código, `FAVORITES_ENABLED = false`. |
-| RF-08 | Favoritos, Ayuda y las demás secciones de la v1.0.0 siguen mostrando «Próximamente», como en `030` RF-14. |
+| RF-08 | Ayuda y las demás secciones de la v1.0.0 siguen mostrando «Próximamente», como en `030` RF-14. |
 | RF-09 | Todos los textos están en `strings.xml`. |
+| RF-10 | **[C38, v2.1]** La pantalla «Favoritos» del cliente pide `GET /api/v1/favorites` y lista solo los de tipo `venue`, con nombre y calificación. Sin favoritos muestra un estado vacío que explica cómo guardarlos. |
+| RF-11 | **[C38, v2.1]** `404` o `501` muestran «Favoritos llegará pronto.»; otro error muestra el aviso con «Reintentar». `401` cierra la sesión como en `030`. |
+| RF-12 | **[C38, v2.1]** El corazón de cada fila quita el favorito con `DELETE /api/v1/favorites/venue/{id}`; mientras espera no se puede tocar otro, y si falla la fila se queda y se avisa. |
+| RF-13 | **[C38, v2.1]** El detalle del salón muestra un corazón en el encabezado solo si `GET /favorites` respondió bien; al tocarlo cambia al instante, guarda o quita con `POST` / `DELETE`, y si falla vuelve a su estado anterior. Sin endpoint no se dibuja. |
 
 ## 4. Requerimientos no funcionales
 
@@ -67,12 +71,15 @@ Borrar la cuenta desde la app también es un requisito de Google Play para apps 
 | CA-04 | **Dado** un `401`, **cuando** confirma, **entonces** se cierra la sesión y el aviso dice que la cuenta no se borró. |
 | CA-05 | **Dado** «Explorar» con el backend actual, **cuando** se muestra un salón, **entonces** no hay corazón y no sale ninguna llamada a `/favorites`. |
 | CA-06 | **Dado** una cuenta `owner` o `provider`, **cuando** abre su perfil, **entonces** no ve «Borrar mi cuenta» (ver P-01). |
+| CA-07 | **Dado** el backend sin `/favorites`, **cuando** el cliente abre «Favoritos», **entonces** ve «Favoritos llegará pronto.» y el detalle del salón no tiene corazón. |
+| CA-08 | **Dado** un salón guardado, **cuando** toca su corazón en «Favoritos», **entonces** desaparece de la lista; si el servidor falla, se queda y se avisa. |
+| CA-09 | **Dado** el detalle de un salón con favoritos disponibles, **cuando** toca el corazón y el guardado falla, **entonces** el corazón vuelve a su estado anterior. |
 
 ## 6. Fuera de alcance
 
 Pendiente para specs posteriores, cuando el backend lo tenga:
 
-- Favoritos (`081`–`083`), con pestañas de salones y proveedores.
+- Favoritos de proveedores (pestaña de proveedores) y el corazón en la lista de «Explorar».
 - Editar perfil, avatar y contraseña (`015`, `016`).
 - Métodos de pago (`019`–`023`).
 - Ayuda: preguntas frecuentes y formulario de contacto (`096`).
@@ -86,7 +93,7 @@ Pendiente para specs posteriores, cuando el backend lo tenga:
 |---|---|---|
 | `DELETE /api/v1/users/me` | `018-delete-users-me` | En la cadena hacia `main`. Revoca todas las sesiones; cambia el nombre a «Cuenta eliminada» y anonimiza correo, teléfono y contraseña; responde `204`. No borra reservaciones, cotizaciones ni salones, y estas guardan su propia copia del nombre del cliente. |
 | `GET /api/v1/users/me`, `POST /api/v1/auth/logout` | `006`, `004` | Ya los usa `030`. |
-| `/api/v1/favorites` | `081`–`083` | **Sin controlador**. `ExploreScreen` los llamaba, pero hoy no está conectada: la pestaña «Explorar» usa el catálogo beta, que no tiene corazón (revisado en emulador el 2026-11-26). Se apaga para que no falle si se conecta. |
+| `/api/v1/favorites` | `081`–`083` | **Sin controlador**; contrato en `docs/contrato-apis-pendientes.md` §7 (v2.1). `ExploreScreen` los llamaba, pero hoy no está conectada: la pestaña «Explorar» usa el catálogo beta, que no tiene corazón (revisado en emulador el 2026-11-26). Se apaga para que no falle si se conecta. |
 
 Producción sigue con el backend anterior hasta el despliegue; mientras tanto se prueba con MockWebServer
 (Art. VIII.6) y con el backend local.

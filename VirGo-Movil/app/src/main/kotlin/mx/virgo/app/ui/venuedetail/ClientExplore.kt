@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import mx.virgo.app.ui.beta.BetaCatalogScreen
 import mx.virgo.app.ui.bookings.BookingConfirmActions
 import mx.virgo.app.ui.bookings.BookingConfirmScreen
+import mx.virgo.app.ui.favorites.FavoriteHeart
 import mx.virgo.app.ui.quotes.QuoteRequestActions
 import mx.virgo.app.ui.quotes.QuoteRequestScreen
 
@@ -24,7 +25,12 @@ fun ClientExplore(
     detail: @Composable (String, () -> Unit, ExploreStep) -> Unit = { id, back, step ->
         VenueDetailScreen(
             id,
-            VenueDetailActions(onBack = back, onQuote = { step.quote() }, onBook = { step.book() }),
+            VenueDetailActions(
+                onBack = back,
+                onQuote = { step.quote() },
+                onBook = { step.book() },
+                headerAction = { venueId, name -> FavoriteHeart(venueId, name) },
+            ),
         )
     },
     quote: @Composable (String, () -> Unit) -> Unit = { id, back ->

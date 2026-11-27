@@ -95,6 +95,16 @@ class FavoritesRepositoryImplTest {
         }
 
     @Test
+    fun notImplementedResponseMapsToNotFound() =
+        runTest {
+            server.enqueue(MockResponse().setResponseCode(501))
+
+            val result = repository.getFavorites()
+
+            assertEquals(AppError.NotFound, (result as AppResult.Failure).error)
+        }
+
+    @Test
     fun addFavoriteConflictMapsToConflict() =
         runTest {
             server.enqueue(MockResponse().setResponseCode(409).setBody("""{"title":"Conflict","status":409}"""))

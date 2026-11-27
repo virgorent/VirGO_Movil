@@ -51,6 +51,7 @@ internal fun VenueDetailContent(
             kicker = stringResource(R.string.venue_detail_kicker),
             onBack = actions.onBack,
             backContentDescription = stringResource(R.string.venue_detail_back),
+            actions = { state.venue?.let { venue -> actions.headerAction?.invoke(venue.id, venue.name) } },
         )
         val venue = state.venue
         when {

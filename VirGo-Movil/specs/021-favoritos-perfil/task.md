@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `021-favoritos-perfil` |
-| Versión | 2.0.0 |
+| Versión | 2.1.0 |
 | Estado | Aprobado por el usuario (2026-11-26) |
 | Fecha | 2026-11-26 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
@@ -20,3 +20,5 @@ Las tareas T2101–T2106 de la v1.0.0 se sustituyen. El spec se aprobó el 2026-
 | T2104 | Ocultar el corazón de favoritos con `FAVORITES_ENABLED = false` | — | `dev-android` | Prueba de UI y sin llamadas a `/favorites` | ✅ |
 | T2105 | Accesibilidad y seguridad | T2102, T2104 | `qa-movil` | Foco, TalkBack, fuente 2.0 | 🔄 |
 | T2106 | Humo contra producción tras el despliegue | Despliegue del backend | `qa-movil` | `check.md` completo | ⛔ |
+| T2107 | (v2.1) Pantalla «Favoritos» y corazón del detalle contra el contrato §7 | — | `dev-android` | `FavoritesTest` (8): lista, 404, reintento, quitar, corazón y reversión | ✅ |
+| T2108 | (v2.1) Humo de favoritos cuando exista `/favorites` | Backend `081`–`083` | `qa-movil` | Emulador con backend local | ⛔ |

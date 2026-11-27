@@ -17,10 +17,15 @@
 | CA-04 | `AccountProfileViewModelTest.unauthorizedDeleteClosesTheSessionAndSaysTheAccountWasNotDeleted` | ✅ |
 | CA-05 | `ExploreViewModelTest.favoritesAreNotRequestedWhileTheBackendLacksTheEndpoint`; `ExploreScreenTest.venueCardsHaveNoFavoriteHeartWhileFavoritesAreOff` | ✅ |
 | CA-06 | `AccountProfileViewModelTest.ownersCannotDeleteTheirAccountYet`; `AccountProfileScreenTest.ownerDoesNotSeeDeleteAction` | ✅ |
+| CA-07 | `FavoritesTest.missingEndpointSaysComingSoon`, `screenSaysComingSoonWithoutEndpoint`, `heartIsHiddenWithoutBackendAndTogglesWithIt` | ✅ |
+| CA-08 | `FavoritesTest.removeDropsItAndFailureKeepsIt`, `screenListsAndRemoves` | ✅ |
+| CA-09 | `FavoritesTest.heartRevertsWhenSavingFails` | ✅ |
 
 ## 2. Pruebas
 
 Corrida del 2026-11-26 sobre la punta del #51 con estos cambios: `ktlintCheck detekt testDebugUnitTest` **BUILD SUCCESSFUL**, 583 pruebas y 0 fallas en todo el proyecto.
+
+**v2.1 (2026-11-27):** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL** en la rama local, 552 pruebas y 0 fallas; `FavoritesTest` (8) y `FavoritesRepositoryImplTest` con `501` → «pronto». Favoritos sin revisar en el emulador.
 
 | Tipo | Evidencia | Estado |
 |---|---|---|

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 021 v2.1 Favoritos -->
+    <string name="favorites_unavailable">Favoritos llegará pronto.</string>
+    <string name="favorites_empty">Sin favoritos</string>
+    <string name="favorites_empty_text">Toca el corazón en el detalle de un salón para guardarlo aquí.</string>
+    <string name="favorites_remove_failed">No pudimos quitarlo. Inténtalo de nuevo.</string>
+    <string name="favorites_unnamed">Salón</string>
+    <string name="favorites_rating">%1$.1f ★</string>
+</resources>

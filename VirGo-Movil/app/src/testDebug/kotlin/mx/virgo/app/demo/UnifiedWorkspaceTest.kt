@@ -7,6 +7,8 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import mx.virgo.app.ui.account.AccountProfileContent
 import mx.virgo.app.ui.account.AccountProfileUiState
+import mx.virgo.app.ui.ownerhome.OwnerHomeContent
+import mx.virgo.app.ui.ownerhome.OwnerHomeUiState
 import mx.virgo.app.ui.ownervenues.OwnerVenuesContent
 import mx.virgo.app.ui.ownervenues.OwnerVenuesUiState
 import mx.virgo.core.designsystem.theme.VirGoTheme
@@ -34,6 +36,7 @@ class UnifiedWorkspaceTest {
                     role = DemoRole.OWNER,
                     accountKey = "synthetic-account-owner",
                     onLogout = { loggedOut = true },
+                    ownerHomeScreen = { name, actions -> OwnerHomeContent(OwnerHomeUiState(), name, actions, {}) },
                     ownerVenuesScreen = { OwnerVenuesContent(OwnerVenuesUiState(loading = false), {}, {}, {}) },
                     accountScreen = { identity, logout ->
                         AccountProfileContent(
@@ -66,6 +69,7 @@ class UnifiedWorkspaceTest {
                     DemoRole.OWNER,
                     "synthetic-account-owner",
                     onLogout = {},
+                    ownerHomeScreen = { name, actions -> OwnerHomeContent(OwnerHomeUiState(), name, actions, {}) },
                     ownerVenuesScreen = { OwnerVenuesContent(OwnerVenuesUiState(loading = false), {}, {}, {}) },
                 )
             }

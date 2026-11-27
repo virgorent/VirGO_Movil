@@ -1,5 +1,6 @@
 package mx.virgo.app.ui.venuedetail
 
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +33,8 @@ data class VenueDetailActions(
     val onSignIn: () -> Unit = {},
     val onQuote: ((String) -> Unit)? = null,
     val onBook: ((String) -> Unit)? = null,
+    /** Acción del encabezado con el id y nombre del salón (corazón de `021`). */
+    val headerAction: (@Composable (String, String) -> Unit)? = null,
 )
 
 data class VenueDetailUiState(

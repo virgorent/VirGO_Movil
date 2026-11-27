@@ -1096,3 +1096,20 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Pendiente:** TalkBack y aceptación visual de `ccabrera-dev8`; humo contra producción tras el despliegue; P-01 (borrado de propietarios) y P-02 (enlace web de borrado para Google Play).
 - **Costo:** $0.
 - **Aprendizaje:** en MockWebServer, un `DISCONNECT_AT_START` encolado después de otras respuestas no da un error de red fiable (OkHttp reintenta en otra conexión); cada caso sin red va en su propia prueba.
+
+### 2026-11-27 · Lote cliente y propietario (`012`, `013`, `015`, `018`, `019`, `020`, `021` v2.1, `023`, `025`) en rama local
+
+- **Autor:** usuario + Claude Code («Aprobados, arranca»; «no hagas pr ni nada de github… mandar el pr ya con toda la app lista»).
+- **Forma de trabajo:** todo en la rama local `local/cliente-propietario-no-push`, sin subir nada; un solo PR cuando la app esté completa y el usuario lo pida.
+- **Con backend real:** inicio y calendario del propietario (`023`), precios del salón (`025`), pagos recibidos y estadísticas calculados en la app con las reservas que ya regresa la API.
+- **Contra el contrato** (`docs/contrato-apis-pendientes.md`, dicen «llegará pronto» con `404`/`501`): Estudio IA y asistente (`012`, `013`), presupuesto y pagos del evento (`015`, `018`), reseñas (`019`), mensajes (`020`), favoritos (`021` v2.1), montajes y reseñas del propietario (`025`).
+- **Fuera de alcance al recortar:** cobrar con tarjeta en la app, compartir el evento con colaboradores (C30) y proveedores aliados (P15, hasta el rol de proveedor).
+- **Hallazgos:**
+  - con `encodeDefaults=false`, el `type="venue"` por defecto de `ConversationTargetDto` no se enviaba; se marca con `@EncodeDefault`;
+  - mapear `429` en `toAppError()` rompía la recuperación de contraseña; solo se mapea en `contractCall`;
+  - favoritos usaba su propio `try/catch`, así que un `501` habría salido como error; ahora usa `contractCall`;
+  - el inicio del propietario (`023`) usa `hiltViewModel`, lo que rompía tres pruebas del espacio de trabajo sin Hilt; se inyecta con `ownerHomeScreen`, igual que `ownerVenuesScreen`.
+- **Datos de demostración:** `scripts/seed-demo.py` crea 15 usuarios (3 propietarios, 12 clientes), 12 salones, 36 cotizaciones, 12 reservas y 6 eventos; probado contra el backend local. Solo habla con localhost salvo `--permitir-remoto`; las contraseñas van a `*.local.txt`, ignorado por git. Zonas, categorías, amenidades y tipos de evento deben ser los del catálogo de la API.
+- **Evidencia:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL** el 2026-11-27: 552 pruebas en los reportes de la corrida, 0 fallas, 1 omitida. Emulador: pendiente con el usuario.
+- **Pendiente:** revisión en el emulador con el usuario, TalkBack, aceptación visual de `ccabrera-dev8`, rol de proveedor, y el PR único.
+- **Costo:** $0.

@@ -24,6 +24,7 @@ import mx.virgo.app.ui.beta.betaTitle
 import mx.virgo.app.ui.bookings.ClientBookings
 import mx.virgo.app.ui.events.ClientEvents
 import mx.virgo.app.ui.events.EventStep
+import mx.virgo.app.ui.favorites.ClientFavorites
 import mx.virgo.app.ui.finance.ClientBudget
 import mx.virgo.app.ui.finance.ClientBudgetSuggestion
 import mx.virgo.app.ui.finance.ClientPayments
@@ -58,9 +59,17 @@ fun RoleWorkspace(
         AccountProfileScreen(identity, logout)
     },
     ownerVenuesScreen: @Composable () -> Unit = { OwnerVenuesRoute() },
+    ownerHomeScreen: @Composable (String, OwnerHomeActions) -> Unit = { name, actions -> OwnerHome(name, actions) },
 ) {
     key(accountKey, role) {
-        BetaWorkspace(role, accountName, accountEmail, onLogout, accountScreen, ownerVenuesScreen)
+        BetaWorkspace(
+            role,
+            accountName,
+            accountEmail,
+            onLogout,
+            accountScreen,
+            OwnerSlots(ownerVenuesScreen, ownerHomeScreen),
+        )
     }
 }
 
@@ -71,7 +80,7 @@ private fun BetaWorkspace(
     accountEmail: String,
     onLogout: () -> Unit,
     accountScreen: @Composable (SessionIdentity, () -> Unit) -> Unit,
-    ownerVenuesScreen: @Composable () -> Unit,
+    owner: OwnerSlots,
 ) {
     var history by rememberSaveable(role) { mutableStateOf(role.home) }
     var sections by rememberSaveable { mutableStateOf(false) }
@@ -122,7 +131,7 @@ private fun BetaWorkspace(
                 identity = SessionIdentity(accountName, accountEmail, role.label),
                 onLogout = onLogout,
                 accountScreen = accountScreen,
-                ownerVenuesScreen = ownerVenuesScreen,
+                owner = owner,
                 back = back,
             )
         }
@@ -146,6 +155,7 @@ private enum class WorkspaceScreen {
     QUOTES,
     EVENTS,
     STUDIO,
+    FAVORITES,
     MESSAGES,
     OWNER_MESSAGES,
     OWNER_PRICING,
@@ -174,14 +184,14 @@ private fun WorkspaceBody(
     identity: SessionIdentity,
     onLogout: () -> Unit,
     accountScreen: @Composable (SessionIdentity, () -> Unit) -> Unit,
-    ownerVenuesScreen: @Composable () -> Unit,
+    owner: OwnerSlots,
     back: () -> Unit,
 ) {
     when (screen) {
         WorkspaceScreen.SECTIONS -> BetaSectionsMenu(role, navigate)
         WorkspaceScreen.ACCOUNT -> accountScreen(identity, onLogout)
         WorkspaceScreen.SECTION -> BetaSectionScreen(role, route, identity.name, identity.email)
-        in OWNER_SCREENS -> OwnerScreen(screen, identity.name, navigate, ownerVenuesScreen)
+        in OWNER_SCREENS -> OwnerScreen(screen, identity.name, navigate, owner)
         else -> ClientScreen(screen, betaTitle(role, route), route, navigate, back)
     }
 }
@@ -219,6 +229,7 @@ private fun ClientScreen(
             })
         WorkspaceScreen.STUDIO -> ClientStudio(onAssistant = { navigate("assistant") })
         WorkspaceScreen.ASSISTANT -> ClientAssistant()
+        WorkspaceScreen.FAVORITES -> ClientFavorites()
         WorkspaceScreen.MESSAGES -> MessagesInbox()
         WorkspaceScreen.BUDGET ->
             ClientBudget(
@@ -239,26 +250,31 @@ private fun OwnerScreen(
     screen: WorkspaceScreen,
     name: String,
     navigate: (String) -> Unit,
-    ownerVenuesScreen: @Composable () -> Unit,
+    owner: OwnerSlots,
 ) {
     when (screen) {
         WorkspaceScreen.OWNER_HOME ->
-            OwnerHome(
-                name = name,
-                actions =
-                    OwnerHomeActions(
-                        onVenues = { navigate("ownerVenues") },
-                        onRequests = { navigate("ownerRequests") },
-                        onCalendar = { navigate("ownerCalendar") },
-                    ),
+            owner.home(
+                name,
+                OwnerHomeActions(
+                    onVenues = { navigate("ownerVenues") },
+                    onRequests = { navigate("ownerRequests") },
+                    onCalendar = { navigate("ownerCalendar") },
+                ),
             )
         WorkspaceScreen.OWNER_CALENDAR -> OwnerCalendar(onVenues = { navigate("ownerVenues") })
-        WorkspaceScreen.OWNER_VENUES -> ownerVenuesScreen()
+        WorkspaceScreen.OWNER_VENUES -> owner.venues()
         WorkspaceScreen.OWNER_REQUESTS -> OwnerRequests()
         WorkspaceScreen.OWNER_MESSAGES -> MessagesInbox()
         else -> OwnerToolScreen(screen)
     }
 }
+
+/** Pantallas del propietario que las pruebas sin Hilt sustituyen. */
+private class OwnerSlots(
+    val venues: @Composable () -> Unit,
+    val home: @Composable (String, OwnerHomeActions) -> Unit,
+)
 
 /** Herramientas del propietario (`025`). */
 @Composable
@@ -282,6 +298,7 @@ private val CONNECTED_SCREENS: Map<DemoRole, Map<String, WorkspaceScreen>> =
                 "bookings" to WorkspaceScreen.BOOKINGS,
                 "quotes" to WorkspaceScreen.QUOTES,
                 "studio" to WorkspaceScreen.STUDIO,
+                "favorites" to WorkspaceScreen.FAVORITES,
                 "messages" to WorkspaceScreen.MESSAGES,
                 "chat" to WorkspaceScreen.MESSAGES,
                 "budget" to WorkspaceScreen.BUDGET,

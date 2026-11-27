@@ -1,6 +1,5 @@
 package mx.virgo.core.data.repository
 
-import kotlinx.coroutines.CancellationException
 import mx.virgo.core.common.AppResult
 import mx.virgo.core.domain.Favorite
 import mx.virgo.core.domain.FavoritesRepository
@@ -9,23 +8,17 @@ import mx.virgo.core.network.dto.FavoriteDto
 import mx.virgo.core.network.dto.FavoriteRequestDto
 import javax.inject.Inject
 
+/** Favoritos (contrato §7): `404`/`501` llegan como [mx.virgo.core.common.AppError.NotFound]. */
 class FavoritesRepositoryImpl
     @Inject
     constructor(
         private val favoritesApi: FavoritesApi,
     ) : FavoritesRepository {
-        @Suppress("TooGenericExceptionCaught")
         override suspend fun getFavorites(): AppResult<List<Favorite>> =
-            try {
-                val response = favoritesApi.favorites()
-                AppResult.Success(response.data.map { it.toFavorite() })
-            } catch (cancellation: CancellationException) {
-                throw cancellation
-            } catch (error: Exception) {
-                AppResult.Failure(error.toAppError())
+            contractCall {
+                AppResult.Success(favoritesApi.favorites().data.map { it.toFavorite() })
             }
 
-        @Suppress("TooGenericExceptionCaught")
         override suspend fun addFavorite(
             targetType: String,
             targetId: String,
@@ -33,7 +26,7 @@ class FavoritesRepositoryImpl
             photoUrl: String?,
             rating: Double?,
         ): AppResult<Unit> =
-            try {
+            contractCall {
                 favoritesApi.addFavorite(
                     FavoriteRequestDto(
                         targetType = targetType,
@@ -44,24 +37,15 @@ class FavoritesRepositoryImpl
                     ),
                 )
                 AppResult.Success(Unit)
-            } catch (cancellation: CancellationException) {
-                throw cancellation
-            } catch (error: Exception) {
-                AppResult.Failure(error.toAppError())
             }
 
-        @Suppress("TooGenericExceptionCaught")
         override suspend fun removeFavorite(
             targetType: String,
             targetId: String,
         ): AppResult<Unit> =
-            try {
+            contractCall {
                 favoritesApi.removeFavorite(targetType, targetId)
                 AppResult.Success(Unit)
-            } catch (cancellation: CancellationException) {
-                throw cancellation
-            } catch (error: Exception) {
-                AppResult.Failure(error.toAppError())
             }
     }
 

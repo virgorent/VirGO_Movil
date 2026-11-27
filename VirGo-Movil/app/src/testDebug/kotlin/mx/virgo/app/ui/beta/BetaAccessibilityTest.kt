@@ -47,6 +47,8 @@ import mx.virgo.app.ui.events.TaskEditor
 import mx.virgo.app.ui.events.TasksActions
 import mx.virgo.app.ui.events.TasksContent
 import mx.virgo.app.ui.events.TasksUiState
+import mx.virgo.app.ui.ownerhome.OwnerHomeContent
+import mx.virgo.app.ui.ownerhome.OwnerHomeUiState
 import mx.virgo.app.ui.ownerrequests.AnswerError
 import mx.virgo.app.ui.ownerrequests.OwnerRequestsActions
 import mx.virgo.app.ui.ownerrequests.OwnerRequestsContent
@@ -387,6 +389,7 @@ class BetaAccessibilityTest {
                         onLogout = {},
                         SESSION_NAME,
                         SESSION_EMAIL,
+                        ownerHomeScreen = { name, actions -> OwnerHomeContent(OwnerHomeUiState(), name, actions, {}) },
                         ownerVenuesScreen = {
                             OwnerVenuesContent(OwnerVenuesUiState(loading = false, venues = ownerVenues), {}, {}, {})
                         },
