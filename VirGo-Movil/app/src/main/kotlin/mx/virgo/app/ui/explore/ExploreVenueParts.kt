@@ -98,8 +98,8 @@ internal fun ExplorePrice(
 }
 
 /**
- * Favoritos apagados (`021` RF-07): el backend no tiene `/api/v1/favorites` y cada toque fallaba.
- * Se vuelve a encender cuando exista el endpoint.
+ * Favoritos apagados (`021` RF-07): el backend no tiene `/api/v1/favorites`, así que el corazón no podría
+ * guardar nada. Se vuelve a encender cuando exista el endpoint.
  */
 internal const val FAVORITES_ENABLED = false
 

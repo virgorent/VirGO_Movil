@@ -3,6 +3,7 @@ package mx.virgo.app.ui.bookings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -90,6 +91,7 @@ internal fun ChangesNotice() {
             icon = Icons.Outlined.Info,
             tone = VirGoTone.VIOLET,
             standalone = false,
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
     }
 }

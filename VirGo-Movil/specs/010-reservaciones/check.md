@@ -28,6 +28,7 @@ Corrida del 2026-11-26 sobre la punta del #51 con estos cambios: `ktlintCheck de
 | UI | `BookingsScreensTest` (10) | ✅ |
 | Seguridad | El folio va en la ruta, no en la query (prueba de integración); no se agregaron logs | ✅ |
 | Accesibilidad | Etiqueta y error del campo en semántica; **falta** revisión con TalkBack y fuente 2.0 a 320 dp | ⏳ |
+| Emulador | Pixel_10_Pro con backend local: formato inválido sin llamada; folio ajeno → 404 con su mensaje (también el de otra cuenta); `vg-2026-0001` → 200 y detalle con el aviso; margen del aviso corregido | ✅ |
 | Humo | APK contra producción tras el despliegue | ⏳ |
 
 ## 3. PR y release

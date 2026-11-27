@@ -20,7 +20,7 @@ formulario de contacto. Contra el backend que va a `main` (2026-11-26):
 |---|---|---|
 | Ver perfil y cerrar sesión | `GET /users/me`, `POST /auth/logout` | **Ya cubierto por `030`**; no se repite. |
 | Borrar cuenta | `DELETE /users/me` existe | **Entra en este spec.** |
-| Favoritos | No hay controlador de `/favorites` | Fuera; además se oculta el corazón que hoy falla (RF-07). |
+| Favoritos | No hay controlador de `/favorites` | Fuera; además se apaga el corazón de `ExploreScreen` (RF-07). |
 | Editar perfil y contraseña | `PATCH /users/me` y `/password` no existen | Fuera. |
 | Métodos de pago | `/payment-cards` no existe | Fuera. |
 | Ayuda y contacto | `POST /contact` no existe | Fuera. |
@@ -33,7 +33,7 @@ Borrar la cuenta desde la app también es un requisito de Google Play para apps 
 | ID | Historia |
 |---|---|
 | H-01 | Como cliente, quiero borrar mi cuenta desde la app, sabiendo antes qué pasa con mis datos. |
-| H-02 | Como cliente, no quiero ver un botón de favoritos que siempre falla. |
+| H-02 | Como cliente, no quiero ver un botón de favoritos que no puede guardar nada. |
 
 ## 3. Requerimientos funcionales
 
@@ -86,7 +86,7 @@ Pendiente para specs posteriores, cuando el backend lo tenga:
 |---|---|---|
 | `DELETE /api/v1/users/me` | `018-delete-users-me` | En la cadena hacia `main`. Revoca todas las sesiones; cambia el nombre a «Cuenta eliminada» y anonimiza correo, teléfono y contraseña; responde `204`. No borra reservaciones, cotizaciones ni salones, y estas guardan su propia copia del nombre del cliente. |
 | `GET /api/v1/users/me`, `POST /api/v1/auth/logout` | `006`, `004` | Ya los usa `030`. |
-| `/api/v1/favorites` | `081`–`083` | **Sin controlador**; la app hoy los llama desde «Explorar» y fallan. |
+| `/api/v1/favorites` | `081`–`083` | **Sin controlador**. `ExploreScreen` los llamaba, pero hoy no está conectada: la pestaña «Explorar» usa el catálogo beta, que no tiene corazón (revisado en emulador el 2026-11-26). Se apaga para que no falle si se conecta. |
 
 Producción sigue con el backend anterior hasta el despliegue; mientras tanto se prueba con MockWebServer
 (Art. VIII.6) y con el backend local.

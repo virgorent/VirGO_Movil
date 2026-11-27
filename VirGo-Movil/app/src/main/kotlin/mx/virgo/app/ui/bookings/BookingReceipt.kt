@@ -60,6 +60,7 @@ internal fun BookingReceiptBody(
             icon = Icons.Outlined.Info,
             tone = VirGoTone.AMBER,
             standalone = false,
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

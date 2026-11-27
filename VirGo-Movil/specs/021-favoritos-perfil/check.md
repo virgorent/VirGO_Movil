@@ -29,6 +29,7 @@ Corrida del 2026-11-26 sobre la punta del #51 con estos cambios: `ktlintCheck de
 | UI | `AccountProfileScreenTest` (10, fuente 2.0 a 320 dp) y `ExploreScreenTest` (13) | ✅ |
 | Seguridad | Tras 204 no queda token (`store.stored` nulo); sin llamadas a `/favorites` | ✅ |
 | Accesibilidad | El foco inicial en «Cancelar» se pide en código; **falta** comprobarlo con TalkBack | ⏳ |
+| Emulador | Pixel_10_Pro con backend local: «Cancelar» no envía nada; «Borrar cuenta» → `DELETE /users/me` 204, inicio con «Tu cuenta se borró.» y el login viejo da 401; el propietario no ve la acción; «Explorar» real (catálogo beta) nunca tuvo corazón | ✅ |
 | Humo | Borrar una cuenta de prueba contra producción tras el despliegue | ⏳ |
 
 ## 3. PR y release
