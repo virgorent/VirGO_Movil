@@ -13,8 +13,12 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,6 +30,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import mx.virgo.app.R
 import mx.virgo.app.ui.bookings.formatDate
 import mx.virgo.app.ui.finance.SaveNoticeText
+import mx.virgo.app.ui.finance.cleanDigits
 import mx.virgo.app.ui.venuedetail.formatMxn
 import mx.virgo.core.designsystem.components.EmptyState
 import mx.virgo.core.designsystem.components.ErrorBanner
@@ -45,7 +50,8 @@ import java.util.Locale
 @Composable
 fun OwnerVenueTool(
     tool: VenueTool,
-    viewModel: VenueToolsViewModel = hiltViewModel(),
+    // Uno por herramienta: el aviso de guardar de «Precios» no debe aparecer en «Montajes».
+    viewModel: VenueToolsViewModel = hiltViewModel(key = "venue-tool-$tool"),
 ) {
     val state by viewModel.state.collectAsState()
     VenueToolContent(
@@ -187,18 +193,18 @@ internal fun NumberField(
     value: Int,
     onValue: (Int) -> Unit,
 ) {
+    // El texto vive aquí para poder borrarlo por completo: vacío cuenta como 0 sin reescribir el campo.
+    var text by remember { mutableStateOf(value.toString()) }
+    LaunchedEffect(value) {
+        if ((text.toIntOrNull() ?: 0) != value) text = value.toString()
+    }
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(label, modifier = Modifier.weight(1f))
         VirGoTextField(
-            value = value.toString(),
-            onValueChange = { text ->
-                onValue(
-                    text
-                        .filter(Char::isDigit)
-                        .take(MAX_DIGITS)
-                        .ifEmpty { "0" }
-                        .toInt(),
-                )
+            value = text,
+            onValueChange = { typed ->
+                text = cleanDigits(typed).take(MAX_DIGITS)
+                onValue(text.toIntOrNull() ?: 0)
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.weight(1f).semantics { contentDescription = label },

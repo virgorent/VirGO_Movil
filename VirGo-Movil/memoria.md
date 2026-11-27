@@ -1111,5 +1111,13 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - el inicio del propietario (`023`) usa `hiltViewModel`, lo que rompía tres pruebas del espacio de trabajo sin Hilt; se inyecta con `ownerHomeScreen`, igual que `ownerVenuesScreen`.
 - **Datos de demostración:** `scripts/seed-demo.py` crea 15 usuarios (3 propietarios, 12 clientes), 12 salones, 36 cotizaciones, 12 reservas y 6 eventos; probado contra el backend local. Solo habla con localhost salvo `--permitir-remoto`; las contraseñas van a `*.local.txt`, ignorado por git. Zonas, categorías, amenidades y tipos de evento deben ser los del catálogo de la API.
 - **Evidencia:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL** el 2026-11-27: 552 pruebas en los reportes de la corrida, 0 fallas, 1 omitida. Emulador: pendiente con el usuario.
-- **Pendiente:** revisión en el emulador con el usuario, TalkBack, aceptación visual de `ccabrera-dev8`, rol de proveedor, y el PR único.
+- **Revisión en emulador (2026-11-27, «Sí, al emulador»; Pixel_10_Pro, backend local con `seed-demo.py`):** favoritos, IA Studio, asistente, presupuesto, pagos, mensajes y reseñas del cliente; inicio, calendario (bloquear y desbloquear reales: `POST`/`DELETE /blocks` 201/204), precios, montajes, pagos recibidos, estadísticas y reseñas del propietario. Errores hallados y corregidos:
+  - **«Guardado» falso en Precios y Montajes:** el backend ignora `weekendPct` y `setups`, responde `200` y no guarda nada. El repositorio ahora relee `GET /venues/mine` y, si el campo no volvió, dice «llegará pronto».
+  - **Campos numéricos que no se podían vaciar:** al borrar volvían a «0» y «15» quedaba «150»; pasaba en Precios, Montajes y Presupuesto sugerido. Ahora el campo puede quedar vacío y no deja ceros a la izquierda.
+  - El aviso de guardar de Precios aparecía en Montajes porque compartían `ViewModel`; ahora hay uno por herramienta.
+  - «Secciones» marcaba «Próximamente» en pantallas ya conectadas: tenía su propia lista. Ahora usa la misma del ruteo (`isConnectedRoute`).
+  - Las fechas salían en inglés con el teléfono en inglés (`formatDate`, desde `009`); ahora siempre en es-MX.
+- **Decisiones abiertas para el usuario:** (1) «Sugerencia de IA» aparece en cálculos con reglas fijas (personal, presupuesto sugerido, saludo del asistente); (2) se puede calificar el salón antes de la fecha del evento (`019` RF-01 solo excluye canceladas).
+- **Evidencia final:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL**, 555 pruebas, 0 fallas, 1 omitida.
+- **Pendiente:** TalkBack, aceptación visual de `ccabrera-dev8`, rol de proveedor y el PR único.
 - **Costo:** $0.

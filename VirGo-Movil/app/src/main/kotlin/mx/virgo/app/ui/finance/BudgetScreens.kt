@@ -14,8 +14,12 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -205,16 +209,33 @@ private fun SuggestionFields(
     onEdit: (BudgetCategory, String) -> Unit,
 ) {
     BudgetCategory.entries.forEach { category ->
-        val label = stringResource(category.label())
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(label, modifier = Modifier.weight(1f))
-            VirGoTextField(
-                value = suggestion[category]?.toPlainString().orEmpty(),
-                onValueChange = { onEdit(category, it) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.weight(1f).semantics { contentDescription = label },
-            )
-        }
+        AmountField(stringResource(category.label()), suggestion[category]) { onEdit(category, it) }
+    }
+}
+
+/** Monto editable que se puede vaciar al reescribirlo; vacío cuenta como 0 sin reescribir el campo. */
+@Composable
+private fun AmountField(
+    label: String,
+    amount: BigDecimal?,
+    onEdit: (String) -> Unit,
+) {
+    val canonical = amount?.toPlainString().orEmpty()
+    var text by remember { mutableStateOf(canonical) }
+    LaunchedEffect(canonical) {
+        if ((text.toBigDecimalOrNull() ?: BigDecimal.ZERO).compareTo(amount ?: BigDecimal.ZERO) != 0) text = canonical
+    }
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(label, modifier = Modifier.weight(1f))
+        VirGoTextField(
+            value = text,
+            onValueChange = { typed ->
+                text = cleanDigits(typed)
+                onEdit(text)
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.weight(1f).semantics { contentDescription = label },
+        )
     }
 }
 

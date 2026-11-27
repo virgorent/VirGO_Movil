@@ -1,5 +1,6 @@
 package mx.virgo.core.data.repository
 
+import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
 import mx.virgo.core.domain.OwnerToolsRepository
 import mx.virgo.core.domain.OwnerVenueTools
@@ -45,7 +46,8 @@ class OwnerToolsRepositoryImpl
                         highSeasonPct = pricing.highSeasonPct,
                         highSeasonMonths = pricing.highSeasonMonths.sorted(),
                     )
-                api.patch(venueId, VenueToolsPatchDto(price = price)).toUnitResult()
+                api.patch(venueId, VenueToolsPatchDto(price = price)).requireSuccess()
+                confirmSaved(venueId) { it.price?.weekendPct != null }
             }
 
         override suspend fun saveSetups(
@@ -54,8 +56,22 @@ class OwnerToolsRepositoryImpl
         ): AppResult<Unit> =
             contractCall {
                 val body = VenueSetupsRequestDto(setups.banquet, setups.auditorium, setups.cocktail)
-                api.patch(venueId, VenueToolsPatchDto(setups = body)).toUnitResult()
+                api.patch(venueId, VenueToolsPatchDto(setups = body)).requireSuccess()
+                confirmSaved(venueId) { it.setups != null }
             }
+
+        /**
+         * El backend actual ignora los campos que no conoce y responde `200`: se relee el salón y, si el
+         * campo no volvió, se trata como endpoint ausente («llegará pronto») en vez de decir «Guardado».
+         */
+        private suspend fun confirmSaved(
+            venueId: String,
+            persisted: (VenueToolsDto) -> Boolean,
+        ): AppResult<Unit> {
+            val saved = api.mine().data.firstOrNull { it.id == venueId }
+            val confirmed = saved != null && persisted(saved)
+            return if (confirmed) AppResult.Success(Unit) else AppResult.Failure(AppError.NotFound)
+        }
 
         override suspend fun venueReviews(venueId: String): AppResult<VenueReviews> =
             contractCall {
@@ -90,8 +106,9 @@ class OwnerToolsRepositoryImpl
             contractCall { AppResult.Success(api.reply(reviewId, ReplyReviewDto(text.trim())).toReview()) }
     }
 
-private fun Response<Unit>.toUnitResult(): AppResult<Unit> =
-    if (isSuccessful) AppResult.Success(Unit) else throw HttpException(this)
+private fun Response<Unit>.requireSuccess() {
+    if (!isSuccessful) throw HttpException(this)
+}
 
 private fun VenueToolsDto.toTools(): OwnerVenueTools =
     OwnerVenueTools(

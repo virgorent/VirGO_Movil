@@ -120,3 +120,9 @@ internal fun BudgetCategory.label(): Int =
     }
 
 private val HUNDRED = BigDecimal(100)
+
+/** Solo dígitos y sin ceros a la izquierda («05» → «5»); vacío se respeta para poder reescribir. */
+internal fun cleanDigits(typed: String): String {
+    val digits = typed.filter(Char::isDigit)
+    return digits.trimStart('0').ifEmpty { digits.take(1) }
+}

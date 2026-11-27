@@ -1,13 +1,22 @@
 package mx.virgo.app.ui.ownertools
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTextClearance
+import androidx.compose.ui.test.performTextInput
 import mx.virgo.app.session.FakeSessionTokenStore
 import mx.virgo.app.session.SessionRepository
 import mx.virgo.app.ui.finance.SaveNotice
+import mx.virgo.app.ui.finance.cleanDigits
 import mx.virgo.core.common.AppError
 import mx.virgo.core.common.AppResult
 import mx.virgo.core.designsystem.theme.VirGoTheme
@@ -114,5 +123,41 @@ class OwnerToolsTest {
         compose.setContent { VirGoTheme { OwnerReviewsContent(state, OwnerReviewsActions()) } }
         compose.onNodeWithText("Todo excelente").assertIsDisplayed()
         compose.onNodeWithText("Responder").assertIsDisplayed()
+    }
+
+    @Test
+    fun numberFieldCanBeClearedAndRetyped() {
+        var value by mutableIntStateOf(0)
+        compose.setContent { VirGoTheme { NumberField("Aumento", value) { value = it } } }
+        val field = compose.onNodeWithContentDescription("Aumento")
+        field.performTextClearance()
+        assertEquals(0, value)
+        field.performTextInput("15")
+        field.assert(hasText("15", substring = false))
+        assertEquals(15, value)
+    }
+
+    @Test
+    fun typingAfterZeroDropsTheLeadingZero() {
+        assertEquals(
+            "5",
+            mx.virgo.app.ui.finance
+                .cleanDigits("05"),
+        )
+        assertEquals(
+            "0",
+            mx.virgo.app.ui.finance
+                .cleanDigits("000"),
+        )
+        assertEquals(
+            "",
+            mx.virgo.app.ui.finance
+                .cleanDigits(""),
+        )
+        assertEquals(
+            "120",
+            mx.virgo.app.ui.finance
+                .cleanDigits("1a2b0"),
+        )
     }
 }

@@ -61,15 +61,31 @@ class OwnerToolsRepositoryImplTest {
     fun pricingSendsTheWholePriceAndSetupsAllThree() =
         runTest {
             server.enqueue(MockResponse().setBody("{}"))
+            server.enqueue(MockResponse().setBody(SAVED))
             server.enqueue(MockResponse().setBody("{}"))
+            server.enqueue(MockResponse().setBody(SAVED))
             val pricing = VenuePricing(BigDecimal("3500"), "hour", 5, 15, 20, setOf(12, 11))
-            repository.savePricing("v1", pricing)
-            repository.saveSetups("v1", VenueSetups(banquet = 200))
+            assertEquals(AppResult.Success(Unit), repository.savePricing("v1", pricing))
+            assertEquals(AppResult.Success(Unit), repository.saveSetups("v1", VenueSetups(banquet = 200)))
             val price = body()["price"]!!.jsonObject
             assertEquals(5, price["minHours"]?.jsonPrimitive?.int)
             assertEquals(listOf(11, 12), price["highSeasonMonths"]?.jsonArray?.map { it.jsonPrimitive.int })
+            assertEquals("/api/v1/venues/mine", server.takeRequest().path)
             val setups = body()["setups"]!!.jsonObject
             assertEquals(setOf("banquet", "auditorium", "cocktail"), setups.keys)
+        }
+
+    @Test
+    fun okWithoutTheFieldPersistedIsComingSoonNotSaved() =
+        runTest {
+            val ignored = """{"data":[{"id":"v1","name":"Cristal","price":{"baseAmount":3500,"unit":"hour"}}]}"""
+            server.enqueue(MockResponse().setBody("{}"))
+            server.enqueue(MockResponse().setBody(ignored))
+            server.enqueue(MockResponse().setBody("{}"))
+            server.enqueue(MockResponse().setBody(ignored))
+            val pricing = VenuePricing(BigDecimal("3500"), "hour", 5, 20, 0, emptySet())
+            assertEquals(AppResult.Failure(AppError.NotFound), repository.savePricing("v1", pricing))
+            assertEquals(AppResult.Failure(AppError.NotFound), repository.saveSetups("v1", VenueSetups(banquet = 1)))
         }
 
     @Test
@@ -94,3 +110,6 @@ class OwnerToolsRepositoryImplTest {
             assertFalse(result.error == AppError.NotFound)
         }
 }
+
+private const val SAVED =
+    """{"data":[{"id":"v1","name":"Cristal","price":{"weekendPct":15},"setups":{"banquet":200}}]}"""

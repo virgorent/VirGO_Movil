@@ -21,6 +21,7 @@ import mx.virgo.app.R
 import mx.virgo.app.demo.DemoDestinations
 import mx.virgo.app.demo.DemoRole
 import mx.virgo.app.demo.destinationIcon
+import mx.virgo.app.demo.isConnectedRoute
 import mx.virgo.core.designsystem.components.EmptyState
 import mx.virgo.core.designsystem.components.VirGoBadge
 import mx.virgo.core.designsystem.components.VirGoCard
@@ -130,21 +131,6 @@ private fun LegacyAccountSummary(
     }
 }
 
-/** Destinos con servicio conectado; el resto muestra «Próximamente». */
-private val connectedRoutes =
-    setOf(
-        "profile",
-        "explore",
-        "bookings",
-        "quotes",
-        "event",
-        "guests",
-        "tasks",
-        "ownerHome",
-        "ownerVenues",
-        "ownerRequests",
-    )
-
 @Composable
 internal fun BetaSectionsMenu(
     role: DemoRole,
@@ -162,7 +148,7 @@ internal fun BetaSectionsMenu(
             Column(Modifier.padding(horizontal = 16.dp)) {
                 val destinations = DemoDestinations.forRole(role)
                 destinations.forEachIndexed { index, destination ->
-                    val available = destination.route in connectedRoutes
+                    val available = isConnectedRoute(role, destination.route)
                     VirGoRow(
                         title = stringResource(betaTitle(role, destination.route)),
                         icon = destinationIcon(destination.route),

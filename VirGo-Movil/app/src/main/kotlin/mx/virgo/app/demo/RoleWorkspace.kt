@@ -319,6 +319,12 @@ private val CONNECTED_SCREENS: Map<DemoRole, Map<String, WorkspaceScreen>> =
             ("ownerReviews" to WorkspaceScreen.OWNER_REVIEWS),
     )
 
+/** Una sola fuente para el menú «Secciones» y el ruteo: lo conectado no lleva «Próximamente». */
+internal fun isConnectedRoute(
+    role: DemoRole,
+    route: String,
+): Boolean = route == "profile" || CONNECTED_SCREENS[role]?.containsKey(route) == true
+
 private fun workspaceScreen(
     role: DemoRole,
     route: String,

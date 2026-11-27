@@ -30,6 +30,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.util.Locale
 
 /** C23: datos del servidor; repite que no se cobró y que la fecha no está apartada (009 RF-06/RF-07). */
 @Composable
@@ -107,5 +108,6 @@ private fun ReceiptRow(
 private fun amount(value: BigDecimal?): String =
     value?.let { formatMxn(it.toDouble()) } ?: stringResource(R.string.booking_unknown_amount)
 
-/** Fecha en formato local (009 RF-10). */
-internal fun formatDate(date: LocalDate): String = date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+/** Fecha en formato local (009 RF-10), siempre en español: la app solo existe en ese idioma. */
+internal fun formatDate(date: LocalDate): String =
+    date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.forLanguageTag("es-MX")))
