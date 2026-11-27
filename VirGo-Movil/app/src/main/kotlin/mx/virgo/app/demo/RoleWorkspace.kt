@@ -24,6 +24,10 @@ import mx.virgo.app.ui.beta.betaTitle
 import mx.virgo.app.ui.bookings.ClientBookings
 import mx.virgo.app.ui.events.ClientEvents
 import mx.virgo.app.ui.events.EventStep
+import mx.virgo.app.ui.finance.ClientBudget
+import mx.virgo.app.ui.finance.ClientBudgetSuggestion
+import mx.virgo.app.ui.finance.ClientPayments
+import mx.virgo.app.ui.finance.FinanceLinks
 import mx.virgo.app.ui.ownercalendar.OwnerCalendar
 import mx.virgo.app.ui.ownerhome.OwnerHome
 import mx.virgo.app.ui.ownerhome.OwnerHomeActions
@@ -135,6 +139,9 @@ private enum class WorkspaceScreen {
     QUOTES,
     EVENTS,
     STUDIO,
+    BUDGET,
+    BUDGET_SUGGESTION,
+    PAYMENTS,
     ASSISTANT,
     OWNER_HOME,
     OWNER_CALENDAR,
@@ -158,17 +165,62 @@ private fun WorkspaceBody(
 ) {
     when (screen) {
         WorkspaceScreen.SECTIONS -> BetaSectionsMenu(role, navigate)
+        WorkspaceScreen.ACCOUNT -> accountScreen(identity, onLogout)
+        WorkspaceScreen.SECTION -> BetaSectionScreen(role, route, identity.name, identity.email)
+        in OWNER_SCREENS -> OwnerScreen(screen, identity.name, navigate, ownerVenuesScreen)
+        else -> ClientScreen(screen, betaTitle(role, route), route, navigate, back)
+    }
+}
+
+private val OWNER_SCREENS =
+    setOf(
+        WorkspaceScreen.OWNER_HOME,
+        WorkspaceScreen.OWNER_CALENDAR,
+        WorkspaceScreen.OWNER_VENUES,
+        WorkspaceScreen.OWNER_REQUESTS,
+    )
+
+/** Pantallas conectadas del cliente (`005`–`021`). */
+@Composable
+private fun ClientScreen(
+    screen: WorkspaceScreen,
+    title: Int,
+    route: String,
+    navigate: (String) -> Unit,
+    back: () -> Unit,
+) {
+    val toEvent = { navigate("event") }
+    when (screen) {
         WorkspaceScreen.CATALOG ->
             ClientExplore(onMyBookings = { navigate("bookings") }, onMyQuotes = { navigate("quotes") })
         WorkspaceScreen.BOOKINGS -> ClientBookings()
         WorkspaceScreen.STUDIO -> ClientStudio(onAssistant = { navigate("assistant") })
         WorkspaceScreen.ASSISTANT -> ClientAssistant()
-        WorkspaceScreen.EVENTS -> ClientEvents(EVENT_STEPS[route], betaTitle(role, route), onBack = back)
+        WorkspaceScreen.BUDGET ->
+            ClientBudget(
+                FinanceLinks(toEvent, onSuggestion = { navigate("budgetAI") }, onPayments = { navigate("payments") }),
+            )
+        WorkspaceScreen.BUDGET_SUGGESTION -> ClientBudgetSuggestion(onEvent = toEvent)
+        WorkspaceScreen.PAYMENTS -> ClientPayments(onEvent = toEvent)
+        WorkspaceScreen.EVENTS -> ClientEvents(EVENT_STEPS[route], title, onBack = back)
         WorkspaceScreen.QUOTES ->
             ClientQuotes(onCatalog = { navigate("explore") }, onMyBookings = { navigate("bookings") }, onBack = back)
+        else -> Unit
+    }
+}
+
+/** Pantallas conectadas del propietario (`022`–`025`). */
+@Composable
+private fun OwnerScreen(
+    screen: WorkspaceScreen,
+    name: String,
+    navigate: (String) -> Unit,
+    ownerVenuesScreen: @Composable () -> Unit,
+) {
+    when (screen) {
         WorkspaceScreen.OWNER_HOME ->
             OwnerHome(
-                name = identity.name,
+                name = name,
                 actions =
                     OwnerHomeActions(
                         onVenues = { navigate("ownerVenues") },
@@ -179,8 +231,7 @@ private fun WorkspaceBody(
         WorkspaceScreen.OWNER_CALENDAR -> OwnerCalendar(onVenues = { navigate("ownerVenues") })
         WorkspaceScreen.OWNER_VENUES -> ownerVenuesScreen()
         WorkspaceScreen.OWNER_REQUESTS -> OwnerRequests()
-        WorkspaceScreen.ACCOUNT -> accountScreen(identity, onLogout)
-        WorkspaceScreen.SECTION -> BetaSectionScreen(role, route, identity.name, identity.email)
+        else -> Unit
     }
 }
 
@@ -193,6 +244,9 @@ private val CONNECTED_SCREENS: Map<DemoRole, Map<String, WorkspaceScreen>> =
                 "bookings" to WorkspaceScreen.BOOKINGS,
                 "quotes" to WorkspaceScreen.QUOTES,
                 "studio" to WorkspaceScreen.STUDIO,
+                "budget" to WorkspaceScreen.BUDGET,
+                "budgetAI" to WorkspaceScreen.BUDGET_SUGGESTION,
+                "payments" to WorkspaceScreen.PAYMENTS,
                 "assistant" to WorkspaceScreen.ASSISTANT,
             ) + EVENT_ROUTES.associateWith { WorkspaceScreen.EVENTS },
         DemoRole.OWNER to

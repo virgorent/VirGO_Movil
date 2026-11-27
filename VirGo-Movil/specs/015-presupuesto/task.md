@@ -1,21 +1,15 @@
-# Tareas — 015 Presupuesto
+# Tareas — 015 Presupuesto del evento
 
 | Campo | Valor |
 |---|---|
 | Módulo | `015-presupuesto` |
-| Versión | 1.0.0 |
-| Estado | Borrador |
-| Fecha | 2026-11-05 |
-| Rol | Cliente |
-| Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
-| Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
+| Versión | 2.0.0 |
+| Estado | Aprobado por el usuario (2026-11-27) |
+| Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
-**Estados:** ⏳ Pendiente · 🔄 En curso · ✅ Hecha (con evidencia) · ⛔ Bloqueada
-
-| ID | Tarea | Depende de | Responsable | Verificación | Estado |
-|---|---|---|---|---|---|
-| T1501 | Pantalla C25 Presupuesto y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T1502 | Pantalla C24 Presupuesto IA y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T1503 | Repositorio y casos de uso | T1501 | `dev-android` | Pruebas con MockWebServer en verde | ⏳ |
-| T1504 | Pruebas unitarias, de UI y de seguridad | T1502 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ⏳ |
-| T1505 | Integrar con la URL real y hacer la prueba de humo | Specs de API | `qa-movil` | `check.md` completo | ⏳ |
+| ID | Tarea | Estado |
+|---|---|---|
+| T01501 | Reglas de reparto con pruebas | ✅ |
+| T01502 | Red y datos del plan | ✅ |
+| T01503 | Pantallas de presupuesto y sugerencia | ✅ |
+| T01504 | Pruebas y revisión en emulador | 🔄 |

@@ -3,54 +3,46 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `018-pagos-evento` |
-| Versión | 1.0.0 |
-| Estado | Borrador |
-| Fecha | 2026-11-05 |
+| Versión | 2.0.0 |
+| Estado | Aprobado por el usuario (2026-11-27, «Aprobados, arranca»), recortado |
+| Fecha | 2026-11-27 (v1.0.0 del 2026-11-05 sustituida) |
+| Constitución | v1.2.0 |
 | Rol | Cliente |
-| Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
+| Fuente | `Checklist VirGo.md` (C26); esquema `events.externalPayments` |
 | Plan | [plan.md](plan.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
-## 1. Pantallas
+## 1. Contexto y objetivo
 
-| Código | Pantalla |
-|---|---|
-| C26 | Pagos |
+La app no cobra. El cliente lleva el registro de lo que paga por fuera (anticipo al salón, DJ, banquete) para
+saber cuánto le falta. Se guarda en `events.externalPayments` con `PATCH /events/:id` (contrato §4).
 
 ## 2. Requerimientos funcionales
 
 | ID | Requerimiento |
 |---|---|
-| RF-01 | **[C26]** Historial con fecha, concepto, monto y estado |
-| RF-02 | **[C26]** Total, pagado y saldo pendiente |
-| RF-03 | **[C26]** Registrar pagos hechos por fuera |
+| RF-01 | **[C26]** Historial con fecha, concepto, monto y estado («Pagado», «Pendiente», «Falló», «Reembolsado»), más reciente primero. |
+| RF-02 | **[C26]** Resumen: presupuesto del evento, pagado (suma `completed`), pendiente por registrar (suma `pending`) y saldo (presupuesto − pagado). |
+| RF-03 | **[C26]** «Registrar pago»: concepto (1–150), monto (> 0, máximo 2 decimales), estado y fecha (no futura). El `id` lo genera la app. |
+| RF-04 | Quitar un pago con confirmación. Cada cambio envía la lista completa. |
+| RF-05 | Si el guardado falla, la lista vuelve a como estaba y se avisa; si el backend aún no acepta el campo, «El registro de pagos llegará pronto». |
+| RF-06 | Aviso fijo: «VirGo no cobra; aquí solo registras lo que pagas por fuera». |
+| RF-07 | Sin evento: acceso a «Mi Evento». `401` cierra la sesión. Textos en `strings.xml`. |
 
-## 3. Requerimientos no funcionales
-
-| ID | Requerimiento |
-|---|---|
-| RNF-01 | **Diseño:** solo componentes de `:core:designsystem`; textos en `strings.xml` (Art. VII). |
-| RNF-02 | **Accesibilidad:** contraste AA, áreas táctiles de 48 dp y texto escalable. |
-| RNF-03 | **Seguridad:** sin datos sensibles en logs; tokens solo en `TokenStore`. |
-
-## 4. Criterios de aceptación
+## 3. Criterios de aceptación
 
 | ID | Criterio |
 |---|---|
-| CA-01 | **Dado** la pantalla C26, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-02 | **Dado** una respuesta de error de la API, **cuando** llega, **entonces** se muestra un mensaje claro, sin texto técnico. |
-| CA-03 | **Dado** que no hay conexión, **cuando** se abre la pantalla, **entonces** se muestra un estado de error con opción de reintentar. |
+| CA-01 | **Dado** pagos de $3 000 y $5 000 pagados y $2 000 pendiente con presupuesto de $150 000, **cuando** abro «Pagos», **entonces** veo pagado $8 000 y saldo $142 000. |
+| CA-02 | **Dado** un monto 0 o un concepto vacío, **cuando** guardo, **entonces** veo el error y no se envía nada. |
+| CA-03 | **Dado** que el guardado falla, **cuando** registré un pago, **entonces** la lista vuelve a como estaba. |
 
-## 5. Fuera de alcance
+## 4. Fuera de alcance
 
-- Lo que la maqueta simula (sección 7 del checklist), salvo que el spec de API lo implemente.
+- Cobrar en la app, tarjetas y comprobantes.
 
-## 6. Dependencias
+## 5. Dependencias
 
-**Endpoints que consume:**
-
-| Endpoint | Spec en el backend (`virgorent/VirGO_Backend`, `VirGo-API/specs`) |
+| Endpoint | Estado (2026-11-27) |
 |---|---|
-| `PATCH /api/v1/events/:id` | `046-patch-events-id` |
-| `GET /api/v1/bookings/:id/payments` | `071-get-bookings-id-payments` |
-
-Sin URL y JSON probados del backend, la pantalla se prueba solo con MockWebServer (Art. VIII.6).
+| `GET /api/v1/events/:id` | Falta devolver `externalPayments` (contrato §4) |
+| `PATCH /api/v1/events/:id` con `externalPayments` | **Contrato §4** |

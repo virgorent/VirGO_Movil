@@ -36,6 +36,26 @@ data class EventDto(
     val budget: Double? = null,
     val hours: Int? = null,
     val venue: EventVenueDto? = null,
+    /** Contrato §4: categoría → monto planeado. */
+    val budgetPlan: Map<String, Double>? = null,
+    /** Contrato §4: pagos hechos por fuera. */
+    val externalPayments: List<ExternalPaymentDto>? = null,
+)
+
+@Serializable
+data class ExternalPaymentDto(
+    val id: String,
+    val concept: String,
+    val amount: Double,
+    val status: String,
+    val paidAt: String? = null,
+)
+
+/** `PATCH /events/:id` parcial (contrato §4): los campos nulos no se envían. */
+@Serializable
+data class EventFinanceRequestDto(
+    val budgetPlan: Map<String, Double>? = null,
+    val externalPayments: List<ExternalPaymentDto>? = null,
 )
 
 @Serializable

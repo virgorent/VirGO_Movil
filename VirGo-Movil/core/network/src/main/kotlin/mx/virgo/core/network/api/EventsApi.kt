@@ -1,6 +1,7 @@
 package mx.virgo.core.network.api
 
 import mx.virgo.core.network.dto.EventDto
+import mx.virgo.core.network.dto.EventFinanceRequestDto
 import mx.virgo.core.network.dto.EventGuestDto
 import mx.virgo.core.network.dto.EventGuestRequestDto
 import mx.virgo.core.network.dto.EventGuestsResponseDto
@@ -36,6 +37,13 @@ interface EventsApi {
     suspend fun update(
         @Path("id") id: String,
         @Body request: EventRequestDto,
+    ): EventDto
+
+    /** Plan de presupuesto y pagos externos (`015`, `018`; contrato §4). */
+    @PATCH("api/v1/events/{id}")
+    suspend fun updateFinance(
+        @Path("id") id: String,
+        @Body request: EventFinanceRequestDto,
     ): EventDto
 }
 
