@@ -23,7 +23,7 @@ respuesta; la llave, el modelo y las reglas viven en el servidor.
 | RF-01 | **[C18]** Saludo fijo: «¡Hola! Puedo ayudarte con presupuesto, mesas, personal, invitaciones y fechas», con la etiqueta «Respuestas orientativas». |
 | RF-02 | **[C18]** Sin mensajes, cuatro sugerencias rápidas: «¿Cuánto gastar en cada cosa?», «¿Cuántos meseros necesito?», «¿Cuándo envío invitaciones?» y «¿Con cuánto tiempo reservo?». |
 | RF-03 | Campo de texto (1 a 500 caracteres, sin espacios a los lados) y botón «Enviar», desactivado si está vacío o mientras espera. |
-| RF-04 | Envía `POST /api/v1/ai/assistant` con `message`, `eventId` del primer evento si existe y los últimos 10 mensajes (`history`). |
+| RF-04 | Envía `POST /api/v1/assistant/messages` con `message`, `eventId` del primer evento si existe y los últimos 10 mensajes (`history`). |
 | RF-05 | Muestra `reply`. Si el servidor marca `uncertain: true`, la burbuja dice además «No estoy seguro; confírmalo con el salón o en Ayuda». |
 | RF-06 | `404`/`501`: «El asistente todavía no está conectado». `429`: «Espera un momento y vuelve a intentar». Red/5xx: la pregunta queda con «Reintentar». `401` cierra la sesión. |
 | RF-07 | La conversación vive solo en la pantalla (se pierde al salir); no se guarda en el dispositivo. |
@@ -54,4 +54,4 @@ respuesta; la llave, el modelo y las reglas viven en el servidor.
 | Endpoint | Estado (2026-11-27) |
 |---|---|
 | `GET /api/v1/events` | En la cadena hacia `main` |
-| `POST /api/v1/ai/assistant` | **Nuevo, en el contrato** (`docs/contrato-apis-pendientes.md`) |
+| `POST /api/v1/assistant/messages` | **Nuevo, en el contrato** (`docs/contrato-apis-pendientes.md`) |

@@ -12,7 +12,7 @@
 | Capa | Cambio |
 |---|---|
 |  | core:domain: AssistantReply y ChatMessage en AiRepository |
-|  | core:network: POST /api/v1/ai/assistant |
+|  | core:network: POST /api/v1/assistant/messages |
 |  | app ui/assistant: AssistantViewModel y pantalla de chat |
 
 ## 2. Estrategia de pruebas

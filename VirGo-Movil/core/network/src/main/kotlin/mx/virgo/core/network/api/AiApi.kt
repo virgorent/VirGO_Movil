@@ -14,7 +14,7 @@ interface AiApi {
         @Body body: IdeasRequestDto,
     ): IdeasResponseDto
 
-    @POST("api/v1/ai/assistant")
+    @POST("api/v1/assistant/messages")
     suspend fun ask(
         @Body body: AssistantRequestDto,
     ): AssistantReplyDto

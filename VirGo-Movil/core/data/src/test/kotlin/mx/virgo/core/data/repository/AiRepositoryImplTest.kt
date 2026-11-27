@@ -82,7 +82,7 @@ class AiRepositoryImplTest {
             assertTrue(reply.uncertain)
             val sent = server.takeRequest()
             assertEquals("POST", sent.method)
-            assertEquals("/api/v1/ai/assistant", sent.path)
+            assertEquals("/api/v1/assistant/messages", sent.path)
             val json = Json.parseToJsonElement(sent.body.readUtf8()).jsonObject
             assertEquals("event-1", json["eventId"]?.jsonPrimitive?.content)
             val roles = json["history"]?.jsonArray?.map { it.jsonObject["role"]?.jsonPrimitive?.content }
