@@ -1,19 +1,21 @@
-# Check — 010 Mis reservaciones
+# Check — 010 Mis reservaciones: buscar por folio y detalle
 
 | Campo | Valor |
 |---|---|
 | Módulo | `010-reservaciones` |
-| Estado del spec | Borrador |
+| Versión del spec | 2.0.0 |
+| Estado del spec | Aprobado por el usuario (2026-11-26) |
 | Revisó | — |
 
 ## 1. Criterios de aceptación
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | Prueba o captura | ⏳ |
-| CA-02 | Prueba o captura | ⏳ |
-| CA-03 | Prueba o captura | ⏳ |
-| CA-04 | Prueba o captura | ⏳ |
+| CA-01 | Prueba de `ViewModel` + MockWebServer | ⏳ |
+| CA-02 | Prueba unitaria y de UI | ⏳ |
+| CA-03 | Prueba con `404` | ⏳ |
+| CA-04 | Prueba sin conexión | ⏳ |
+| CA-05 | Prueba de UI del comprobante | ⏳ |
 
 ## 2. Pruebas
 
@@ -23,13 +25,13 @@
 | Integración | Totales: — | ⏳ |
 | UI | Totales: — | ⏳ |
 | Seguridad | — | ⏳ |
-| Mutación | Puntaje: — % | ⏳ |
 | Humo | APK contra producción | ⏳ |
 
 ## 3. PR y release
 
 - [ ] PR: enlace —
 - [ ] Una revisión aprobada.
+- [ ] Aceptación visual de `ccabrera-dev8`.
 
 ## 4. Memoria y aprendizaje
 

@@ -1,20 +1,22 @@
-# Check — 021 Favoritos, perfil y ayuda
+# Check — 021 Perfil: borrar cuenta (favoritos y ayuda, pendientes)
 
 | Campo | Valor |
 |---|---|
 | Módulo | `021-favoritos-perfil` |
-| Estado del spec | Borrador |
+| Versión del spec | 2.0.0 |
+| Estado del spec | Aprobado por el usuario (2026-11-26) |
 | Revisó | — |
 
 ## 1. Criterios de aceptación
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | Prueba o captura | ⏳ |
-| CA-02 | Prueba o captura | ⏳ |
-| CA-03 | Prueba o captura | ⏳ |
-| CA-04 | Prueba o captura | ⏳ |
-| CA-05 | Prueba o captura | ⏳ |
+| CA-01 | Prueba de `ViewModel` + MockWebServer | ⏳ |
+| CA-02 | Prueba de UI | ⏳ |
+| CA-03 | Prueba sin conexión | ⏳ |
+| CA-04 | Prueba con `401` | ⏳ |
+| CA-05 | Prueba de UI de «Explorar» | ⏳ |
+| CA-06 | Prueba de UI con `owner` y `provider` | ⏳ |
 
 ## 2. Pruebas
 
@@ -24,13 +26,13 @@
 | Integración | Totales: — | ⏳ |
 | UI | Totales: — | ⏳ |
 | Seguridad | — | ⏳ |
-| Mutación | Puntaje: — % | ⏳ |
 | Humo | APK contra producción | ⏳ |
 
 ## 3. PR y release
 
 - [ ] PR: enlace —
 - [ ] Una revisión aprobada.
+- [ ] Aceptación visual de `ccabrera-dev8`.
 
 ## 4. Memoria y aprendizaje
 
