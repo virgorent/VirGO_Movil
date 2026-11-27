@@ -161,7 +161,7 @@ internal fun SuggestionContent(
 ) {
     VirGoPageBody {
         FinanceGate(state.loading, state.failed, state.finance, actions.onEvent, actions.onRetry) { finance ->
-            AiLabel()
+            AiLabel(fromAi = false)
             Text(
                 stringResource(R.string.budget_suggestion_for, formatMxn(finance.event.budget.toDouble())),
                 style = MaterialTheme.typography.bodyMedium,

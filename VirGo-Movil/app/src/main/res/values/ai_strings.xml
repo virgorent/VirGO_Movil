@@ -26,6 +26,7 @@
     <string name="studio_staff_reset">Volver a la sugerencia</string>
     <string name="studio_staff_hint">Es una sugerencia; ajústala a tus necesidades.</string>
     <string name="studio_ai_label">Sugerencia de IA</string>
+    <string name="studio_rule_label">Sugerencia</string>
     <string name="studio_ideas_loading">Pidiendo ideas a la IA…</string>
     <string name="studio_ideas_unavailable">Las ideas con IA llegarán pronto.</string>
     <string name="studio_ideas_error">No pudimos traer las ideas. Revisa tu conexión.</string>

@@ -58,7 +58,6 @@ internal fun AssistantContent(
 ) {
     VirGoPageBody {
         Bubble(ChatMessage(stringResource(R.string.assistant_greeting), fromUser = false))
-        AiLabel()
         if (state.messages.isEmpty()) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 stringArrayResource(R.array.assistant_suggestions).forEach { question ->
@@ -66,7 +65,10 @@ internal fun AssistantContent(
                 }
             }
         }
-        state.messages.forEach { Bubble(it) }
+        state.messages.forEach { message ->
+            Bubble(message)
+            if (!message.fromUser) AiLabel()
+        }
         if (state.sending) {
             Text(stringResource(R.string.assistant_thinking), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }

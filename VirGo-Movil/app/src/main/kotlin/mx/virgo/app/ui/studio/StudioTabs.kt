@@ -84,7 +84,7 @@ internal fun StaffTab(
     state: StudioUiState,
     actions: StudioActions,
 ) {
-    AiLabel()
+    AiLabel(fromAi = false)
     VirGoCard {
         Column(Modifier.padding(horizontal = 16.dp)) {
             StaffRole.entries.forEachIndexed { index, role ->

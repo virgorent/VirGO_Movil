@@ -1117,7 +1117,7 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - El aviso de guardar de Precios aparecía en Montajes porque compartían `ViewModel`; ahora hay uno por herramienta.
   - «Secciones» marcaba «Próximamente» en pantallas ya conectadas: tenía su propia lista. Ahora usa la misma del ruteo (`isConnectedRoute`).
   - Las fechas salían en inglés con el teléfono en inglés (`formatDate`, desde `009`); ahora siempre en es-MX.
-- **Decisiones abiertas para el usuario:** (1) «Sugerencia de IA» aparece en cálculos con reglas fijas (personal, presupuesto sugerido, saludo del asistente); (2) se puede calificar el salón antes de la fecha del evento (`019` RF-01 solo excluye canceladas).
-- **Evidencia final:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL**, 555 pruebas, 0 fallas, 1 omitida.
+- **Decisiones cerradas («Sí, ambos», 2026-11-27):** (1) los cálculos con reglas fijas (personal, presupuesto sugerido) dicen «Sugerencia»; «Sugerencia de IA» queda solo en ideas y en cada respuesta del asistente (`012` v2.1, CA-06); (2) «Calificar el salón» aparece solo cuando la fecha del evento ya pasó y nunca en canceladas (`019` v2.1, CA-04, `BookingsScreensTest.reviewOnlyAfterTheEventDateAndNeverWhenCancelled`). Emulador: «Personal» dice «Sugerencia» y el comprobante de una reserva al 27 dic 2026 no muestra «Calificar el salón»; el caso de evento pasado solo queda cubierto por la prueba, porque los datos de demostración solo tienen reservas futuras.
+- **Evidencia final:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL**, 556 pruebas, 0 fallas.
 - **Pendiente:** TalkBack, aceptación visual de `ccabrera-dev8`, rol de proveedor y el PR único.
 - **Costo:** $0.

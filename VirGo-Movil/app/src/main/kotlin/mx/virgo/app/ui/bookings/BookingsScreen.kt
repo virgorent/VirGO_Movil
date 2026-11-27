@@ -23,10 +23,12 @@ import mx.virgo.core.designsystem.components.VirGoRowDivider
 import mx.virgo.core.designsystem.theme.VirGoTone
 import mx.virgo.core.domain.Booking
 import mx.virgo.core.domain.BookingStatus
+import java.time.LocalDate
 
 /**
  * «Mis reservaciones» del cliente: lista real y comprobante de cada una (009 RF-08/RF-09).
- * [reviewSlot] dibuja «Calificar el salón» (`019`) bajo el comprobante; vacío en pruebas sin Hilt.
+ * [reviewSlot] dibuja «Calificar el salón» (`019`) bajo el comprobante, solo cuando el evento ya pasó;
+ * vacío en pruebas sin Hilt.
  */
 @Composable
 fun ClientBookings(
@@ -53,6 +55,7 @@ internal fun BookingsContent(
     onRetryReceipt: (String) -> Unit = onOpen,
     folioActions: FolioSearchActions = FolioSearchActions(),
     reviewSlot: @Composable (Booking) -> Unit = {},
+    today: LocalDate = LocalDate.now(),
 ) {
     VirGoPageBody {
         val receipt = state.receipt
@@ -60,7 +63,11 @@ internal fun BookingsContent(
             FolioSearch(state, folioActions)
         }
         when {
-            receipt != null -> ReceiptFromList(receipt, onRetryReceipt, reviewSlot)
+            receipt != null ->
+                ReceiptFromList(
+                    receipt,
+                    onRetryReceipt,
+                ) { booking -> ReviewAfterEvent(booking, today, reviewSlot) }
             state.loading && state.bookings.isEmpty() ->
                 LoadingState(
                     message = stringResource(R.string.bookings_loading),
@@ -93,8 +100,7 @@ private fun ReceiptFromList(
         booking != null -> {
             BookingReceiptBody(booking, onMyBookings = null, onCatalog = null)
             ChangesNotice()
-            val venueId = booking.venueId
-            if (venueId != null && booking.status != BookingStatus.CANCELLED) reviewSlot(booking)
+            reviewSlot(booking)
         }
         receipt.failed ->
             ErrorBanner(
@@ -104,6 +110,22 @@ private fun ReceiptFromList(
             )
         else -> LoadingState()
     }
+}
+
+/** `019` RF-01 v2.1: se califica un salón con reservación no cancelada y después de la fecha del evento. */
+@Composable
+private fun ReviewAfterEvent(
+    booking: Booking,
+    today: LocalDate,
+    reviewSlot: @Composable (Booking) -> Unit,
+) {
+    val date = booking.date
+    val canReview =
+        booking.venueId != null &&
+            booking.status != BookingStatus.CANCELLED &&
+            date != null &&
+            date.isBefore(today)
+    if (canReview) reviewSlot(booking)
 }
 
 @Composable

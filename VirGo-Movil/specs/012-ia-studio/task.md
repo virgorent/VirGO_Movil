@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `012-ia-studio` |
-| Versión | 2.0.0 |
+| Versión | 2.1.0 |
 | Estado | Aprobado por el usuario (2026-11-27) |
 | Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
@@ -13,3 +13,4 @@
 | T01202 | Red y datos de ideas con IA | ✅ |
 | T01203 | Pantalla con pestañas | ✅ |
 | T01204 | Pruebas y revisión en emulador | 🔄 |
+| T01205 | (v2.1) «Sugerencia» en cálculos con reglas fijas | ✅ |

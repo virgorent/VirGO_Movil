@@ -122,16 +122,27 @@ private fun GuestsField(
     }
 }
 
-/** Etiqueta «Sugerencia de IA» (`012` RF-09). */
+/**
+ * Etiqueta de sugerencia (`012` RF-09 v2.1): «Sugerencia de IA» solo en lo que responde la IA;
+ * los cálculos con reglas fijas (personal, presupuesto sugerido) dicen «Sugerencia».
+ */
 @Composable
-internal fun AiLabel(modifier: Modifier = Modifier) {
+internal fun AiLabel(
+    modifier: Modifier = Modifier,
+    fromAi: Boolean = true,
+) {
     Row(modifier.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-        androidx.compose.material3.Icon(
-            Icons.Outlined.AutoAwesome,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
+        if (fromAi) {
+            androidx.compose.material3.Icon(
+                Icons.Outlined.AutoAwesome,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+            )
+        }
+        VirGoBadge(
+            text = stringResource(if (fromAi) R.string.studio_ai_label else R.string.studio_rule_label),
+            tone = VirGoTone.VIOLET,
         )
-        VirGoBadge(text = stringResource(R.string.studio_ai_label), tone = VirGoTone.VIOLET)
     }
 }
 

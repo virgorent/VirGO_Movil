@@ -3,8 +3,8 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `012-ia-studio` |
-| Versión | 2.0.0 |
-| Estado | Aprobado por el usuario (2026-11-27, «Aprobados, arranca»), recortado |
+| Versión | 2.1.0 |
+| Estado | Aprobado por el usuario (v2.0.0: 2026-11-27, «Aprobados, arranca», recortado; v2.1.0: 2026-11-27, «Sí, ambos») |
 | Fecha | 2026-11-27 (v1.0.0 del 2026-11-05 sustituida) |
 | Constitución | v1.2.0 |
 | Rol | Cliente |
@@ -29,7 +29,7 @@ usuario, así que se calculan en la app y funcionan desde hoy. Ideas de decoraci
 | RF-06 | **[C17]** «Ideas» pide al servidor ideas de decoración para el tipo de evento, invitados y presupuesto del evento (`POST /api/v1/ai/ideas`): título, descripción corta y costo estimado. |
 | RF-07 | **[C17]** Indicador de si la suma de ideas va dentro o por encima del 12 % del presupuesto (regla del prototipo para decoración). |
 | RF-08 | Mientras el endpoint no exista (`404`/`501`) se muestra «Las ideas con IA llegarán pronto» sin error técnico; `429`: «Espera un momento y vuelve a intentar»; red/5xx con «Reintentar». |
-| RF-09 | Todas las respuestas de IA llevan la etiqueta «Sugerencia de IA». Textos en `strings.xml`. |
+| RF-09 | **(v2.1)** Solo lo que responde la IA (ideas y respuestas del asistente) lleva «Sugerencia de IA». Los cálculos con reglas fijas (personal y presupuesto sugerido de `015`) dicen «Sugerencia», y el saludo fijo del asistente no lleva etiqueta. Textos en `strings.xml`. |
 
 ## 3. Requerimientos no funcionales
 
@@ -46,6 +46,7 @@ usuario, así que se calculan en la app y funcionan desde hoy. Ideas de decoraci
 | CA-02 | **Dado** 200 invitados, **cuando** abro «Personal», **entonces** veo 7 meseros, 2 de seguridad y 3 de limpieza con sus reglas. |
 | CA-03 | **Dado** que ajusto un valor, **cuando** toco «Volver a la sugerencia», **entonces** regresa al cálculo. |
 | CA-04 | **Dado** que el endpoint no existe, **cuando** abro «Ideas», **entonces** veo «Las ideas con IA llegarán pronto». |
+| CA-06 | **(v2.1) Dado** la pestaña «Personal», **cuando** la abro, **entonces** dice «Sugerencia» y no «Sugerencia de IA». |
 | CA-05 | **Dado** ideas que suman más del 12 % del presupuesto, **cuando** se muestran, **entonces** veo «Por encima del presupuesto de decoración». |
 
 ## 5. Fuera de alcance

@@ -1,5 +1,8 @@
 package mx.virgo.app.ui.bookings
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
@@ -11,6 +14,7 @@ import androidx.compose.ui.test.performScrollTo
 import mx.virgo.core.designsystem.theme.VirGoTheme
 import mx.virgo.core.domain.BookingField
 import mx.virgo.core.domain.BookingProblem
+import mx.virgo.core.domain.BookingStatus
 import mx.virgo.core.testing.sampleBooking
 import mx.virgo.core.testing.sampleVenueDetail
 import org.junit.Assert.assertEquals
@@ -200,5 +204,35 @@ class BookingsScreensTest {
         compose.onAllNodes(hasClickAction() and hasText("Cancelar", substring = true)).assertCountEquals(0)
         compose.onAllNodes(hasClickAction() and hasText("Reprogramar", substring = true)).assertCountEquals(0)
         compose.onAllNodes(hasText("reembolso", substring = true, ignoreCase = true)).assertCountEquals(0)
+    }
+
+    @Test
+    fun reviewOnlyAfterTheEventDateAndNeverWhenCancelled() {
+        val booking = sampleBooking()
+        val eventDay = booking.date!!
+        val shown = mutableListOf<String>()
+        var state by mutableStateOf(Triple(booking, eventDay, "mismo día"))
+        compose.setContent {
+            VirGoTheme {
+                val (current, today, label) = state
+                BookingsContent(
+                    BookingsUiState(
+                        loading = false,
+                        receipt = ReceiptState(current.id, loading = false, booking = current),
+                    ),
+                    {},
+                    {},
+                    reviewSlot = { shown += label },
+                    today = today,
+                )
+            }
+        }
+        state = Triple(booking, eventDay.minusDays(30), "antes")
+        compose.waitForIdle()
+        state = Triple(booking, eventDay.plusDays(1), "después")
+        compose.waitForIdle()
+        state = Triple(booking.copy(status = BookingStatus.CANCELLED), eventDay.plusDays(1), "cancelada")
+        compose.waitForIdle()
+        assertEquals(listOf("después"), shown.distinct())
     }
 }
