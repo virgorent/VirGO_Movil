@@ -121,6 +121,29 @@ class AuthRepositoryImplTest {
             assertTrue(body.contains("secret1"))
             assertTrue(body.contains("+525512345678"))
             assertTrue(body.contains("Ana Lopez"))
+            assertTrue(body.contains("\"role\":\"client\""))
+        }
+
+    @Test
+    fun registerSendsTheChosenRole() =
+        runTest {
+            server.enqueue(MockResponse().setResponseCode(201).setBody(REGISTER_201))
+
+            repository.register(
+                "Ana",
+                "ana@ejemplo.mx",
+                "+525512345678",
+                "secret1",
+                mx.virgo.core.domain.AccountRole.OWNER,
+            )
+
+            assertTrue(
+                server
+                    .takeRequest()
+                    .body
+                    .readUtf8()
+                    .contains("\"role\":\"owner\""),
+            )
         }
 
     @Test

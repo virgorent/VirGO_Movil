@@ -6,6 +6,8 @@ import mx.virgo.core.network.api.AuthApi
 import mx.virgo.core.network.api.FavoritesApi
 import mx.virgo.core.network.api.HealthApi
 import mx.virgo.core.network.api.NoticesApi
+import mx.virgo.core.network.api.ProvidersApi
+import mx.virgo.core.network.api.UsersApi
 import mx.virgo.core.network.api.VenuesApi
 import mx.virgo.core.network.interceptor.AuthInterceptor
 import mx.virgo.core.network.interceptor.CorrelationIdInterceptor
@@ -40,10 +42,20 @@ fun createFavoritesApi(
     client: OkHttpClient = defaultOkHttpClient(),
 ): FavoritesApi = createRetrofit(baseUrl, client).create(FavoritesApi::class.java)
 
+fun createProvidersApi(
+    baseUrl: String,
+    client: OkHttpClient = defaultOkHttpClient(),
+): ProvidersApi = createRetrofit(baseUrl, client).create(ProvidersApi::class.java)
+
 fun createNoticesApi(
     baseUrl: String,
     client: OkHttpClient = defaultOkHttpClient(),
 ): NoticesApi = createRetrofit(baseUrl, client).create(NoticesApi::class.java)
+
+fun createUsersApi(
+    baseUrl: String,
+    client: OkHttpClient = defaultOkHttpClient(),
+): UsersApi = createRetrofit(baseUrl, client).create(UsersApi::class.java)
 
 fun defaultOkHttpClient(): OkHttpClient =
     OkHttpClient
@@ -66,7 +78,7 @@ fun createOkHttpClient(
             }
         }.build()
 
-private fun createRetrofit(
+internal fun createRetrofit(
     baseUrl: String,
     client: OkHttpClient,
 ): Retrofit {

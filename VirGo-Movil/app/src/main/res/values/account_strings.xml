@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account_server_data">Datos de tu cuenta</string>
+    <string name="account_loading">Consultando tus datos…</string>
+    <string name="account_phone">Teléfono</string>
+    <string name="account_verification">Verificación</string>
+    <string name="account_role">Rol</string>
+    <string name="account_verified">Correo verificado</string>
+    <string name="account_not_verified">Sin verificar</string>
+    <string name="account_unavailable_value">No disponible</string>
+    <string name="account_no_phone">Sin teléfono registrado</string>
+    <string name="account_outdated">No pudimos actualizar tus datos desde el servidor. Mostramos los de tu sesión.</string>
+    <string name="account_retry">Reintentar</string>
+    <string name="session_end_expired">Tu sesión expiró. Inicia sesión de nuevo.</string>
+    <string name="session_end_role">No pudimos validar el rol de tu cuenta. Inicia sesión de nuevo.</string>
+    <string name="session_end_unavailable">Tu cuenta ya no está disponible.</string>
+    <string name="session_end_unconfirmed">Cerramos tu sesión en este dispositivo, pero no pudimos confirmar la revocación en el servidor.</string>
+    <string name="session_end_deleted">Tu cuenta se borró.</string>
+    <string name="session_end_delete_expired">Tu sesión expiró. Inicia sesión de nuevo para borrar tu cuenta.</string>
+    <string name="account_delete_action">Borrar mi cuenta</string>
+    <string name="account_delete_title">¿Borrar tu cuenta?</string>
+    <string name="account_delete_body">Se cerrará tu sesión en todos tus dispositivos y ya no podrás entrar con este correo. Tus reservaciones y cotizaciones se conservan para el salón con el nombre que tenían. Esta acción no se puede deshacer.</string>
+    <string name="account_delete_confirm">Borrar cuenta</string>
+    <string name="account_delete_cancel">Cancelar</string>
+    <string name="account_delete_progress">Borrando tu cuenta…</string>
+    <string name="account_delete_failed">No se pudo borrar tu cuenta. Inténtalo de nuevo.</string>
+</resources>

@@ -2,7 +2,6 @@ package mx.virgo.app
 
 import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -26,33 +25,29 @@ class NavigationTest {
 
     private fun string(resId: Int): String = ApplicationProvider.getApplicationContext<Context>().getString(resId)
 
-    private fun string(
-        resId: Int,
-        vararg args: Any,
-    ): String = ApplicationProvider.getApplicationContext<Context>().getString(resId, *args)
-
-    @Test
-    fun provisionalHomeIsTheStartDestination() {
-        compose.onNodeWithText(string(R.string.guest_brand)).assertIsDisplayed()
-        compose.onNodeWithText(string(R.string.guest_login)).assertIsDisplayed()
+    /**
+     * La app real arranca restaurando la sesión y pidiendo el catálogo a la API; con la red lenta
+     * los botones tardan. Se espera a que aparezcan en lugar de fallar al primer cuadro.
+     */
+    private fun awaitText(text: String) {
+        compose.waitUntil(STARTUP_TIMEOUT_MS) {
+            compose.onAllNodes(hasText(text), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
+        }
     }
 
     @Test
-    fun venuePreviewOpensRegisterAndBackReturnsToProvisionalHome() {
-        compose
-            .onNode(
-                hasContentDescription(value = "Fiestas", substring = true) or
-                    hasText(text = "Fiestas", substring = true),
-            ).performScrollTo()
-            .assertIsDisplayed()
-            .performClick()
-        compose.waitForIdle()
-        compose
-            .onNodeWithText(
-                string(R.string.guest_preview_see_more),
-            ).performScrollTo()
-            .assertIsDisplayed()
-            .performClick()
+    fun betaCatalogIsTheStartDestinationWithoutDemoAccess() {
+        awaitText(string(R.string.beta_login))
+        compose.onNodeWithText(string(R.string.beta_label)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.beta_login)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.unified_preview)).assertDoesNotExist()
+        compose.onNodeWithText("Cambiar rol").assertDoesNotExist()
+    }
+
+    @Test
+    fun betaCatalogOpensRegisterWithoutSelectingASampleVenue() {
+        awaitText(string(R.string.beta_register))
+        compose.onNodeWithText(string(R.string.beta_register)).performScrollTo().performClick()
         compose.waitForIdle()
 
         compose.onNodeWithText(string(R.string.register_title)).performScrollTo().assertIsDisplayed()
@@ -65,7 +60,17 @@ class NavigationTest {
             .performClick()
         compose.waitForIdle()
 
-        compose.onNodeWithText(string(R.string.guest_brand)).performScrollTo().assertIsDisplayed()
-        compose.onNodeWithText(string(R.string.guest_login)).performScrollTo().assertIsDisplayed()
+        // 035: el encabezado es fijo, fuera del área desplazable.
+        compose.onNodeWithText(string(R.string.beta_label)).assertIsDisplayed()
+        compose.onNodeWithText(string(R.string.beta_login)).performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun betaCatalogOpensRealLogin() {
+        awaitText(string(R.string.beta_login))
+        compose.onNodeWithText(string(R.string.beta_login)).performClick()
+        compose.onNodeWithText(string(R.string.login_title)).performScrollTo().assertIsDisplayed()
     }
 }
+
+private const val STARTUP_TIMEOUT_MS = 15_000L

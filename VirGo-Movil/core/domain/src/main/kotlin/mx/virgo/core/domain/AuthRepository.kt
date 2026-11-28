@@ -14,5 +14,6 @@ interface AuthRepository {
         email: String,
         phone: String,
         password: String,
+        role: AccountRole = AccountRole.CLIENT,
     ): AppResult<RegisteredUser>
 }

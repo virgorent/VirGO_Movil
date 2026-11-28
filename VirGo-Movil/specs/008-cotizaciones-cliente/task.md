@@ -3,20 +3,30 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `008-cotizaciones-cliente` |
-| Versión | 1.0.0 |
-| Estado | Borrador |
-| Fecha | 2026-11-05 |
-| Rol | Cliente |
-| Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
+| Versión | 2.1.0 |
+| Estado | Aprobado por el usuario (lote MVP, 2026-11-25). Tareas T801–T807 autorizadas por la excepción ampliada ([`excepcion-030-sin-cierre-000.md`](../../docs/diseno/excepcion-030-sin-cierre-000.md)); T808 espera el despliegue de backend. |
+| Fecha | 2026-11-25 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 
 **Estados:** ⏳ Pendiente · 🔄 En curso · ✅ Hecha (con evidencia) · ⛔ Bloqueada
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T801 | Pantalla C21 Solicitar cotización y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T802 | Pantalla C22 Mis cotizaciones y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T803 | Pantalla C7 Detalle de la cotización y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T804 | Repositorio y casos de uso | T801 | `dev-android` | Pruebas con MockWebServer en verde | ⏳ |
-| T805 | Pruebas unitarias, de UI y de seguridad | T803 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ⏳ |
-| T806 | Integrar con la URL real y hacer la prueba de humo | Specs de API | `qa-movil` | `check.md` completo | ⏳ |
+| T801 | Red: `QuotesApi` y DTOs | `000`; P-01 decidida | `dev-android` | MockWebServer: 201, 400, 401, 404, 500, timeout | ✅ |
+| T802 | Dominio: modelos, `ValidateQuoteRequestUseCase` y casos de uso | T801 | `dev-android` | Unitarias y Pitest en verde | ✅ |
+| T803 | Datos: `QuotesRepositoryImpl`, errores de campo y módulo Hilt | T801, T802 | `dev-android` | Integración con el contrato | ✅ |
+| T804 | UI C21: formulario, validación, aviso de capacidad y envío único | T803; `006` T603 | `dev-android` + `ui-designsystem` | Compose Testing CA-01–CA-04 | ✅ |
+| T805 | UI C22: lista, estados, vacío, error y actualizar | T803 | `dev-android` | Compose Testing CA-05, CA-06 | ✅ |
+| T806 | UI C7: detalle con/sin respuesta y «Reservar» hacia `009`; sección del espacio del cliente | T805 | `dev-android` | Compose Testing CA-07, CA-08; `NavigationTest` | ✅ |
+| T807 | Calidad: accesibilidad, seguridad y pipeline completo | T804–T806 | `qa-movil` | Pipeline en verde; CA-09 | ✅ |
+| T808 | Humo contra producción y cierre | T807; backend `060`/`061` desplegados | `qa-movil` | `check.md` y `memoria.md` | ⛔ |
+
+## Matriz de trazabilidad
+
+| RF | CA | Tarea |
+|---|---|---|
+| RF-01–RF-05 | CA-01, CA-02, CA-04 | T802, T804 |
+| RF-06 | CA-03, CA-04 | T803, T804 |
+| RF-07–RF-09 | CA-05, CA-06 | T805 |
+| RF-10, RF-11 | CA-07, CA-08 | T806 |
+| RF-12, RF-13 | CA-09 | T806, T807 |

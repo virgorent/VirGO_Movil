@@ -1,43 +1,50 @@
-# Plan — 024 Solicitudes y mensajes
+# Plan — 024 Solicitudes de cotización del propietario
 
 | Campo | Valor |
 |---|---|
 | Módulo | `024-propietario-solicitudes` |
-| Versión | 1.0.0 |
-| Estado | Borrador |
-| Fecha | 2026-11-05 |
-| Rol | Propietario |
-| Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
+| Versión | 2.0.0 |
+| Estado | Aprobado por el usuario (2026-11-25) |
+| Fecha | 2026-11-25 |
+| Constitución | v1.2.0 |
 | Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
 ## 1. Resumen técnico
 
-Módulo `:feature:propietariosolicitudes`, con pantallas Compose y un `ViewModel` por pantalla. Cada `ViewModel` expone un `UiState` inmutable por `StateFlow` y llama a casos de uso de `:core:domain`.
+- `:core:network`: `QuotesApi.respond(id, QuoteAnswerRequestDto)`; `QuoteDto` lee `clientName`.
+- `:core:domain`: `Quote.clientName`; `QuoteAnswer(total, deposit?, message)`, `QuoteAnswerValidator`, `QuotesRepository.respond`, `RespondQuoteUseCase`.
+- `:core:data`: `QuotesRepositoryImpl.respond`.
+- `:app`: `ui/ownerrequests/` con `OwnerRequestsViewModel` (lista, pestaña, detalle y respuesta) y `OwnerRequests` (lista con pestañas y detalle con formulario). La ruta `ownerRequests` del espacio del propietario la abre en lugar de la sección «Próximamente».
 
 ## 2. Constitution Check
 
 | Art. | Resultado | Cómo se cumple |
 |---|---|---|
-| I y II | ✅ Cumple | Spec atómico por flujo. |
-| III | ✅ Cumple | MVVM/UDF; los módulos `:feature:*` no dependen entre sí. |
-| IV | ✅ Cumple | Solo consume `/api/v1`, con Bearer y `AppError`. |
-| V | ✅ Cumple | Sin secretos ni datos sensibles en logs. |
-| VI | ✅ Cumple | Sección 3. |
-| VII | ✅ Cumple | Sistema de diseño y `strings.xml`. |
+| I | ✅ | Flujo corto: lista y responder. |
+| II | ⚠️ Excepción | `000` sin cerrar y sin URL desplegada; ver la excepción ampliada. |
+| III | ✅ | MVVM/UDF; validación en `:core:domain`. |
+| IV | ✅ | Contrato verificado en el código de backend. |
+| V | ✅ | Sin montos ni mensajes en logs. |
+| VI–XII | ✅ | Pruebas en §5; pipeline existente; memoria al cerrar. |
 
-## 3. Estrategia de pruebas
+## 3. Decisiones (ADR)
+
+| ADR | Decisión | Motivo |
+|---|---|---|
+| ADR-01 | Filtrar pestañas en el cliente sobre una sola lista | El backend no filtra por estado. |
+| ADR-02 | Montos como `BigDecimal` con hasta 2 decimales | Sin errores de redondeo. |
+| ADR-03 | `409` recarga el detalle | Otro dispositivo pudo responder antes. |
+
+## 4. Diseño
+
+`OwnerRequestsUiState(loading, failed, quotes, tab, detail)`; `RequestDetailState(quoteId, loading, quote, failed, form, fieldErrors, sending, error)`.
+
+## 5. Estrategia de pruebas
 
 | Tipo | Casos |
 |---|---|
-| Unitarias | `ViewModel` con Turbine y casos de uso |
-| Integración | Repositorio con MockWebServer: éxito, 4xx/5xx y sin conexión |
-| UI | Compose Testing de cada pantalla, con escala de fuente 2.0 |
-| Seguridad | Sin datos sensibles en logs |
-| Mutación | Pitest en casos de uso |
-| Humo | La pantalla funciona contra la URL de producción |
-
-## 4. Riesgos
-
-| Riesgo | Mitigación |
-|---|---|
-| El endpoint aún no existe | MockWebServer con el contrato del spec de API |
+| Unitarias | Validador (total, anticipo, nota), `ViewModel` (pestañas, envío único, errores, 409) |
+| Integración | MockWebServer: cuerpo de la respuesta, `200`, `400`, `403`, `404`, `409` |
+| UI | CA-01–CA-05 |
+| Accesibilidad | Barrido 320 dp/2.0 en ambos temas |
+| Humo | Responder una cotización real tras el despliegue |

@@ -1,22 +1,18 @@
-# Tareas — 017 Pendientes y recordatorios
+# Tareas — 017 Pendientes
 
 | Campo | Valor |
 |---|---|
 | Módulo | `017-pendientes` |
-| Versión | 1.0.0 |
-| Estado | Borrador |
-| Fecha | 2026-11-05 |
-| Rol | Cliente |
-| Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
+| Versión | 2.0.0 |
+| Estado | Aprobado por el usuario (2026-11-25). T1701–T1703 autorizadas por la excepción ampliada; T1704 espera el despliegue. |
+| Fecha | 2026-11-25 |
 | Spec / Plan / Check | [spec.md](spec.md) · [plan.md](plan.md) · [check.md](check.md) |
 
 **Estados:** ⏳ Pendiente · 🔄 En curso · ✅ Hecha (con evidencia) · ⛔ Bloqueada
 
 | ID | Tarea | Depende de | Responsable | Verificación | Estado |
 |---|---|---|---|---|---|
-| T1701 | Pantalla C27 Pendientes y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T1702 | Pantalla C29 Recordatorios y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T1703 | Pantalla C28 Línea de tiempo y su `ViewModel` | `000`: T017 | `dev-android` | Coincide con la maqueta; textos en `strings.xml` | ⏳ |
-| T1704 | Repositorio y casos de uso | T1701 | `dev-android` | Pruebas con MockWebServer en verde | ⏳ |
-| T1705 | Pruebas unitarias, de UI y de seguridad | T1703 | `qa-movil` | `./gradlew testDebugUnitTest` en verde | ⏳ |
-| T1706 | Integrar con la URL real y hacer la prueba de humo | Specs de API | `qa-movil` | `check.md` completo | ⏳ |
+| T1701 | Red, dominio y datos de pendientes | `007` T701 | `dev-android` | Pipeline en verde | ✅ |
+| T1702 | UI C27: grupos, marcar, formulario y eliminar | T1701 | `dev-android` | Pipeline en verde | ✅ |
+| T1703 | Calidad: pruebas, accesibilidad y pipeline | T1702 | `dev-android` | Pipeline en verde | ✅ |
+| T1704 | Humo contra producción | T1703; backend desplegado | `qa-movil` | `check.md` y `memoria.md` | ⛔ |

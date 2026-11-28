@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 023 Inicio del propietario -->
+    <string name="owner_home_greeting">Hola, %1$s</string>
+    <string name="owner_home_loading">Consultando tus salones…</string>
+    <string name="owner_home_error">No pudimos cargar tu resumen. Revisa tu conexión.</string>
+    <string name="owner_home_empty_title">Aún no tienes salones</string>
+    <string name="owner_home_empty_text">Registra tu primer salón para recibir solicitudes de cotización.</string>
+    <string name="owner_home_venues_value">%1$d de %2$d</string>
+    <string name="owner_home_venues_label">salones publicados</string>
+    <string name="owner_home_requests_label">solicitudes por responder</string>
+    <string name="owner_home_bookings_label">reservaciones próximas</string>
+    <string name="owner_home_next_title">Próximas reservaciones</string>
+    <string name="owner_home_next_empty">Todavía no hay reservaciones próximas.</string>
+    <string name="owner_home_shortcuts">Accesos</string>
+    <string name="owner_home_go_venues">Mis salones</string>
+    <string name="owner_home_go_requests">Solicitudes</string>
+    <string name="owner_home_go_calendar">Calendario</string>
+
+    <!-- 023 Calendario del propietario -->
+    <string name="owner_calendar_loading">Consultando tu calendario…</string>
+    <string name="owner_calendar_error">No pudimos cargar tu calendario. Revisa tu conexión.</string>
+    <string name="owner_calendar_days_error">No pudimos cargar los días bloqueados de este mes.</string>
+    <string name="owner_calendar_empty_title">Sin salones publicados</string>
+    <string name="owner_calendar_empty_text">El calendario muestra tus salones publicados. Publica uno para verlo aquí.</string>
+    <string name="owner_calendar_previous">Mes anterior</string>
+    <string name="owner_calendar_next">Mes siguiente</string>
+    <string name="owner_calendar_day_cd">%1$s, %2$s</string>
+    <string name="owner_calendar_status_booked">Reservado</string>
+    <string name="owner_calendar_status_blocked">Bloqueado</string>
+    <string name="owner_calendar_status_free">Libre</string>
+    <string name="owner_calendar_status_past">Ya pasó</string>
+    <string name="owner_calendar_blocked_short">Bloq.</string>
+    <string name="owner_calendar_overlap">Hay más de una reservación este día</string>
+    <string name="owner_calendar_booking_line">Folio %1$s · %2$d horas</string>
+    <string name="owner_calendar_blocked_title">Día bloqueado: %1$s</string>
+    <string name="owner_calendar_block">Bloquear este día</string>
+    <string name="owner_calendar_unblock">Desbloquear</string>
+    <string name="owner_calendar_free_past">Este día ya pasó.</string>
+    <string name="owner_calendar_block_reason">Motivo del bloqueo</string>
+    <string name="owner_calendar_block_note">Nota opcional (hasta %1$d caracteres)</string>
+    <string name="owner_calendar_block_confirm">Bloquear</string>
+    <string name="owner_calendar_block_cancel">Cancelar</string>
+    <string name="owner_calendar_reason_maintenance">Mantenimiento</string>
+    <string name="owner_calendar_reason_own_event">Evento propio</string>
+    <string name="owner_calendar_reason_other">Otro</string>
+    <string name="owner_calendar_error_not_free">Ese día ya no está libre.</string>
+    <string name="owner_calendar_error_invalid">Revisa el motivo y la nota.</string>
+    <string name="owner_calendar_error_gone">Ese salón ya no aparece en tu cuenta. Actualizamos la lista.</string>
+    <string name="owner_calendar_error_failed">No pudimos guardar el cambio. Inténtalo de nuevo.</string>
+</resources>

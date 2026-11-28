@@ -1,36 +1,15 @@
-# Check — 019 Compartir y calificar
+# Check — 019 Calificar el salón
 
 | Campo | Valor |
 |---|---|
 | Módulo | `019-compartir-calificar` |
-| Estado del spec | Borrador |
-| Revisó | — |
-
-## 1. Criterios de aceptación
+| Versión | 2.1.0 |
+| Estado | Aprobado por el usuario (2026-11-27) |
+| Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | Prueba o captura | ⏳ |
-| CA-02 | Prueba o captura | ⏳ |
-| CA-03 | Prueba o captura | ⏳ |
-| CA-04 | Prueba o captura | ⏳ |
-
-## 2. Pruebas
-
-| Tipo | Evidencia | Estado |
-|---|---|---|
-| Unitarias | Totales: — | ⏳ |
-| Integración | Totales: — | ⏳ |
-| UI | Totales: — | ⏳ |
-| Seguridad | — | ⏳ |
-| Mutación | Puntaje: — % | ⏳ |
-| Humo | APK contra producción | ⏳ |
-
-## 3. PR y release
-
-- [ ] PR: enlace —
-- [ ] Una revisión aprobada.
-
-## 4. Memoria y aprendizaje
-
-- [ ] Entrada en `memoria.md`.
+| CA-01 | — | ⏳ |
+| CA-02 | — | ⏳ |
+| CA-03 | — | ⏳ |
+| CA-04 | `BookingsScreensTest.reviewOnlyAfterTheEventDateAndNeverWhenCancelled` | ✅ |

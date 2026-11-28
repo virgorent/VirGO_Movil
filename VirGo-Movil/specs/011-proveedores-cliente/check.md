@@ -1,37 +1,15 @@
-# Check — 011 Proveedores
+# Check — 011 Proveedores para el cliente
 
 | Campo | Valor |
 |---|---|
 | Módulo | `011-proveedores-cliente` |
-| Estado del spec | Borrador |
-| Revisó | — |
-
-## 1. Criterios de aceptación
+| Versión | 2.0.0 |
+| Estado | Aprobado por el usuario (2026-11-27, «Aprobados mi hermando»), recortado |
+| Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | Prueba o captura | ⏳ |
-| CA-02 | Prueba o captura | ⏳ |
-| CA-03 | Prueba o captura | ⏳ |
-| CA-04 | Prueba o captura | ⏳ |
-| CA-05 | Prueba o captura | ⏳ |
-
-## 2. Pruebas
-
-| Tipo | Evidencia | Estado |
-|---|---|---|
-| Unitarias | Totales: — | ⏳ |
-| Integración | Totales: — | ⏳ |
-| UI | Totales: — | ⏳ |
-| Seguridad | — | ⏳ |
-| Mutación | Puntaje: — % | ⏳ |
-| Humo | APK contra producción | ⏳ |
-
-## 3. PR y release
-
-- [ ] PR: enlace —
-- [ ] Una revisión aprobada.
-
-## 4. Memoria y aprendizaje
-
-- [ ] Entrada en `memoria.md`.
+| CA-01 | `ProvidersTest.catalogFiltersByCategoryAndComparesAtMostThree`; `ProvidersRepositoryImplTest` (filtro `category`) | 🟡 Unitaria ✅ · emulador: «llegará pronto» hasta que el backend implemente el endpoint |
+| CA-02 | `ProvidersTest.catalogFiltersByCategoryAndComparesAtMostThree`, `compareHighlightsTheBestRated` | 🟡 Unitaria ✅ · emulador: «llegará pronto» hasta que el backend implemente el endpoint |
+| CA-03 | `QuoteRequestViewModel.start(QuoteTarget.provider…)` envía `targetType`; el backend aún no acepta `provider` | 🟡 Unitaria ✅ · depende del backend |
+| CA-04 | `ProvidersTest.missingEndpointSaysComingSoon`; `ProvidersRepositoryImplTest.missingEndpointIsComingSoon` | ✅ Unitaria y emulador (2026-11-27) |

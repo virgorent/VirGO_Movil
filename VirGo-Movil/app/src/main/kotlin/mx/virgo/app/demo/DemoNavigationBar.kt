@@ -1,5 +1,6 @@
 package mx.virgo.app.demo
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,19 +11,12 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Chat
-import androidx.compose.material.icons.outlined.AutoAwesome
-import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.Explore
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.RequestQuote
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import mx.virgo.app.R
 
 @Composable
@@ -40,20 +35,29 @@ internal fun DemoBottomNavigation(
     onNavigate: (String) -> Unit,
     onIndex: () -> Unit,
     systemInsets: Boolean = true,
+    indexLabel: Int = R.string.demo_all_screens,
 ) {
-    Surface(tonalElevation = DemoMetrics.barElevation) {
+    Surface(
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
         val padding = if (systemInsets) Modifier.navigationBarsPadding() else Modifier
         Column(Modifier.fillMaxWidth().then(padding)) {
             if (LocalDensity.current.fontScale >= ADAPTIVE_NAV_SCALE) {
                 DemoAdaptiveTabs(role, route, onNavigate)
             } else {
-                NavigationBar(windowInsets = WindowInsets(0)) {
+                NavigationBar(
+                    windowInsets = WindowInsets(0),
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 0.dp,
+                ) {
                     role.tabs.forEach { tab ->
                         NavigationBarItem(
                             selected = route == tab,
                             onClick = { onNavigate(tab) },
                             icon = { Icon(demoTabIcon(tab), contentDescription = null) },
                             label = { Text(stringResource(DemoDestinations.title(role, tab))) },
+                            colors = prototypeNavColors(),
                         )
                     }
                 }
@@ -62,7 +66,7 @@ internal fun DemoBottomNavigation(
                 onClick = onIndex,
                 modifier = Modifier.fillMaxWidth().heightIn(min = DemoMetrics.touchTarget),
             ) {
-                Text(stringResource(R.string.demo_all_screens))
+                Text(stringResource(indexLabel))
             }
         }
     }
@@ -94,16 +98,17 @@ private fun DemoAdaptiveTabs(
     }
 }
 
-private fun demoTabIcon(route: String): ImageVector =
-    when (route) {
-        "explore" -> Icons.Outlined.Explore
-        "favorites" -> Icons.Outlined.FavoriteBorder
-        "studio" -> Icons.Outlined.AutoAwesome
-        "event", "ownerCalendar", "providerAgenda" -> Icons.Outlined.CalendarMonth
-        "ownerRequests", "providerRequests" -> Icons.Outlined.RequestQuote
-        "messages" -> Icons.AutoMirrored.Outlined.Chat
-        "profile" -> Icons.Outlined.Person
-        else -> Icons.Outlined.Home
-    }
+private fun demoTabIcon(route: String): ImageVector = destinationIcon(route)
+
+/** Ítem activo en violeta sobre píldora `violet-soft`; inactivos en gris medio (`.bottom-nav`). */
+@Composable
+private fun prototypeNavColors() =
+    NavigationBarItemDefaults.colors(
+        selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
 
 private const val ADAPTIVE_NAV_SCALE = 1.3f

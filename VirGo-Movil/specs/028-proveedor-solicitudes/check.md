@@ -1,37 +1,13 @@
-# Check — 028 Solicitudes y mensajes
+# Check — 028 Solicitudes del proveedor
 
 | Campo | Valor |
 |---|---|
 | Módulo | `028-proveedor-solicitudes` |
-| Estado del spec | Borrador |
-| Revisó | — |
-
-## 1. Criterios de aceptación
+| Versión | 2.0.0 |
+| Estado | Aprobado por el usuario (2026-11-27, «Aprobados mi hermando»), recortado |
+| Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | Prueba o captura | ⏳ |
-| CA-02 | Prueba o captura | ⏳ |
-| CA-03 | Prueba o captura | ⏳ |
-| CA-04 | Prueba o captura | ⏳ |
-| CA-05 | Prueba o captura | ⏳ |
-
-## 2. Pruebas
-
-| Tipo | Evidencia | Estado |
-|---|---|---|
-| Unitarias | Totales: — | ⏳ |
-| Integración | Totales: — | ⏳ |
-| UI | Totales: — | ⏳ |
-| Seguridad | — | ⏳ |
-| Mutación | Puntaje: — % | ⏳ |
-| Humo | APK contra producción | ⏳ |
-
-## 3. PR y release
-
-- [ ] PR: enlace —
-- [ ] Una revisión aprobada.
-
-## 4. Memoria y aprendizaje
-
-- [ ] Entrada en `memoria.md`.
+| CA-01 | `ProviderRulesTest.conceptsStartFromPackagesAndRecalculateTheTotal`; `ProvidersTest.conceptsFillTheAnswerTotal` | ✅ |
+| CA-02 | Reusa la respuesta de `024` (`OwnerRequests`) con sus pruebas | 🟡 Unitaria ✅ · emulador: «llegará pronto» hasta que el backend implemente el endpoint |

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 014 · Mi evento -->
+    <string name="events_loading">Cargando tus eventos…</string>
+    <string name="events_error">No pudimos cargar tus eventos.</string>
+    <string name="events_empty">Aún no tienes eventos</string>
+    <string name="events_empty_hint">Crea tu evento para organizar invitados y pendientes.</string>
+    <string name="events_create">Crear evento</string>
+    <string name="events_item">%1$s · %2$s · %3$d invitados</string>
+    <string name="events_retry">Reintentar</string>
+    <string name="events_shortcuts">Organiza tu evento</string>
+    <string name="event_detail_error">No pudimos abrir el evento.</string>
+    <string name="event_days_left">Faltan %1$d días</string>
+    <string name="event_today">Es hoy</string>
+    <string name="event_tomorrow">Es mañana</string>
+    <string name="event_past">Ya pasó</string>
+    <string name="event_detail_date">Fecha</string>
+    <string name="event_detail_venue">Salón</string>
+    <string name="event_detail_guests">Invitados</string>
+    <string name="event_detail_hours">Horas</string>
+    <string name="event_detail_budget">Presupuesto</string>
+    <string name="event_detail_no_venue">Sin salón asignado</string>
+    <string name="event_action_edit">Editar evento</string>
+    <string name="event_action_guests">Invitados</string>
+    <string name="event_action_guests_hint">Lista, confirmaciones e invitación</string>
+    <string name="event_action_tasks">Pendientes</string>
+    <string name="event_action_tasks_hint">Checklist con fechas límite</string>
+    <string name="event_back">Volver</string>
+    <string name="event_kicker">Mi evento</string>
+
+    <!-- 007 · Crear y editar evento -->
+    <string name="event_form_create">Crear evento</string>
+    <string name="event_form_edit">Editar evento</string>
+    <string name="event_form_name">Nombre del evento</string>
+    <string name="event_form_type">Tipo de evento</string>
+    <string name="event_form_date">Fecha del evento</string>
+    <string name="event_form_guests">Invitados</string>
+    <string name="event_form_hours">Horas</string>
+    <string name="event_form_budget">Presupuesto en pesos</string>
+    <string name="event_form_budget_hint">Lo que piensas gastar en total, por ejemplo 150000.</string>
+    <string name="event_form_venue_kept">El salón %1$s se conserva.</string>
+    <string name="event_form_save">Guardar</string>
+    <string name="event_form_saving">Guardando…</string>
+    <string name="event_error_name_required">Escribe el nombre del evento.</string>
+    <string name="event_error_name_long">El nombre puede tener hasta %1$d caracteres.</string>
+    <string name="event_error_type_required">Elige el tipo de evento.</string>
+    <string name="event_error_date_required">Elige la fecha del evento.</string>
+    <string name="event_error_date_past">La fecha no puede estar en el pasado.</string>
+    <string name="event_error_number">Escribe un número entero, al menos 1.</string>
+    <string name="event_error_budget">Escribe el presupuesto en pesos, con hasta dos decimales.</string>
+    <string name="event_error_network">No pudimos guardar. Intenta de nuevo: lo que escribiste se conserva.</string>
+    <string name="event_error_not_found">Este evento ya no está disponible.</string>
+    <string name="event_error_rejected">VirGo no aceptó los datos. Revísalos e intenta de nuevo.</string>
+    <string name="event_error_server">Algo falló en el servidor. Intenta de nuevo en unos minutos.</string>
+
+    <!-- 016 · Invitados -->
+    <string name="guests_loading">Cargando invitados…</string>
+    <string name="guests_error">No pudimos cargar los invitados.</string>
+    <string name="guests_empty">Aún no agregas invitados</string>
+    <string name="guests_add">Agregar invitado</string>
+    <string name="guests_share">Compartir invitación</string>
+    <string name="guests_share_title">Compartir invitación</string>
+    <string name="guests_share_text">¡Te invito a %1$s! %2$s el %3$s.</string>
+    <string name="guests_share_venue">Será en %1$s.</string>
+    <string name="guests_totals">Confirmados: %1$d · Pendientes: %2$d · No asisten: %3$d</string>
+    <string name="guests_item">%1$s · %2$s</string>
+    <string name="guests_item_companions">%1$d acompañantes</string>
+    <string name="guests_item_table">Mesa %1$s</string>
+    <string name="guests_status_confirmed">Confirmado</string>
+    <string name="guests_status_pending">Pendiente</string>
+    <string name="guests_status_declined">No asiste</string>
+    <string name="guests_status_unknown">Sin respuesta</string>
+    <string name="guests_form_new">Nuevo invitado</string>
+    <string name="guests_form_edit">Editar invitado</string>
+    <string name="guests_form_name">Nombre</string>
+    <string name="guests_form_phone">Teléfono</string>
+    <string name="guests_form_companions">Acompañantes</string>
+    <string name="guests_form_table">Mesa (opcional)</string>
+    <string name="guests_form_status">Estado</string>
+    <string name="guests_form_save">Guardar invitado</string>
+    <string name="guests_form_cancel">Cancelar</string>
+    <string name="guests_error_name">Escribe el nombre, hasta %1$d caracteres.</string>
+    <string name="guests_error_phone">Escribe el teléfono, hasta %1$d caracteres.</string>
+    <string name="guests_error_companions">Escribe 0 o más acompañantes.</string>
+    <string name="guests_error_table">La mesa puede tener hasta %1$d caracteres.</string>
+    <string name="guests_delete">Eliminar</string>
+    <string name="guests_delete_title">¿Eliminar a %1$s?</string>
+    <string name="guests_delete_confirm">Eliminar</string>
+    <string name="guests_edit">Editar %1$s</string>
+
+    <!-- 017 · Pendientes -->
+    <string name="tasks_loading">Cargando pendientes…</string>
+    <string name="tasks_error">No pudimos cargar los pendientes.</string>
+    <string name="tasks_empty">Aún no agregas pendientes</string>
+    <string name="tasks_add">Agregar pendiente</string>
+    <string name="tasks_overdue">Vencidas</string>
+    <string name="tasks_upcoming">Próximas</string>
+    <string name="tasks_done">Hechas</string>
+    <string name="tasks_due">Para el %1$s</string>
+    <string name="tasks_no_date">Sin fecha</string>
+    <string name="tasks_form_new">Nuevo pendiente</string>
+    <string name="tasks_form_edit">Editar pendiente</string>
+    <string name="tasks_form_title">Qué hay que hacer</string>
+    <string name="tasks_form_due">Fecha límite</string>
+    <string name="tasks_form_save">Guardar pendiente</string>
+    <string name="tasks_error_title">Escribe el pendiente, hasta %1$d caracteres.</string>
+    <string name="tasks_error_due">Elige la fecha límite.</string>
+    <string name="tasks_delete_title">¿Eliminar «%1$s»?</string>
+    <string name="tasks_edit">Editar %1$s</string>
+</resources>

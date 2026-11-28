@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 022 · Mis salones -->
+    <string name="owner_venues_kicker">Tus espacios</string>
+    <string name="owner_venues_section">Salones registrados</string>
+    <string name="owner_venues_register">Registrar salón</string>
+    <string name="owner_venues_empty_title">Aún no registras salones</string>
+    <string name="owner_venues_empty_text">Registra tu primer salón para que los clientes lo encuentren en el catálogo.</string>
+    <string name="owner_venues_loading">Cargando tus salones…</string>
+    <string name="owner_venues_status_draft">Borrador</string>
+    <string name="owner_venues_status_review">En revisión</string>
+    <string name="owner_venues_status_published">Publicado</string>
+    <string name="owner_venues_published_message">Tu salón ya aparece en el catálogo.</string>
+    <string name="owner_venues_saved_message">Guardamos tu borrador. Puedes terminarlo cuando quieras.</string>
+    <string name="owner_venues_capacity_summary">%1$s · %2$d personas</string>
+
+    <!-- Asistente -->
+    <string name="venue_wizard_step">Paso %1$d de 3</string>
+    <string name="venue_wizard_step_details">Datos del salón</string>
+    <string name="venue_wizard_step_capacity">Capacidad y precio</string>
+    <string name="venue_wizard_step_review">Revisa y publica</string>
+    <string name="venue_wizard_next">Siguiente</string>
+    <string name="venue_wizard_back">Atrás</string>
+    <string name="venue_wizard_cancel">Cancelar</string>
+    <string name="venue_wizard_edit">Editar</string>
+    <string name="venue_wizard_save_draft">Guardar borrador</string>
+    <string name="venue_wizard_publish">Publicar</string>
+    <string name="venue_wizard_saving">Guardando…</string>
+    <string name="venue_wizard_photos_soon">Las fotos se podrán agregar pronto.</string>
+
+    <string name="venue_field_name">Nombre del salón</string>
+    <string name="venue_field_short_name">Nombre corto</string>
+    <string name="venue_field_short_name_hint">Hasta 20 caracteres; se usa en tarjetas.</string>
+    <string name="venue_field_description">Descripción</string>
+    <string name="venue_field_description_hint">Entre 20 y 2000 caracteres.</string>
+    <string name="venue_field_address">Dirección</string>
+    <string name="venue_field_zone">Zona</string>
+    <string name="venue_field_capacity">Capacidad (personas)</string>
+    <string name="venue_field_price">Precio base (MXN)</string>
+    <string name="venue_field_unit">Se cobra</string>
+    <string name="venue_unit_hour">Por hora</string>
+    <string name="venue_unit_day">Por día</string>
+    <string name="venue_field_min_hours">Horas mínimas</string>
+    <string name="venue_field_categories">Tipo de espacio</string>
+    <string name="venue_field_amenities">Amenidades</string>
+    <string name="venue_field_services">Servicios incluidos (opcional)</string>
+    <string name="venue_field_services_hint">Sepáralos con comas, por ejemplo: Mobiliario, Meseros</string>
+    <string name="venue_review_none">Sin seleccionar</string>
+    <string name="venue_review_price">%1$s MXN %2$s · mínimo %3$d h</string>
+
+    <string name="venue_error_required">Este campo es obligatorio.</string>
+    <string name="venue_error_too_short">Escribe al menos %1$d caracteres.</string>
+    <string name="venue_error_too_long">Usa como máximo %1$d caracteres.</string>
+    <string name="venue_error_zone">Elige una zona.</string>
+    <string name="venue_error_whole_number">Escribe un número entero mayor que 0.</string>
+    <string name="venue_error_price">Escribe un precio mayor que 0, con hasta 2 decimales.</string>
+    <string name="venue_error_invalid">Revisa este dato.</string>
+    <string name="venue_error_services">Cada servicio debe tener entre 1 y 100 caracteres.</string>
+    <string name="venue_error_check_fields">Revisa los campos marcados.</string>
+    <string name="venue_error_network">No pudimos conectar. Tus datos siguen aquí; intenta de nuevo.</string>
+    <string name="venue_error_forbidden">Solo las cuentas de propietario pueden registrar salones.</string>
+    <string name="venue_error_not_found">No encontramos este salón. Vuelve a «Mis salones» e inténtalo de nuevo.</string>
+    <string name="venue_error_server">Algo falló en el servidor. Intenta de nuevo.</string>
+    <string name="venue_error_retry">Reintentar</string>
+
+    <!-- Etiquetas de las listas cerradas del servidor -->
+    <string name="venue_category_salon">Salón</string>
+    <string name="venue_category_jardin">Jardín</string>
+    <string name="venue_category_terraza">Terraza</string>
+    <string name="venue_category_hacienda">Hacienda</string>
+    <string name="venue_category_rooftop">Rooftop</string>
+    <string name="venue_category_salon_eventos">Salón de eventos</string>
+</resources>

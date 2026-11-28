@@ -6,6 +6,7 @@ import mx.virgo.core.network.dto.LoginResponseDto
 import mx.virgo.core.network.dto.RegisterRequestDto
 import mx.virgo.core.network.dto.RegisterResponseDto
 import mx.virgo.core.network.dto.ResetPasswordRequestDto
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
@@ -29,4 +30,8 @@ interface AuthApi {
     suspend fun register(
         @Body body: RegisterRequestDto,
     ): RegisterResponseDto
+
+    /** El controlador responde 204 y el OpenAPI declara 200: se aceptan ambos (030 ADR-02). */
+    @POST("api/v1/auth/logout")
+    suspend fun logout(): Response<Unit>
 }

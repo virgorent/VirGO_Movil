@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 011 · Proveedores para el cliente -->
+    <string name="providers_unavailable">Los proveedores llegarán pronto.</string>
+    <string name="providers_error">No pudimos cargar esta información.</string>
+    <string name="providers_search">Buscar por nombre</string>
+    <string name="providers_all">Todos</string>
+    <string name="providers_empty">Sin proveedores en esta categoría</string>
+    <string name="providers_compare">Comparar</string>
+    <string name="providers_compare_marked">Comparando</string>
+    <string name="providers_compare_open">Comparar %1$d proveedores</string>
+    <string name="providers_compare_title">Comparar proveedores</string>
+    <string name="providers_best">Mejor calificado</string>
+    <string name="providers_price_from">desde %1$s</string>
+    <string name="providers_rating">%1$.1f ★</string>
+    <string name="providers_row_price">Precio desde</string>
+    <string name="providers_row_pricing">Cobro</string>
+    <string name="providers_row_packages">Paquetes</string>
+    <string name="providers_row_rating">Calificación</string>
+    <string name="providers_row_response">Tiempo de respuesta</string>
+    <string name="providers_row_zones">Zonas</string>
+    <string name="providers_zones">Zonas: %1$s</string>
+    <string name="providers_response">Responde en: %1$s</string>
+    <string name="providers_packages">Paquetes</string>
+    <string name="providers_quote">Cotizar</string>
+    <string name="providers_message">Enviar mensaje</string>
+    <string name="providers_reviews">Reseñas</string>
+    <string name="providers_reviews_empty">Aún no hay reseñas.</string>
+    <string name="providers_reviews_summary">%1$.1f ★ · %2$d reseñas</string>
+    <string name="providers_review_title">%1$s · %2$d ★</string>
+    <string name="provider_category_catering">Catering</string>
+    <string name="provider_category_music">Música</string>
+    <string name="provider_category_photo">Fotografía</string>
+    <string name="provider_category_decor">Decoración</string>
+    <string name="provider_category_furniture">Mobiliario</string>
+    <string name="provider_per_person">Por persona</string>
+    <string name="provider_per_event">Por evento</string>
+
+    <!-- 026 · Perfil del proveedor -->
+    <string name="provider_profile_unavailable">Tu perfil de proveedor llegará pronto.</string>
+    <string name="provider_status_published">Publicado: los clientes ya te ven.</string>
+    <string name="provider_status_draft">Borrador: publícalo para aparecer en el catálogo.</string>
+    <string name="provider_business_name">Nombre del negocio</string>
+    <string name="provider_category">Categoría</string>
+    <string name="provider_description">Descripción (mínimo 20 caracteres)</string>
+    <string name="provider_pricing">¿Cómo cobras?</string>
+    <string name="provider_response_time">Tiempo de respuesta (p. ej., «Menos de 2 h»)</string>
+    <string name="provider_packages">Paquetes</string>
+    <string name="provider_package_name">Nombre del paquete</string>
+    <string name="provider_package_price">Precio (MXN)</string>
+    <string name="provider_package_includes">Qué incluye</string>
+    <string name="provider_package_add">Agregar paquete</string>
+    <string name="provider_package_remove">Quitar</string>
+    <string name="provider_zones">Zonas de cobertura</string>
+    <string name="provider_missing">Falta este dato.</string>
+    <string name="provider_missing_packages">Agrega al menos un paquete con nombre y precio.</string>
+    <string name="provider_save">Guardar</string>
+    <string name="provider_cancel">Cancelar</string>
+    <string name="provider_publish">Publicar</string>
+    <string name="provider_saved">Guardado.</string>
+    <string name="provider_published">Publicado.</string>
+    <string name="provider_save_unavailable">Esta parte llegará pronto: el servidor todavía no la guarda.</string>
+    <string name="provider_save_failed">No pudimos guardar. Inténtalo de nuevo.</string>
+
+    <!-- 027 · Inicio y agenda -->
+    <string name="provider_agenda_unavailable">Tu agenda llegará pronto.</string>
+    <string name="provider_week">Semana del %1$s</string>
+    <string name="provider_week_previous">Semana anterior</string>
+    <string name="provider_week_next">Semana siguiente</string>
+    <string name="provider_week_empty">Sin servicios esta semana.</string>
+    <string name="provider_gig_add">Agregar servicio</string>
+    <string name="provider_gig_overlap">Se empalma con %1$s</string>
+    <string name="provider_gig_event">Evento</string>
+    <string name="provider_gig_client">Cliente</string>
+    <string name="provider_gig_place">Lugar</string>
+    <string name="provider_gig_date">Fecha (AAAA-MM-DD)</string>
+    <string name="provider_gig_start">Inicio (HH:MM)</string>
+    <string name="provider_gig_end">Fin (HH:MM)</string>
+    <string name="provider_gig_amount">Monto (opcional)</string>
+    <string name="provider_gig_invalid">Revisa el evento, la fecha y que el inicio sea antes del fin.</string>
+    <string name="provider_home_new">%1$d solicitudes nuevas</string>
+    <string name="provider_home_quotes">%1$d cotizaciones enviadas · %2$d aceptadas</string>
+    <string name="provider_home_upcoming">Próximos servicios</string>
+
+    <!-- 028 · Solicitudes -->
+    <string name="provider_concepts">Conceptos</string>
+    <string name="provider_concept_add">Agregar concepto</string>
+    <string name="provider_concept_name">Concepto</string>
+    <string name="provider_concept_quantity">Cantidad</string>
+    <string name="provider_concept_price">Precio unitario</string>
+    <string name="provider_concepts_total">Total de conceptos: %1$s</string>
+    <string name="provider_concepts_use">Usar este total</string>
+
+    <!-- 029 · Reseñas y estadísticas -->
+    <string name="provider_reviews_unavailable">Tus reseñas llegarán pronto.</string>
+    <string name="provider_stats_unavailable">Tus estadísticas llegarán pronto.</string>
+    <string name="provider_stats_months">%1$d meses</string>
+    <string name="provider_stats_row">%1$d solicitudes · %2$d aceptadas · %3$d %% conversión</string>
+</resources>

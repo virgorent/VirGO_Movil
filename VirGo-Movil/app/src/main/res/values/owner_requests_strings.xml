@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 024 · Solicitudes del propietario (P7) -->
+    <string name="requests_tab_new">Nuevas</string>
+    <string name="requests_tab_answered">Respondidas</string>
+    <string name="requests_tab_all">Todas</string>
+    <string name="requests_tabs">Filtrar solicitudes</string>
+    <string name="requests_loading">Cargando solicitudes…</string>
+    <string name="requests_error">No pudimos cargar las solicitudes.</string>
+    <string name="requests_empty_new">No tienes solicitudes nuevas</string>
+    <string name="requests_empty_answered">Aún no has respondido solicitudes</string>
+    <string name="requests_empty_all">Aún no recibes solicitudes</string>
+    <string name="requests_empty_hint">Cuando un cliente te pida una cotización, aparecerá aquí.</string>
+    <string name="requests_item">%1$s · %2$s · %3$d invitados</string>
+    <string name="requests_detail_error">No pudimos abrir la solicitud.</string>
+    <string name="requests_retry">Reintentar</string>
+
+    <!-- 024 · Responder cotización (P8) -->
+    <string name="answer_title">Tu respuesta</string>
+    <string name="answer_total">Total en pesos</string>
+    <string name="answer_total_hint">Lo que pagará el cliente por el evento, por ejemplo 48000.</string>
+    <string name="answer_deposit">Anticipo en pesos (opcional)</string>
+    <string name="answer_message">Nota para el cliente (opcional)</string>
+    <string name="answer_message_count">%1$d de %2$d caracteres</string>
+    <string name="answer_send">Enviar al cliente</string>
+    <string name="answer_sending">Enviando…</string>
+    <string name="answer_sent">Respuesta enviada. El cliente ya la ve en «Mis cotizaciones».</string>
+    <string name="answer_error_total_required">Escribe el total.</string>
+    <string name="answer_error_total_invalid">Escribe un total mayor que cero, con hasta dos decimales.</string>
+    <string name="answer_error_deposit_invalid">Escribe un anticipo válido, con hasta dos decimales.</string>
+    <string name="answer_error_deposit_above">El anticipo no puede ser mayor que el total.</string>
+    <string name="answer_error_message_long">La nota puede tener hasta %1$d caracteres.</string>
+    <string name="answer_error_network">No pudimos enviar tu respuesta. Intenta de nuevo: lo que escribiste se conserva.</string>
+    <string name="answer_error_not_found">Esta solicitud ya no está disponible.</string>
+    <string name="answer_error_forbidden">Solo el propietario del salón puede responder.</string>
+    <string name="answer_error_already">Esta solicitud ya fue respondida.</string>
+    <string name="answer_error_rejected">VirGo no aceptó la respuesta. Revisa el total.</string>
+    <string name="answer_error_server">Algo falló en el servidor. Intenta de nuevo en unos minutos.</string>
+</resources>

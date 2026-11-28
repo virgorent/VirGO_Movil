@@ -44,6 +44,8 @@ data class RegisterRequestDto(
     val email: String,
     val password: String,
     val phone: String,
+    /** `client`, `owner` o `provider` (002 RF-01; backend PR #44). Un backend sin #44 lo ignora. */
+    val role: String,
 )
 
 @Serializable

@@ -3,85 +3,48 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `025-propietario-herramientas` |
-| Versión | 1.0.0 |
-| Estado | Borrador |
-| Fecha | 2026-11-05 |
+| Versión | 2.0.0 |
+| Estado | Aprobado por el usuario (2026-11-27, «Aprobados, arranca»), recortado |
+| Fecha | 2026-11-27 (v1.0.0 del 2026-11-05 sustituida) |
+| Constitución | v1.2.0 |
 | Rol | Propietario |
-| Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
+| Fuente | `Checklist VirGo.md` (P10–P14); esquema `venues` (`price`, `setups`), `reviews`; backend `072`, `075` |
 | Plan | [plan.md](plan.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
-## 1. Pantallas
+## 1. Contexto y objetivo
 
-| Código | Pantalla |
-|---|---|
-| P6 | Mis salones |
-| P10 | Paquetes y precios |
-| P11 | Planos y montajes |
-| P12 | Pagos recibidos |
-| P13 | Estadísticas |
-| P14 | Reseñas |
-| P15 | Proveedores aliados |
+Herramientas del propietario sobre sus salones publicados. Pagos y estadísticas se calculan en la app con
+reservaciones y cotizaciones reales; precios, montajes y reseñas usan los campos del esquema (contrato §5 y §6).
+«Mis salones» y editar un salón ya existen (`022`).
 
 ## 2. Requerimientos funcionales
 
 | ID | Requerimiento |
 |---|---|
-| RF-01 | **[P6]** Lista con estado Publicado, Borrador o En revisión |
-| RF-02 | **[P6]** Editar un salón |
-| RF-03 | **[P10]** Precio base |
-| RF-04 | **[P10]** Aumento para viernes y sábado |
-| RF-05 | **[P10]** Aumento por temporada alta, con los meses a elegir |
-| RF-06 | **[P10]** Vista previa del precio que verá el cliente en fechas reales |
-| RF-07 | **[P11]** Subir el plano (JPG o PNG, máximo 5 MB) |
-| RF-08 | **[P11]** Capacidad por montaje: banquete, auditorio y coctel |
-| RF-09 | **[P11]** La IA de mesas usa la capacidad de banquete |
-| RF-10 | **[P12]** Anticipos y pagos con fecha, cliente, folio, método y estado |
-| RF-11 | **[P12]** Total recibido y lo que falta por cobrar |
-| RF-12 | **[P13]** Visitas por mes, con vista de 3 o 6 meses |
-| RF-13 | **[P13]** Solicitudes, reservaciones y porcentaje de conversión |
-| RF-14 | **[P14]** Opiniones de los clientes |
-| RF-15 | **[P14]** Responder y editar la respuesta |
-| RF-16 | **[P15]** Activar o desactivar proveedores recomendados |
-| RF-17 | **[P15]** Los activos aparecen en la ficha del salón |
+| RF-01 | **[P10] Paquetes y precios:** por salón, aumento de viernes y sábado (0–100 %), aumento de temporada alta (0–100 %) y sus meses (1–12). Vista previa del precio por hora o por día en el próximo martes, el próximo sábado y un día de temporada alta. «Guardar» envía `price` completo con `PATCH /venues/:id`. |
+| RF-02 | **[P11] Planos y montajes:** capacidad para banquete, auditorio y coctel (enteros ≥ 0), guardada en `setups` con `PATCH /venues/:id`. Subir el plano queda «Próximamente» (contrato §8). |
+| RF-03 | **[P12] Pagos recibidos:** reservaciones de sus salones con fecha, cliente, folio, anticipo y estado; total de anticipos de las confirmadas y lo pendiente de las que esperan pago. La app no cobra. |
+| RF-04 | **[P13] Estadísticas:** por mes, en vista de 3 o 6 meses, solicitudes recibidas, reservaciones y conversión (reservaciones ÷ solicitudes). Visitas fuera (078 RF-03). |
+| RF-05 | **[P14] Reseñas:** por salón, calificación promedio, número de reseñas y cada opinión con su respuesta. «Responder» o «Editar respuesta» (1–1000) con `POST /reviews/:id/reply`. |
+| RF-06 | Cuando un endpoint del contrato no existe (`404`/`501`, o `400` por un campo que el backend aún no acepta), la pantalla dice «Esta parte llegará pronto» sin error técnico. `401` cierra la sesión. Textos en `strings.xml`. |
 
-## 3. Requerimientos no funcionales
-
-| ID | Requerimiento |
-|---|---|
-| RNF-01 | **Diseño:** solo componentes de `:core:designsystem`; textos en `strings.xml` (Art. VII). |
-| RNF-02 | **Accesibilidad:** contraste AA, áreas táctiles de 48 dp y texto escalable. |
-| RNF-03 | **Seguridad:** sin datos sensibles en logs; tokens solo en `TokenStore`. |
-
-## 4. Criterios de aceptación
+## 3. Criterios de aceptación
 
 | ID | Criterio |
 |---|---|
-| CA-01 | **Dado** la pantalla P6, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-02 | **Dado** la pantalla P10, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-03 | **Dado** la pantalla P11, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-04 | **Dado** la pantalla P12, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-05 | **Dado** la pantalla P13, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-06 | **Dado** la pantalla P14, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-07 | **Dado** la pantalla P15, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-08 | **Dado** una respuesta de error de la API, **cuando** llega, **entonces** se muestra un mensaje claro, sin texto técnico. |
-| CA-09 | **Dado** que no hay conexión, **cuando** se abre la pantalla, **entonces** se muestra un estado de error con opción de reintentar. |
+| CA-01 | **Dado** $3 500 por hora, 15 % en fin de semana y 20 % en noviembre, **cuando** veo la vista previa, **entonces** el sábado cuesta $4 025 y un martes de noviembre $4 200. |
+| CA-02 | **Dado** reservaciones confirmadas y pendientes, **cuando** abro «Pagos recibidos», **entonces** los totales coinciden con sus anticipos. |
+| CA-03 | **Dado** 4 solicitudes y 1 reservación en un mes, **cuando** abro «Estadísticas», **entonces** la conversión es 25 %. |
+| CA-04 | **Dado** una reseña sin respuesta, **cuando** respondo, **entonces** se envía y aparece debajo. |
 
-## 5. Fuera de alcance
+## 4. Fuera de alcance
 
-- Lo que la maqueta simula (sección 7 del checklist), salvo que el spec de API lo implemente.
+- Visitas (078), proveedores aliados (P15) y subir el plano (contrato §8).
 
-## 6. Dependencias
+## 5. Dependencias
 
-**Endpoints que consume:**
-
-| Endpoint | Spec en el backend (`virgorent/VirGO_Backend`, `VirGo-API/specs`) |
+| Endpoint | Estado (2026-11-27) |
 |---|---|
-| `GET /api/v1/venues/mine` | `025-get-venues-mine` |
-| `PATCH /api/v1/venues/:id` | `027-patch-venues-id` |
-| `DELETE /api/v1/venues/:id` | `030-delete-venues-id` |
-| `GET /api/v1/bookings` | `066-get-bookings` |
-| `GET /api/v1/venues/:id/stats` | `078-get-venues-id-stats` |
-| `GET /api/v1/venues/:id/reviews` | `072-get-venues-id-reviews` |
-| `POST /api/v1/reviews/:id/reply` | `075-post-reviews-id-reply` |
-
-Sin URL y JSON probados del backend, la pantalla se prueba solo con MockWebServer (Art. VIII.6).
+| `GET /venues/mine`, `GET /bookings`, `GET /quotes` | En la cadena hacia `main` |
+| `PATCH /venues/:id` con `price.weekendPct`, `highSeasonPct`, `highSeasonMonths`, `setups` | **Contrato §6** |
+| `GET /venues/:id/reviews`, `POST /reviews/:id/reply` | **Contrato §5** (072, 075) |

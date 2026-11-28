@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 015 y 018 -->
+    <string name="finance_loading">Consultando tu evento…</string>
+    <string name="finance_error">No pudimos cargar tu evento. Revisa tu conexión.</string>
+    <string name="finance_no_event">Aún no tienes un evento</string>
+    <string name="finance_no_event_text">Crea tu evento para planear el presupuesto y registrar pagos.</string>
+    <string name="finance_go_event">Ir a Mi Evento</string>
+    <string name="finance_saved">Guardado.</string>
+    <string name="finance_unavailable">Esta parte llegará pronto: el servidor todavía no la guarda.</string>
+    <string name="finance_failed">No pudimos guardar. Inténtalo de nuevo.</string>
+
+    <string name="budget_total">Presupuesto</string>
+    <string name="budget_paid">Pagado</string>
+    <string name="budget_available">Disponible</string>
+    <string name="budget_planned">Total planeado: %1$s</string>
+    <string name="budget_alert_over">El plan supera tu presupuesto por %1$s.</string>
+    <string name="budget_alert_paid">Llevas el %1$d %% de tu presupuesto pagado.</string>
+    <string name="budget_no_plan">Aún no tienes un plan por categoría. Usa la sugerencia para empezar.</string>
+    <string name="budget_line">%1$s · %2$d %% del total</string>
+    <string name="budget_go_suggestion">Presupuesto sugerido</string>
+    <string name="budget_go_suggestion_hint">Reparto recomendado por categoría</string>
+    <string name="budget_go_payments">Pagos y saldo pendiente</string>
+    <string name="budget_suggestion_for">Reparto sugerido para un presupuesto de %1$s. Ajusta cualquier monto antes de aplicar.</string>
+    <string name="budget_apply">Aplicar</string>
+    <string name="budget_reset">Restablecer</string>
+    <string name="budget_cat_venue">Salón</string>
+    <string name="budget_cat_catering">Catering</string>
+    <string name="budget_cat_decoration">Decoración</string>
+    <string name="budget_cat_music">Música</string>
+    <string name="budget_cat_photography">Fotografía</string>
+    <string name="budget_cat_other">Otro</string>
+    <string name="budget_pref_food">Comida de primera</string>
+    <string name="budget_pref_decor">Mucha decoración</string>
+    <string name="budget_pref_music">Música en vivo</string>
+    <string name="budget_pref_venue">Ahorrar en salón</string>
+
+    <string name="payments_notice">VirGo no cobra; aquí solo registras lo que pagas por fuera.</string>
+    <string name="payments_pending">Pendiente</string>
+    <string name="payments_balance">Saldo</string>
+    <string name="payments_add">Registrar pago</string>
+    <string name="payments_concept">Concepto</string>
+    <string name="payments_amount">Monto en MXN</string>
+    <string name="payments_save">Guardar pago</string>
+    <string name="payments_cancel">Cancelar</string>
+    <string name="payments_empty">Todavía no registras pagos.</string>
+    <string name="payments_remove">Quitar el pago %1$s</string>
+    <string name="payments_status_completed">Pagado</string>
+    <string name="payments_status_pending">Pendiente</string>
+    <string name="payments_status_failed">Falló</string>
+    <string name="payments_status_refunded">Reembolsado</string>
+    <string name="payments_error_concept">Escribe un concepto de hasta 150 caracteres.</string>
+    <string name="payments_error_amount">Escribe un monto mayor a cero, con máximo dos decimales.</string>
+    <string name="payments_error_date">La fecha no puede ser futura.</string>
+</resources>

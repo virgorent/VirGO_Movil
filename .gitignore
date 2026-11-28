@@ -14,3 +14,6 @@ opencode.local.json
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Cuentas generadas por scripts/seed-demo.py
+*.local.txt

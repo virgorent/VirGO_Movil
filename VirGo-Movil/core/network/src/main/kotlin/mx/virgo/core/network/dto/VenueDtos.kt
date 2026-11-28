@@ -38,3 +38,22 @@ data class VenueLocationDto(
     val type: String = "Point",
     val coordinates: List<Double> = emptyList(),
 )
+
+/** Detalle de `GET /venues/:id`; tolerante a campos ausentes (006 ADR-01). */
+@Serializable
+data class VenueDetailDto(
+    val id: String,
+    val name: String,
+    val shortName: String? = null,
+    val description: String? = null,
+    val address: String? = null,
+    val zone: String? = null,
+    val capacity: Int? = null,
+    val minimumHours: Int? = null,
+    val price: VenuePriceDto? = null,
+    val categories: List<String> = emptyList(),
+    val amenities: List<String> = emptyList(),
+    val rating: VenueRatingDto? = null,
+    val verified: Boolean = false,
+    val photos: List<String> = emptyList(),
+)

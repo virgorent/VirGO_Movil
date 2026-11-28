@@ -3,71 +3,61 @@
 | Campo | Valor |
 |---|---|
 | Módulo | `012-ia-studio` |
-| Versión | 1.0.0 |
-| Estado | Borrador |
-| Fecha | 2026-11-05 |
+| Versión | 2.1.0 |
+| Estado | Aprobado por el usuario (v2.0.0: 2026-11-27, «Aprobados, arranca», recortado; v2.1.0: 2026-11-27, «Sí, ambos») |
+| Fecha | 2026-11-27 (v1.0.0 del 2026-11-05 sustituida) |
+| Constitución | v1.2.0 |
 | Rol | Cliente |
-| Fuente | `Checklist VirGo.md` y Figma «Pantallas VirGo» |
+| Fuente | `Checklist VirGo.md` (C15–C17, E43) y prototipo local «VirGo Event Management App» (`Studio.tsx`) |
 | Plan | [plan.md](plan.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
-## 1. Pantallas
+## 1. Contexto y objetivo
 
-| Código | Pantalla |
-|---|---|
-| C15 | IA Studio – Estilo |
-| E43 | IA Studio – Mesas |
-| C16 | IA Studio – Personal |
-| C17 | IA Studio – Ideas |
+«IA Studio» dice «Próximamente». Karasu integrará el modelo de IA **en el backend**; la app solo llama a un
+endpoint y nunca guarda llaves. Mesas y personal no necesitan IA: el prototipo usa reglas fijas que se muestran al
+usuario, así que se calculan en la app y funcionan desde hoy. Ideas de decoración sí depende del endpoint nuevo.
 
 ## 2. Requerimientos funcionales
 
 | ID | Requerimiento |
 |---|---|
-| RF-01 | **[C15]** Comparador antes/después con una línea que se arrastra |
-| RF-02 | **[C15]** Temas: Boda, XV Años, Neón Party y Mexicano |
-| RF-03 | **[C15]** Botón «Generar otra propuesta» |
-| RF-04 | **[E43]** Tres distribuciones: Pista al centro, Máximo aforo e Imperial |
-| RF-05 | **[E43]** Número de mesas y capacidad |
-| RF-06 | **[E43]** Aviso si los invitados no caben |
-| RF-07 | **[C16]** Meseros, seguridad y limpieza sugeridos según los invitados |
-| RF-08 | **[C16]** Muestra la regla usada para el cálculo |
-| RF-09 | **[C16]** Ajustable con − y + |
-| RF-10 | **[C17]** Ideas de decoración del tema elegido con su costo estimado |
-| RF-11 | **[C17]** Aviso si una idea rebasa el presupuesto de decoración |
-| RF-12 | **[C17]** Indicador de si vas dentro o por encima del presupuesto |
-| RF-13 | **[C17]** «Ver» muestra el desglose y ajustes sugeridos: menos horas o quitar un servicio |
-| RF-14 | **[C17]** «Guardar en Mi Evento» guarda el salón, la fecha, el estilo, la distribución y el personal |
-| RF-15 | **[C17]** Descarga del resumen del diseño |
+| RF-01 | Pestañas «Mesas», «Personal» e «Ideas». Los invitados salen del primer evento del cliente (`GET /events`); si no tiene, se capturan (1 a 2000). |
+| RF-02 | **[E43]** Tres distribuciones: Pista al centro (10 por mesa, 85 % del aforo), Máximo aforo (10, 100 %) e Imperial (12, 75 %). Muestra el número de mesas (`ceil(invitados / por mesa)`). |
+| RF-03 | **[E43]** Si el evento tiene salón con capacidad conocida, avisa «No caben en esta distribución» cuando los invitados superan la capacidad ajustada. |
+| RF-04 | **[C16]** Personal sugerido: meseros 1 por cada 30 (mínimo 2), seguridad 1 por cada 100 (mínimo 1) y limpieza 1 por cada 80 (mínimo 1). Cada fila muestra su regla y se ajusta con − y + (mínimo 0). |
+| RF-05 | **[C16]** Si se ajustó a mano, «Volver a la sugerencia» restablece los valores. Leyenda: «Es una sugerencia; ajústala a tus necesidades». No se guarda en el servidor (no hay campo). |
+| RF-06 | **[C17]** «Ideas» pide al servidor ideas de decoración para el tipo de evento, invitados y presupuesto del evento (`POST /api/v1/ai/ideas`): título, descripción corta y costo estimado. |
+| RF-07 | **[C17]** Indicador de si la suma de ideas va dentro o por encima del 12 % del presupuesto (regla del prototipo para decoración). |
+| RF-08 | Mientras el endpoint no exista (`404`/`501`) se muestra «Las ideas con IA llegarán pronto» sin error técnico; `429`: «Espera un momento y vuelve a intentar»; red/5xx con «Reintentar». |
+| RF-09 | **(v2.1)** Solo lo que responde la IA (ideas y respuestas del asistente) lleva «Sugerencia de IA». Los cálculos con reglas fijas (personal y presupuesto sugerido de `015`) dicen «Sugerencia», y el saludo fijo del asistente no lleva etiqueta. Textos en `strings.xml`. |
 
 ## 3. Requerimientos no funcionales
 
 | ID | Requerimiento |
 |---|---|
-| RNF-01 | **Diseño:** solo componentes de `:core:designsystem`; textos en `strings.xml` (Art. VII). |
-| RNF-02 | **Accesibilidad:** contraste AA, áreas táctiles de 48 dp y texto escalable. |
-| RNF-03 | **Seguridad:** sin datos sensibles en logs; tokens solo en `TokenStore`. |
+| RNF-01 | **Seguridad:** sin llaves de IA en la app; solo se envían tipo de evento, invitados y presupuesto (sin nombres ni teléfonos). |
+| RNF-02 | **Accesibilidad:** − y + con nombre («Menos meseros», «Más meseros») y 48 dp; fuente 2.0. |
 
 ## 4. Criterios de aceptación
 
 | ID | Criterio |
 |---|---|
-| CA-01 | **Dado** la pantalla C15, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-02 | **Dado** la pantalla E43, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-03 | **Dado** la pantalla C16, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-04 | **Dado** la pantalla C17, **cuando** se compara con la maqueta, **entonces** cumple todos sus requerimientos. |
-| CA-05 | **Dado** una respuesta de error de la API, **cuando** llega, **entonces** se muestra un mensaje claro, sin texto técnico. |
-| CA-06 | **Dado** que no hay conexión, **cuando** se abre la pantalla, **entonces** se muestra un estado de error con opción de reintentar. |
+| CA-01 | **Dado** 200 invitados, **cuando** abro «Mesas», **entonces** veo 20, 20 y 17 mesas. |
+| CA-02 | **Dado** 200 invitados, **cuando** abro «Personal», **entonces** veo 7 meseros, 2 de seguridad y 3 de limpieza con sus reglas. |
+| CA-03 | **Dado** que ajusto un valor, **cuando** toco «Volver a la sugerencia», **entonces** regresa al cálculo. |
+| CA-04 | **Dado** que el endpoint no existe, **cuando** abro «Ideas», **entonces** veo «Las ideas con IA llegarán pronto». |
+| CA-06 | **(v2.1) Dado** la pestaña «Personal», **cuando** la abro, **entonces** dice «Sugerencia» y no «Sugerencia de IA». |
+| CA-05 | **Dado** ideas que suman más del 12 % del presupuesto, **cuando** se muestran, **entonces** veo «Por encima del presupuesto de decoración». |
 
 ## 5. Fuera de alcance
 
-- Lo que la maqueta simula (sección 7 del checklist), salvo que el spec de API lo implemente.
+- Comparador antes/después con imagen generada (C15) y temas con foto: requieren generación de imágenes.
+- Guardar el diseño en «Mi Evento» y descargar el resumen (no hay campos en el backend).
 
 ## 6. Dependencias
 
-**Endpoints que consume:**
-
-| Endpoint | Spec en el backend (`virgorent/VirGO_Backend`, `VirGo-API/specs`) |
+| Endpoint | Estado (2026-11-27) |
 |---|---|
-| `PATCH /api/v1/events/:id` | `046-patch-events-id` |
-
-Sin URL y JSON probados del backend, la pantalla se prueba solo con MockWebServer (Art. VIII.6).
+| `GET /api/v1/events` | En la cadena hacia `main`; ya lo usa `014` |
+| `GET /api/v1/venues/:id` | En `main`; capacidad del salón |
+| `POST /api/v1/ai/ideas` | **Nuevo, en el contrato** (`docs/contrato-apis-pendientes.md`) |

@@ -1,7 +1,9 @@
 package mx.virgo.app.ui.explore
 
 import android.content.Context
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -60,6 +62,13 @@ class ExploreScreenTest {
                 ExploreScreen(viewModel = viewModel)
             }
         }
+    }
+
+    @Test
+    fun venueCardsHaveNoFavoriteHeartWhileFavoritesAreOff() {
+        setContent(exploreViewModel())
+        compose.waitForIdle()
+        compose.onAllNodes(hasContentDescription("favoritos", substring = true)).assertCountEquals(0)
     }
 
     @Test

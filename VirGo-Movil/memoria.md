@@ -914,3 +914,245 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Costo:** herramientas locales existentes; sin servicios ni dependencias nuevas.
 - **Aprendizaje:** diferenciar acciones, navegación y selección reduce competencia visual. Recompilar sin incremental resolvió los símbolos duplicados tras mover fuentes. Un fallo aislado de `NavigationTest` no se reprodujo al repetir la suite completa; causa no determinada.
 - **Pendiente:** aceptación visual del usuario y CI del nuevo head. No se declara pulido exhaustivo de todas las pantallas, TalkBack ni cierre de T014/T036. Sin fusión ni release.
+
+### 2026-11-24 · Beta integrada sin simulaciones en el recorrido normal
+
+- **Autor:** usuario + OpenCode, con revisiones automatizadas de seguridad y trazabilidad.
+- **Módulo / tareas:** `034-beta-integrada`, T3401–T3404 verificadas localmente;
+  T3405 pendiente de aceptación humana. Alcance visual autorizado explícitamente
+  en la conversación; no habilita `030` ni cierra la base.
+- **Qué se hizo:** tras comprobar #32 aprobado y fusionado, rama
+  `feat/034-beta-integrada` desde `main`. Catálogo sin muestras/mapa ilustrativo;
+  destinos por rol con estados pendientes y acciones deshabilitadas; cuenta de
+  solo lectura desde sesión, logout local explícito, sin ruta demo ni selector.
+- **Evidencia:** [informe y capturas](docs/evidencia/beta-integrada/verificacion.md);
+  pipeline completo verde en 2m21s, 60 suites/334 pruebas sin fallos. APK debug
+  instalado en emulador. SHA-256 en el informe.
+- **Decisiones:** conservar componentes históricos sin acceso desde la beta;
+  no inventar capacidades, fotos, distancias o transacciones. Recuperación sin
+  endpoint operativo presenta indisponibilidad. Perfil/logout remotos aparte.
+- **Costo:** herramientas locales; sin dependencias, servicios o permisos nuevos.
+- **Aprendizaje:** retirar solo el rótulo demo sería engañoso; se eliminaron
+  los recorridos simulados de la navegación normal. Detekt detectó un método
+  largo; se separaron componentes sin relajar reglas.
+- **Pendiente:** revisión visual exclusiva del usuario, TalkBack, tamaños y
+  navegación ampliada, CI remoto y revisión técnica antes de fusionar. Sin
+  release, cambio de versión, cuentas productivas ni despliegue backend.
+- **Entrega:** implementación subida en `1109d72`;
+  [PR #35](https://github.com/virgorent/VirGO_Movil/pull/35) en borrador,
+  asignado a `ccabrera-dev8`, sin solicitar revisores visuales adicionales.
+
+### 2026-11-25 · Lote de specs del MVP cliente
+
+- **Autor:** usuario + Claude Code.
+- **Qué se hizo:** se reescribieron a v2.0.0 los borradores `006`, `008`, `009` y `022`, y se actualizó `030` (traído del PR #33) al estado de la beta `034`. Los cinco quedan **Propuestos para aprobación** como lote MVP. Se retiraron las simulaciones de la maqueta (respuestas automáticas, tarjeta «0000», actividad de ejemplo, fotos de ejemplo).
+- **Decisiones de alcance propuestas:** reservar **sin cobro en la app** (`pending_payment`, anticipo del 30 % calculado por el servidor); detalle sin galería (no hay carga de fotos ni librería de imágenes); publicación directa del salón por el propietario; precios ocultos sin sesión.
+- **Hallazgos de contrato (backend):** `POST /quotes` y `POST /bookings` exigen `eventId` y `007` no está en el MVP; `POST /bookings` exige `quoteId`; el esquema `venues` exige `location` y `photos`; ninguna cotización pasa a «Respondida» sin `POST /quotes/:id/response` (`062`). Endpoints adicionales del MVP: `GET /venues/mine` (`025`) y `GET /bookings` (`066`).
+- **Aprobación:** el usuario aprobó el lote completo el 2026-11-25 («Apruebo el lote»).
+- **Bloqueo constitucional:** el Art. II.2 impide ejecutar tareas hasta que `000` esté cerrado **y** backend entregue la URL y el JSON de cada endpoint. Esto prevalece sobre la autorización previa de implementar contra MockWebServer; requiere cerrar `000` o una excepción temporal aprobada y registrada (precedente: `docs/diseno/excepcion-demo-urgente.md`). `030` ya cumple la segunda condición (endpoints desplegados).
+- **Pendiente:** respuestas de backend a las preguntas P-xx de cada spec; cierre de `000` (T014 TalkBack y T036) antes de implementar.
+- **Costo:** $0.
+
+### 2026-11-25 · `030-cuenta-sesion` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** excepción temporal aprobada por el usuario («Sí, registra excepción»), registrada antes de implementar en [`docs/diseno/excepcion-030-sin-cierre-000.md`](docs/diseno/excepcion-030-sin-cierre-000.md).
+- **Qué se hizo:** T3001–T3007. Perfil real desde `GET /users/me` (solo lectura, sin inventar teléfono ni verificación); logout remoto con `POST /auth/logout` (acepta 200/204; 401 = ya revocada; red/5xx/10 s → cierre local con aviso); motivos de cierre (`EXPIRED`, `REVOKED`, `ROLE_MISMATCH`, `ACCOUNT_UNAVAILABLE`, `LOGOUT_UNCONFIRMED`) mostrados una vez; rol del servidor validado contra la sesión.
+- **Evidencia:** pipeline completo **BUILD SUCCESSFUL in 4m 2s**, 63 suites / 362 pruebas sin fallos (+28). Nuevas: `AccountRepositoryImplTest` 8, `SessionViewModelTest` +8, `AccountProfileViewModelTest` 7, `AccountProfileScreenTest` 5.
+- **Aprendizaje:** consumir el motivo dentro de un `LaunchedEffect` con ese motivo como clave cancela el `showSnackbar`; el aviso se lanza en un scope independiente.
+- **Pendiente:** T3008 (humo con cuenta desechable creada por el usuario: login → perfil → logout → token anterior 401), capturas y aceptación visual; regularizar la excepción al cerrar `000`.
+
+### 2026-11-25 · `035-pulido-visual-beta` implementado
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** spec aprobado («Apruebo y amplío») y excepción ampliada en [`docs/diseno/excepcion-030-sin-cierre-000.md`](docs/diseno/excepcion-030-sin-cierre-000.md).
+- **Qué se hizo:** T3501–T3508 y T3509 salvo la aceptación visual. Componentes del lenguaje del prototipo (`VirGoPageHeader`, `VirGoRow`, `VirGoSection`, `VirGoPageBody`, tonos de `VirGoBadge`, fondo `soft`); catálogo, menú de secciones, sección sin servicio, Cuenta y espacio de trabajo rediseñados; mapa de íconos por destino.
+- **Evidencia:** pipeline aislado **BUILD SUCCESSFUL in 6m 13s**, 67 suites / 376 pruebas sin fallos (+14). Capturas `docs/evidencia/035/antes-*` y `despues-*` (393 dp, claro y oscuro).
+- **Aprendizaje:** el barrido a 320 dp/2.0 detectó un defecto real (título «Mensajes» de 12 px de ancho junto a la insignia); se resolvió apilando el contenido final. Los textos centrados daban falsos positivos al medir el nodo; ahora se mide el ancho de línea. El *kicker* se ve en mayúsculas pero expone el texto original a TalkBack y a las pruebas. Correr Gradle en `app/build/` mientras Android Studio ejecuta la app bloquea `R.jar` y deja APK truncados; el pipeline usa un *init script* que aísla el directorio de compilación.
+- **Aceptación visual:** el usuario aceptó CA-07 el 2026-11-25 («Lo acepto»).
+- **Pendiente:** CI remoto del PR #40 y fusión en orden #35 → #36 → #38 → #39 → #40.
+- **Costo:** $0.
+
+### 2026-11-25 · `022-propietario-registrar-salon` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** «Sí, amplío y dale»; ampliación registrada en [`docs/diseno/excepcion-030-sin-cierre-000.md`](docs/diseno/excepcion-030-sin-cierre-000.md) (sin `000` cerrado y sin URL desplegada).
+- **Qué se hizo:** T2201–T2207. «Mis salones» (inicio del propietario) y asistente de tres pasos: datos → capacidad y precio → revisar; guardar borrador, publicar y retomar. Spec a v2.1.0 con el contrato real (zonas por colonia, `hour`/`day`, listas cerradas, retomar desde `mine`, crear al salir de P4). Contrato verificado añadido a `006`, `008` y `009`.
+- **Evidencia:** 73 suites / 422 pruebas sin fallos (+46); humo completo contra el backend en local.
+- **Hallazgos de backend (ayuda a `VirGO_Backend`):** PR #41 (el dueño no podía responder cotizaciones; un pago del cliente quedaba validado y confirmaba la reservación; errores por campo en cotizaciones) y PR #42 (no existía forma de crear cuentas `owner`/`provider`: el registro siempre creaba `client`). Ambos hacia `feat/api-mobile-priority`, pendientes de su revisión.
+- **Aprendizaje:** `POST /venues` exige capacidad y precio, así que el borrador no puede crearse al salir de P3. `GET /venues/:id` no devuelve borradores; retomar usa `mine`, que no trae servicios, por eso el `PATCH` los omite hasta que se editan. El barrido de accesibilidad detectó que `VirGoRow` corta el subtítulo a dos líneas: el resumen usa texto sin límite.
+- **Pendiente:** T2208 (humo en producción tras desplegar y fusionar PR #42), app: enviar el rol elegido en `002` cuando backend lo acepte, aceptación del usuario. El PR no se fusiona antes del despliegue.
+- **Costo:** $0.
+
+### 2026-11-25 · `006-detalle-salon` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** «Sí, sigue con 006»; ampliación registrada en la excepción.
+- **Qué se hizo:** T601–T605. «Ver detalle» en el catálogo (visitante por navegación; cliente dentro de su espacio con `ClientExplore`). Detalle con calificación honesta, precio solo con sesión, información, tipo de espacio y amenidades; acciones según rol. Cotizar y reservar quedan deshabilitadas con aviso hasta `008`/`009`.
+- **Evidencia:** 76 suites / 442 pruebas sin fallos (+20).
+- **Aprendizaje:** `GET /venues/:id` no envía `services` ni `verified`; el DTO tolera ambos. Se creó `VenueDetailRepository` aparte para no romper los cuatro dobles de `VenueRepository`. `RegisterRoute.venueId` es un entero de las muestras antiguas: el contexto del salón se conserva por la pila de navegación.
+- **Pendiente:** T606 (humo en producción), `008`/`009` para habilitar las acciones.
+- **Costo:** $0.
+
+### 2026-11-25 · `009-reservar-pagar` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** «Sí, sigue con 009»; ampliación registrada en la excepción.
+- **Qué se hizo:** T901–T907. «Reservar» desde el detalle abre la confirmación (fecha con selector que solo permite hoy o después, horas con el mínimo del salón y aviso de que no se cobra nada); el comprobante muestra folio, total, anticipo y «Pendiente de pago» del servidor; «Mis reservaciones» con lista real y comprobante por reservación.
+- **Evidencia:** 81 suites / 474 pruebas sin fallos (+32).
+- **Aprendizaje:** la `Idempotency-Key` se guarda con el borrador y solo cambia si cambian fecha u horas: un reintento tras perder la red no duplica. El `400` de reservas no trae detalle por campo, por eso la app valida antes y muestra el rechazo junto a las horas. `NavigationTest` depende de la API real y puede fallar si la red va lenta.
+- **Hallazgo para backend:** `GET /bookings` y `/bookings/:id` exponen `idempotencyKey`, `clientId` y `payments`; conviene no devolverlos.
+- **Pendiente:** T908 (humo en producción); `008` para el camino con cotización.
+- **Costo:** $0.
+
+### 2026-11-25 · `008-cotizaciones-cliente` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** «hazlos todos de una vez»; ampliación registrada en la excepción.
+- **Qué se hizo:** T801–T807. «Solicitar cotización» desde el detalle (tipo de evento, fecha, invitados con aviso de capacidad y mensaje opcional); «Mis cotizaciones» con estados reales, vacío, error y tirar para actualizar; detalle con la respuesta del salón y «Reservar» hacia `009` con `quoteId` y fecha. El selector de fecha se extrajo a `EventDateField` y lo comparten `008` y `009`.
+- **Evidencia:** 86 suites / 510 pruebas sin fallos (+36).
+- **Aprendizaje:** el backend usa `answered`, no `responded`. Cotizaciones no tienen `Idempotency-Key`: tras un envío sin respuesta, el reintento busca una solicitud idéntica «Enviada» antes de reenviar.
+- **Hallazgos para backend:** reservar con `quoteId` no usa el total cotizado (cobra precio de lista) ni marca la cotización como `accepted`.
+- **Pendiente:** T808 (humo en producción); `024` para que el propietario responda desde la app.
+- **Costo:** $0.
+
+### 2026-11-25 · `024-propietario-solicitudes` implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** «hazlos todos de una vez tienes mi aprobacion»; spec reescrito a la v2.0.0 y registrado en la excepción.
+- **Qué se hizo:** T2401–T2404. «Solicitudes» del propietario con pestañas Nuevas, Respondidas y Todas; detalle con el cliente y formulario de respuesta (total, anticipo opcional y nota). Así las cotizaciones del `008` pueden llegar a «Respondida» desde la app.
+- **Evidencia:** 89 suites / 528 pruebas sin fallos (+18).
+- **Aprendizaje:** el backend no valida que el anticipo sea menor que el total; la app lo valida. `VirGoRow` admite `subtitleMaxLines` para datos que no deben cortarse. `NavigationTest` depende de la API real y falla cada vez más seguido: conviene aislarla con MockWebServer.
+- **Fuera de alcance:** conceptos por línea (el backend solo acepta un total) y «Mensajes», que pasa a `020`.
+- **Pendiente:** T2405 (humo en producción).
+- **Costo:** $0.
+
+### 2026-11-26 · Bloque del evento (`007`, `014`, `016`, `017`) implementado bajo excepción
+
+- **Autor:** usuario + Claude Code.
+- **Autorización:** «hazlos todos de una vez tienes mi aprobacion»; specs reescritos a la v2.0.0 y registrados en la excepción. `015` queda sin backend (solo hay un presupuesto total).
+- **Qué se hizo:** «Mi evento» con lista real, detalle (días que faltan, salón, invitados, horas y presupuesto) y accesos; crear y editar evento conservando el salón; invitados con totales por estado, alta, edición, baja con confirmación y compartir invitación por la hoja de Android; pendientes agrupados en Vencidas, Próximas y Hechas, con marcar, editar y eliminar. `NavigationTest` ahora espera al catálogo en lugar de fallar con la red lenta. `NetworkModule` se dividió (`MarketplaceNetworkModule`) por el límite de funciones.
+- **Evidencia:** 93 suites / 554 pruebas sin fallos (+26).
+- **Hallazgo importante:** el backend cerró el PR #37 y lo dividió en #38 → #39 → #40 hacia `main`; esa cadena **no incluye** `EventsController` (ni favoritos, conversaciones, proveedores, reseñas o estadísticas). Este bloque no tiene servidor hasta que el backend lo agregue. Mis correcciones se trasladaron a la cadena nueva: VirGO_Backend #44 (registro con rol) y #45 (el propietario responde cotizaciones).
+- **Pendiente:** humo en producción (T704, T1403, T1604, T1704).
+- **Costo:** $0.
+
+
+### 2026-11-26 · Reservar con cotización: total y fecha cotizados
+
+- **Autor:** usuario + Claude Code («Sí, arráncale»).
+- **Backend:** PRs VirGO_Backend #46 (reservar con `quoteId` usa el total y anticipo cotizados, exige la fecha cotizada y acepta la cotización) y #47 (las reservaciones ya no exponen `clientId` ni `idempotencyKey`), ambos sobre #40, con 223 y 221 pruebas en verde.
+- **Móvil:** al reservar desde una cotización, la confirmación muestra el total cotizado y la fecha cotizada sin selector (el servidor ahora rechaza otra fecha). 93 suites / 556 pruebas sin fallos (+2).
+
+### 2026-11-26 · Prueba local del MVP de punta a punta y rol en el registro
+
+- **Autor:** usuario + Claude Code («Sí, prueba local»).
+- **Prueba:** backend local en memoria con la cadena #38→#39→#40 más VirGO_Backend #44–#47 juntos (rama local que no se sube). Recorrido por HTTP con los mismos cuerpos que manda la app: registro con rol, salón creado y publicado, catálogo y detalle con y sin sesión, cotización con errores por campo, respuesta del dueño (y `403` para el cliente, `409` al repetir), reserva con la cotización (total y anticipo cotizados, cotización `accepted`, misma reservación con la misma clave, sin `clientId` ni `idempotencyKey`), reserva directa con precio de lista y mínimo de horas. **38/38 en verde.**
+- **Hallazgo y arreglo:** la app no mandaba el rol elegido al registrarse, así que nadie podía crear una cuenta de propietario desde la app. Ahora `RegisterRequestDto` envía `role` (002 RF-01). 93 suites / 558 pruebas sin fallos (+2).
+- **Aviso para backend:** #44 y #45 tocan el mismo archivo de pruebas (`VerticalSliceTests.cs`); al rebasar la cadena habrá un conflicto sencillo de resolver.
+
+### 2026-11-25 · Cierre técnico de T014 y alcance MVP (rescatada del PR #36)
+
+- **Autor:** usuario + Claude Code.
+- **Módulo / tareas:** `000-arquitectura-base` · T014 (revisión integral) y preparación de T036. Base **38/40**.
+- **Decisión de alcance (usuario, 2026-11-25):** MVP = flujo cliente + registro de salón: `030` cuenta/sesión, `005` explorar, `006` detalle, `008` cotizar, `009` reservar y `022` propietario registra salón. El resto de propietario y proveedor queda en «Próximamente». Se autoriza implementar el MVP contra MockWebServer con contrato acordado, sin esperar el despliegue del backend; cada spec sigue requiriendo aprobación.
+- **Qué se hizo:** `BetaAccessibilityTest` (6) barre catálogo (cargando/vacío/error/datos), menú «Secciones» y destinos de los tres roles, Cuenta, recuperación y espacio de trabajo a 320 dp/fuente 2.0 en ambos temas: texto sin cortes ni elipsis, controles ≥ 48 dp e imágenes con descripción. `DesignSystemThemeTest` suma 4 pares de texto a 4.5:1 (`primary`/`surface`, `primary`/`background`, `onSurfaceVariant`/`background`, `onBackground`/`background`). Sin defectos: no hubo cambios de producción.
+- **Evidencia:** pipeline completo **BUILD SUCCESSFUL in 3m 24s**, 61 suites / 340 pruebas sin fallos; Pitest dominio 60 % (57/95), common 33 % (1/3). Detalle en [`docs/evidencia/T014-revision-integral.md`](docs/evidencia/T014-revision-integral.md). `check.md`: CA-01, CA-07, CA-08, CA-10 y §3 con evidencia.
+- **Hallazgos:** el ruleset `main-protection` ya está **activo** en GitHub (se cierra el pendiente operativo de gobernanza). El CI del PR #35 falló una vez por red al descargar `android-all` de Robolectric; el reintento salió verde.
+- **Pendiente para cerrar `000` (T036):** TalkBack manual del usuario (6 pasos), aprobación del profesor, reconciliar P-01 (`mx.virgo.app` ya publicado en `v0.2.0` y Google Play), arranque en frío del APK actual (RNF-03) y la incoherencia de versión de la constitución (encabezado v1.2.0 frente a «vigente v1.1.1» en esta memoria).
+- **Costo:** $0.
+- **Aprendizaje:** en barridos semánticos los nodos fuera del viewport reportan límites táctiles recortados a 0 dp; se mide el tamaño sin recorte para no confundir scroll con defecto.
+
+### 2026-11-26 · Emulador, validador de Atlas y limpieza de PRs
+
+- **Autor:** usuario + Claude Code («Haz todo», «dale», «Sí, hazlo»).
+- **Emulador (Pixel_10_Pro contra el backend local con la cadena y los PRs propios):** catálogo real, registro y login de cliente y de propietario (el servidor guarda `owner`), detalle con precio, cotizar, ver la respuesta, reservar con cotización (folio `VG-2026-0001`, la cotización pasa a `accepted`), «Mi Evento» con evento, invitado y pendiente. Errores hallados y corregidos en la app (PRs #48 → #49):
+  - encabezado doble al reservar desde «Mis cotizaciones», y la flecha del detalle salía de la sección;
+  - el comprobante decía «Anticipo (30 %)» aunque el anticipo lo fija la cotización;
+  - el aviso de rol del registro decía «Sprint 3» y «verás VirGo como cliente», ya falso;
+  - en «Mi Evento», la flecha salía al catálogo desde invitados o pendientes, la casilla del pendiente no tenía nombre para TalkBack y la mesa se leía como un número suelto.
+- **Hallazgo de despliegue:** `db/schema/quotes.json` es `strict`/`error` y exige en `response` los campos `items`, `note`, `subtotal`, `tax`, `total`, `validUntil` y `answeredAt`; la API guardaba `{total, deposit, message}`. Revisión estática de los documentos que escriben los repositorios Mongo: solo fallaba la respuesta de cotización. Arreglo en VirGO_Backend #56 (con prueba de contrato código ↔ esquema); la nota de la respuesta baja a 1000 caracteres y la app lo alinea (`024` v2.0.1). **No se probó contra un MongoDB real con el validador**: no hubo Docker disponible.
+- **Ensayos:** la cadena final del backend (main + #39 + #46 + #47 + #48 + #56) se fusiona sin conflictos, con **286/286** pruebas y el recorrido HTTP en 38/38; la pila móvil entra a `main` sin conflictos (36 commits, `main` sin cambios desde que se armó).
+- **Humo:** `scripts/humo-produccion.py` (PR #50) con modo `lectura` predeterminado (no escribe), `cuentas` y `completo` (deja un salón de prueba publicado: la API no permite borrarlo). Probado en local: 3/3, 20/20 y 28/28.
+- **Estado de PRs al cierre:**
+  - Backend: #38, #40, #44 y #45 fusionados; #39 aprobado por `ccabrera-dev8` y atrás de `main`; #46, #47, #48 y #56 esperan revisión, con resumen publicado en cada uno; #53, #54 y #55 (issues #49, #50 y #52 de la revisión del #38) en verde, sin revisar; Dependabot #32–#35 cerrados por el usuario (#32 era coverlet, no .NET 11).
+  - Móvil: la pila #35 → #50 en verde; los borradores #41–#46, #48 y #49 pasaron a revisión; el título del #40 se corrigió («trae código»). Cerrados por obsoletos: #11, #22, #23, #27, #28, #29, #31, #33, #36, #37 y #38 (lo útil de #36 y #33 se rescató en #50); el usuario cerró #25 y #15. #26 (okhttp 5) abierto y en espera; #30 pendiente de decisión.
+- **Restricción de aprobación:** los PRs abiertos con la cuenta `ccabrera-dev8` no los puede aprobar `ccabrera-dev8`; necesitan la aprobación de otro miembro. La aceptación visual sigue siendo exclusiva de `ccabrera-dev8`.
+- **Roles (palabras del usuario):** «el backend lo tiene esau en sí, gafas es el de las apis». Quién aplica el validador en Atlas y quién despliega no está acordado por escrito.
+- **Pendiente:**
+  - revisión y fusión de #46, #47, #48 y #56; «Update branch» y fusión del #39;
+  - aplicar el validador en Atlas (no hay `MONGODB_URI` de producción disponible para quien lo preparó), desplegar y correr el humo;
+  - riesgos abiertos: las cotizaciones siguen exponiendo `clientId`, y dos reservas simultáneas con la misma cotización y distinta clave podrían duplicarse (#46);
+  - TalkBack manual (T014) y aceptación visual de la pila.
+- **Costo:** $0.
+
+### 2026-11-26 · Specs 010 y 021 recortados e implementados
+
+- **Autor:** usuario + Claude Code («Sí, recórtalos», «Aprobados, impleméntalos»).
+- **Recorte (PR #52):** `010` v2.0.0 queda en buscar por folio y un aviso de solo lectura; cancelar, reprogramar y reembolsos salen porque `069` no tiene controlador. `021` v2.0.0 queda en borrar cuenta (solo clientes) y ocultar el corazón de favoritos; el resto no tiene backend.
+- **Hallazgo (corregido tras el emulador):** `ExploreScreen` llamaba a `/api/v1/favorites`, que no existe en ningún backend, pero esa pantalla **no está conectada**: la pestaña «Explorar» usa el catálogo beta, sin corazón. El riesgo era latente; queda apagado con `FAVORITES_ENABLED = false` por si se conecta.
+- **Hallazgo:** `DELETE /users/me` cambia el nombre a «Cuenta eliminada» y anonimiza correo y teléfono, pero las reservaciones y cotizaciones guardan su copia del nombre. El diálogo lo dice tal cual (P-04).
+- **Evidencia:** `ktlintCheck detekt testDebugUnitTest` en verde, 583 pruebas y 0 fallas. Emulador (Pixel_10_Pro, backend local en memoria): formato inválido sin llamada; `VG-2026-0099` → 404 con su mensaje; `vg-2026-0001` → 200 y detalle con el aviso; «Cancelar» no envía nada; «Borrar cuenta» → `DELETE /users/me` 204, vuelve al inicio con «Tu cuenta se borró.» y el login viejo da 401; el propietario no ve la acción. El aviso quedaba pegado al borde derecho y se corrigió (también el aviso de `009`). Sin TalkBack todavía.
+- **Pendiente:** TalkBack y aceptación visual de `ccabrera-dev8`; humo contra producción tras el despliegue; P-01 (borrado de propietarios) y P-02 (enlace web de borrado para Google Play).
+- **Costo:** $0.
+- **Aprendizaje:** en MockWebServer, un `DISCONNECT_AT_START` encolado después de otras respuestas no da un error de red fiable (OkHttp reintenta en otra conexión); cada caso sin red va en su propia prueba.
+
+### 2026-11-27 · Lote cliente y propietario (`012`, `013`, `015`, `018`, `019`, `020`, `021` v2.1, `023`, `025`) en rama local
+
+- **Autor:** usuario + Claude Code («Aprobados, arranca»; «no hagas pr ni nada de github… mandar el pr ya con toda la app lista»).
+- **Forma de trabajo:** todo en la rama local `local/cliente-propietario-no-push`, sin subir nada; un solo PR cuando la app esté completa y el usuario lo pida.
+- **Con backend real:** inicio y calendario del propietario (`023`), precios del salón (`025`), pagos recibidos y estadísticas calculados en la app con las reservas que ya regresa la API.
+- **Contra el contrato** (`docs/contrato-apis-pendientes.md`, dicen «llegará pronto» con `404`/`501`): Estudio IA y asistente (`012`, `013`), presupuesto y pagos del evento (`015`, `018`), reseñas (`019`), mensajes (`020`), favoritos (`021` v2.1), montajes y reseñas del propietario (`025`).
+- **Fuera de alcance al recortar:** cobrar con tarjeta en la app, compartir el evento con colaboradores (C30) y proveedores aliados (P15, hasta el rol de proveedor).
+- **Hallazgos:**
+  - con `encodeDefaults=false`, el `type="venue"` por defecto de `ConversationTargetDto` no se enviaba; se marca con `@EncodeDefault`;
+  - mapear `429` en `toAppError()` rompía la recuperación de contraseña; solo se mapea en `contractCall`;
+  - favoritos usaba su propio `try/catch`, así que un `501` habría salido como error; ahora usa `contractCall`;
+  - el inicio del propietario (`023`) usa `hiltViewModel`, lo que rompía tres pruebas del espacio de trabajo sin Hilt; se inyecta con `ownerHomeScreen`, igual que `ownerVenuesScreen`.
+- **Datos de demostración:** `scripts/seed-demo.py` crea 15 usuarios (3 propietarios, 12 clientes), 12 salones, 36 cotizaciones, 12 reservas y 6 eventos; probado contra el backend local. Solo habla con localhost salvo `--permitir-remoto`; las contraseñas van a `*.local.txt`, ignorado por git. Zonas, categorías, amenidades y tipos de evento deben ser los del catálogo de la API.
+- **Evidencia:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL** el 2026-11-27: 552 pruebas en los reportes de la corrida, 0 fallas, 1 omitida. Emulador: pendiente con el usuario.
+- **Revisión en emulador (2026-11-27, «Sí, al emulador»; Pixel_10_Pro, backend local con `seed-demo.py`):** favoritos, IA Studio, asistente, presupuesto, pagos, mensajes y reseñas del cliente; inicio, calendario (bloquear y desbloquear reales: `POST`/`DELETE /blocks` 201/204), precios, montajes, pagos recibidos, estadísticas y reseñas del propietario. Errores hallados y corregidos:
+  - **«Guardado» falso en Precios y Montajes:** el backend ignora `weekendPct` y `setups`, responde `200` y no guarda nada. El repositorio ahora relee `GET /venues/mine` y, si el campo no volvió, dice «llegará pronto».
+  - **Campos numéricos que no se podían vaciar:** al borrar volvían a «0» y «15» quedaba «150»; pasaba en Precios, Montajes y Presupuesto sugerido. Ahora el campo puede quedar vacío y no deja ceros a la izquierda.
+  - El aviso de guardar de Precios aparecía en Montajes porque compartían `ViewModel`; ahora hay uno por herramienta.
+  - «Secciones» marcaba «Próximamente» en pantallas ya conectadas: tenía su propia lista. Ahora usa la misma del ruteo (`isConnectedRoute`).
+  - Las fechas salían en inglés con el teléfono en inglés (`formatDate`, desde `009`); ahora siempre en es-MX.
+- **Decisiones cerradas («Sí, ambos», 2026-11-27):** (1) los cálculos con reglas fijas (personal, presupuesto sugerido) dicen «Sugerencia»; «Sugerencia de IA» queda solo en ideas y en cada respuesta del asistente (`012` v2.1, CA-06); (2) «Calificar el salón» aparece solo cuando la fecha del evento ya pasó y nunca en canceladas (`019` v2.1, CA-04, `BookingsScreensTest.reviewOnlyAfterTheEventDateAndNeverWhenCancelled`). Emulador: «Personal» dice «Sugerencia» y el comprobante de una reserva al 27 dic 2026 no muestra «Calificar el salón»; el caso de evento pasado solo queda cubierto por la prueba, porque los datos de demostración solo tienen reservas futuras.
+- **Evidencia final:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL**, 556 pruebas, 0 fallas.
+- **Pendiente:** TalkBack, aceptación visual de `ccabrera-dev8`, rol de proveedor y el PR único.
+- **Costo:** $0.
+
+### 2026-11-27 · Aceptación visual y correcciones de navegación
+
+- **Autor:** usuario + Claude Code.
+- **Aceptación visual de `ccabrera-dev8`:** «Revisado y aprobado» (2026-11-27), sobre todas las pantallas de la rama `local/cliente-propietario-no-push` en el commit `3f3a137`. Las pantallas que cambien o se agreguen después necesitan su propio vistazo.
+- **PR único:** el usuario decide que se abre «cuando el MVP esté listo».
+- **Correcciones de navegación (bloque 1):**
+  - «Mi Evento» tiene la tarjeta «Organiza tu evento» con accesos a «Mis reservaciones», «Presupuesto» y «Pagos», que antes solo se encontraban en «Secciones».
+  - En el calendario del propietario, un día pasado sin reserva ni bloqueo dice «Ya pasó» en lugar de «Libre» y se ve atenuado.
+  - Favoritos, mientras el backend no los guarda, muestra la pantalla vacía del sistema de diseño en lugar de texto plano.
+- **Evidencia del bloque 1:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL**, 556 pruebas, 0 fallas (la prueba del calendario agrega «5 de mayo, Ya pasó» y «20 de mayo, Libre»). Emulador: «Mi Evento» abre «Mis reservaciones», «Presupuesto» y «Pagos»; el calendario de noviembre marca del 1 al 26 «Ya pasó» y del 27 en adelante «Libre»; Favoritos muestra la pantalla vacía.
+- **Bloque 2, borradores para aprobación del usuario:** `036-fotos-salones` (nuevo, v1.0.0) y los specs de proveedor `011`, `026`–`029` reescritos a v2.0.0 recortados contra los specs del backend `034`–`041`, `060`–`062` y `073`, que están especificados pero sin implementar.
+
+### 2026-11-27 · Bloques 2 y 3: fotos de salones y rol de proveedor
+
+- **Autor:** usuario + Claude Code.
+- **Aprobación:** specs `036-fotos-salones` v1.0.0 y `011`, `026`–`029` v2.0.0, «Aprobados mi hermando» (2026-11-27).
+- **Fotos (`036`):** Coil 3.3.0 en `core:designsystem`; `VirGoPhoto`, `VirGoCoverPhoto` y `VirGoPhotoPager` solo cargan URLs `https` y, si no hay foto o falla, dejan el ícono de salón. Portada en el catálogo, carrusel con indicador «n de m» en el detalle y miniatura en «Mis salones». `seed-demo.py` agrega 3 fotos por salón.
+- **Proveedor (`011`, `026`–`029`):** dominio, red (`ProvidersApi`) y repositorio contra los specs del backend `034`–`041`, `073`, que aún no están implementados: mientras respondan `404` o `501`, las pantallas dicen «llegará pronto». Cliente: catálogo por categoría, comparar hasta 3, detalle con reseñas y cotizar (`QuoteTarget.provider`, `targetType = "provider"`, que el backend todavía no acepta). Proveedor: perfil con paquetes y zonas (publicar exige todo), inicio, agenda semanal con empalmes, solicitudes con conceptos que llenan el total, reseñas y estadísticas con conversión.
+- **Detekt:** se partieron funciones largas y se agruparon callbacks (`onSubmit(publish)`, `toggleZone`) sin cambiar el comportamiento; el inicio del proveedor se inyecta en `RoleWorkspace` como el del propietario para las pruebas sin Hilt.
+- **Evidencia:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL**, 569 pruebas, 0 fallas, 1 omitida.
+- **Emulador:** pendiente para el pase único al final del MVP, por decisión del usuario («las pruebas con emulador hay que hacerlas hasta el final»).
+- **Costo:** $0.
+
+### 2026-11-27 · Pase único en emulador (bloques 1, 2 y 3)
+
+- **Autor:** usuario + Claude Code. El usuario pidió hacer todo el emulador al final («Hazlo todo en emulador al final, chingate todos los bloques»).
+- **Entorno:** Pixel_10_Pro, backend local en memoria sembrado con `seed-demo.py` (12 salones con 3 fotos cada uno y «VirGo Demo Venue» sin fotos) y una cuenta de prueba de proveedor creada en el backend local.
+- **Visitante:** el catálogo muestra la portada de cada salón y el ícono de respaldo en el salón sin fotos. El detalle muestra el carrusel: el indicador pasa de «1 de 3» a «3 de 3» y el árbol de accesibilidad anuncia «Foto 1 de 3 de Jardín Los Encinos».
+- **Cliente:** «Mi Evento» → «Organiza tu evento» con «Mis reservaciones», «Presupuesto», «Pagos» y «Proveedores»; «Proveedores» dice «Los proveedores llegarán pronto.» porque el backend aún no tiene los endpoints.
+- **Proveedor:** el inicio (0 solicitudes, sin servicios), «Mi servicio» (publicar marca cada campo faltante y el paquete; guardar dice «llegará pronto»), agenda y mensajes («llegará pronto»), solicitudes vacías, reseñas vacías y estadísticas de 3 y 6 meses cargan sin errores.
+- **Propietario:** «Mis salones» muestra la miniatura de cada salón; el calendario marca los días pasados «Ya pasó».
+- **Corrección:** el texto vacío de Solicitudes decía «a uno de tus salones publicados» también al proveedor; ahora dice «Cuando un cliente te pida una cotización, aparecerá aquí.» para ambos roles.
+- **No cubierto en emulador:** la voz de TalkBack (sí el árbol de accesibilidad que lee) y los flujos de proveedor con datos reales, que esperan los endpoints del backend `034`–`041`, `073` y que acepte `target.type = "provider"`.
+- **Pendiente:** el vistazo visual de `ccabrera-dev8` a lo nuevo (fotos y proveedor) y el PR único cuando el usuario diga que el MVP está listo.
