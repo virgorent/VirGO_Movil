@@ -21,6 +21,7 @@ import mx.virgo.app.R
 import mx.virgo.app.ui.ownervenues.venueCategoryLabel
 import mx.virgo.core.designsystem.components.VirGoBadge
 import mx.virgo.core.designsystem.components.VirGoCard
+import mx.virgo.core.designsystem.components.VirGoPhotoPager
 import mx.virgo.core.designsystem.components.VirGoRow
 import mx.virgo.core.designsystem.components.VirGoRowDivider
 import mx.virgo.core.designsystem.components.VirGoSection
@@ -38,6 +39,11 @@ internal fun VenueDetailBody(
     viewer: DetailViewer,
     actions: VenueDetailActions,
 ) {
+    VirGoPhotoPager(
+        venue.photos,
+        pageLabel = { page, total -> stringResource(R.string.venue_photo_page, page, total) },
+        photoDescription = { page, total -> stringResource(R.string.venue_photo_description, page, total, venue.name) },
+    )
     if (venue.verified) VirGoBadge(text = stringResource(R.string.venue_detail_verified), tone = VirGoTone.GREEN)
     VirGoCard {
         Column(Modifier.padding(horizontal = 16.dp)) {

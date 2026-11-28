@@ -12,6 +12,7 @@ import mx.virgo.app.ui.bookings.BookingConfirmScreen
 import mx.virgo.app.ui.favorites.FavoriteHeart
 import mx.virgo.app.ui.quotes.QuoteRequestActions
 import mx.virgo.app.ui.quotes.QuoteRequestScreen
+import mx.virgo.app.ui.quotes.QuoteTarget
 
 /**
  * Explorar del cliente con sesión: catálogo → detalle (006) → cotizar (008) o reservar (009).
@@ -34,7 +35,7 @@ fun ClientExplore(
         )
     },
     quote: @Composable (String, () -> Unit) -> Unit = { id, back ->
-        QuoteRequestScreen(id, QuoteRequestActions(onBack = back, onMyQuotes = onMyQuotes))
+        QuoteRequestScreen(QuoteTarget.venue(id), QuoteRequestActions(onBack = back, onMyQuotes = onMyQuotes))
     },
     booking: @Composable (String, () -> Unit, () -> Unit) -> Unit = { id, back, toCatalog ->
         BookingConfirmScreen(

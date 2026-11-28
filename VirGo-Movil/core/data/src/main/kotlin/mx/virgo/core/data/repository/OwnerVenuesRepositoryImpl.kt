@@ -88,6 +88,7 @@ internal fun OwnerVenueDto.toOwnerVenue(): OwnerVenue =
                 amenities = amenities.toSet(),
             ),
         status = VenueStatus.fromWire(status),
+        photos = photos,
     )
 
 private fun VenueDraft.priceRequest(): VenuePriceRequestDto =

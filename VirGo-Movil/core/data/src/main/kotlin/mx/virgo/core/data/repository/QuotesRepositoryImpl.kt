@@ -26,7 +26,7 @@ class QuotesRepositoryImpl
             safeCall {
                 val body =
                     CreateQuoteRequestDto(
-                        target = QuoteTargetDto(type = "venue", id = request.venueId),
+                        target = QuoteTargetDto(type = request.targetType, id = request.venueId),
                         eventType = requireNotNull(request.eventType).wire,
                         eventDate = requireNotNull(request.eventDate).toString(),
                         guests = requireNotNull(request.guests),
@@ -80,4 +80,5 @@ internal fun QuoteDto.toQuote(): Quote =
         responseMessage = response?.message,
         createdAt = createdAt,
         clientName = clientName.orEmpty(),
+        targetType = targetType,
     )

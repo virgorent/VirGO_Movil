@@ -1133,3 +1133,14 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
   - Favoritos, mientras el backend no los guarda, muestra la pantalla vacía del sistema de diseño en lugar de texto plano.
 - **Evidencia del bloque 1:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL**, 556 pruebas, 0 fallas (la prueba del calendario agrega «5 de mayo, Ya pasó» y «20 de mayo, Libre»). Emulador: «Mi Evento» abre «Mis reservaciones», «Presupuesto» y «Pagos»; el calendario de noviembre marca del 1 al 26 «Ya pasó» y del 27 en adelante «Libre»; Favoritos muestra la pantalla vacía.
 - **Bloque 2, borradores para aprobación del usuario:** `036-fotos-salones` (nuevo, v1.0.0) y los specs de proveedor `011`, `026`–`029` reescritos a v2.0.0 recortados contra los specs del backend `034`–`041`, `060`–`062` y `073`, que están especificados pero sin implementar.
+
+### 2026-11-27 · Bloques 2 y 3: fotos de salones y rol de proveedor
+
+- **Autor:** usuario + Claude Code.
+- **Aprobación:** specs `036-fotos-salones` v1.0.0 y `011`, `026`–`029` v2.0.0, «Aprobados mi hermando» (2026-11-27).
+- **Fotos (`036`):** Coil 3.3.0 en `core:designsystem`; `VirGoPhoto`, `VirGoCoverPhoto` y `VirGoPhotoPager` solo cargan URLs `https` y, si no hay foto o falla, dejan el ícono de salón. Portada en el catálogo, carrusel con indicador «n de m» en el detalle y miniatura en «Mis salones». `seed-demo.py` agrega 3 fotos por salón.
+- **Proveedor (`011`, `026`–`029`):** dominio, red (`ProvidersApi`) y repositorio contra los specs del backend `034`–`041`, `073`, que aún no están implementados: mientras respondan `404` o `501`, las pantallas dicen «llegará pronto». Cliente: catálogo por categoría, comparar hasta 3, detalle con reseñas y cotizar (`QuoteTarget.provider`, `targetType = "provider"`, que el backend todavía no acepta). Proveedor: perfil con paquetes y zonas (publicar exige todo), inicio, agenda semanal con empalmes, solicitudes con conceptos que llenan el total, reseñas y estadísticas con conversión.
+- **Detekt:** se partieron funciones largas y se agruparon callbacks (`onSubmit(publish)`, `toggleZone`) sin cambiar el comportamiento; el inicio del proveedor se inyecta en `RoleWorkspace` como el del propietario para las pruebas sin Hilt.
+- **Evidencia:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL**, 569 pruebas, 0 fallas, 1 omitida.
+- **Emulador:** pendiente para el pase único al final del MVP, por decisión del usuario («las pruebas con emulador hay que hacerlas hasta el final»).
+- **Costo:** $0.

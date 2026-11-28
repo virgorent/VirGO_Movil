@@ -23,6 +23,8 @@ import urllib.request
 import uuid
 from datetime import date, timedelta
 
+# Fotos libres de Lorem Picsum; la semilla fija la misma imagen en cada corrida (036 RF-07).
+PHOTO_URL = 'https://picsum.photos/seed/virgo-{slug}-{n}/1200/675'
 LOCAL_HOSTS = {'127.0.0.1', 'localhost', '[::1]', '::1', '10.0.2.2'}
 DOMAIN = 'virgo.test'
 
@@ -100,6 +102,11 @@ def day(offset):
     return str(date.today() + timedelta(days=offset))
 
 
+def photos(short):
+    slug = ''.join(ch for ch in short.lower() if ch.isalnum())
+    return [{'url': PHOTO_URL.format(slug=slug, n=n), 'order': n} for n in range(3)]
+
+
 def create_venues(api, owner_token, specs):
     venues = []
     for name, short, zone, cap, price, unit, hours, desc, amenities, category in specs:
@@ -107,6 +114,7 @@ def create_venues(api, owner_token, specs):
             'name': name, 'shortName': short, 'description': desc, 'address': f'{zone}, Querétaro', 'zone': zone,
             'capacity': cap, 'price': {'base': float(price), 'unit': unit, 'minHours': hours},
             'services': [], 'categories': [category], 'amenities': amenities,
+            'photos': photos(short),
         }, owner_token)
         api.call('POST', f"/api/v1/venues/{venue['id']}/publish", token=owner_token)
         venue['ownerToken'] = owner_token

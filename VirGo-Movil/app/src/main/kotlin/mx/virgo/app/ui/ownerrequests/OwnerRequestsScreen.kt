@@ -37,7 +37,11 @@ import mx.virgo.core.domain.Quote
 
 /** «Solicitudes» del propietario: lista por estado y responder (024). */
 @Composable
-fun OwnerRequests(viewModel: OwnerRequestsViewModel = hiltViewModel()) {
+fun OwnerRequests(
+    viewModel: OwnerRequestsViewModel = hiltViewModel(),
+    /** Ayuda arriba del total; el proveedor arma ahí sus conceptos (`028` RF-02). */
+    answerHelper: (@Composable (AnswerForm, (AnswerForm) -> Unit) -> Unit)? = null,
+) {
     val state by viewModel.state.collectAsState()
     if (state.detail != null) BackHandler(onBack = viewModel::closeDetail)
     OwnerRequestsContent(
@@ -50,6 +54,7 @@ fun OwnerRequests(viewModel: OwnerRequestsViewModel = hiltViewModel()) {
             onForm = viewModel::updateForm,
             onSend = viewModel::send,
         ),
+        answerHelper,
     )
 }
 
@@ -58,10 +63,11 @@ fun OwnerRequests(viewModel: OwnerRequestsViewModel = hiltViewModel()) {
 internal fun OwnerRequestsContent(
     state: OwnerRequestsUiState,
     actions: OwnerRequestsActions,
+    answerHelper: (@Composable (AnswerForm, (AnswerForm) -> Unit) -> Unit)? = null,
 ) {
     val detail = state.detail
     if (detail != null) {
-        VirGoPageBody { RequestDetail(detail, actions) }
+        VirGoPageBody { RequestDetail(detail, actions, answerHelper) }
         return
     }
     PullToRefreshBox(isRefreshing = state.loading && state.quotes.isNotEmpty(), onRefresh = actions.onRetry) {
@@ -145,10 +151,11 @@ private fun RequestList(
 private fun RequestDetail(
     detail: RequestDetailState,
     actions: OwnerRequestsActions,
+    answerHelper: (@Composable (AnswerForm, (AnswerForm) -> Unit) -> Unit)?,
 ) {
     val quote = detail.quote
     when {
-        quote != null -> AnswerSection(quote, detail, actions)
+        quote != null -> AnswerSection(quote, detail, actions, answerHelper)
         detail.failed ->
             ErrorBanner(
                 message = stringResource(R.string.requests_detail_error),

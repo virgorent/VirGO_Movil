@@ -45,6 +45,7 @@ data class QuoteDto(
     val id: String,
     val clientName: String? = null,
     val targetId: String? = null,
+    val targetType: String? = null,
     val targetName: String? = null,
     val eventType: String? = null,
     val eventDate: String? = null,

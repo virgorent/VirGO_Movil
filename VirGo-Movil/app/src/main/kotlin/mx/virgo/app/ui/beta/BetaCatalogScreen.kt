@@ -34,7 +34,7 @@ import mx.virgo.app.R
 import mx.virgo.core.designsystem.components.EmptyState
 import mx.virgo.core.designsystem.components.VirGoButton
 import mx.virgo.core.designsystem.components.VirGoCard
-import mx.virgo.core.designsystem.components.VirGoIconBubble
+import mx.virgo.core.designsystem.components.VirGoCoverPhoto
 import mx.virgo.core.designsystem.components.VirGoOutlinedButton
 import mx.virgo.core.designsystem.components.VirGoPageHeader
 import mx.virgo.core.designsystem.theme.pageBackground
@@ -158,12 +158,11 @@ private fun BetaVenueCard(
 ) {
     VirGoCard(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                VirGoIconBubble(Icons.Outlined.Storefront, size = VENUE_ICON_DP)
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(venue.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    venue.zone?.takeIf { it.isNotBlank() }?.let { VenueFact(Icons.Outlined.Place, it) }
-                }
+            // 036 RF-01: portada decorativa; el nombre ya lo lee la tarjeta.
+            VirGoCoverPhoto(venue.photos.firstOrNull(), contentDescription = null)
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(venue.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                venue.zone?.takeIf { it.isNotBlank() }?.let { VenueFact(Icons.Outlined.Place, it) }
             }
             if (venue.capacity > 0) {
                 VenueFact(Icons.Outlined.Groups, stringResource(R.string.beta_capacity, venue.capacity))
@@ -193,5 +192,3 @@ private fun VenueFact(
         Text(text, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
-
-private const val VENUE_ICON_DP = 44

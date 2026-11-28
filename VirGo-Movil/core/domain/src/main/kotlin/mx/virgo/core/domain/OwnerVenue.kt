@@ -65,6 +65,7 @@ data class OwnerVenue(
     val id: String,
     val draft: VenueDraft,
     val status: VenueStatus,
+    val photos: List<String> = emptyList(),
 )
 
 interface OwnerVenuesRepository {

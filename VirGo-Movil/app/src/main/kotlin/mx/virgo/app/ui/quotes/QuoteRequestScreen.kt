@@ -44,14 +44,14 @@ import mx.virgo.core.domain.QuoteField
 import mx.virgo.core.domain.QuoteProblem
 import mx.virgo.core.domain.QuoteValidator
 
-/** C21: pide una cotización al salón con los datos del evento (008 RF-01–RF-06). */
+/** Solicitud a un salón (`008`) o a un proveedor (`011` RF-04). */
 @Composable
 fun QuoteRequestScreen(
-    venueId: String,
+    target: QuoteTarget,
     actions: QuoteRequestActions,
     viewModel: QuoteRequestViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(venueId) { viewModel.start(venueId) }
+    LaunchedEffect(target) { viewModel.start(target) }
     val state by viewModel.state.collectAsState()
     QuoteRequestContent(
         state,
@@ -113,8 +113,9 @@ private fun RequestForm(
     state: QuoteRequestUiState,
     actions: QuoteRequestActions,
 ) {
-    val venue = state.venue ?: return
-    Text(venue.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+    val venue = state.venue
+    val name = venue?.name ?: state.draft.targetName ?: return
+    Text(name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     EventTypeField(state.eventType, state.errorFor(QuoteField.EVENT_TYPE), actions.onEventType)
     EventDateField(
         label = stringResource(R.string.quote_date),
@@ -129,7 +130,7 @@ private fun RequestForm(
         onValueChange = actions.onGuests,
         keyboardType = KeyboardType.Number,
     )
-    if (state.capacityWarning) {
+    if (venue != null && state.capacityWarning) {
         VirGoCard {
             VirGoRow(
                 title = stringResource(R.string.quote_capacity_warning, venue.capacity),

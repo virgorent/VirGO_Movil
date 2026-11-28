@@ -10,6 +10,7 @@ import mx.virgo.core.network.api.AuthApi
 import mx.virgo.core.network.api.FavoritesApi
 import mx.virgo.core.network.api.HealthApi
 import mx.virgo.core.network.api.NoticesApi
+import mx.virgo.core.network.api.ProvidersApi
 import mx.virgo.core.network.api.UsersApi
 import mx.virgo.core.network.api.VenuesApi
 import mx.virgo.core.network.createAuthApi
@@ -17,6 +18,7 @@ import mx.virgo.core.network.createFavoritesApi
 import mx.virgo.core.network.createHealthApi
 import mx.virgo.core.network.createNoticesApi
 import mx.virgo.core.network.createOkHttpClient
+import mx.virgo.core.network.createProvidersApi
 import mx.virgo.core.network.createUsersApi
 import mx.virgo.core.network.createVenuesApi
 import okhttp3.OkHttpClient
@@ -49,6 +51,10 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideNoticesApi(client: OkHttpClient): NoticesApi = createNoticesApi(BuildConfig.API_BASE_URL, client)
+
+    @Provides
+    @Singleton
+    fun provideProvidersApi(client: OkHttpClient): ProvidersApi = createProvidersApi(BuildConfig.API_BASE_URL, client)
 
     @Provides
     @Singleton

@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `011-proveedores-cliente` |
 | Versión | 2.0.0 |
-| Estado | Borrador v2.0.0, recortado; pendiente de aprobación del usuario |
+| Estado | Aprobado por el usuario (2026-11-27, «Aprobados mi hermando»), recortado |
 | Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
 ## 1. Resumen técnico

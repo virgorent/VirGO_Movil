@@ -55,4 +55,5 @@ data class VenueDetailDto(
     val amenities: List<String> = emptyList(),
     val rating: VenueRatingDto? = null,
     val verified: Boolean = false,
+    val photos: List<String> = emptyList(),
 )

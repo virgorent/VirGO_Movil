@@ -4,12 +4,12 @@
 |---|---|
 | Módulo | `011-proveedores-cliente` |
 | Versión | 2.0.0 |
-| Estado | Borrador v2.0.0, recortado; pendiente de aprobación del usuario |
+| Estado | Aprobado por el usuario (2026-11-27, «Aprobados mi hermando»), recortado |
 | Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | — | ⏳ |
-| CA-02 | — | ⏳ |
-| CA-03 | — | ⏳ |
-| CA-04 | — | ⏳ |
+| CA-01 | `ProvidersTest.catalogFiltersByCategoryAndComparesAtMostThree`; `ProvidersRepositoryImplTest` (filtro `category`) | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
+| CA-02 | `ProvidersTest.catalogFiltersByCategoryAndComparesAtMostThree`, `compareHighlightsTheBestRated` | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
+| CA-03 | `QuoteRequestViewModel.start(QuoteTarget.provider…)` envía `targetType`; el backend aún no acepta `provider` | 🟡 Unitaria ✅ · depende del backend |
+| CA-04 | `ProvidersTest.missingEndpointSaysComingSoon`; `ProvidersRepositoryImplTest.missingEndpointIsComingSoon` | ✅ |

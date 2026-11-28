@@ -2,6 +2,7 @@ package mx.virgo.app.ui.ownervenues
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Storefront
@@ -27,6 +28,7 @@ import mx.virgo.core.designsystem.components.VirGoBadge
 import mx.virgo.core.designsystem.components.VirGoButton
 import mx.virgo.core.designsystem.components.VirGoCard
 import mx.virgo.core.designsystem.components.VirGoPageBody
+import mx.virgo.core.designsystem.components.VirGoPhoto
 import mx.virgo.core.designsystem.components.VirGoRow
 import mx.virgo.core.designsystem.components.VirGoRowDivider
 import mx.virgo.core.designsystem.components.VirGoSection
@@ -127,6 +129,7 @@ private fun VenueList(
                         standalone = false,
                         onClick = { onOpen(venue) },
                         trailing = { StatusBadge(venue.status) },
+                        leading = { VirGoPhoto(venue.photos.firstOrNull(), null, Modifier.size(THUMBNAIL_DP.dp)) },
                     )
                 }
             }
@@ -180,3 +183,5 @@ private fun listErrorText(error: AppError): String =
             else -> R.string.venue_error_server
         },
     )
+
+private const val THUMBNAIL_DP = 48

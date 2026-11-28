@@ -45,7 +45,7 @@ class QuoteRequestViewModelTest {
             .also { it.today = { day0 } }
 
     private fun QuoteRequestViewModel.ready(): QuoteRequestViewModel {
-        start("v1")
+        start(QuoteTarget.venue("v1"))
         setEventType(QuoteEventType.WEDDING)
         setDate(day0.plusDays(30))
         setGuests("120")
@@ -75,7 +75,7 @@ class QuoteRequestViewModelTest {
     @Test
     fun invalidFieldsNeverReachTheServer() {
         val vm = viewModel()
-        vm.start("v1")
+        vm.start(QuoteTarget.venue("v1"))
         vm.setDate(day0.minusDays(1))
         vm.setGuests("0")
         vm.setMessage("a".repeat(501))
@@ -171,13 +171,13 @@ class QuoteRequestViewModelTest {
     @Test
     fun venueFailuresAreHandled() {
         venues.result = AppResult.Failure(AppError.Network)
-        val vm = viewModel().apply { start("v1") }
+        val vm = viewModel().apply { start(QuoteTarget.venue("v1")) }
         assertTrue(vm.state.value.venueFailed)
         venues.result = AppResult.Success(sampleVenueDetail())
         vm.loadVenue()
         assertFalse(vm.state.value.venueFailed)
         venues.result = AppResult.Failure(AppError.NotFound)
-        val missing = viewModel(SavedStateHandle()).apply { start("gone") }
+        val missing = viewModel(SavedStateHandle()).apply { start(QuoteTarget.venue("gone")) }
         assertEquals(QuoteError.NOT_FOUND, missing.state.value.error)
     }
 
@@ -185,10 +185,10 @@ class QuoteRequestViewModelTest {
     fun draftSurvivesRecreationAndANewVenueStartsFresh() {
         viewModel().ready()
         val restored = viewModel(SavedStateHandle(mapOf("quote_draft" to saved.get<String>("quote_draft"))))
-        restored.start("v1")
+        restored.start(QuoteTarget.venue("v1"))
         assertEquals("120", restored.state.value.draft.guests)
         assertEquals(QuoteEventType.WEDDING, restored.state.value.eventType)
-        restored.start("v2")
+        restored.start(QuoteTarget.venue("v2"))
         assertEquals("", restored.state.value.draft.guests)
     }
 }

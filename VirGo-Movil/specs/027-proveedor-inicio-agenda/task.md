@@ -4,12 +4,12 @@
 |---|---|
 | Módulo | `027-proveedor-inicio-agenda` |
 | Versión | 2.0.0 |
-| Estado | Borrador v2.0.0, recortado; pendiente de aprobación del usuario |
+| Estado | Aprobado por el usuario (2026-11-27, «Aprobados mi hermando»), recortado |
 | Spec | [spec.md](spec.md) · Tareas: [task.md](task.md) · Verificación: [check.md](check.md) |
 
 | ID | Tarea | Estado |
 |---|---|---|
-| T02701 | Reglas de empalme y tablero con pruebas | ⏳ |
-| T02702 | Agenda semanal y formulario | ⏳ |
-| T02703 | Inicio | ⏳ |
-| T02704 | Pruebas y revisión en emulador | ⏳ |
+| T02701 | Reglas de empalme y tablero con pruebas | ✅ |
+| T02702 | Agenda semanal y formulario | ✅ |
+| T02703 | Inicio | ✅ |
+| T02704 | Pruebas y revisión en emulador | 🟡 Unitarias ✅ · emulador pendiente (pase único al final del MVP) |

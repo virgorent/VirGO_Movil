@@ -57,6 +57,8 @@ fun VirGoRow(
     trailing: (@Composable () -> Unit)? = null,
     /** Datos que no deben cortarse (nombres, fechas) usan `Int.MAX_VALUE`. */
     subtitleMaxLines: Int = 2,
+    /** Sustituye la burbuja del ícono, p. ej. por una miniatura (`036` RF-03). */
+    leading: (@Composable () -> Unit)? = null,
 ) {
     val container =
         if (standalone) {
@@ -78,7 +80,10 @@ fun VirGoRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        if (icon != null) VirGoIconBubble(icon, tone)
+        when {
+            leading != null -> leading()
+            icon != null -> VirGoIconBubble(icon, tone)
+        }
         // Con letra grande el contenido de la derecha baja bajo el título para no aplastarlo.
         val stackTrailing = trailing != null && LocalDensity.current.fontScale >= STACK_TRAILING_SCALE
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {

@@ -22,6 +22,7 @@ data class OwnerVenueDto(
     val categories: List<String> = emptyList(),
     val amenities: List<String> = emptyList(),
     val status: String? = null,
+    val photos: List<String> = emptyList(),
 )
 
 /** Precio de la petición: `base`, `unit` (`hour`/`day`) y `minHours`. */

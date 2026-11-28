@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 036 · Fotos de los salones -->
+    <string name="venue_photo_page">%1$d de %2$d</string>
+    <string name="venue_photo_description">Foto %1$d de %2$d de %3$s</string>
+</resources>

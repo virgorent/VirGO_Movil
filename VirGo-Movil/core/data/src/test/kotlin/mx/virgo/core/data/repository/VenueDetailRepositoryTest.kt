@@ -64,6 +64,7 @@ class VenueDetailRepositoryTest {
             assertEquals(PriceUnit.DAY, venue.priceUnit)
             assertEquals(listOf("Estacionamiento", "Sonido"), venue.amenities)
             assertFalse(venue.verified)
+            assertEquals(listOf("https://f.mx/1.jpg", "https://f.mx/2.jpg"), venue.photos)
             val request = server.takeRequest()
             assertEquals("/api/v1/venues/$VENUE_ID", request.path)
             assertEquals("Bearer client.token", request.getHeader("Authorization"))
@@ -124,12 +125,14 @@ private const val DETAIL_ANONYMOUS =
     """{"id":"$VENUE_ID","name":"Salón Las Palmas","shortName":"Las Palmas",""" +
         """"description":"Salón con jardín para 200 invitados en Juriquilla.",""" +
         """"address":"Av. Juriquilla 100, Querétaro","zone":"Juriquilla","capacity":220,"minimumHours":4,""" +
-        """"categories":["Salon","Jardin"],"amenities":["Estacionamiento","Sonido"],"photos":[],""" +
+        """"categories":["Salon","Jardin"],"amenities":["Estacionamiento","Sonido"],""" +
+        """"photos":["https://f.mx/1.jpg","https://f.mx/2.jpg"],""" +
         """"rating":{"average":0,"count":0}}"""
 
 private const val DETAIL_WITH_PRICE =
     """{"id":"$VENUE_ID","name":"Salón Las Palmas","shortName":"Las Palmas",""" +
         """"description":"Salón con jardín para 200 invitados en Juriquilla.",""" +
         """"address":"Av. Juriquilla 100, Querétaro","zone":"Juriquilla","capacity":220,"minimumHours":4,""" +
-        """"categories":["Salon","Jardin"],"amenities":["Estacionamiento","Sonido"],"photos":[],""" +
+        """"categories":["Salon","Jardin"],"amenities":["Estacionamiento","Sonido"],""" +
+        """"photos":["https://f.mx/1.jpg","https://f.mx/2.jpg"],""" +
         """"rating":{"average":0,"count":0},"price":{"baseAmount":1600,"unit":"day"}}"""

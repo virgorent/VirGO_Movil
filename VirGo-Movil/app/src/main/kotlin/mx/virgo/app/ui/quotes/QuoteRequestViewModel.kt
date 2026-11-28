@@ -42,7 +42,29 @@ data class QuoteDraft(
     val guests: String = "",
     val message: String = "",
     val uncertain: Boolean = false,
+    /** `provider` cotiza a un proveedor (`011` RF-04); su nombre viene del catálogo. */
+    val targetType: String = QuoteTarget.VENUE,
+    val targetName: String? = null,
 )
+
+/** A quién se pide la cotización. */
+data class QuoteTarget(
+    val type: String,
+    val id: String,
+    val name: String? = null,
+) {
+    companion object {
+        const val VENUE = "venue"
+        const val PROVIDER = "provider"
+
+        fun venue(id: String) = QuoteTarget(VENUE, id)
+
+        fun provider(
+            id: String,
+            name: String,
+        ) = QuoteTarget(PROVIDER, id, name)
+    }
+}
 
 /** Callbacks de C21, agrupados para probar el contenido sin `ViewModel`. */
 data class QuoteRequestActions(
@@ -105,13 +127,18 @@ class QuoteRequestViewModel
             )
         val state: StateFlow<QuoteRequestUiState> = mutableState.asStateFlow()
 
-        /** Abre la solicitud de un salón; con el mismo salón conserva lo capturado (rotación). */
-        fun start(venueId: String) {
+        /**
+         * Abre la solicitud; con el mismo destino conserva lo capturado (rotación). Un salón carga su
+         * ficha para revisar el aforo; un proveedor (`011` RF-04) no tiene salón que cargar.
+         */
+        fun start(target: QuoteTarget) {
+            val venue = target.type == QuoteTarget.VENUE
             val current = mutableState.value
-            if (current.draft.venueId != venueId || current.sent != null) {
-                emit(QuoteRequestUiState(draft = QuoteDraft(venueId)))
+            if (current.draft.venueId != target.id || current.draft.targetType != target.type || current.sent != null) {
+                val draft = QuoteDraft(target.id, targetType = target.type, targetName = target.name)
+                emit(QuoteRequestUiState(draft = draft, loadingVenue = venue))
             }
-            if (mutableState.value.venue == null) loadVenue()
+            if (venue && mutableState.value.venue == null) loadVenue()
         }
 
         fun loadVenue() {
@@ -213,7 +240,16 @@ class QuoteRequestViewModel
     }
 
 private fun QuoteRequestUiState.toRequest(): QuoteRequest? =
-    draft.venueId?.let { QuoteRequest(it, eventType, date, draft.guests.toIntOrNull(), draft.message) }
+    draft.venueId?.let {
+        QuoteRequest(
+            it,
+            eventType,
+            date,
+            draft.guests.toIntOrNull(),
+            draft.message,
+            draft.targetType,
+        )
+    }
 
 /** Errores de campo conocidos junto a su campo; si no hay ninguno, aviso general. */
 private fun QuoteRequestUiState.withServerErrors(fields: Map<String, List<String>>): QuoteRequestUiState {

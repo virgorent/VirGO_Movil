@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `026-proveedor-perfil` |
 | Versión | 2.0.0 |
-| Estado | Borrador v2.0.0, recortado; pendiente de aprobación del usuario |
+| Estado | Aprobado por el usuario (2026-11-27, «Aprobados mi hermando»), recortado |
 | Fecha | 2026-11-27 (v1.0.0 del 2026-11-05 sustituida) |
 | Constitución | v1.2.0 |
 | Rol | Proveedor |

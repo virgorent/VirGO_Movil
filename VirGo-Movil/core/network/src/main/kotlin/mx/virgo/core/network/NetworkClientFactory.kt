@@ -6,6 +6,7 @@ import mx.virgo.core.network.api.AuthApi
 import mx.virgo.core.network.api.FavoritesApi
 import mx.virgo.core.network.api.HealthApi
 import mx.virgo.core.network.api.NoticesApi
+import mx.virgo.core.network.api.ProvidersApi
 import mx.virgo.core.network.api.UsersApi
 import mx.virgo.core.network.api.VenuesApi
 import mx.virgo.core.network.interceptor.AuthInterceptor
@@ -40,6 +41,11 @@ fun createFavoritesApi(
     baseUrl: String,
     client: OkHttpClient = defaultOkHttpClient(),
 ): FavoritesApi = createRetrofit(baseUrl, client).create(FavoritesApi::class.java)
+
+fun createProvidersApi(
+    baseUrl: String,
+    client: OkHttpClient = defaultOkHttpClient(),
+): ProvidersApi = createRetrofit(baseUrl, client).create(ProvidersApi::class.java)
 
 fun createNoticesApi(
     baseUrl: String,

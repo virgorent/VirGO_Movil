@@ -21,6 +21,8 @@ tasks.withType<Test>().configureEach {
 }
 
 dependencies {
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.compose.ui.test.junit4)

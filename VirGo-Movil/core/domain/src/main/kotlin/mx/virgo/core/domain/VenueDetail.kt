@@ -22,6 +22,8 @@ data class VenueDetail(
     val ratingAverage: Double,
     val ratingCount: Int,
     val verified: Boolean,
+    /** URLs en orden; la primera es la portada (`036`). */
+    val photos: List<String> = emptyList(),
 )
 
 interface VenueDetailRepository {

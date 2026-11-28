@@ -60,9 +60,11 @@ data class Quote(
     val createdAt: String?,
     /** Quién pidió la cotización; el propietario lo ve en sus solicitudes (024 RF-02). */
     val clientName: String = "",
+    /** `venue` o `provider`; `null` si el servidor no lo manda (se trata como salón). */
+    val targetType: String? = null,
 ) {
     /** Solo una cotización respondida con salón conocido lleva a reservar (008 RF-11). */
-    val canBook: Boolean get() = status == QuoteStatus.ANSWERED && venueId != null
+    val canBook: Boolean get() = status == QuoteStatus.ANSWERED && venueId != null && targetType != "provider"
 }
 
 data class QuoteRequest(
@@ -71,6 +73,8 @@ data class QuoteRequest(
     val eventDate: LocalDate?,
     val guests: Int?,
     val message: String = "",
+    /** `venue` (salón, `008`) o `provider` (`011` RF-04). */
+    val targetType: String = "venue",
 )
 
 enum class QuoteField {

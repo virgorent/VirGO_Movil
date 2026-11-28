@@ -62,6 +62,8 @@ import mx.virgo.app.ui.ownervenues.VenueWizardContent
 import mx.virgo.app.ui.ownervenues.VenueWizardOutcome
 import mx.virgo.app.ui.ownervenues.VenueWizardUiState
 import mx.virgo.app.ui.ownervenues.WizardError
+import mx.virgo.app.ui.providers.ProviderHomeContent
+import mx.virgo.app.ui.providers.ProviderHomeUiState
 import mx.virgo.app.ui.quotes.QuoteDetailState
 import mx.virgo.app.ui.quotes.QuoteDraft
 import mx.virgo.app.ui.quotes.QuoteError
@@ -390,6 +392,7 @@ class BetaAccessibilityTest {
                         SESSION_NAME,
                         SESSION_EMAIL,
                         ownerHomeScreen = { name, actions -> OwnerHomeContent(OwnerHomeUiState(), name, actions, {}) },
+                        providerHomeScreen = { ProviderHomeContent(ProviderHomeUiState(), it) },
                         ownerVenuesScreen = {
                             OwnerVenuesContent(OwnerVenuesUiState(loading = false, venues = ownerVenues), {}, {}, {})
                         },

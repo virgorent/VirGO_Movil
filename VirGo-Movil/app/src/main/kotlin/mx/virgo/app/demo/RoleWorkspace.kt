@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.EventAvailable
+import androidx.compose.material.icons.outlined.Handshake
 import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material.icons.outlined.Savings
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +47,14 @@ import mx.virgo.app.ui.ownertools.OwnerVenueTool
 import mx.virgo.app.ui.ownertools.ReviewForm
 import mx.virgo.app.ui.ownertools.VenueTool
 import mx.virgo.app.ui.ownervenues.OwnerVenuesRoute
+import mx.virgo.app.ui.providers.ClientProviders
+import mx.virgo.app.ui.providers.ProviderAgenda
+import mx.virgo.app.ui.providers.ProviderHome
+import mx.virgo.app.ui.providers.ProviderHomeActions
+import mx.virgo.app.ui.providers.ProviderProfile
+import mx.virgo.app.ui.providers.ProviderRequests
+import mx.virgo.app.ui.providers.ProviderReviews
+import mx.virgo.app.ui.providers.ProviderStats
 import mx.virgo.app.ui.quotes.ClientQuotes
 import mx.virgo.app.ui.studio.ClientStudio
 import mx.virgo.app.ui.venuedetail.ClientExplore
@@ -65,6 +74,7 @@ fun RoleWorkspace(
     },
     ownerVenuesScreen: @Composable () -> Unit = { OwnerVenuesRoute() },
     ownerHomeScreen: @Composable (String, OwnerHomeActions) -> Unit = { name, actions -> OwnerHome(name, actions) },
+    providerHomeScreen: @Composable (ProviderHomeActions) -> Unit = { ProviderHome(it) },
 ) {
     key(accountKey, role) {
         BetaWorkspace(
@@ -73,7 +83,7 @@ fun RoleWorkspace(
             accountEmail,
             onLogout,
             accountScreen,
-            OwnerSlots(ownerVenuesScreen, ownerHomeScreen),
+            OwnerSlots(ownerVenuesScreen, ownerHomeScreen, providerHomeScreen),
         )
     }
 }
@@ -147,8 +157,11 @@ private fun BetaWorkspace(
 private val EVENT_STEPS = mapOf("event" to null, "guests" to EventStep.GUESTS, "tasks" to EventStep.TASKS)
 private val EVENT_ROUTES = EVENT_STEPS.keys
 
+/** Catálogo, detalle y comparación de proveedores (`011`) viven en una sola pantalla con pasos. */
+private val PROVIDER_CATALOG_ROUTES = setOf("providers", "provider", "compare")
+
 /** Pantallas del cliente que dibujan su propio encabezado con pasos internos. */
-private val OWN_HEADER_ROUTES = setOf("explore", "quotes") + EVENT_ROUTES
+private val OWN_HEADER_ROUTES = setOf("explore", "quotes") + EVENT_ROUTES + PROVIDER_CATALOG_ROUTES
 
 /** «Mis salones» del propietario muestra sus salones reales (022 RF-01); «Inicio» es su tablero (023). */
 private val OWNER_VENUE_ROUTES = setOf("ownerVenues")
@@ -176,6 +189,14 @@ private enum class WorkspaceScreen {
     OWNER_CALENDAR,
     OWNER_VENUES,
     OWNER_REQUESTS,
+    PROVIDERS,
+    PROVIDER_HOME,
+    PROVIDER_PROFILE,
+    PROVIDER_AGENDA,
+    PROVIDER_REQUESTS,
+    PROVIDER_REVIEWS,
+    PROVIDER_STATS,
+    PROVIDER_MESSAGES,
     ACCOUNT,
     SECTION,
 }
@@ -197,6 +218,7 @@ private fun WorkspaceBody(
         WorkspaceScreen.ACCOUNT -> accountScreen(identity, onLogout)
         WorkspaceScreen.SECTION -> BetaSectionScreen(role, route, identity.name, identity.email)
         in OWNER_SCREENS -> OwnerScreen(screen, identity.name, navigate, owner)
+        in PROVIDER_SCREENS -> ProviderScreen(screen, navigate, owner.providerHome)
         else -> ClientScreen(screen, betaTitle(role, route), route, navigate, back)
     }
 }
@@ -244,6 +266,8 @@ private fun ClientScreen(
         WorkspaceScreen.PAYMENTS -> ClientPayments(onEvent = toEvent)
         WorkspaceScreen.EVENTS ->
             ClientEvents(EVENT_STEPS[route], title, onBack = back, shortcuts = eventShortcuts(navigate))
+        WorkspaceScreen.PROVIDERS ->
+            ClientProviders(onBack = back, onMyQuotes = { navigate("quotes") }, onMessage = { navigate("messages") })
         WorkspaceScreen.QUOTES ->
             ClientQuotes(onCatalog = { navigate("explore") }, onMyBookings = { navigate("bookings") }, onBack = back)
         else -> Unit
@@ -256,6 +280,7 @@ private fun eventShortcuts(navigate: (String) -> Unit): List<EventShortcut> =
         EventShortcut(R.string.demo_title_bookings, Icons.Outlined.EventAvailable) { navigate("bookings") },
         EventShortcut(R.string.demo_title_budget, Icons.Outlined.Savings) { navigate("budget") },
         EventShortcut(R.string.demo_title_payments, Icons.Outlined.Payments) { navigate("payments") },
+        EventShortcut(R.string.demo_title_providers, Icons.Outlined.Handshake) { navigate("providers") },
     )
 
 /** Pantallas conectadas del propietario (`022`–`025`). */
@@ -284,10 +309,48 @@ private fun OwnerScreen(
     }
 }
 
-/** Pantallas del propietario que las pruebas sin Hilt sustituyen. */
+private val PROVIDER_SCREENS =
+    setOf(
+        WorkspaceScreen.PROVIDER_HOME,
+        WorkspaceScreen.PROVIDER_PROFILE,
+        WorkspaceScreen.PROVIDER_AGENDA,
+        WorkspaceScreen.PROVIDER_REQUESTS,
+        WorkspaceScreen.PROVIDER_REVIEWS,
+        WorkspaceScreen.PROVIDER_STATS,
+        WorkspaceScreen.PROVIDER_MESSAGES,
+    )
+
+/** Pantallas del proveedor (`026`–`029`). */
+@Composable
+private fun ProviderScreen(
+    screen: WorkspaceScreen,
+    navigate: (String) -> Unit,
+    home: @Composable (ProviderHomeActions) -> Unit,
+) {
+    when (screen) {
+        WorkspaceScreen.PROVIDER_HOME ->
+            home(
+                ProviderHomeActions(
+                    onRequests = { navigate("providerRequests") },
+                    onAgenda = { navigate("providerAgenda") },
+                    onProfile = { navigate("providerProfile") },
+                ),
+            )
+        WorkspaceScreen.PROVIDER_PROFILE -> ProviderProfile()
+        WorkspaceScreen.PROVIDER_AGENDA -> ProviderAgenda()
+        WorkspaceScreen.PROVIDER_REQUESTS -> ProviderRequests()
+        WorkspaceScreen.PROVIDER_REVIEWS -> ProviderReviews()
+        WorkspaceScreen.PROVIDER_STATS -> ProviderStats()
+        WorkspaceScreen.PROVIDER_MESSAGES -> MessagesInbox()
+        else -> Unit
+    }
+}
+
+/** Pantallas de inicio que las pruebas sin Hilt sustituyen. */
 private class OwnerSlots(
     val venues: @Composable () -> Unit,
     val home: @Composable (String, OwnerHomeActions) -> Unit,
+    val providerHome: @Composable (ProviderHomeActions) -> Unit,
 )
 
 /** Herramientas del propietario (`025`). */
@@ -319,7 +382,8 @@ private val CONNECTED_SCREENS: Map<DemoRole, Map<String, WorkspaceScreen>> =
                 "budgetAI" to WorkspaceScreen.BUDGET_SUGGESTION,
                 "payments" to WorkspaceScreen.PAYMENTS,
                 "assistant" to WorkspaceScreen.ASSISTANT,
-            ) + EVENT_ROUTES.associateWith { WorkspaceScreen.EVENTS },
+            ) + EVENT_ROUTES.associateWith { WorkspaceScreen.EVENTS } +
+            PROVIDER_CATALOG_ROUTES.associateWith { WorkspaceScreen.PROVIDERS },
         DemoRole.OWNER to
             OWNER_VENUE_ROUTES.associateWith { WorkspaceScreen.OWNER_VENUES } +
             ("ownerRequests" to WorkspaceScreen.OWNER_REQUESTS) +
@@ -331,6 +395,19 @@ private val CONNECTED_SCREENS: Map<DemoRole, Map<String, WorkspaceScreen>> =
             ("ownerPayments" to WorkspaceScreen.OWNER_PAYMENTS) +
             ("ownerStats" to WorkspaceScreen.OWNER_STATS) +
             ("ownerReviews" to WorkspaceScreen.OWNER_REVIEWS),
+        DemoRole.PROVIDER to
+            mapOf(
+                "providerHome" to WorkspaceScreen.PROVIDER_HOME,
+                "providerProfile" to WorkspaceScreen.PROVIDER_PROFILE,
+                "providerZones" to WorkspaceScreen.PROVIDER_PROFILE,
+                "providerAgenda" to WorkspaceScreen.PROVIDER_AGENDA,
+                "providerRequests" to WorkspaceScreen.PROVIDER_REQUESTS,
+                "providerRequest" to WorkspaceScreen.PROVIDER_REQUESTS,
+                "providerReviews" to WorkspaceScreen.PROVIDER_REVIEWS,
+                "providerStats" to WorkspaceScreen.PROVIDER_STATS,
+                "messages" to WorkspaceScreen.PROVIDER_MESSAGES,
+                "chat" to WorkspaceScreen.PROVIDER_MESSAGES,
+            ),
     )
 
 /** Una sola fuente para el menú «Secciones» y el ruteo: lo conectado no lleva «Próximamente». */

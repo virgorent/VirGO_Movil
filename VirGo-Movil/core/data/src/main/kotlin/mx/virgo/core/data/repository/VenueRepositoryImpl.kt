@@ -59,6 +59,7 @@ internal fun VenueDetailDto.toVenueDetail(): VenueDetail =
         ratingAverage = rating?.average ?: 0.0,
         ratingCount = rating?.count ?: 0,
         verified = verified,
+        photos = photos,
     )
 
 internal fun VenueDto.toVenue(): Venue =

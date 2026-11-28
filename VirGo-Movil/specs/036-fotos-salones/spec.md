@@ -4,7 +4,7 @@
 |---|---|
 | Módulo | `036-fotos-salones` |
 | Versión | 1.0.0 |
-| Estado | Borrador, pendiente de aprobación del usuario |
+| Estado | Aprobado por el usuario (2026-11-27, «Aprobados mi hermando») |
 | Fecha | 2026-11-27 |
 | Constitución | v1.2.0 |
 | Rol | Cliente y propietario |

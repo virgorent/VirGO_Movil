@@ -37,6 +37,7 @@ internal fun AnswerSection(
     quote: Quote,
     detail: RequestDetailState,
     actions: OwnerRequestsActions,
+    answerHelper: (@Composable (AnswerForm, (AnswerForm) -> Unit) -> Unit)? = null,
 ) {
     QuoteDetailBody(quote, onBook = null, ownerView = true)
     if (detail.justAnswered) {
@@ -58,6 +59,7 @@ internal fun AnswerSection(
         modifier = Modifier.semantics { heading() },
     )
     val form = detail.form
+    answerHelper?.invoke(form, actions.onForm)
     AnswerInput(
         label = stringResource(R.string.answer_total),
         value = form.total,

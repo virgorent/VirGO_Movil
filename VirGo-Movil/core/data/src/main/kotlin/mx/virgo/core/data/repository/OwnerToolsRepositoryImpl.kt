@@ -127,7 +127,7 @@ private fun VenueToolsDto.toTools(): OwnerVenueTools =
         setups = setups?.let { VenueSetups(it.banquet, it.auditorium, it.cocktail) },
     )
 
-private fun ReviewDto.toReview(): Review =
+internal fun ReviewDto.toReview(): Review =
     Review(
         id = id,
         authorName = authorName.orEmpty(),
