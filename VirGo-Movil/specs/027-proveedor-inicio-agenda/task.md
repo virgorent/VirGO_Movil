@@ -12,4 +12,4 @@
 | T02701 | Reglas de empalme y tablero con pruebas | ✅ |
 | T02702 | Agenda semanal y formulario | ✅ |
 | T02703 | Inicio | ✅ |
-| T02704 | Pruebas y revisión en emulador | 🟡 Unitarias ✅ · emulador pendiente (pase único al final del MVP) |
+| T02704 | Pruebas y revisión en emulador | ✅ Unitarias y pase en emulador (2026-11-27) |

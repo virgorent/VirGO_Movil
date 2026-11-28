@@ -12,4 +12,4 @@
 | T01101 | Dominio, red y repositorio de proveedores con MockWebServer | ✅ |
 | T01102 | Catálogo y comparación | ✅ |
 | T01103 | Detalle, reseñas y cotizar | ✅ |
-| T01104 | Pruebas y revisión en emulador | 🟡 Unitarias ✅ · emulador pendiente (pase único al final del MVP) |
+| T01104 | Pruebas y revisión en emulador | ✅ Unitarias y pase en emulador (2026-11-27) |

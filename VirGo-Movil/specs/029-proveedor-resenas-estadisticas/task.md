@@ -11,4 +11,4 @@
 |---|---|---|
 | T02901 | Estadísticas con pruebas | ✅ |
 | T02902 | Reseñas | ✅ |
-| T02903 | Pruebas y revisión en emulador | 🟡 Unitarias ✅ · emulador pendiente (pase único al final del MVP) |
+| T02903 | Pruebas y revisión en emulador | ✅ Unitarias y pase en emulador (2026-11-27) |

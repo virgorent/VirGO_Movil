@@ -9,7 +9,7 @@
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | `ProvidersTest.catalogFiltersByCategoryAndComparesAtMostThree`; `ProvidersRepositoryImplTest` (filtro `category`) | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
-| CA-02 | `ProvidersTest.catalogFiltersByCategoryAndComparesAtMostThree`, `compareHighlightsTheBestRated` | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
+| CA-01 | `ProvidersTest.catalogFiltersByCategoryAndComparesAtMostThree`; `ProvidersRepositoryImplTest` (filtro `category`) | 🟡 Unitaria ✅ · emulador: «llegará pronto» hasta que el backend implemente el endpoint |
+| CA-02 | `ProvidersTest.catalogFiltersByCategoryAndComparesAtMostThree`, `compareHighlightsTheBestRated` | 🟡 Unitaria ✅ · emulador: «llegará pronto» hasta que el backend implemente el endpoint |
 | CA-03 | `QuoteRequestViewModel.start(QuoteTarget.provider…)` envía `targetType`; el backend aún no acepta `provider` | 🟡 Unitaria ✅ · depende del backend |
-| CA-04 | `ProvidersTest.missingEndpointSaysComingSoon`; `ProvidersRepositoryImplTest.missingEndpointIsComingSoon` | ✅ |
+| CA-04 | `ProvidersTest.missingEndpointSaysComingSoon`; `ProvidersRepositoryImplTest.missingEndpointIsComingSoon` | ✅ Unitaria y emulador (2026-11-27) |

@@ -12,4 +12,4 @@
 | T02801 | Conceptos y total con pruebas | ✅ |
 | T02802 | Lista y respuesta | ✅ |
 | T02803 | Mensajes | ✅ |
-| T02804 | Pruebas y revisión en emulador | 🟡 Unitarias ✅ · emulador pendiente (pase único al final del MVP) |
+| T02804 | Pruebas y revisión en emulador | ✅ Unitarias y pase en emulador (2026-11-27) |

@@ -10,7 +10,7 @@
     <string name="requests_empty_new">No tienes solicitudes nuevas</string>
     <string name="requests_empty_answered">Aún no has respondido solicitudes</string>
     <string name="requests_empty_all">Aún no recibes solicitudes</string>
-    <string name="requests_empty_hint">Cuando un cliente pida cotización a uno de tus salones publicados, aparecerá aquí.</string>
+    <string name="requests_empty_hint">Cuando un cliente te pida una cotización, aparecerá aquí.</string>
     <string name="requests_item">%1$s · %2$s · %3$d invitados</string>
     <string name="requests_detail_error">No pudimos abrir la solicitud.</string>
     <string name="requests_retry">Reintentar</string>

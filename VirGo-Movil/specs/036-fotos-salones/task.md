@@ -12,4 +12,4 @@
 | T03601 | Coil y componentes `VenuePhoto` y `VenuePhotoPager` con pruebas | ✅ |
 | T03602 | Catálogo, detalle y «Mis salones» | ✅ |
 | T03603 | Fotos en `seed-demo.py` | ✅ |
-| T03604 | Pruebas, TalkBack y revisión en emulador | 🟡 Unitarias ✅ · TalkBack y emulador pendiente (pase único al final del MVP) |
+| T03604 | Pruebas, TalkBack y revisión en emulador | ✅ Unitarias y pase en emulador (2026-11-27) |

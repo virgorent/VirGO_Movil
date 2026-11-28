@@ -9,7 +9,7 @@
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | `BetaCatalogScreen` usa `VirGoCoverPhoto` con la primera foto; `VenueDetailRepositoryTest` mapea `photos` | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
-| CA-02 | `VirGoPhotoTest.pagerAnnouncesEachPhotoAndUpdatesTheIndicator` | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
-| CA-03 | `VirGoPhotoTest.onlyHttpsUrlsAreShown`, `withoutPhotosOrWithAnUnsafeUrlNoImageIsRequested` | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
-| CA-04 | `VirGoPhotoTest.pagerAnnouncesEachPhotoAndUpdatesTheIndicator` (descripción por foto) | 🟡 Unitaria ✅ · TalkBack real pendiente al final |
+| CA-01 | `BetaCatalogScreen` usa `VirGoCoverPhoto` con la primera foto; `VenueDetailRepositoryTest` mapea `photos` | ✅ Unitaria y emulador (2026-11-27) |
+| CA-02 | `VirGoPhotoTest.pagerAnnouncesEachPhotoAndUpdatesTheIndicator` | ✅ Unitaria y emulador (2026-11-27) |
+| CA-03 | `VirGoPhotoTest.onlyHttpsUrlsAreShown`, `withoutPhotosOrWithAnUnsafeUrlNoImageIsRequested` | ✅ Unitaria y emulador (2026-11-27) (VirGo Demo Venue sin fotos) |
+| CA-04 | `VirGoPhotoTest.pagerAnnouncesEachPhotoAndUpdatesTheIndicator` (descripción por foto) | ✅ Unitaria y árbol de accesibilidad en emulador («Foto 1 de 3 de Jardín Los Encinos») |

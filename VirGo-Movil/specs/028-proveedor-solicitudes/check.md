@@ -10,4 +10,4 @@
 | CA | Evidencia | Estado |
 |---|---|---|
 | CA-01 | `ProviderRulesTest.conceptsStartFromPackagesAndRecalculateTheTotal`; `ProvidersTest.conceptsFillTheAnswerTotal` | ✅ |
-| CA-02 | Reusa la respuesta de `024` (`OwnerRequests`) con sus pruebas | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
+| CA-02 | Reusa la respuesta de `024` (`OwnerRequests`) con sus pruebas | 🟡 Unitaria ✅ · emulador: «llegará pronto» hasta que el backend implemente el endpoint |

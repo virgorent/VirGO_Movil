@@ -1144,3 +1144,15 @@ Versiones fijadas en T005 y verificadas con `./gradlew help`.
 - **Evidencia:** `ktlintCheck detekt testDebugUnitTest --rerun-tasks` **BUILD SUCCESSFUL**, 569 pruebas, 0 fallas, 1 omitida.
 - **Emulador:** pendiente para el pase único al final del MVP, por decisión del usuario («las pruebas con emulador hay que hacerlas hasta el final»).
 - **Costo:** $0.
+
+### 2026-11-27 · Pase único en emulador (bloques 1, 2 y 3)
+
+- **Autor:** usuario + Claude Code. El usuario pidió hacer todo el emulador al final («Hazlo todo en emulador al final, chingate todos los bloques»).
+- **Entorno:** Pixel_10_Pro, backend local en memoria sembrado con `seed-demo.py` (12 salones con 3 fotos cada uno y «VirGo Demo Venue» sin fotos) y una cuenta de prueba de proveedor creada en el backend local.
+- **Visitante:** el catálogo muestra la portada de cada salón y el ícono de respaldo en el salón sin fotos. El detalle muestra el carrusel: el indicador pasa de «1 de 3» a «3 de 3» y el árbol de accesibilidad anuncia «Foto 1 de 3 de Jardín Los Encinos».
+- **Cliente:** «Mi Evento» → «Organiza tu evento» con «Mis reservaciones», «Presupuesto», «Pagos» y «Proveedores»; «Proveedores» dice «Los proveedores llegarán pronto.» porque el backend aún no tiene los endpoints.
+- **Proveedor:** el inicio (0 solicitudes, sin servicios), «Mi servicio» (publicar marca cada campo faltante y el paquete; guardar dice «llegará pronto»), agenda y mensajes («llegará pronto»), solicitudes vacías, reseñas vacías y estadísticas de 3 y 6 meses cargan sin errores.
+- **Propietario:** «Mis salones» muestra la miniatura de cada salón; el calendario marca los días pasados «Ya pasó».
+- **Corrección:** el texto vacío de Solicitudes decía «a uno de tus salones publicados» también al proveedor; ahora dice «Cuando un cliente te pida una cotización, aparecerá aquí.» para ambos roles.
+- **No cubierto en emulador:** la voz de TalkBack (sí el árbol de accesibilidad que lee) y los flujos de proveedor con datos reales, que esperan los endpoints del backend `034`–`041`, `073` y que acepte `target.type = "provider"`.
+- **Pendiente:** el vistazo visual de `ccabrera-dev8` a lo nuevo (fotos y proveedor) y el PR único cuando el usuario diga que el MVP está listo.

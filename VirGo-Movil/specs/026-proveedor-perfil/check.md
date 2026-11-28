@@ -9,6 +9,6 @@
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | `ProvidersTest.publishingWithoutPackagesIsBlockedAndSaysWhy`; `ProviderRulesTest.publishingNeedsEveryFieldAndAPricedPackage` | ✅ |
-| CA-02 | `ProvidersRepositoryImplTest.withoutProfileMineIsEmptyAndPublishSendsOnlyTheStatus` | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
-| CA-03 | `ProvidersRepositoryImplTest` (`GET /providers/me`) y `ProviderProfileViewModel` carga el borrador | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
+| CA-01 | `ProvidersTest.publishingWithoutPackagesIsBlockedAndSaysWhy`; `ProviderRulesTest.publishingNeedsEveryFieldAndAPricedPackage` | ✅ Unitaria y emulador (2026-11-27) |
+| CA-02 | `ProvidersRepositoryImplTest.withoutProfileMineIsEmptyAndPublishSendsOnlyTheStatus` | 🟡 Unitaria ✅ · emulador: «llegará pronto» hasta que el backend implemente el endpoint |
+| CA-03 | `ProvidersRepositoryImplTest` (`GET /providers/me`) y `ProviderProfileViewModel` carga el borrador | 🟡 Unitaria ✅ · emulador: «llegará pronto» hasta que el backend implemente el endpoint |

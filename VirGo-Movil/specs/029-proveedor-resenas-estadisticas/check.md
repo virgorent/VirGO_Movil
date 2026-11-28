@@ -9,5 +9,5 @@
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | `ProviderRulesTest.monthlyStatsCountReceivedAndAcceptedWithConversion` | ✅ |
-| CA-02 | `ProviderReviews` reusa el estado vacío de reseñas de `022` | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
+| CA-01 | `ProviderRulesTest.monthlyStatsCountReceivedAndAcceptedWithConversion` | ✅ Unitaria · emulador muestra 3 y 6 meses con 0 % |
+| CA-02 | `ProviderReviews` reusa el estado vacío de reseñas de `022` | ✅ Unitaria y emulador (2026-11-27) |

@@ -9,6 +9,6 @@
 
 | CA | Evidencia | Estado |
 |---|---|---|
-| CA-01 | `ProviderRulesTest.gigsThatCrossTheSameDayOverlapButTouchingOnesDoNot`; `ProvidersTest.overlappingGigsAreFlagged` | ✅ |
-| CA-02 | `ProviderRulesTest.weekStartsOnMondayAndKeepsOnlyItsGigs` | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
-| CA-03 | `ProviderDashboard.from` cuenta las solicitudes sin responder | 🟡 Unitaria ✅ · emulador pendiente (pase único al final del MVP) |
+| CA-01 | `ProviderRulesTest.gigsThatCrossTheSameDayOverlapButTouchingOnesDoNot`; `ProvidersTest.overlappingGigsAreFlagged` | ✅ Unitaria · emulador: «llegará pronto» hasta que el backend implemente el endpoint |
+| CA-02 | `ProviderRulesTest.weekStartsOnMondayAndKeepsOnlyItsGigs` | 🟡 Unitaria ✅ · emulador: «llegará pronto» hasta que el backend implemente el endpoint |
+| CA-03 | `ProviderDashboard.from` cuenta las solicitudes sin responder | ✅ Unitaria · emulador con 0 solicitudes («0 solicitudes nuevas») |
