@@ -81,7 +81,8 @@ class ProvidersTest {
     fun missingEndpointSaysComingSoon() {
         repository.failure = AppError.NotFound
         val vm = ProvidersViewModel(repository, session)
-        compose.setContent { VirGoTheme { ProvidersCatalogContent(vm.state.value, ProvidersCatalogActions()) } }
+        val state = vm.state.value
+        compose.setContent { VirGoTheme { ProvidersCatalogContent(state, ProvidersCatalogActions()) } }
         compose.onNodeWithText("Los proveedores llegarán pronto.").assertIsDisplayed()
     }
 
@@ -115,7 +116,8 @@ class ProvidersTest {
         assertEquals(setOf(ProviderField.PACKAGES), vm.state.value.missing)
         assertEquals(0, repository.publishCalls)
 
-        compose.setContent { VirGoTheme { ProviderProfileContent(vm.state.value, ProviderProfileActions()) } }
+        val state = vm.state.value
+        compose.setContent { VirGoTheme { ProviderProfileContent(state, ProviderProfileActions()) } }
         compose.onNodeWithText("Agrega al menos un paquete con nombre y precio.").performScrollTo().assertIsDisplayed()
     }
 
